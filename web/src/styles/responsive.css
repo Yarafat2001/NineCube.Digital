@@ -2,7 +2,7 @@
 /* Text navigation must remain identifiable on touchscreens without hover. */
 main a.btn--ghost,
 main .link-button,
-main a[href]:not(.btn):not(.filter-chip):not(.product-card__media-link):not(:has(img)),
+main a[href]:not(.btn):not(.filter-chip):not(.product-card__media-link):not(.product-card__name a):not(:has(img)),
 .site-footer__links a,
 .notif-popover__footer a {
   color: var(--accent-text);
@@ -26,7 +26,8 @@ main .link-button:is(:hover, :focus-visible, :active),
 .table-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
 .table-scroll table { width: 100%; }
 .product-viewer { display: grid; gap: 14px; min-width: 0; }
-.viewer-modes, .viewer-controls, .viewer-backdrops { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.viewer-modes, .viewer-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.viewer-backdrops { display: flex; align-items: center; flex-wrap: nowrap; gap: 8px; overflow-x: auto; }
 .viewer-modes [aria-pressed='true'], .viewer-backdrops [aria-pressed='true'] { outline: 2px solid var(--accent); outline-offset: 2px; }
 .viewer-modes .muted { margin-left: auto; font-size: var(--text-sm); }
 .product-viewer__stage { display: grid; place-items: center; overflow: hidden; border: 1px solid var(--border-strong); border-radius: 24px; min-width: 0; touch-action: pan-y; }
