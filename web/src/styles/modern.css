@@ -104,8 +104,13 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
 .profile-header > div { min-width: 0; overflow-wrap: anywhere; }
 .profile-layout { align-items: start; }
 .skeleton--card { border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--card-shadow); }
-.password-input { display: flex; align-items: stretch; gap: 8px; }
-.password-input input { min-width: 0; flex: 1; }
+/* The show/hide toggle belongs inside the box, not beside it: the wrapper is the
+   positioning context, the input reserves room on its inline-end, and the button
+   floats over that reserved space. translate (not transform) keeps the centre
+   correct while the global .btn hover lift still applies. */
+.password-input { position: relative; }
+.password-input input { width: 100%; padding-inline-end: 44px; }
+.password-input .btn { position: absolute; inset-inline-end: 4px; top: 50%; translate: 0 -50%; min-height: 34px; padding: 4px 8px; }
 .unread-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--accent-text); flex-shrink: 0; }
 .notif-item[data-read='false'] { background: var(--selected-bg); border-color: var(--border-strong); }
 .notif-item[data-read='false'] .notif-item__title { font-weight: 750; }

@@ -38,13 +38,33 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
   const idempotencyKey = useRef<string | null>(null);
   const inFlight = useRef(false);
 
-  const refreshStock = async (): Promise<Product[]> => {
+  // The 409 payload is a photograph of the moment the order failed. Once the lines themselves fit what
+  // the server reported, the banner has nothing left to say, so it is pruned rather than left to claim
+  // a shortage the customer has already corrected.
+  useEffect(() => {
+    if (shortItems.length === 0) return;
+    const stillShort = shortItems.flatMap((item) => {
+      const line = cart.lines.find((other) => other.productId === item.productId);
+      if (!line) return [];
+      const available = Math.min(line.available, item.available);
+      return line.quantity > available ? [{ ...item, requested: line.quantity, available }] : [];
+    });
+    const unchanged =
+      stillShort.length === shortItems.length &&
+      stillShort.every((item, index) => item.requested === shortItems[index].requested && item.available === shortItems[index].available);
+    if (unchanged) return;
+    setShortItems(stillShort);
+    if (stillShort.length === 0) setInlineError(null);
+  }, [cart.lines, shortItems]);
+
+  const refreshStock = async (): Promise<void> => {
     const fresh = await Promise.all(
       cart.lines.map((line) => apiRequest<Product>(`/api/products/${line.productId}`, { token }))
     );
     cart.reconcile(fresh);
-    await queryClient.invalidateQueries({ queryKey: ['products'] });
-    return fresh;
+    // Fire, do not await: the panel has already told the customer what went short. Awaiting the
+    // catalogue refetch here used to hold the submit guard open for seconds after the refusal.
+    void queryClient.invalidateQueries({ queryKey: ['products'] });
   };
 
   const submit = async () => {
@@ -79,7 +99,13 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
         setShortItems(error.shortItems);
         setInlineError('Some items no longer have enough stock. Your cart was kept so you can adjust it.');
         toast.push('error', 'Not enough stock for one or more items.');
-        await refreshStock();
+        // Deliberately not awaited. Awaiting it held the double-submit guard open for as long as the
+        // stock re-check took, so the customer's corrected "Place order" click was swallowed without
+        // any feedback at all. The server is the authority: a retry that races the re-check is refused
+        // again on its merits.
+        refreshStock().catch(() => {
+          // The re-check is a courtesy: the refusal above already stands whatever this does.
+        });
         return;
       }
 

@@ -82,13 +82,23 @@ describe('Product card shape', () => {
   it('falls back to the placeholder when the stored URL fails to load', async () => {
     const card = await openCard(cardProduct);
     const image = card.querySelector('img') as HTMLImageElement;
-    // The alt text is the full stored name, and a root-relative path is qualified for the API host.
-    expect(image.getAttribute('alt')).toBe(longName);
+    // The photo is described by the alt text stored with it, and a root-relative path is qualified
+    // for the API host.
+    expect(image.getAttribute('alt')).toBe('Apex widget');
     expect(image.getAttribute('src')).toBe('http://localhost:5080/uploads/missing.png');
 
     fireEvent.error(image);
     expect(within(card).getByTestId('image-placeholder')).toBeInTheDocument();
     expect(card.querySelector('img')).toBeNull();
+  });
+
+  it('describes an image with no alt text by the product name', async () => {
+    const card = await openCard({
+      ...cardProduct,
+      id: 78,
+      images: [{ id: 2, url: '/uploads/missing.png', isPrimary: true, altText: null }]
+    });
+    expect(card.querySelector('img')).toHaveAttribute('alt', longName);
   });
 
   it('renders a Bengali name as a name, and keeps the SKU off the card', async () => {

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NineCube.Digital — live system walkthrough</title>
+<style>
+:root { color-scheme: dark; --ink:#120e0a; --surface:#1b1510; --line:#3a2c1d; --amber:#ffab4d;
+  --text:#f3e7d8; --muted:#b9a68f; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--text); font: 15px/1.55 system-ui, sans-serif; }
+header { display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline; justify-content: space-between;
+  padding: 18px 24px; border-bottom: 1px solid var(--line); }
+h1 { margin: 0; font-size: 20px; } h1 span { color: var(--amber); }
+main { max-width: 1180px; margin: 0 auto; padding: 24px; display: grid; gap: 22px; }
+video { width: 100%; display: block; border: 1px solid var(--line); border-radius: 14px; background: #000;
+  box-shadow: 0 18px 48px rgba(0,0,0,.5); }
+.controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+#seek { flex: 1 1 220px; height: 8px; accent-color: var(--amber); }
+#now { margin: 0; color: var(--muted); font-size: 14px; min-height: 20px; }
+button { font: inherit; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--text); cursor: pointer; }
+button.primary { background: var(--amber); color: #1a1100; border-color: var(--amber); font-weight: 700; }
+.hint { color: var(--muted); }
+ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+li { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center;
+  padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+li b { color: var(--amber); font-size: 14px; } li .when { color: var(--muted); font-variant-numeric: tabular-nums; }
+li button { padding: 6px 12px; } li.error { border-color: #e5484d; } li.error b { color: #ffb4b4; }
+.script { display: grid; gap: 14px; }
+.script p { margin: 4px 0 0; color: var(--muted); }
+footer { padding: 20px 24px 40px; color: var(--muted); border-top: 1px solid var(--line); }
+code { color: var(--amber); }
+</style>
+</head>
+<body>
+<header><h1><span>NineCube</span>.Digital — live system walkthrough</h1>
+<div class="hint">Recorded from the running application. Voice track cut to the same timeline.</div></header>
+<main>
+<video id="film" playsinline preload="metadata" src="ninecube-walkthrough.webm"></video>
+<audio id="voice" preload="auto" src="ninecube-narration.wav"></audio>
+<div class="controls">
+<button id="play" class="primary">Play with narration</button>
+<input id="seek" type="range" min="0" max="401546" step="100" value="0" aria-label="Seek the recording">
+<span class="hint" id="clock">0:00 / 6:42</span>
+<button id="mute">Voice on</button>
+</div>
+<p id="now"></p>
+<nav aria-label="Scenes"><ol id="chapters"></ol></nav>
+<section class="script" aria-label="Narration script" id="script"></section>
+</main>
+<footer>Written by <code>web/scripts/record-walkthrough.mjs</code> on 2026-10-16. Re-record with <code>node scripts/record-walkthrough.mjs</code>, then re-cut the voice with <code>python tools/narrate_walkthrough.py</code>.</footer>
+<script type="application/json" id="manifest">{"generatedAt":"2026-10-16T08:11:45.656Z","base":"http://127.0.0.1:5173","api":"http://127.0.0.1:5080","viewport":{"width":1440,"height":900},"video":"ninecube-walkthrough.webm","narration":"ninecube-narration.wav","totalMs":401546,"words":761,"plan":{"target":{"id":128,"sku":"BD-HATI-DEGA-103-391A31","name":"Hatil Degas-103","price":21000,"stockQuantity":3,"isActive":true,"rowVersion":"AAAAAAAEbaQ=","description":"Hatil Degas-103. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.","imageUrl":"/products/sourced/128-57e9cabb0d67.jpg","categories":[{"id":19,"name":"Chairs","slug":"chairs","isPrimary":true}],"tags":["Brand: Hatil","Local Brand","Mid-range"],"currency":"BDT","slug":"hatil-degas-103","needsReview":false,"sourceName":"Hatil official catalogue","sourceUrl":"https://www.hatil.com/executive-chair/degas-103","priceBasis":"Official listed BDT price; variant and tax conditions apply","priceVerifiedAt":"2026-10-14T14:20:02.409Z","brandId":46,"brandName":"Hatil","brandSlug":"hatil","productLineId":177,"productLineName":"Degas","productLineSlug":"degas","images":[{"id":53,"url":"/products/sourced/128-57e9cabb0d67.jpg","isPrimary":true,"altText":"Hatil Degas-103"}]},"branchLabel":"Home","descendantName":"Kitchen","competingOrderId":35},"scenes":[{"id":"opening","scene":1,"title":"NineCube.Digital","subtitle":"Order processing for a Bangladeshi marketplace","caption":"Everything in this take is the live application against a live database. No slide, no mock-up.","narration":"This is NineCube Digital, an order processing system for a Bangladeshi marketplace. What you are about to see is the running application against the running database, and every rule shown here is a rule the test suite asserts.","error":null,"startMs":2343,"endMs":21496,"durationMs":19153},{"id":"sign-in","scene":2,"title":"Signing in","subtitle":"Live stock is commercial data","caption":"The catalogue needs an account, because availability is business information.","narration":"A visitor lands on the showcase. The catalogue itself needs an account, because live stock is treated as commercial information. Signing in issues a bearer token that is held in memory for the tab and mirrored into session storage, so a refresh does not sign you out.","error":null,"startMs":21497,"endMs":42544,"durationMs":21047},{"id":"catalogue","scene":3,"title":"The catalogue","subtitle":"Server-side truth, URL-side state","caption":"Filters live in the address bar, so any view can be linked, reloaded or shared.","narration":"This is the catalogue. Filters are held in the address bar rather than in component state, so any view can be reloaded or shared. Each card carries the quantity the server reported, and the badge spells the state out rather than relying on colour.","error":null,"startMs":42545,"endMs":62362,"durationMs":19817},{"id":"stepper-cap","scene":4,"title":"Test case: the stepper cannot outrun stock","subtitle":"Rule asserted in the suite","caption":"The plus button switches itself off at the quantity actually on the shelf.","narration":"First test case. The card is offering four units because four units exist. The stepper caps at the live figure by disabling the increase control, so an over-order cannot be built in the interface at all. This is the same rule the frontend suite asserts.","error":null,"startMs":62364,"endMs":82678,"durationMs":20314},{"id":"conflict","scene":5,"title":"Test case: stock moved while the cart waited","subtitle":"The 409 that names the line","caption":"The server refuses the order and the panel says which item, by name and SKU.","narration":"Second test case, and the interesting one. The cart holds the whole remaining stock. While it sat there, another order took one unit. The server answers with a conflict that names the short line, the panel keeps the cart so it can be fixed, and the stock figure is refetched from the server rather than guessed.","error":null,"startMs":82679,"endMs":107600,"durationMs":24921},{"id":"place-order","scene":6,"title":"Test case: order placed, stock reserved","subtitle":"One transaction, one promise","caption":"Reduce to what exists, place the order, and the stock is reserved in the same transaction.","narration":"Third test case: the recovery. The line is reduced to the quantity that really exists and the order goes through. Placement and reservation happen in one transaction, and the request carries an idempotency key, so a retry on a flaky network returns the original order instead of a second one.","error":"locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  \u001b[2m- waiting for locator('[data-testid=\"short-items\"]') to be detached\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n\u001b[2m  -   locator resolved to visible \u003cdiv role=\"alert\" class=\"inline-banner\" data-testid=\"short-items\">…\u003c/div>\u001b[22m\n","startMs":107604,"endMs":129903,"durationMs":22299},{"id":"order-detail","scene":7,"title":"The order and its timeline","subtitle":"Snapshot prices, not live ones","caption":"The lines record the price the server charged at that moment, so a later price change rewrites no history.","narration":"The order page shows where the order is. The timeline is the state machine made visible: pending, confirmed, shipped, with rejected and cancelled as terminals. The lines snapshot the name and the unit price from the moment of purchase, so a price change next week changes no history. The invoice is the same order on one printable page.","error":"nothing to highlight on screen: locator('.page-header .badge').first()","startMs":129904,"endMs":201581,"durationMs":71677},{"id":"account","scene":8,"title":"Dashboard and notifications","subtitle":"Both roles get told","caption":"The customer sees their own totals; staff get a notification for the same event.","narration":"Fourth test case, on the customer side: the dashboard counts only your own orders, and the notification inbox recorded the placement. Notifications are per user and per event, so the same order tells the buyer it was received and tells the sales desk it arrived.","error":null,"startMs":201584,"endMs":221796,"durationMs":20212},{"id":"adjust-refused","scene":9,"title":"Test case: stock cannot go below zero","subtitle":"The database refuses, not the form","caption":"A signed adjustment that would leave the product short is refused by the server.","narration":"Fifth test case, now as the inventory manager. Stock is corrected with a signed adjustment and a mandatory reason. An adjustment that would take the product below zero is refused by the server, and the constraint that refuses it sits in the database, so it holds no matter which client asks.","error":null,"startMs":221796,"endMs":254197,"durationMs":32401},{"id":"ledger","scene":10,"title":"Test case: a real receipt lands in the ledger","subtitle":"Append-only, with a name against it","caption":"A positive adjustment with a reason appends a movement and the history shows who made it.","narration":"Sixth test case: the same dialog, used properly. A positive adjustment with a reason appends one row to an append-only ledger with the actor and the reason attached. The history below the form is that ledger, read back.","error":null,"startMs":254198,"endMs":271628,"durationMs":17430},{"id":"bulk","scene":11,"title":"Test case: bulk edits leave stock alone","subtitle":"The action list has no stock entry","caption":"Category, tags, brand and active state go in bulk. Stock is not offered, by design.","narration":"Seventh test case. A page of products can be refiled, retagged, rebranded or switched off in one action, and the whole point of this screen is what is missing from the list: there is no stock action. Stock keeps its atomic, single-product path with the row version guard. Nothing is written until the review dialog is confirmed, and this take cancels it.","error":null,"startMs":271629,"endMs":299458,"durationMs":27829},{"id":"category-cycle","scene":12,"title":"Test case: a category cannot move under itself","subtitle":"Refused by the service, not the widget","caption":"Moving a branch under one of its own descendants is refused, and the tree stays exactly as it was.","narration":"Eighth test case, as staff. The category manager moves branches by picking a new parent. Choosing one of the branch’s own descendants would create a cycle in the tree, and the service refuses it with the sentence on screen. Nothing changed: the branch is still where it was.","error":null,"startMs":299458,"endMs":324995,"durationMs":25537},{"id":"sales","scene":13,"title":"Sales summary and the staff queue","subtitle":"Read-only reporting, guarded transitions","caption":"Reporting is a read over every order; the queue moves an order one step with a conditional update.","narration":"Ninth test case is about the boundary between roles. The sales summary is read-only reporting over every order, with cancelled and rejected orders counted but bringing in no revenue. Staff can move an order from pending to confirmed or rejected, and that transition is a conditional update, so two people pressing the same button at once cannot both change the outcome.","error":null,"startMs":324996,"endMs":351866,"durationMs":26870},{"id":"admin","scene":14,"title":"Administration: roles, audit and the one setting","subtitle":"Separation of duties","caption":"Roles are assigned here, every change is in the audit log, and one business number is editable.","narration":"Tenth test case, as administrator. Staff logins are created here and roles are changed here, and the change takes effect on the next request the user makes. The audit log is the record the concurrency design writes as it goes. One business number is editable, the low stock threshold, and it is stored in the database rather than a config file. Administrators are read-only on orders and inventory, so nobody can both sell and quietly restock.","error":null,"startMs":351866,"endMs":384956,"durationMs":33090},{"id":"closing","scene":15,"title":"Ten rules, shown running","subtitle":"Tests, screens and the same database","caption":"Every refusal, cap and ledger row in this take is asserted by the suite and visible here.","narration":"That is the workflow end to end: catalogue, cart, conflict, order, account, stock, bulk edit, categories, sales and administration. Every rule shown here is asserted by an automated test, and every screen is documented with the same picture in the user manual.","error":null,"startMs":384957,"endMs":403906,"durationMs":18949}]}</script>
+<script>
+var m = JSON.parse(document.getElementById("manifest").textContent);
+var film = document.getElementById("film"), voice = document.getElementById("voice");
+var play = document.getElementById("play"), mute = document.getElementById("mute");
+var clock = document.getElementById("clock"), seek = document.getElementById("seek");
+var now = document.getElementById("now"), chapters = document.getElementById("chapters");
+var script = document.getElementById("script");
+var voiceBroken = false, shown = 0;
+function at(ms) { var s = Math.round(ms / 1000); return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2); }
+function broken() { voiceBroken = true; mute.disabled = true; mute.textContent = "Voice not cut yet"; }
+function label(ms) {
+  var scene = m.scenes[0];
+  for (var i = 0; i < m.scenes.length; i++) { if (ms >= m.scenes[i].startMs) scene = m.scenes[i]; }
+  if (scene.scene === shown) return;
+  shown = scene.scene;
+  now.textContent = "Scene " + scene.scene + " of " + m.scenes.length + " · " + scene.title + " — " +
+    (scene.error ? "blocked: " + scene.error : scene.caption);
+}
+m.scenes.forEach(function (scene) {
+  var li = document.createElement("li");
+  if (scene.error) li.className = "error";
+  var n = document.createElement("b"); n.textContent = String(scene.scene);
+  var body = document.createElement("div");
+  var t = document.createElement("strong"); t.textContent = scene.title;
+  var c = document.createElement("p"); c.textContent = scene.error ? ("Blocked: " + scene.error) : scene.caption;
+  body.append(t, c);
+  var right = document.createElement("div");
+  var when = document.createElement("span"); when.className = "when"; when.textContent = at(scene.durationMs);
+  var go = document.createElement("button"); go.textContent = "Play";
+  go.onclick = function () { jump(scene.startMs + 250); start(); };
+  right.append(when, document.createTextNode(" "), go);
+  li.append(n, body, right); chapters.append(li);
+  var line = document.createElement("div");
+  var lt = document.createElement("strong"); lt.textContent = scene.scene + ". " + scene.title;
+  var ln = document.createElement("p"); ln.textContent = scene.narration;
+  line.append(lt, ln); script.append(line);
+});
+function jump(ms) { try { film.currentTime = ms / 1000; voice.currentTime = ms / 1000; } catch (e) { /* not readable yet */ } }
+function start() { film.play(); if (!voiceBroken) voice.play().catch(broken); }
+function toggle() { if (film.paused) { start(); play.textContent = "Pause"; } else { film.pause(); voice.pause(); play.textContent = "Play"; } }
+play.onclick = toggle;
+film.onclick = toggle;
+film.onplay = function () { if (!voiceBroken && voice.paused) voice.play().catch(broken); };
+film.onpause = function () { voice.pause(); play.textContent = "Play"; };
+film.onseeked = function () { if (Math.abs(film.currentTime - voice.currentTime) > 0.34) jump(film.currentTime * 1000); };
+film.ontimeupdate = function () {
+  var ms = film.currentTime * 1000;
+  seek.value = String(Math.round(Math.min(ms, m.totalMs)));
+  clock.textContent = at(ms) + " / " + at(m.totalMs);
+  label(ms);
+  if (!film.paused && !voice.paused && Math.abs(film.currentTime - voice.currentTime) > 0.34) voice.currentTime = film.currentTime;
+};
+seek.oninput = function () { jump(Number(seek.value)); label(Number(seek.value)); };
+mute.onclick = function () { voice.muted = !voice.muted; mute.textContent = voice.muted ? "Voice off" : "Voice on"; };
+voice.onerror = broken;
+label(0);
+</script>
+</body>
+</html>

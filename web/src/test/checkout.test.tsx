@@ -7,7 +7,7 @@ import { server } from './server';
 import { renderApp, seedSession } from './utils';
 
 /** Signs in a customer and adds the Espresso Machine (id 1, stock 12) to the cart. */
-async function customerWithCart() {
+async function customerWithCart(units = 1) {
   seedSession('Customer');
 
   server.use(http.get(`${API}/api/auth/me`, () => HttpResponse.json(customerUser)));
@@ -16,6 +16,8 @@ async function customerWithCart() {
   renderApp('/products');
 
   const card = await screen.findByTestId('product-1');
+  const increase = within(card).getByRole('button', { name: /increase quantity/i });
+  for (let added = 1; added < units; added += 1) await user.click(increase);
   await user.click(within(card).getByRole('button', { name: /add to cart/i }));
 
   await user.click(within(screen.getByRole('group', { name: 'Cart, notifications and account' })).getByRole('button', { name: /^Cart,/ }));
@@ -87,6 +89,74 @@ describe('Checkout', () => {
 
     // ...and the stock badge is refreshed from the server.
     await waitFor(() => expect(productFetchesAfterFailure).toBeGreaterThan(0));
+  });
+
+  it('takes the corrected retry on the next click, not whenever the stock re-check gets round to it', async () => {
+    // The shelf holds two units and the cart was built for three.
+    const user = await customerWithCart(3);
+    const submissions: number[] = [];
+
+    server.use(
+      http.post(`${API}/api/orders`, async ({ request }) => {
+        const body = (await request.json()) as { items: { productId: number; quantity: number }[] };
+        submissions.push(body.items[0]!.quantity);
+        return body.items[0]!.quantity > 2
+          ? HttpResponse.json(
+              problem(409, 'insufficient_stock', 'Insufficient stock.', 'One or more items do not have enough stock available.', {
+                shortItems: [{ productId: 1, sku: 'NC-1001', name: 'Espresso Machine Pro', requested: 3, available: 2 }]
+              }),
+              { status: 409 }
+            )
+          : HttpResponse.json(order, { status: 201 });
+      }),
+      // Held open on purpose: while this request was pending, the panel used to swallow the next click
+      // on Place order without a word.
+      http.get(`${API}/api/products/:id`, async () => {
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        return HttpResponse.json({
+          id: 1, sku: 'NC-1001', name: 'Espresso Machine Pro', price: 249, stockQuantity: 2, isActive: true, rowVersion: null
+        });
+      })
+    );
+
+    await user.click(screen.getByTestId('place-order'));
+    expect(await screen.findByTestId('short-items')).toHaveTextContent(/requested 3 · available 2/);
+
+    await user.click(within(screen.getByTestId('cart-line-1')).getByRole('button', { name: /decrease quantity/i }));
+    await user.click(screen.getByTestId('place-order'));
+
+    await screen.findByRole('heading', { name: /order #500/i });
+    expect(submissions).toEqual([3, 2]);
+  });
+
+  it('keeps the shortage banner while the line is short and drops it once the line fits', async () => {
+    const user = await customerWithCart(3);
+    const line = () => screen.getByTestId('cart-line-1');
+
+    server.use(
+      http.post(`${API}/api/orders`, () =>
+        HttpResponse.json(
+          problem(409, 'insufficient_stock', 'Insufficient stock.', 'One or more items do not have enough stock available.', {
+            shortItems: [{ productId: 1, sku: 'NC-1001', name: 'Espresso Machine Pro', requested: 3, available: 2 }]
+          }),
+          { status: 409 }
+        )
+      ),
+      http.get(`${API}/api/products/:id`, () =>
+        HttpResponse.json({ id: 1, sku: 'NC-1001', name: 'Espresso Machine Pro', price: 249, stockQuantity: 2, isActive: true, rowVersion: null })
+      )
+    );
+
+    await user.click(screen.getByTestId('place-order'));
+    expect(await screen.findByTestId('short-items')).toHaveTextContent(/requested 3 · available 2/);
+
+    await user.click(within(line()).getByRole('button', { name: /decrease quantity/i }));
+    await waitFor(() => expect(screen.queryByTestId('short-items')).not.toBeInTheDocument());
+    expect(screen.queryByTestId('cart-error')).not.toBeInTheDocument();
+    expect(line()).toHaveTextContent('2 available');
+
+    // The re-fetched figure now drives the cap: three cannot be asked for again.
+    expect(within(line()).getByRole('button', { name: /increase quantity/i })).toBeDisabled();
   });
 
   it('does not send a second request when the button is double clicked', async () => {
