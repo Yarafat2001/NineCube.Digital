@@ -107,6 +107,28 @@ reports — superseding the 92 + 15 = 107 arithmetic in Round 6 Problem 4.
 - Nothing on the product side changed: the category, brand, tag, stock and URL-state rules are
   untouched, and the capture writes nothing — it opens dialogs and presses Escape.
 
+## Packaging the repository found two credential literals
+
+The documentation promised "no credential is committed" (README, `appsettings.Sample.json`, and
+`build_deck.py`'s demo-login slide all say the seed password comes from `NINECUBE_SEED_PASSWORD`), and
+the appsettings files keep that promise with `__SET_VIA_ENV__`. Two launcher files did not:
+`.run-api.sh:12` defaulted `NINECUBE_SEED_PASSWORD` to a literal, and
+`src/NineCube.Api/Properties/launchSettings.json:11` carried the same value in plain JSON. Both were
+the only places the live seed password existed outside `.env`, which is ignored.
+
+The fallback in `.run-api.sh` became `: "${NINECUBE_SEED_PASSWORD:?…}"`, so the script stops with a
+named reason instead of silently seeding with a published password; the entry was dropped from
+`launchSettings.json`, which is the shape README already documents (export it, or source `.env`).
+`bash -n` and a JSON parse both pass on the edited files. The dev-only `Jwt__SigningKey` values were
+left alone: they are labelled as local-development keys, they sign nothing outside this machine, and
+removing them would break `dotnet run` for a reader who has not set the environment yet.
+
+`git init` and the first commit followed, staging 860 files: source, tests, the seed pipeline, the
+28 annotated screens and every report. `.gitignore` gained `__pycache__/` and the per-run
+`web/artifacts/*-results/` scratch directories; the `web/artifacts/*.log` files the reports cite by
+path stay tracked. `.env` is not in the commit, and no staged blob contains the seed password. Nothing
+was pushed.
+
 ---
 
 # Round 6 — the selected navigation state, button material, and the manual that documents it
