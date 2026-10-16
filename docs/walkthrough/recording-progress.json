@@ -1,0 +1,285 @@
+{
+  "plan": {
+    "target": {
+      "id": 190,
+      "sku": "BD-WALT-NEXG-N75-934916",
+      "name": "Walton NEXG N75",
+      "price": 14738,
+      "stockQuantity": 5,
+      "isActive": true,
+      "rowVersion": "AAAAAAAFR5k=",
+      "description": "Walton NEXG N75. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+      "imageUrl": "/products/sourced/190-248cf0a744d1.jpg",
+      "categories": [
+        {
+          "id": 7,
+          "name": "Smartphones",
+          "slug": "smartphones",
+          "isPrimary": true
+        }
+      ],
+      "tags": [
+        "Brand: Walton",
+        "Budget",
+        "Local Brand"
+      ],
+      "currency": "BDT",
+      "slug": "walton-nexg-n75",
+      "needsReview": true,
+      "sourceName": "Walton official catalogue",
+      "sourceUrl": "https://waltonbd.com/mobile/smart-phone/nexg-n75",
+      "priceBasis": "Official listed BDT price; variant and tax conditions apply",
+      "priceVerifiedAt": "2026-10-14T14:20:29.324Z",
+      "brandId": 47,
+      "brandName": "Walton",
+      "brandSlug": "walton",
+      "productLineId": 205,
+      "productLineName": "NEXG N75",
+      "productLineSlug": "nexg-n75",
+      "images": [
+        {
+          "id": 85,
+          "url": "/products/sourced/190-248cf0a744d1.jpg",
+          "isPrimary": true,
+          "altText": "Walton NEXG N75"
+        }
+      ]
+    },
+    "branchLabel": "Home",
+    "descendantName": "Kitchen",
+    "registrationEmail": "walkthrough-1792145130479@ninecube.demo",
+    "competingOrderId": 44,
+    "orderId": 45,
+    "orderQuantity": 4
+  },
+  "scenes": [
+    {
+      "id": "opening",
+      "scene": 1,
+      "title": "NineCube.Digital",
+      "subtitle": "Order processing for a Bangladeshi marketplace",
+      "caption": "Everything in this take is the live application against a live database. No slide, no mock-up.",
+      "narration": "This is NineCube Digital, an order processing system for a Bangladeshi marketplace. What you are about to see is the running application against the running database, and every rule shown here is a rule the test suite asserts.",
+      "error": null,
+      "startMs": 3062,
+      "endMs": 22293,
+      "durationMs": 19231
+    },
+    {
+      "id": "registration",
+      "scene": 2,
+      "title": "Registration and password privacy",
+      "subtitle": "Valid and invalid inputs, on the live screen",
+      "caption": "Invalid details are refused. Valid registration creates only a customer account.",
+      "narration": "Registration first demonstrates the eye button with a sample password. Invalid email and password details are refused by the server. Correcting those details creates a new customer account. The role cannot be chosen by the visitor. We then return to the demonstration customer for the order workflow.",
+      "error": null,
+      "startMs": 22341,
+      "endMs": 48408,
+      "durationMs": 26067
+    },
+    {
+      "id": "sign-in",
+      "scene": 3,
+      "title": "Signing in",
+      "subtitle": "Live stock is commercial data",
+      "caption": "The catalogue needs an account, because availability is business information.",
+      "narration": "A visitor lands on the showcase. The catalogue itself needs an account, because live stock is treated as commercial information. Signing in issues a bearer token that is held in memory for the tab and mirrored into session storage, so a refresh does not sign you out.",
+      "error": null,
+      "startMs": 48413,
+      "endMs": 70987,
+      "durationMs": 22574
+    },
+    {
+      "id": "catalogue",
+      "scene": 4,
+      "title": "The catalogue",
+      "subtitle": "Server-side truth, URL-side state",
+      "caption": "Filters live in the address bar, so any view can be linked, reloaded or shared.",
+      "narration": "This is the catalogue. Filters are held in the address bar rather than in component state, so any view can be reloaded or shared. Each card carries the quantity the server reported, and the badge spells the state out rather than relying on colour.",
+      "error": null,
+      "startMs": 71117,
+      "endMs": 129794,
+      "durationMs": 58677
+    },
+    {
+      "id": "laptops",
+      "scene": 5,
+      "title": "Laptop configurations and image galleries",
+      "subtitle": "Real brands, concise SKUs, matching photographs",
+      "caption": "Configuration and brand filters are shareable, and each sourced laptop has a photo gallery.",
+      "narration": "The laptop category contains several manufacturers and configurations, with concise unique product codes. Choose a brand to narrow the catalogue, then open a laptop and switch between its photographs. New laptop records have no warehouse stock until Inventory receives them, so their availability is shown honestly.",
+      "error": null,
+      "startMs": 129798,
+      "endMs": 193505,
+      "durationMs": 63707
+    },
+    {
+      "id": "stepper-cap",
+      "scene": 6,
+      "title": "Test case: the stepper cannot outrun stock",
+      "subtitle": "Rule asserted in the suite",
+      "caption": "The plus button switches itself off at the quantity actually on the shelf.",
+      "narration": "First test case. The card offers exactly the units currently in stock. The stepper caps at the live figure by disabling the increase control, so an over-order cannot be built in the interface at all. This is the same rule the frontend suite asserts.",
+      "error": null,
+      "startMs": 193508,
+      "endMs": 216142,
+      "durationMs": 22634
+    },
+    {
+      "id": "conflict",
+      "scene": 7,
+      "title": "Test case: stock moved while the cart waited",
+      "subtitle": "The 409 that names the line",
+      "caption": "The server refuses the order and the panel says which item, by name and SKU.",
+      "narration": "Second test case, and the interesting one. The cart holds the whole remaining stock. While it sat there, another order took one unit. The server answers with a conflict that names the short line, the panel keeps the cart so it can be fixed, and the stock figure is refetched from the server rather than guessed.",
+      "error": null,
+      "startMs": 216147,
+      "endMs": 242707,
+      "durationMs": 26560
+    },
+    {
+      "id": "place-order",
+      "scene": 8,
+      "title": "Test case: order placed, stock reserved",
+      "subtitle": "One transaction, one promise",
+      "caption": "Reduce to what exists, place the order, and the stock is reserved in the same transaction.",
+      "narration": "Third test case: the recovery. The line is reduced to the quantity that really exists and the order goes through. Placement and reservation happen in one transaction, and the request carries an idempotency key, so a retry on a flaky network returns the original order instead of a second one.",
+      "error": null,
+      "startMs": 242773,
+      "endMs": 267425,
+      "durationMs": 24652
+    },
+    {
+      "id": "order-detail",
+      "scene": 9,
+      "title": "The order and its timeline",
+      "subtitle": "Snapshot prices, not live ones",
+      "caption": "The lines record the price the server charged at that moment, so a later price change rewrites no history.",
+      "narration": "The order page shows where the order is. The timeline is the state machine made visible: pending, confirmed, shipped, with rejected and cancelled as terminals. The lines snapshot the name and the unit price from the moment of purchase, so a price change next week changes no history. The invoice is the same order on one printable page.",
+      "error": null,
+      "startMs": 267432,
+      "endMs": 295454,
+      "durationMs": 28022
+    },
+    {
+      "id": "account",
+      "scene": 10,
+      "title": "Dashboard and notifications",
+      "subtitle": "Both roles get told",
+      "caption": "The customer sees their own totals; staff get a notification for the same event.",
+      "narration": "Fourth test case, on the customer side: the dashboard counts only your own orders, and the notification inbox recorded the placement. Notifications are per user and per event, so the same order tells the buyer it was received and tells the sales desk it arrived.",
+      "error": null,
+      "startMs": 295457,
+      "endMs": 318114,
+      "durationMs": 22657
+    },
+    {
+      "id": "adjust-refused",
+      "scene": 11,
+      "title": "Test case: stock cannot go below zero",
+      "subtitle": "The database refuses, not the form",
+      "caption": "A signed adjustment that would leave the product short is refused by the server.",
+      "narration": "Fifth test case, now as the inventory manager. Stock is corrected with a signed adjustment and a mandatory reason. An adjustment that would take the product below zero is refused by the server, and the constraint that refuses it sits in the database, so it holds no matter which client asks.",
+      "error": null,
+      "startMs": 318122,
+      "endMs": 390857,
+      "durationMs": 72735
+    },
+    {
+      "id": "ledger",
+      "scene": 12,
+      "title": "Test case: a real receipt lands in the ledger",
+      "subtitle": "Append-only, with a name against it",
+      "caption": "A positive adjustment with a reason appends a movement and the history shows who made it.",
+      "narration": "Sixth test case: the same dialog, used properly. A positive adjustment with a reason appends one row to an append-only ledger with the actor and the reason attached. The history below the form is that ledger, read back.",
+      "error": null,
+      "startMs": 391147,
+      "endMs": 420042,
+      "durationMs": 28895
+    },
+    {
+      "id": "bulk",
+      "scene": 13,
+      "title": "Test case: bulk edits leave stock alone",
+      "subtitle": "The action list has no stock entry",
+      "caption": "Category, tags, brand and active state go in bulk. Stock is not offered, by design.",
+      "narration": "Seventh test case. A page of products can be refiled, retagged, rebranded or switched off in one action, and the whole point of this screen is what is missing from the list: there is no stock action. Stock keeps its atomic, single-product path with the row version guard. Nothing is written until the review dialog is confirmed, and this take cancels it.",
+      "error": null,
+      "startMs": 420043,
+      "endMs": 450040,
+      "durationMs": 29997
+    },
+    {
+      "id": "category-cycle",
+      "scene": 14,
+      "title": "Test case: a category cannot move under itself",
+      "subtitle": "Refused by the service, not the widget",
+      "caption": "Moving a branch under one of its own descendants is refused, and the tree stays exactly as it was.",
+      "narration": "Eighth test case, as staff. The category manager moves branches by picking a new parent. Choosing one of the branch’s own descendants would create a cycle in the tree, and the service refuses it with the sentence on screen. Nothing changed: the branch is still where it was.",
+      "error": null,
+      "startMs": 450042,
+      "endMs": 475346,
+      "durationMs": 25304
+    },
+    {
+      "id": "sales",
+      "scene": 15,
+      "title": "Sales summary and the staff queue",
+      "subtitle": "Read-only reporting, guarded transitions",
+      "caption": "Reporting is a read over every order; the queue moves an order one step with a conditional update.",
+      "narration": "Ninth test case is about the boundary between roles. The sales summary is read-only reporting over every order, with cancelled and rejected orders counted but bringing in no revenue. Staff can move an order from pending to confirmed or rejected, and that transition is a conditional update, so two people pressing the same button at once cannot both change the outcome.",
+      "error": null,
+      "startMs": 475348,
+      "endMs": 504352,
+      "durationMs": 29004
+    },
+    {
+      "id": "fulfilment",
+      "scene": 16,
+      "title": "Bulk confirmation and shipping",
+      "subtitle": "Separate queues, one consistent invoice action",
+      "caption": "Only the two walkthrough orders are selected. Each transition is confirmed by the real API.",
+      "narration": "Staff now fulfil the two demonstration orders. In the pending queue, select their checkboxes and review a bulk confirmation. Confirmed orders then move to the shipping queue, where the same selection process marks them shipped. Each order is checked by the server, and the screen reports the actual results.",
+      "error": null,
+      "startMs": 504354,
+      "endMs": 536311,
+      "durationMs": 31957
+    },
+    {
+      "id": "invoice",
+      "scene": 17,
+      "title": "Invoice and customer shipment timeline",
+      "subtitle": "Read-only documents, completed workflow",
+      "caption": "An invoice is a document, not another order state. The customer sees the shipped result.",
+      "narration": "The invoice can be opened from any order state. It shows the recorded items, quantities and snapshot prices, and does not change the order. Returning to the customer account shows that this same order is now shipped. This completes the purchase, fulfilment and reporting journey using the actual saved order.",
+      "error": null,
+      "startMs": 536314,
+      "endMs": 562264,
+      "durationMs": 25950
+    },
+    {
+      "id": "admin",
+      "scene": 18,
+      "title": "Administration: roles, audit and the one setting",
+      "subtitle": "Separation of duties",
+      "caption": "Roles are assigned here, every change is in the audit log, and one business number is editable.",
+      "narration": "Tenth test case, as administrator. Staff logins are created here and roles are changed here, and the change takes effect on the next request the user makes. The audit log is the record the concurrency design writes as it goes. One business number is editable, the low stock threshold, and it is stored in the database rather than a config file. Administrators are read-only on orders and inventory, so nobody can both sell and quietly restock.",
+      "error": null,
+      "startMs": 562275,
+      "endMs": 598605,
+      "durationMs": 36330
+    },
+    {
+      "id": "closing",
+      "scene": 19,
+      "title": "The whole workflow, shown running",
+      "subtitle": "Tests, screens and the same database",
+      "caption": "Every refusal, cap and ledger row in this take is asserted by the suite and visible here.",
+      "narration": "That is the workflow end to end: catalogue, cart, conflict, order, account, stock, bulk edit, categories, sales and administration. Every rule shown here is asserted by an automated test, and every screen is documented with the same picture in the user manual.",
+      "error": null,
+      "startMs": 598609,
+      "endMs": 624567,
+      "durationMs": 25958
+    }
+  ]
+}

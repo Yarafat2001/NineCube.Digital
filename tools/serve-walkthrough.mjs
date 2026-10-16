@@ -19,6 +19,8 @@ const TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.webm': 'video/webm',
+  '.mp4': 'video/mp4',
+  '.srt': 'application/x-subrip; charset=utf-8',
   '.wav': 'audio/wav',
   '.md': 'text/markdown; charset=utf-8'
 };

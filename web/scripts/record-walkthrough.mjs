@@ -19,7 +19,7 @@
 import { mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, createHash } from 'node:crypto';
 import { chromium } from '@playwright/test';
 import { player } from './walkthrough-player.mjs';
 
@@ -29,9 +29,13 @@ const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT_DIR = join(ROOT_DIR, 'docs', 'walkthrough');
 const VIDEO_DIR = join(OUT_DIR, 'video');
 const VIEWPORT = { width: 1440, height: 900 };
-const SCENE_COUNT = 15;
+const SCENE_COUNT = 19;
+const HASH_ROUTES = readFileSync(join(ROOT_DIR, 'web/src/main.tsx'), 'utf8').includes('<HashRouter>');
+const APP_BASE = HASH_ROUTES ? BASE + '/#' : BASE;
+const routePath = url => { const parsed = new URL(url); return HASH_ROUTES ? parsed.hash.slice(1).split('?')[0] : parsed.pathname; };
 
-const password = (process.env.NINECUBE_SEED_PASSWORD ?? '').replace(/^(['"])(.*)\1$/, '$2');
+const localEnv = readFileSync(join(ROOT_DIR, '.env'), 'utf8');
+const password = (process.env.NINECUBE_SEED_PASSWORD ?? localEnv.match(/^NINECUBE_SEED_PASSWORD\s*=\s*(.*)$/m)?.[1]?.trim() ?? '').replace(/^(['"])(.*)\1$/, '$2');
 if (!password) {
   console.error('NINECUBE_SEED_PASSWORD is not set; load it from the repository .env first.');
   process.exit(1);
@@ -52,8 +56,12 @@ for (const entry of readdirSync(VIDEO_DIR)) {
 }
 
 /** Words per second of the desktop narration voice, used to pad a scene to its own commentary. */
-const NARRATION_WPS = 2.4;
-const narrationMs = text => (text.trim().split(/\s+/).length / NARRATION_WPS) * 1000 + 900;
+const voiceTimings = JSON.parse(readFileSync(join(OUT_DIR, 'narration', 'timings.json'), 'utf8'));
+const narrationMs = (text, id) => {
+  const timing = voiceTimings[id];
+  if (!timing || timing.hash !== createHash('sha256').update(text).digest('hex')) throw new Error(`Prepare narration again for ${id}`);
+  return timing.durationMs + 3200;
+};
 
 // ------------------------------------------------------------------ api
 async function apiCall(method, path, token, body) {
@@ -123,8 +131,10 @@ const context = await browser.newContext({
   deviceScaleFactor: 1,
   recordVideo: { dir: VIDEO_DIR, size: VIEWPORT }
 });
+const captureStartedAt = Date.now();
 const page = await context.newPage();
-page.setDefaultTimeout(30_000);
+async function go(url, options) { await page.goto(url, options); if (HASH_ROUTES) await page.reload(options); }
+page.setDefaultTimeout(60_000);
 
 await context.addInitScript(() => {
   const install = () => {
@@ -248,7 +258,7 @@ await context.addInitScript(() => {
   install();
 });
 
-const startedAt = Date.now();
+const startedAt = captureStartedAt;
 const elapsed = () => Date.now() - startedAt;
 
 async function wc(fn, arg) {
@@ -259,7 +269,7 @@ async function wc(fn, arg) {
   }
 }
 
-const hold = ms => page.waitForTimeout(ms);
+const hold = ms => page.waitForTimeout(ms * 0.7);
 
 async function caption(title, text) {
   await wc(a => window.__wc.caption(a.title, a.text), { title, text });
@@ -337,18 +347,30 @@ async function awaitAvailable(line, expected, timeoutMs = 20_000) {
   throw new Error(`the cart line never reported ${expected} available (last read ${seen})`);
 }
 
-const toastTexts = () => page.locator('.toast').allTextContents().then(list => list.map(text => text.replace(/\s+/g, ' ').trim()));
+/** Toasts are read by their own kind class, because "Order #7 placed" and "Order not placed" are
+ *  opposites that share every keyword a text match would trip on. */
+const toasts = () => page.locator('.toast').evaluateAll(list => list.map(element => ({
+  kind: element.classList.contains('toast--error') ? 'error'
+    : element.classList.contains('toast--success') ? 'success' : 'info',
+  text: (element.textContent ?? '').replace(/\s+/g, ' ').trim()
+})));
+const toastKeys = list => list.map(toast => `${toast.kind}:${toast.text}`);
 
 /** Whichever lands first — the order URL or a refusal we have not already seen — decides the scene. */
-async function settle(page, beforeTexts, timeoutMs) {
+async function settle(page, beforeKeys, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
+  let announced = null;
   while (Date.now() < deadline) {
-    if (/\/orders\/\d+$/.test(new URL(page.url()).pathname)) return { kind: 'order' };
-    const fresh = (await toastTexts()).filter(text => !beforeTexts.includes(text) && text.length > 0);
-    if (fresh.length > 0) return { kind: 'error', text: fresh[0].slice(0, 200) };
+    if (/\/orders\/\d+$/.test(routePath(page.url()))) return { kind: 'order', announced };
+    const fresh = (await toasts()).filter(toast => toast.text.length > 0);
+    const refusal = fresh.find(toast => toast.kind === 'error' && !beforeKeys.includes(`${toast.kind}:${toast.text}`));
+    if (refusal) return { kind: 'error', text: refusal.text.slice(0, 200) };
+    // The panel raises the success toast a beat before it navigates, so a success announcement is a
+    // reason to keep watching for the order page, not a reason to give up on it.
+    announced = fresh.find(toast => toast.kind === 'success')?.text ?? announced;
     await hold(250);
   }
-  return { kind: 'timeout' };
+  return { kind: 'timeout', announced };
 }
 
 /** The narration of a scene also sets how long the picture dwells on it. */
@@ -373,8 +395,8 @@ async function scene(id, title, subtitle, captionText, narration, body) {
     await hold(2400);
   }
   const spent = elapsed() - started;
-  const need = narrationMs(narration);
-  if (spent < need) await hold(need - spent);
+  const need = narrationMs(narration, id);
+  if (spent < need) await page.waitForTimeout(need - spent);
   await wc(() => window.__wc.clear());
   await caption(title, captionText);
   await wc(a => window.__wc.progress(a.ratio), { ratio: sceneNumber / SCENE_COUNT });
@@ -391,6 +413,8 @@ async function scene(id, title, subtitle, captionText, narration, body) {
     endMs: elapsed(),
     durationMs: elapsed() - started
   });
+  writeFileSync(join(OUT_DIR, 'recording-progress.json'), JSON.stringify({plan,scenes}, null, 2));
+  if (failure) console.error(`FAILED ${id}: ${failure}`);
   console.log(`   ${String(sceneNumber).padStart(2, '0')} ${id}  ${((elapsed() - started) / 1000).toFixed(1)}s`);
 }
 
@@ -407,7 +431,7 @@ async function setSession(session) {
   await page.evaluate(stored => sessionStorage.setItem('ninecube.auth.session', JSON.stringify(stored)), session);
 }
 
-await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
+await go(`${APP_BASE}/`, { waitUntil: 'domcontentloaded' });
 await hold(1400);
 
 await scene(
@@ -422,6 +446,42 @@ await scene(
     await show(page.locator('.theme-controls'), { press: false, dwell: 500 });
     await show(page.locator('.navbar a.btn--primary'), { press: false, dwell: 600 });
     await wc(() => window.__wc.ring(null));
+  }
+);
+
+await scene(
+  'registration', 'Registration and password privacy', 'Valid and invalid inputs, on the live screen',
+  'Invalid details are refused. Valid registration creates only a customer account.',
+  'Registration first demonstrates the eye button with a sample password. Invalid email and password details are refused by the server. Correcting those details creates a new customer account. The role cannot be chosen by the visitor. We then return to the demonstration customer for the order workflow.',
+  async () => {
+    await go(`${APP_BASE}/register`, { waitUntil: 'domcontentloaded' });
+    await page.locator('#register-name').fill('Walkthrough Customer');
+    await page.locator('#register-email').fill('invalid-email');
+    await page.locator('#register-password').fill('Demo-visibility-123');
+    await click(page.getByRole('button', {name:'Show password', exact:true}));
+    await hold(900);
+    await click(page.getByRole('button', {name:'Hide password', exact:true}));
+    await page.locator('#register-password').fill('bad');
+    const invalid = page.waitForResponse(r => r.url().endsWith('/api/auth/register') && r.request().method()==='POST');
+    await click(page.getByRole('button', {name:'Create account', exact:true}));
+    if ((await invalid).status() !== 400) throw new Error('Invalid registration was not refused');
+    await page.locator('[role="alert"]').waitFor();
+    await show(page.locator('[role="alert"]'),{press:false,dwell:1400});
+    const email=`walkthrough-${Date.now()}@ninecube.demo`;
+    await page.locator('#register-email').fill(email);
+    await page.locator('#register-password').fill('Walkthrough-Demo-2026!');
+    const valid=page.waitForResponse(r => r.url().endsWith('/api/auth/register') && r.request().method()==='POST');
+    await click(page.getByRole('button', {name:'Create account', exact:true}));
+    const response=await valid;
+    if(!response.ok())throw new Error(`Valid registration returned ${response.status()}`);
+    const registered=await response.json();
+    if(registered.user.role!=='Customer')throw new Error('Registration did not produce a Customer');
+    plan.registrationEmail=email;
+    await page.getByRole('button',{name:'Account',exact:true}).waitFor();
+    await caption('Registration passed','The account was created as Customer. No staff or administrator role was requested.');
+    await hold(1200);
+    await page.evaluate(()=>sessionStorage.removeItem('ninecube.auth.session'));
+    await go(`${APP_BASE}/`,{waitUntil:'domcontentloaded'});
   }
 );
 
@@ -453,7 +513,7 @@ await scene(
   'view can be reloaded or shared. Each card carries the quantity the server reported, and the badge ' +
   'spells the state out rather than relying on colour.',
   async () => {
-    await page.goto(`${BASE}/products?${new URLSearchParams({ q: target.sku }).toString()}`, { waitUntil: 'domcontentloaded' });
+    await go(`${APP_BASE}/products?${new URLSearchParams({ q: target.sku }).toString()}`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.product-card', { timeout: 60_000 });
     await hold(800);
     await caption('The catalogue', `Deep link: /products?q=${target.sku} — the search box and the result list agree with it.`);
@@ -467,9 +527,26 @@ await scene(
 );
 
 await scene(
+  'laptops', 'Laptop configurations and image galleries', 'Real brands, concise SKUs, matching photographs',
+  'Configuration and brand filters are shareable, and each sourced laptop has a photo gallery.',
+  'The laptop category contains several manufacturers and configurations, with concise unique product codes. Choose a brand to narrow the catalogue, then open a laptop and switch between its photographs. New laptop records have no warehouse stock until Inventory receives them, so their availability is shown honestly.',
+  async () => {
+    await go(`${APP_BASE}/products?category=laptops&brand=dell`,{waitUntil:'domcontentloaded'});
+    await page.locator('.product-card').first().waitFor({timeout:60000});
+    await show(page.locator('.product-card').first(),{press:false,dwell:1200});
+    await page.locator('.product-card__media-link').first().click();
+    await page.locator('.product-detail__thumbs button').nth(1).waitFor();
+    await click(page.locator('.product-detail__thumbs button').nth(1));
+    await show(page.locator('.product-detail__media'),{press:false,dwell:1200});
+    await go(`${APP_BASE}/products?${new URLSearchParams({q:target.sku})}`,{waitUntil:'domcontentloaded'});
+    await page.locator('.product-card').first().waitFor({timeout:60000});
+  }
+);
+
+await scene(
   'stepper-cap', 'Test case: the stepper cannot outrun stock', 'Rule asserted in the suite',
   'The plus button switches itself off at the quantity actually on the shelf.',
-  'First test case. The card is offering four units because four units exist. The stepper caps at the ' +
+  'First test case. The card offers exactly the units currently in stock. The stepper caps at the ' +
   'live figure by disabling the increase control, so an over-order cannot be built in the interface at ' +
   'all. This is the same rule the frontend suite asserts.',
   async () => {
@@ -546,21 +623,24 @@ await scene(
     await caption('The banner answers itself', 'The line now fits the server figure, so the shortage notice retires instead of staying to accuse a corrected cart.');
     await show(page.locator('[data-testid=cart-total]'), { press: false, dwell: 700 });
 
-    const beforeTexts = await toastTexts();
+    const beforeKeys = toastKeys(await toasts());
     const placeButton = page.locator('.sheet').getByRole('button', { name: 'Place order' });
     await show(placeButton, { press: true, dwell: 400 });
     await placeButton.click();
 
-    const outcome = await settle(page, beforeTexts, 45_000);
+    const outcome = await settle(page, beforeKeys, 45_000);
     if (outcome.kind !== 'order') {
       const sheet = (await page.locator('.sheet').textContent().catch(() => '')) ?? '';
+      const why = outcome.kind === 'error'
+        ? `the server refused the order: ${outcome.text}`
+        : `no order page within 45s${outcome.announced ? ` (the panel announced "${outcome.announced}")` : ''}`;
       throw new Error(
-        `${outcome.kind === 'error' ? `the server refused the order: ${outcome.text}` : 'no order and no refusal within 45s'} ` +
-          `| cart line quantity ${settled}, available ${wanted} | panel said: ${sheet.replace(/\s+/g, ' ').slice(0, 260)}`
+        `${why} | cart line quantity ${settled}, available ${wanted} ` +
+          `| panel said: ${sheet.replace(/\s+/g, ' ').slice(0, 260)}`
       );
     }
     await hold(1500);
-    plan.orderId = Number(new URL(page.url()).pathname.split('/').pop());
+    plan.orderId = Number(routePath(page.url()).split('/').pop());
     plan.orderQuantity = settled;
     await caption('Order placed', `Order #${plan.orderId} was created with ${settled} units and the stock was reserved in the same transaction.`);
   }
@@ -589,11 +669,11 @@ await scene(
   'notification inbox recorded the placement. Notifications are per user and per event, so the same ' +
   'order tells the buyer it was received and tells the sales desk it arrived.',
   async () => {
-    await page.goto(`${BASE}/account`, { waitUntil: 'domcontentloaded' });
+    await go(`${APP_BASE}/account`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('[data-testid="dashboard-stats"]', { timeout: 60_000 });
     await hold(700);
     await show(page.locator('[data-testid="dashboard-stats"]'), { press: false, dwell: 1100 });
-    await page.goto(`${BASE}/notifications`, { waitUntil: 'domcontentloaded' });
+    await go(`${APP_BASE}/notifications`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('main', { timeout: 60_000 });
     await hold(900);
     await show(page.locator('.notif-list--page .notif-item').first(), { press: false, dwell: 1200 });
@@ -608,16 +688,16 @@ await scene(
   'and the constraint that refuses it sits in the database, so it holds no matter which client asks.',
   async () => {
     await setSession(accounts.inventory);
-    await page.goto(`${BASE}/inventory`, { waitUntil: 'domcontentloaded' });
+    await go(`${APP_BASE}/inventory`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#inventory-search', { timeout: 60_000 });
     await hold(700);
     await type(page.locator('#inventory-search'), target.sku);
-    await page.waitForSelector('tbody tr', { timeout: 60_000 });
-    await hold(900);
-    const row = page.locator('tbody tr').first();
+    const row = page.locator('tbody tr').filter({ hasText: target.sku }).first();
+    await row.waitFor({state:'visible',timeout:60000});
+    await hold(400);
     await show(row, { press: false, dwell: 800 });
     await caption('Inventory manager', `${target.name} · ${target.sku} · stock as the server reports it.`);
-    await click(page.getByRole('button', { name: 'Adjust stock' }).first(), { dwell: 600 });
+    await click(row.getByRole('button', { name: 'Adjust stock', exact:true }), { dwell: 600 });
     await page.waitForSelector('#adjust-delta', { timeout: 30_000 });
     await hold(700);
     await type(page.locator('#adjust-delta'), String(-(target.stockQuantity + 1)));
@@ -627,7 +707,7 @@ await scene(
     await hold(600);
     await show(page.locator('.modal [role="alert"]').first(), { press: false, dwell: 1400 });
     const refusal = await page.locator('.modal [role="alert"]').first().textContent();
-    await caption('Test case passed', `A withdrawal of ${target.stockQuantity + 1} against ${target.stockQuantity} on the shelf was refused: ${refusal}`);
+    await caption('Test case passed', `The server refused a withdrawal of ${target.stockQuantity + 1}: ${refusal}`);
   }
 );
 
@@ -638,7 +718,7 @@ await scene(
   'row to an append-only ledger with the actor and the reason attached. The history below the form is ' +
   'that ledger, read back.',
   async () => {
-    await page.locator('#adjust-delta').fill('5');
+    await page.locator('#adjust-delta').fill(String(target.stockQuantity));
     await hold(200);
     await page.locator('#adjust-reason').fill('Walkthrough: goods received');
     await hold(300);
@@ -669,7 +749,7 @@ await scene(
   'until the review dialog is confirmed, and this take cancels it.',
   async () => {
     await type(page.locator('#inventory-search'), '', { pad: 6 });
-    await page.waitForSelector('tbody tr', { timeout: 60_000 });
+    await page.waitForFunction(()=>document.querySelectorAll('tbody tr').length>1,{},{timeout:60000});
     await hold(1200);
     await show(page.getByRole('checkbox', { name: /^Select all products on this page$/ }), { press: false });
     await page.getByRole('checkbox', { name: /^Select all products on this page$/ }).check();
@@ -705,7 +785,7 @@ await scene(
   'with the sentence on screen. Nothing changed: the branch is still where it was.',
   async () => {
     await setSession(accounts.staff);
-    await page.goto(`${BASE}/staff`, { waitUntil: 'domcontentloaded' });
+    await go(`${APP_BASE}/staff`, { waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'Categories & products', exact: true }).waitFor({ timeout: 60_000 });
     await click(page.getByRole('button', { name: 'Categories & products', exact: true }), { dwell: 600 });
     await page.waitForSelector('.category-manager td .btn', { timeout: 60_000 });
@@ -740,17 +820,60 @@ await scene(
   'an order from pending to confirmed or rejected, and that transition is a conditional update, so ' +
   'two people pressing the same button at once cannot both change the outcome.',
   async () => {
-    await page.goto(`${BASE}/staff`, { waitUntil: 'domcontentloaded' });
+    await go(`${APP_BASE}/staff`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('tbody tr', { timeout: 60_000 });
     await hold(800);
     await show(page.locator('[aria-label="Order queues"]'), { press: false, dwell: 1000 });
     await show(page.locator('tbody tr').first(), { press: false, dwell: 900 });
-    await page.goto(`${BASE}/staff/sales`, { waitUntil: 'domcontentloaded' });
+    await go(`${APP_BASE}/staff/sales`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.stat-tile, table', { timeout: 60_000 });
     await hold(900);
     await show(page.locator('.stat-tile').first(), { press: false, dwell: 1100 });
     await show(page.locator('table').first(), { press: false, dwell: 900 });
     await caption('No writes on this screen', 'The figures are a read over the orders table, priced in BDT.');
+  }
+);
+
+await scene(
+  'fulfilment', 'Bulk confirmation and shipping', 'Separate queues, one consistent invoice action',
+  'Only the two walkthrough orders are selected. Each transition is confirmed by the real API.',
+  'Staff now fulfil the two demonstration orders. In the pending queue, select their checkboxes and review a bulk confirmation. Confirmed orders then move to the shipping queue, where the same selection process marks them shipped. Each order is checked by the server, and the screen reports the actual results.',
+  async () => {
+    await go(`${APP_BASE}/staff`,{waitUntil:'domcontentloaded'});
+    for (const queue of ['To confirm','To ship']) {
+      await page.getByRole('button',{name:queue,exact:true}).click();
+      for (const id of [plan.orderId,plan.competingOrderId]) {
+        const box=page.getByRole('checkbox',{name:`Select order #${id}`,exact:true});
+        await box.waitFor({timeout:60000});await box.check();
+      }
+      await click(page.getByRole('button',{name:'Review bulk update',exact:true}));
+      await show(page.locator('[role="dialog"]'),{press:false,dwell:1000});
+      await click(page.getByRole('button',{name:'Apply bulk update',exact:true}));
+      await page.locator('[role="dialog"]').waitFor({state:'hidden',timeout:60000});
+      await page.getByText('2 updated; 0 failed.',{exact:true}).waitFor({timeout:60000});
+      await show(page.locator('[aria-label="Bulk order results"]'),{press:false,dwell:1400});
+      const status=queue==='To confirm'?'Confirmed':'Shipped';
+      for(const id of [plan.orderId,plan.competingOrderId]) {
+        const state=await apiCall('GET',`/api/orders/${id}`,accounts.staff.accessToken);
+        if(state.status!==200 || state.json.status!==status)throw new Error(`Order ${id} did not become ${status}`);
+      }
+    }
+  }
+);
+
+await scene(
+  'invoice', 'Invoice and customer shipment timeline', 'Read-only documents, completed workflow',
+  'An invoice is a document, not another order state. The customer sees the shipped result.',
+  'The invoice can be opened from any order state. It shows the recorded items, quantities and snapshot prices, and does not change the order. Returning to the customer account shows that this same order is now shipped. This completes the purchase, fulfilment and reporting journey using the actual saved order.',
+  async () => {
+    await go(`${APP_BASE}/orders/${plan.orderId}/invoice`,{waitUntil:'domcontentloaded'});
+    await page.locator('.invoice').waitFor({timeout:60000});
+    await show(page.locator('.invoice'),{press:false,dwell:1400});
+    await setSession(accounts.customer);
+    await go(`${APP_BASE}/orders/${plan.orderId}`,{waitUntil:'domcontentloaded'});
+    await page.locator('[aria-label="Order status timeline"]').waitFor({timeout:60000});
+    await show(page.locator('[aria-label="Order status timeline"]'),{press:false,dwell:1400});
+    await setSession(accounts.staff);
   }
 );
 
@@ -764,7 +887,7 @@ await scene(
   'and inventory, so nobody can both sell and quietly restock.',
   async () => {
     await setSession(accounts.admin);
-    await page.goto(`${BASE}/admin`, { waitUntil: 'domcontentloaded' });
+    await go(`${APP_BASE}/admin`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('tbody tr', { timeout: 60_000 });
     await hold(800);
     await show(page.locator('select').first(), { press: false, dwell: 900 });
@@ -807,7 +930,7 @@ const finalVideo = join(OUT_DIR, 'ninecube-walkthrough.webm');
 renameSync(recorded, finalVideo);
 await browser.close();
 
-const totalMs = scenes.reduce((sum, entry) => sum + entry.durationMs, 0);
+const totalMs = scenes.at(-1).endMs;
 const manifest = {
   generatedAt: new Date().toISOString(),
   base: BASE,
@@ -824,9 +947,9 @@ const manifest = {
 writeFileSync(join(OUT_DIR, 'scenes.json'), JSON.stringify(manifest, null, 2));
 
 // The recorder produces a silent picture (that is what the browser captures) and the voice is cut
-// against the same measured timeline by tools/narrate_walkthrough.py. Nothing on this machine can
-// mux the two into one file without ffmpeg, so this page plays them together and carries the script
-// as readable text: open it and press play, and the take runs with its narration.
+// against its absolute measured timeline by tools/narrate_walkthrough.py.
+// tools/export_walkthrough.py then packages H.264 picture, AAC voice, subtitles and chapters
+// in one standalone MP4. This page remains an optional player for the original source tracks.
 writeFileSync(join(OUT_DIR, 'index.html'), player(manifest));
 
 console.log(`\nrecording: ${(totalMs / 1000).toFixed(1)}s over ${scenes.length} scenes -> ${finalVideo}`);

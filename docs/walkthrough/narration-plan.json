@@ -1,0 +1,137 @@
+{
+  "scenes": [
+    {
+      "id": "opening",
+      "title": "NineCube.Digital",
+      "subtitle": "Order processing for a Bangladeshi marketplace",
+      "caption": "Everything in this take is the live application against a live database. No slide, no mock-up.",
+      "narration": "This is NineCube Digital, an order processing system for a Bangladeshi marketplace. What you are about to see is the running application against the running database, and every rule shown here is a rule the test suite asserts."
+    },
+    {
+      "id": "registration",
+      "title": "Registration and password privacy",
+      "subtitle": "Valid and invalid inputs, on the live screen",
+      "caption": "Invalid details are refused. Valid registration creates only a customer account.",
+      "narration": "Registration first demonstrates the eye button with a sample password. Invalid email and password details are refused by the server. Correcting those details creates a new customer account. The role cannot be chosen by the visitor. We then return to the demonstration customer for the order workflow."
+    },
+    {
+      "id": "sign-in",
+      "title": "Signing in",
+      "subtitle": "Live stock is commercial data",
+      "caption": "The catalogue needs an account, because availability is business information.",
+      "narration": "A visitor lands on the showcase. The catalogue itself needs an account, because live stock is treated as commercial information. Signing in issues a bearer token that is held in memory for the tab and mirrored into session storage, so a refresh does not sign you out."
+    },
+    {
+      "id": "catalogue",
+      "title": "The catalogue",
+      "subtitle": "Server-side truth, URL-side state",
+      "caption": "Filters live in the address bar, so any view can be linked, reloaded or shared.",
+      "narration": "This is the catalogue. Filters are held in the address bar rather than in component state, so any view can be reloaded or shared. Each card carries the quantity the server reported, and the badge spells the state out rather than relying on colour."
+    },
+    {
+      "id": "laptops",
+      "title": "Laptop configurations and image galleries",
+      "subtitle": "Real brands, concise SKUs, matching photographs",
+      "caption": "Configuration and brand filters are shareable, and each sourced laptop has a photo gallery.",
+      "narration": "The laptop category contains several manufacturers and configurations, with concise unique product codes. Choose a brand to narrow the catalogue, then open a laptop and switch between its photographs. New laptop records have no warehouse stock until Inventory receives them, so their availability is shown honestly."
+    },
+    {
+      "id": "stepper-cap",
+      "title": "Test case: the stepper cannot outrun stock",
+      "subtitle": "Rule asserted in the suite",
+      "caption": "The plus button switches itself off at the quantity actually on the shelf.",
+      "narration": "First test case. The card offers exactly the units currently in stock. The stepper caps at the live figure by disabling the increase control, so an over-order cannot be built in the interface at all. This is the same rule the frontend suite asserts."
+    },
+    {
+      "id": "conflict",
+      "title": "Test case: stock moved while the cart waited",
+      "subtitle": "The 409 that names the line",
+      "caption": "The server refuses the order and the panel says which item, by name and SKU.",
+      "narration": "Second test case, and the interesting one. The cart holds the whole remaining stock. While it sat there, another order took one unit. The server answers with a conflict that names the short line, the panel keeps the cart so it can be fixed, and the stock figure is refetched from the server rather than guessed."
+    },
+    {
+      "id": "place-order",
+      "title": "Test case: order placed, stock reserved",
+      "subtitle": "One transaction, one promise",
+      "caption": "Reduce to what exists, place the order, and the stock is reserved in the same transaction.",
+      "narration": "Third test case: the recovery. The line is reduced to the quantity that really exists and the order goes through. Placement and reservation happen in one transaction, and the request carries an idempotency key, so a retry on a flaky network returns the original order instead of a second one."
+    },
+    {
+      "id": "order-detail",
+      "title": "The order and its timeline",
+      "subtitle": "Snapshot prices, not live ones",
+      "caption": "The lines record the price the server charged at that moment, so a later price change rewrites no history.",
+      "narration": "The order page shows where the order is. The timeline is the state machine made visible: pending, confirmed, shipped, with rejected and cancelled as terminals. The lines snapshot the name and the unit price from the moment of purchase, so a price change next week changes no history. The invoice is the same order on one printable page."
+    },
+    {
+      "id": "account",
+      "title": "Dashboard and notifications",
+      "subtitle": "Both roles get told",
+      "caption": "The customer sees their own totals; staff get a notification for the same event.",
+      "narration": "Fourth test case, on the customer side: the dashboard counts only your own orders, and the notification inbox recorded the placement. Notifications are per user and per event, so the same order tells the buyer it was received and tells the sales desk it arrived."
+    },
+    {
+      "id": "adjust-refused",
+      "title": "Test case: stock cannot go below zero",
+      "subtitle": "The database refuses, not the form",
+      "caption": "A signed adjustment that would leave the product short is refused by the server.",
+      "narration": "Fifth test case, now as the inventory manager. Stock is corrected with a signed adjustment and a mandatory reason. An adjustment that would take the product below zero is refused by the server, and the constraint that refuses it sits in the database, so it holds no matter which client asks."
+    },
+    {
+      "id": "ledger",
+      "title": "Test case: a real receipt lands in the ledger",
+      "subtitle": "Append-only, with a name against it",
+      "caption": "A positive adjustment with a reason appends a movement and the history shows who made it.",
+      "narration": "Sixth test case: the same dialog, used properly. A positive adjustment with a reason appends one row to an append-only ledger with the actor and the reason attached. The history below the form is that ledger, read back."
+    },
+    {
+      "id": "bulk",
+      "title": "Test case: bulk edits leave stock alone",
+      "subtitle": "The action list has no stock entry",
+      "caption": "Category, tags, brand and active state go in bulk. Stock is not offered, by design.",
+      "narration": "Seventh test case. A page of products can be refiled, retagged, rebranded or switched off in one action, and the whole point of this screen is what is missing from the list: there is no stock action. Stock keeps its atomic, single-product path with the row version guard. Nothing is written until the review dialog is confirmed, and this take cancels it."
+    },
+    {
+      "id": "category-cycle",
+      "title": "Test case: a category cannot move under itself",
+      "subtitle": "Refused by the service, not the widget",
+      "caption": "Moving a branch under one of its own descendants is refused, and the tree stays exactly as it was.",
+      "narration": "Eighth test case, as staff. The category manager moves branches by picking a new parent. Choosing one of the branch’s own descendants would create a cycle in the tree, and the service refuses it with the sentence on screen. Nothing changed: the branch is still where it was."
+    },
+    {
+      "id": "sales",
+      "title": "Sales summary and the staff queue",
+      "subtitle": "Read-only reporting, guarded transitions",
+      "caption": "Reporting is a read over every order; the queue moves an order one step with a conditional update.",
+      "narration": "Ninth test case is about the boundary between roles. The sales summary is read-only reporting over every order, with cancelled and rejected orders counted but bringing in no revenue. Staff can move an order from pending to confirmed or rejected, and that transition is a conditional update, so two people pressing the same button at once cannot both change the outcome."
+    },
+    {
+      "id": "fulfilment",
+      "title": "Bulk confirmation and shipping",
+      "subtitle": "Separate queues, one consistent invoice action",
+      "caption": "Only the two walkthrough orders are selected. Each transition is confirmed by the real API.",
+      "narration": "Staff now fulfil the two demonstration orders. In the pending queue, select their checkboxes and review a bulk confirmation. Confirmed orders then move to the shipping queue, where the same selection process marks them shipped. Each order is checked by the server, and the screen reports the actual results."
+    },
+    {
+      "id": "invoice",
+      "title": "Invoice and customer shipment timeline",
+      "subtitle": "Read-only documents, completed workflow",
+      "caption": "An invoice is a document, not another order state. The customer sees the shipped result.",
+      "narration": "The invoice can be opened from any order state. It shows the recorded items, quantities and snapshot prices, and does not change the order. Returning to the customer account shows that this same order is now shipped. This completes the purchase, fulfilment and reporting journey using the actual saved order."
+    },
+    {
+      "id": "admin",
+      "title": "Administration: roles, audit and the one setting",
+      "subtitle": "Separation of duties",
+      "caption": "Roles are assigned here, every change is in the audit log, and one business number is editable.",
+      "narration": "Tenth test case, as administrator. Staff logins are created here and roles are changed here, and the change takes effect on the next request the user makes. The audit log is the record the concurrency design writes as it goes. One business number is editable, the low stock threshold, and it is stored in the database rather than a config file. Administrators are read-only on orders and inventory, so nobody can both sell and quietly restock."
+    },
+    {
+      "id": "closing",
+      "title": "The whole workflow, shown running",
+      "subtitle": "Tests, screens and the same database",
+      "caption": "Every refusal, cap and ledger row in this take is asserted by the suite and visible here.",
+      "narration": "That is the workflow end to end: catalogue, cart, conflict, order, account, stock, bulk edit, categories, sales and administration. Every rule shown here is asserted by an automated test, and every screen is documented with the same picture in the user manual."
+    }
+  ]
+}

@@ -152,7 +152,10 @@ export function describeError(error: unknown): string {
 export function resolveAssetUrl(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
   if (/^(https?:)?\/\//i.test(url) || url.startsWith('data:')) return url;
-  return url.startsWith('/uploads/') ? `${API_BASE_URL}${url}` : url;
+  if (url.startsWith('/uploads/')) return `${API_BASE_URL}${url}`;
+  // App-owned static file: prefix the Vite base so it resolves under a subpath host (GitHub Pages).
+  if (url.startsWith('/')) return `${import.meta.env.BASE_URL}${url.slice(1)}`;
+  return url;
 }
 
 /** Multipart upload: the browser sets the boundary, so no JSON encoding happens here. */

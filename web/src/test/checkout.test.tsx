@@ -26,6 +26,25 @@ async function customerWithCart(units = 1) {
 }
 
 describe('Checkout', () => {
+  it('opens the committed order even while catalogue refreshes are waiting', async () => {
+    const user = await customerWithCart();
+    let release!: () => void;
+    const refresh = new Promise<void>(resolve => { release = resolve; });
+    server.use(
+      http.get(`${API}/api/products`, async () => {
+        await refresh;
+        return HttpResponse.json({ items: [], page: 1, pageSize: 8, totalCount: 0, totalPages: 0 });
+      }),
+      http.post(`${API}/api/orders`, () => HttpResponse.json(order, { status: 201 }))
+    );
+    try {
+      await user.click(screen.getByTestId('place-order'));
+      expect(await screen.findByRole('heading', { name: /order #500/i }, { timeout: 5000 })).toBeInTheDocument();
+    } finally {
+      release();
+    }
+  });
+
   it('places an order, shows the confirmation and clears the cart', async () => {
     const requests: Request[] = [];
 

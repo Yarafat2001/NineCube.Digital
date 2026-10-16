@@ -56,7 +56,7 @@ database that is dropped afterwards.
 The 42 tests below are the run recorded on 14 October, when the suite covered the brief's twelve items.
 The suite has grown with the feature — categories, brands and series, bulk product edits, product
 images and media, notifications, profile and dashboard, and the appearance contracts — and is
-**108 tests** now; §16a records the current run.
+**108 tests** now; §16a records the run and §17 confirms it again after the checkout fix.
 
 ### 2a. Docker / Testcontainers mode (the default)
 
@@ -109,7 +109,7 @@ would assert nothing without real row locking and a real `CHECK (StockQuantity >
 
 ---
 
-## 3. Frontend — typecheck, 45 tests at first, 159 now, production build
+## 3. Frontend — typecheck, 45 tests at first, 162 now, production build
 
 ```bash
 cd web
@@ -124,7 +124,8 @@ npm run build         # tsc --noEmit + vite build
 ```
 
 That is the 14 October record, kept because it is what the fixes in §7 were checked
-against. The current suite is 23 files and 159 tests; §16b pastes the 16 October rerun.
+against. The current suite is 23 files and 162 tests; §16b pastes the 16 October rerun and §17b
+the pass that added the checkout contracts.
 
 The production build succeeded with per-route code splitting:
 
@@ -176,7 +177,8 @@ cd web && NINECUBE_SEED_PASSWORD='<the seeded demo password>' npm run e2e
 ```
 
 The suite contained two specs on 14 October — the original smoke test plus the automated UI audit from
-§6b — and is now 23 spec files with 107 tests; §16c records the current shape.
+§6b — and is now 24 spec files with 109 tests; §16c records the shape on the morning of 16 October
+and §17c the current one.
 
 ```
   ✓  1 [chromium] › order-flow.spec.ts:43:3 › order flow › a customer reserves stock and a staff member confirms the order

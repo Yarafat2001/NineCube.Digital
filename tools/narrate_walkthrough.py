@@ -66,12 +66,14 @@ def main() -> None:
     if not SCENES.exists():
         sys.exit(f"{SCENES} is written by the recorder; run web/scripts/record-walkthrough.mjs first")
     plan = json.loads(SCENES.read_text(encoding="utf-8"))
-    speak()
+    if "--synthesize" in sys.argv:
+        speak()
 
     LINES.mkdir(parents=True, exist_ok=True)
     params = None
     track = bytearray()
     rows = []
+    previous_end_ms = 0
 
     for index, scene in enumerate(plan["scenes"], start=1):
         raw = RAW / f"{index:02d}-{scene['id']}.wav"
@@ -84,7 +86,18 @@ def main() -> None:
             sys.exit(f"{raw.name} is {format_of(current)} but the first line was {format_of(params)}; one voice only")
         spoken_ms = len(speech) / (params.framerate * params.sampwidth * params.nchannels) * 1000
 
-        slot_ms = max(scene["durationMs"], LEAD_MS + spoken_ms + 400)
+        slot_ms = scene["durationMs"]
+        if LEAD_MS + spoken_ms + 400 > slot_ms:
+            sys.exit(f"Scene {scene['id']} is too short for its measured voice; record it again after preparing narration")
+        start_frame = round(scene["startMs"] * params.framerate / 1000)
+        start_byte = start_frame * params.sampwidth * params.nchannels
+        if start_byte < len(track):
+            # Millisecond rounding can overlap a frame; it must not move subsequent commentary.
+            overlap = len(track) - start_byte
+            if overlap > params.framerate * params.sampwidth * params.nchannels * .05:
+                sys.exit("Scene timeline overlaps; refusing to shift narration")
+            del track[start_byte:]
+        track += b"\x00" * (start_byte - len(track))
         body = silence(LEAD_MS, params) + speech + silence(slot_ms - LEAD_MS - spoken_ms, params)
         track += body
 
@@ -112,8 +125,8 @@ def main() -> None:
         handle.setframerate(params.framerate)
         handle.writeframes(bytes(track))
 
-    picture = sum(row["sceneMs"] for row in rows)
-    audio = sum(row["slotMs"] for row in rows)
+    picture = plan["totalMs"]
+    audio = len(track) / (params.framerate * params.sampwidth * params.nchannels) * 1000
     print(f"{'#':>2} {'scene':<18} {'words':>6} {'spoken':>8} {'picture':>8} {'slot':>8} {'drift':>7}")
     for row in rows:
         print(

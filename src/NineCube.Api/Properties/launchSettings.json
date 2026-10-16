@@ -6,7 +6,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://127.0.0.1:5080",
-        "Jwt__SigningKey": "ninecube-dev-only-signing-key-0123456789ABCDEF-2026-localhost",
+        "Jwt__SigningKey": "__SET_VIA_ENV__ (export Jwt__SigningKey before dotnet run; see README)",
         "ConnectionStrings__Default": "Server=(localdb)\\MSSQLLocalDB;Database=NineCubeOrderProcessing;Integrated Security=true;TrustServerCertificate=True;Connect Timeout=60"
       },
       "applicationUrl": "http://127.0.0.1:5080"

@@ -25,7 +25,7 @@ cd web && npm run typecheck
 tsc --noEmit -p tsconfig.json      → exit 0, no output
 ```
 
-## 3. Unit and component tests — 55 passed at the time, 159 now, 0 failed
+## 3. Unit and component tests — 55 passed at the time, 162 now, 0 failed
 
 ```bash
 cd web && npm run test:run
@@ -39,8 +39,9 @@ cd web && npm run test:run
 
 That run is from the week the frontend suite was written. It has grown since — categories,
 brands and series, images, bulk edits, notifications, profile, dashboard and the appearance
-contracts — and the current shape is **23 files and 159 tests**; the 16 October rerun is
-pasted in [../TESTING.md §16b](../TESTING.md). The table below still describes what each
+contracts — and the current shape is **23 files and 162 tests**; the 16 October rerun is
+pasted in [../TESTING.md §16b](../TESTING.md) and the pass that added the checkout contracts in
+[../TESTING.md §17b](../TESTING.md). The table below still describes what each
 area asserts, only the counts above it are historical.
 | File | Tests | Covers |
 | --- | --- | --- |
@@ -95,15 +96,16 @@ assets/index-C-q1U8xt.js
 The only script the entry document loads is the 214 kB main chunk; the 486 kB scene chunk is fetched on
 demand, when a visitor opens `/` in a browser that can run it.
 
-## 5. End-to-end — 22 passed at the time, 107 now, 0 failed
+## 5. End-to-end — 22 passed at the time, 109 now, 0 failed
 
 ```bash
 cd web && NINECUBE_SEED_PASSWORD='<demo password>' npx playwright test
 ```
 
-The list below is the run as it stood that week. The suite is now 23 spec files and 107 cases —
+The list below is the run as it stood that week. The suite is now 24 spec files and 109 cases —
 order flow, the bulk console, categories, images, themes, navbar states, actionable surfaces and the
-role × viewport audit; [../TESTING.md §16c](../TESTING.md) has the 16 October record.
+role × viewport audit; [../TESTING.md §16c](../TESTING.md) has the 16 October record and
+[§17c](../TESTING.md) the current one.
 
 ```
 Running 22 tests using 1 worker

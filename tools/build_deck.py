@@ -558,11 +558,11 @@ def slide_docs(prs):
     bullets(
         slide, top,
         [
-            ("USER_MANUAL.md — every screen, photographed from a real browser against the real API, role by role. NineCube-User-Manual.docx is the same text laid out for print, with the 28 figures numbered.", 0, TEXT),
-            ("tools/build_manual_docx.py writes that document from the Markdown, so the two cannot disagree.", 1, BRAND),
+            ("USER_MANUAL.md — every screen, photographed from a real browser against the real API, role by role. NineCube-User-Manual.docx is the same text laid out for print, with the 28 figures numbered, written from the Markdown by tools/build_manual_docx.py so the two cannot disagree.", 0, TEXT),
             ("docs/manual/ — 28 annotated PNGs with numbered callouts drawn over the measured bounding boxes of the actual controls, plus callouts.json.", 1, BRAND),
             ("web/scripts/capture-manual.mjs regenerates them; a callout whose control is not on screen is reported, so the pictures cannot drift from the words.", 0, MUTED),
-            ("Every behaviour in the manual names the tests that cover it — 108 backend, 159 frontend, 107 browser.", 0, TEXT),
+            ("docs/walkthrough/ — the whole workflow filmed live: 15 scenes, one continuous take, with the narration cut to the measured timeline. Open index.html and press play.", 1, BRAND),
+            ("Every behaviour in the manual names the tests that cover it — 108 backend, 162 frontend, 109 browser.", 0, TEXT),
             ("FIX_REPORT.md records each defect as a measured cause, a fix, and the test that now holds it. README.md §15 states what AI assistance was used and how it was verified.", 0, TEXT),
             ("Nothing is claimed as tested that was not executed; what could not run here is marked NOT RUN.", 0, OK),
             ("This deck is generated too: tools/build_deck.py draws its tables from the code and its screens from docs/manual/, and a geometry audit refuses a slide whose text will not fit.", 0, MUTED),

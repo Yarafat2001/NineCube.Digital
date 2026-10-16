@@ -566,7 +566,7 @@ Chromium against the running API and database; the backend tests exercise the AP
 **Running them**
 
 ```bash
-cd web && npm run test:run                            # 23 files, 159 tests
+cd web && npm run test:run                            # 23 files, 162 tests
 cd web && npx playwright test                         # needs API + SPA + seeded data (about 50 min)
 cd src/NineCube.Tests && dotnet test                  # 108 tests
 ```

@@ -7,8 +7,8 @@
  */
 
 /**
- * The picture and the voice are two files, because nothing on the recording machine can mux them
- * into one container without ffmpeg. Three things about that pairing are load-bearing:
+ * The optional browser player keeps the original picture and voice as separate source files.
+ * The standalone MP4 produced by tools/export_walkthrough.py embeds its narration. Three things about that pairing are load-bearing:
  *
  *  - The recorder's webm carries no duration header, so Chrome reports Infinity/NaN until it is
  *    forced to read the last cluster. The page asks for a moment far past the end and returns.
@@ -69,6 +69,7 @@ export function player(manifest) {
     '<header><h1><span>NineCube</span>.Digital — live system walkthrough</h1>',
     `<div class="hint">${stamp(manifest.totalMs)} recorded from the running application, with the voice track cut to the same timeline.</div></header>`,
     '<main>',
+    '<p><a href="ninecube-walkthrough.mp4" download style="color:var(--amber);font-weight:700">Download the standalone MP4 with sound</a> · Open it in your desktop video player. No browser or local server is required for the MP4.</p>',
     // The recorder's webm carries no duration header, so the browser has nothing to scrub against.
     // The timeline is drawn from the measured manifest instead, which is exact.
     '<div class="stage">',

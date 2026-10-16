@@ -1,8 +1,11 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
-export default defineConfig({
+// GitHub Pages serves the site from a /<repo>/ subpath, so production assets
+// must be relative (import.meta.env.BASE_URL); local dev keeps root paths.
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  base: mode === 'production' ? './' : '/',
   server: {
     port: 5173,
     strictPort: true,
@@ -29,4 +32,4 @@ export default defineConfig({
     // Playwright specs live in ./e2e and must not be picked up by Vitest.
     exclude: ['node_modules', 'dist', 'e2e']
   }
-});
+}));

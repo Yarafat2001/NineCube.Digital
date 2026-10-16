@@ -87,7 +87,9 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
       setNotice(`Order #${order.id} placed.`);
       toast.push('success', `Order #${order.id} placed for ${formatMoney(order.totalAmount, order.currency)}.`);
       cart.clear();
-      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      // The order is already committed. Refresh stock in the background so a slow catalogue
+      // request cannot keep the successful checkout trapped inside the cart sheet.
+      void queryClient.invalidateQueries({ queryKey: ['products'] });
       onPlaced(order);
     } catch (error) {
       if (error instanceof ApiError && error.isUnauthorized) {

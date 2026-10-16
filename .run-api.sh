@@ -8,7 +8,7 @@ DOTNET="${DOTNET:-dotnet}"
 export ASPNETCORE_ENVIRONMENT="${ASPNETCORE_ENVIRONMENT:-Development}"
 export ASPNETCORE_URLS="${ASPNETCORE_URLS:-http://127.0.0.1:5080}"
 export ConnectionStrings__Default="${ConnectionStrings__Default:-Server=(localdb)\MSSQLLocalDB;Database=NineCubeOrderProcessing;Integrated Security=true;TrustServerCertificate=True;Connect Timeout=60}"
-export Jwt__SigningKey="${Jwt__SigningKey:-ninecube-orderprocessing-dev-signing-key-2026-do-not-use-in-production}"
+: "${Jwt__SigningKey:?Jwt__SigningKey is env-only; export it (or run ". ../.env") before this script}"
 : "${NINECUBE_SEED_PASSWORD:?NINECUBE_SEED_PASSWORD is env-only; export it (or run \". ../.env\") before this script}"
 export NINECUBE_SEED_PASSWORD
 export Cors__AllowedOrigins__0='http://127.0.0.1:5173'
