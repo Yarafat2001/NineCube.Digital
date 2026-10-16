@@ -18,10 +18,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
-        var connectionString = configuration.GetConnectionString("Default")
-            ?? throw new InvalidOperationException(
-                "ConnectionStrings:Default is not configured. Set it in appsettings.Development.json, " +
-                "user secrets, or the ConnectionStrings__Default environment variable.");
+        var connectionString = configuration.GetConnectionString("Default");
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                "ConnectionStrings:Default is not configured or is empty. " +
+                "Set the ConnectionStrings__Default environment variable to a valid PostgreSQL connection string.");
+        }
 
         // NOTE: no EnableRetryOnFailure here on purpose. The PostgreSQL execution strategy is
         // incompatible with the user-initiated transactions that PlaceOrder relies on. Retries are

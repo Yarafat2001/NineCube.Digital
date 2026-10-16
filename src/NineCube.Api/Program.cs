@@ -84,7 +84,7 @@ builder.Services.AddCors(options => options.AddPolicy("spa", policy => policy
     .AllowAnyHeader()
     .AllowAnyMethod()));
 
-builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>("sqlserver");
+builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>("postgres");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
