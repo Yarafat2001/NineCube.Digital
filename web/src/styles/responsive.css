@@ -1,4 +1,27 @@
 /* Responsive workspace surfaces and touch interactions. */
+/* Text navigation must remain identifiable on touchscreens without hover. */
+main a.btn--ghost,
+main .link-button,
+main a[href]:not(.btn):not(.filter-chip):not(.product-card__media-link):not(:has(img)),
+.site-footer__links a,
+.notif-popover__footer a {
+  color: var(--accent-text);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: .24em;
+  text-decoration-color: color-mix(in srgb, var(--accent-text) 65%, transparent);
+  text-decoration-skip-ink: auto;
+}
+main a.btn--ghost:is(:hover, :focus-visible, :active),
+main .link-button:is(:hover, :focus-visible, :active),
+.site-footer__links a:is(:hover, :focus-visible, :active),
+.notif-popover__footer a:is(:hover, :focus-visible, :active) {
+  text-decoration-thickness: 2px;
+  text-decoration-color: currentColor;
+}
+@media (max-width: 768px) {
+  main a.btn--ghost, .notif-popover__footer a { min-height: 44px; }
+}
 .page, .page > *, .catalogue-layout > *, .table-surface { min-width: 0; }
 .table-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
 .table-scroll table { width: 100%; }
