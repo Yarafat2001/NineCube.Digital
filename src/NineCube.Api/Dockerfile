@@ -23,7 +23,7 @@ ENV ASPNETCORE_URLS=http://+:${PORT:-8080}
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Non-root user for security
-RUN adduser --disabled-password --gecos "" appuser && chown -R appuser /app
+RUN useradd -m -s /bin/bash appuser && chown -R appuser /app
 USER appuser
 
 COPY --from=build /app/publish .
