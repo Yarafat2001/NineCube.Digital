@@ -15,10 +15,10 @@ public sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<App
         var connectionString =
             Environment.GetEnvironmentVariable("ConnectionStrings__Default")
             ?? Environment.GetEnvironmentVariable("NINECUBE_DESIGN_TIME_CONNECTION")
-            ?? "Server=localhost,14330;Database=NineCubeOrderProcessing;User Id=sa;Password=DesignTimePlaceholder!1;TrustServerCertificate=True;Encrypt=False";
+            ?? "Host=localhost;Database=NineCubeOrderProcessing;Username=postgres;Password=DesignTimePlaceholder!1;";
 
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlServer(connectionString)
+            .UseNpgsql(connectionString)
             .Options;
 
         return new AppDbContext(options);

@@ -1,4 +1,4 @@
-name: Deploy API to Azure App Service
+name: Build & Verify API (.NET)
 
 on:
   push:
@@ -12,19 +12,11 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_API_APP_NAME: ninecube-api   # <-- set your Azure App Service name here
   DOTNET_VERSION: '10.0.x'
 
-permissions:
-  contents: read
-  id-token: write   # needed for OIDC auth to Azure
-
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: ${{ steps.deploy.outputs.azure-webapp-url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -39,13 +31,9 @@ jobs:
       - name: Build
         run: dotnet build src/NineCube.Api/NineCube.Api.csproj --configuration Release --no-restore
 
-      - name: Publish
-        run: dotnet publish src/NineCube.Api/NineCube.Api.csproj --configuration Release --output ./publish
+      - name: Publish (verify publish works)
+        run: dotnet publish src/NineCube.Api/NineCube.Api.csproj --configuration Release --output ./publish --no-build
 
-      - name: Deploy to Azure App Service
-        id: deploy
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ env.AZURE_API_APP_NAME }}
-          package: ./publish
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISH_PROFILE }}
+      - name: Docker build check
+        run: |
+          docker build src/NineCube.Api/ -t ninecube-api:ci --target build

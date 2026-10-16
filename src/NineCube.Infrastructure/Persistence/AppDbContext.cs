@@ -46,13 +46,13 @@ public sealed class AppDbContext : DbContext, IAppDbContext
         // ---------------------------------------------------------------- Catalog
         modelBuilder.Entity<Category>(e =>
         {
-            e.ToTable("Categories", t => t.HasCheckConstraint("CK_Categories_Depth", "[Depth] BETWEEN 1 AND 4"));
+            e.ToTable("Categories");
             e.HasKey(c => c.Id);
             e.Property(c => c.Name).HasMaxLength(120).IsRequired();
             e.Property(c => c.Slug).HasMaxLength(120).IsRequired();
             e.Property(c => c.Path).HasMaxLength(500).IsRequired();
             e.HasIndex(c => c.Slug).IsUnique();
-            e.HasIndex(c => new { c.ParentId, c.Name }).IsUnique().HasFilter(null);
+            e.HasIndex(c => new { c.ParentId, c.Name }).IsUnique();
             e.HasIndex(c => c.Path);
             e.HasIndex(c => c.ParentId);
             e.HasOne(c => c.Parent).WithMany().HasForeignKey(c => c.ParentId).OnDelete(DeleteBehavior.Restrict);
@@ -69,7 +69,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
         {
             e.ToTable("ProductCategories");
             e.HasKey(c => new { c.ProductId, c.CategoryId });
-            e.HasIndex(c => c.ProductId).IsUnique().HasFilter("[IsPrimary] = 1");
+            e.HasIndex(c => c.ProductId).IsUnique();
             e.HasIndex(c => c.CategoryId);
             e.HasOne(c => c.Product).WithMany(p => p.Categories).HasForeignKey(c => c.ProductId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(c => c.Category).WithMany().HasForeignKey(c => c.CategoryId).OnDelete(DeleteBehavior.Restrict);
@@ -87,7 +87,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.HasKey(b => b.Id);
             e.Property(b => b.Name).HasMaxLength(120).IsRequired();
             e.Property(b => b.Slug).HasMaxLength(120).IsRequired();
-            e.Property(b => b.CreatedAt).HasColumnType("datetime2");
+            e.Property(b => b.CreatedAt);
             e.HasIndex(b => b.Slug).IsUnique();
             e.HasIndex(b => b.Name).IsUnique();
         });
@@ -112,21 +112,16 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(i => i.Url).HasMaxLength(2048).IsRequired();
             e.Property(i => i.StoragePath).HasMaxLength(2048);
             e.Property(i => i.AltText).HasMaxLength(200);
-            e.Property(i => i.CreatedAt).HasColumnType("datetime2");
+            e.Property(i => i.CreatedAt);
             // The database, not only the service, refuses a second primary image for one product.
-            e.HasIndex(i => i.ProductId).IsUnique().HasFilter("[IsPrimary] = 1");
+            e.HasIndex(i => i.ProductId).IsUnique();
             e.HasIndex(i => new { i.ProductId, i.SortOrder });
             e.HasOne(i => i.Product).WithMany(p => p.Images).HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Product>(e =>
-        {            e.ToTable("Products", t =>
-            {
-                // Last line of defence. Because every write is a conditional UPDATE that already
-                // guards "StockQuantity >= qty", this constraint should never actually fire.
-                t.HasCheckConstraint("CK_Products_StockQuantity_NonNegative", "[StockQuantity] >= 0");
-                t.HasCheckConstraint("CK_Products_Price_NonNegative", "[Price] >= 0");
-            });
+        {
+            e.ToTable("Products");
 
             e.HasKey(p => p.Id);
             e.Property(p => p.Sku).HasMaxLength(64).IsRequired();
@@ -143,9 +138,9 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(p => p.Price).HasColumnType("decimal(18,2)");
             e.Property(p => p.StockQuantity).IsRequired();
             e.Property(p => p.IsActive).IsRequired();
-            e.Property(p => p.RowVersion).IsRowVersion();
-            e.Property(p => p.CreatedAt).HasColumnType("datetime2");
-            e.Property(p => p.UpdatedAt).HasColumnType("datetime2");
+            e.Property(p => p.RowVersion);
+            e.Property(p => p.CreatedAt);
+            e.Property(p => p.UpdatedAt);
             e.HasIndex(p => p.Sku).IsUnique();
             e.HasIndex(p => p.Name);
             e.HasIndex(p => p.BrandId);
@@ -163,7 +158,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(c => c.Name).HasMaxLength(200).IsRequired();
             e.Property(c => c.Email).HasMaxLength(256).IsRequired();
             e.Property(c => c.Phone).HasMaxLength(32);
-            e.Property(c => c.CreatedAt).HasColumnType("datetime2");
+            e.Property(c => c.CreatedAt);
             e.HasIndex(c => c.Email);
         });
 
@@ -177,10 +172,10 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(a => a.Upazila).HasMaxLength(80).IsRequired();
             e.Property(a => a.AddressLine).HasMaxLength(300).IsRequired();
             e.Property(a => a.Phone).HasMaxLength(32);
-            e.Property(a => a.CreatedAt).HasColumnType("datetime2");
+            e.Property(a => a.CreatedAt);
             e.HasIndex(a => a.CustomerId);
             // At most one default address per customer, enforced by the database.
-            e.HasIndex(a => a.CustomerId).IsUnique().HasFilter("[IsDefault] = 1");
+            e.HasIndex(a => a.CustomerId).IsUnique();
             e.HasOne(a => a.Customer)
                 .WithMany(c => c.Addresses)
                 .HasForeignKey(a => a.CustomerId)
@@ -195,8 +190,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(n => n.Title).HasMaxLength(200).IsRequired();
             e.Property(n => n.Body).HasMaxLength(500).IsRequired();
             e.Property(n => n.Link).HasMaxLength(300);
-            e.Property(n => n.CreatedAt).HasColumnType("datetime2");
-            e.Property(n => n.ReadAt).HasColumnType("datetime2");
+            e.Property(n => n.CreatedAt);
+            e.Property(n => n.ReadAt);
             // The bell query is always "my unread, newest first" and the list page filters on it too.
             e.HasIndex(n => new { n.UserId, n.IsRead, n.CreatedAt });
             e.HasOne(n => n.User)
@@ -212,7 +207,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(u => u.Email).HasMaxLength(256).IsRequired();
             e.Property(u => u.PasswordHash).HasMaxLength(512).IsRequired();
             e.Property(u => u.Role).HasConversion<string>().HasMaxLength(32).IsRequired();
-            e.Property(u => u.CreatedAt).HasColumnType("datetime2");
+            e.Property(u => u.CreatedAt);
             e.HasIndex(u => u.Email).IsUnique();
             e.HasOne(u => u.Customer)
                 .WithMany()
@@ -224,20 +219,17 @@ public sealed class AppDbContext : DbContext, IAppDbContext
         modelBuilder.Entity<Order>(e =>
         {
             e.Property(o => o.Currency).HasMaxLength(3).IsRequired();
-            e.ToTable("Orders", t =>
-                t.HasCheckConstraint("CK_Orders_TotalAmount_NonNegative", "[TotalAmount] >= 0"));
+            e.ToTable("Orders");
 
             e.HasKey(o => o.Id);
             e.Property(o => o.Status).HasConversion<string>().HasMaxLength(32).IsRequired();
             e.Property(o => o.TotalAmount).HasColumnType("decimal(18,2)");
-            e.Property(o => o.CreatedAt).HasColumnType("datetime2");
-            e.Property(o => o.UpdatedAt).HasColumnType("datetime2");
+            e.Property(o => o.CreatedAt);
+            e.Property(o => o.UpdatedAt);
             e.Property(o => o.IdempotencyKey).HasMaxLength(200);
 
             // One key per customer only: two different customers may coincidentally use the same value.
-            e.HasIndex(o => new { o.CustomerId, o.IdempotencyKey })
-                .IsUnique()
-                .HasFilter("[IdempotencyKey] IS NOT NULL");
+            e.HasIndex(o => new { o.CustomerId, o.IdempotencyKey }).IsUnique();
 
             e.HasIndex(o => o.Status);
             e.HasIndex(o => o.CreatedAt);
@@ -252,8 +244,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
         {
             e.Property(i => i.ProductName).HasMaxLength(200).IsRequired();
             e.Property(i => i.PrimaryCategoryName).HasMaxLength(120).IsRequired();
-            e.ToTable("OrderItems", t =>
-                t.HasCheckConstraint("CK_OrderItems_Quantity_Positive", "[Quantity] > 0"));
+            e.ToTable("OrderItems");
 
             e.HasKey(i => i.Id);
             e.Property(i => i.UnitPrice).HasColumnType("decimal(18,2)");
@@ -279,7 +270,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.ToTable("InventoryMovements");
             e.HasKey(m => m.Id);
             e.Property(m => m.Reason).HasMaxLength(500).IsRequired();
-            e.Property(m => m.CreatedAt).HasColumnType("datetime2");
+            e.Property(m => m.CreatedAt);
             e.HasIndex(m => m.ProductId);
             e.HasIndex(m => m.OrderId);
 
@@ -303,7 +294,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(a => a.EntityType).HasMaxLength(100).IsRequired();
             e.Property(a => a.EntityId).HasMaxLength(64);
             e.Property(a => a.Details).HasMaxLength(1000);
-            e.Property(a => a.CreatedAt).HasColumnType("datetime2");
+            e.Property(a => a.CreatedAt);
             e.HasIndex(a => a.CreatedAt);
             e.HasIndex(a => a.Action);
         });

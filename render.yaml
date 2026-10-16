@@ -1,0 +1,35 @@
+# Render.com deployment manifest for NineCube.Digital API
+# Create a "Blueprint" at https://dashboard.render.com/blueprint/new
+# pointing at this repository. Render will provision:
+#  1. A PostgreSQL database (free tier)
+#  2. A web service running the .NET API (free tier)
+
+services:
+  - type: web
+    name: ninecube-api
+    env: docker
+    region: oregon        # change to your preferred region
+    plan: free
+    repo: https://github.com/yarafat2001/NineCube.Digital
+    branch: main
+    dockerfilePath: src/NineCube.Api/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__Default
+        fromDatabase:
+          name: ninecube-db
+          property: connectionString
+      - key: Jwt__SigningKey
+        generateValue: true
+      - key: NINECUBE_SEED_PASSWORD
+        value: NineCubeDemoSeed2026!
+      - key: Cors__AllowedOrigins__0
+        value: https://yarafat2001.github.io
+    healthCheckPath: /health
+
+  - type: postgres
+    name: ninecube-db
+    plan: free
+    ipAllowList: []

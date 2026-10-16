@@ -23,15 +23,15 @@ public static class DependencyInjection
                 "ConnectionStrings:Default is not configured. Set it in appsettings.Development.json, " +
                 "user secrets, or the ConnectionStrings__Default environment variable.");
 
-        // NOTE: no EnableRetryOnFailure here on purpose. The SQL Server execution strategy is
+        // NOTE: no EnableRetryOnFailure here on purpose. The PostgreSQL execution strategy is
         // incompatible with the user-initiated transactions that PlaceOrder relies on. Retries are
         // handled by ITransientErrorPolicy, which understands which errors are actually retryable.
-        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
-        services.AddSingleton<ITransientErrorPolicy, SqlTransientErrorPolicy>();
+        services.AddSingleton<ITransientErrorPolicy, PostgresTransientErrorPolicy>();
         services.AddSingleton<IProductStorage>(new ProductFileStorage(
             configuration["Products:UploadPath"] ?? Path.Combine(environment.ContentRootPath, "uploads"),
             configuration["Products:PublicPrefix"] ?? "/uploads"));

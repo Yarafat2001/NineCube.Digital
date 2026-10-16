@@ -1,29 +1,28 @@
-using Microsoft.Data.SqlClient;
 using NineCube.Application.Abstractions;
 
 namespace NineCube.Infrastructure.Persistence;
 
 /// <summary>
-/// Translates SQL Server error numbers into the three categories the application cares about.
+/// Translates PostgreSQL error codes into the three categories the application cares about.
 /// Keeping this in Infrastructure is what lets the order service express "retry a deadlock"
-/// without knowing anything about SQL Server.
+/// without knowing anything about PostgreSQL.
 /// </summary>
-public sealed class SqlTransientErrorPolicy : ITransientErrorPolicy
+public sealed class PostgresTransientErrorPolicy : ITransientErrorPolicy
 {
-    private const int UniqueIndexViolation = 2601;
-    private const int UniqueConstraintViolation = 2627;
-    private const int CheckConstraintViolation = 547;
-    private const int DeadlockVictim = 1205;
-    private const int SnapshotIsolationConflict = 3960;
+    // PostgreSQL SQLSTATE codes: https://www.postgresql.org/docs/current/errcodes-appendix.html
+    private const string UniqueViolation = "23505";      // unique_violation
+    private const string CheckViolation = "23514";       // check_violation
+    private const string DeadlockDetected = "40P01";     // deadlock_detected
+    private const string SerializationFailure = "40001"; // serialization_failure
 
     public bool IsUniqueViolation(Exception exception) =>
-        HasSqlError(exception, UniqueIndexViolation, UniqueConstraintViolation);
+        HasPostgresError(exception, UniqueViolation);
 
     public bool IsCheckConstraintViolation(Exception exception) =>
-        HasSqlError(exception, CheckConstraintViolation);
+        HasPostgresError(exception, CheckViolation);
 
     public bool IsTransientConflict(Exception exception) =>
-        HasSqlError(exception, DeadlockVictim, SnapshotIsolationConflict);
+        HasPostgresError(exception, DeadlockDetected, SerializationFailure);
 
     public async Task<T> ExecuteWithRetryAsync<T>(Func<Task<T>> operation, int maxAttempts = 3)
     {
@@ -45,6 +44,6 @@ public sealed class SqlTransientErrorPolicy : ITransientErrorPolicy
         }
     }
 
-    private static bool HasSqlError(Exception exception, params int[] numbers) =>
-        exception.Flatten().OfType<SqlException>().Any(sql => numbers.Contains(sql.Number));
+    private static bool HasPostgresError(Exception exception, params string[] sqlStates) =>
+        exception.Flatten().OfType<Npgsql.PostgresException>().Any(pg => sqlStates.Contains(pg.SqlState));
 }
