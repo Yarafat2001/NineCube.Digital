@@ -39,8 +39,18 @@ main .link-button:is(:hover, :focus-visible, :active),
 .viewer-hint { margin: 0; font-size: var(--text-sm); }
 .viewer-controls output { min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; }
 .viewer-backdrops { padding-block: 4px; font-size: var(--text-sm); }
-.viewer-backdrops button { display: inline-flex; align-items: center; gap: 6px; padding: 8px; border: 1px solid var(--border-strong); border-radius: 12px; color: var(--text); background: var(--surface); min-height: 44px; cursor: pointer; }
-.viewer-backdrops button > span { width: 20px; height: 20px; background: var(--swatch); border-radius: 50%; border: 1px solid #777; }
+.viewer-backdrops button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 6px; border: 1px solid var(--border-strong); border-radius: 10px; color: var(--text); background: var(--surface); min-height: 42px; min-width: 0; flex: 1 1 0px; text-align: center; cursor: pointer; font-size: inherit; }
+.viewer-backdrops button > span { width: 18px; height: 18px; background: var(--swatch); border-radius: 50%; border: 1px solid #777; flex-shrink: 0; }
+.viewer-backdrops [aria-pressed='true'] { background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent); }
+@media (max-width: 768px) {
+  .viewer-backdrops { gap: 6px; font-size: var(--text-sm); }
+  .viewer-backdrops button { padding: 6px 5px; min-height: 40px; gap: 4px; border-radius: 10px; font-size: 13px; }
+  .viewer-backdrops button > span { width: 16px; height: 16px; }
+}
+@media (max-width: 480px) {
+  .viewer-backdrops button { font-size: 12px; padding: 5px 4px; min-height: 38px; gap: 3px; }
+  .viewer-backdrops button > span { width: 14px; height: 14px; }
+}
 .product-detail { align-items: start; }
 .product-detail__gallery { align-content: start; }
 .product-detail__summary { align-self: start; }
