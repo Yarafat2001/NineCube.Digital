@@ -1759,10 +1759,10 @@ input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 1
      truth for <=600px; modern.css must not restate them at higher specificity. */
   .navbar__user { order: 3; flex: 1 1 130px; min-width: 0; max-width: none; }
   .navbar__actions { order: 4; }
-  .site-footer__inner { grid-template-columns: 1fr auto; gap: 16px; }
-  .site-footer__description { grid-column: 1 / -1; grid-row: 2; }
-  .site-footer__bottom { flex-direction: column; gap: 6px; }
-  .site-footer__links { gap: 14px; }
+  .site-footer__inner { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .site-footer__description { grid-column: 1; grid-row: auto; }
+  .site-footer__bottom { flex-direction: column; gap: 10px; align-items: center; }
+  .site-footer__links { gap: 12px; justify-content: center; flex-wrap: wrap; }
   .auth-card { padding: 24px; }
 }
 @media print {

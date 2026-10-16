@@ -77,11 +77,12 @@ main .link-button:is(:hover, :focus-visible, :active),
   .notif-popover__footer > *, .sheet .btn { min-height: 44px; }
   .notif-item { grid-template-columns: 22px minmax(0, 1fr); }
   .notif-item > button { grid-column: 2; justify-self: start; }
-  .site-footer__inner { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-  .site-footer__description, .site-footer__bottom { grid-column: 1; grid-row: auto; }
-  .site-footer__links { flex-wrap: wrap; gap: 8px 20px; }
-  .site-footer__links a { display: inline-flex; align-items: center; min-height: 44px; }
-  .site-footer__bottom { flex-direction: column; overflow-wrap: anywhere; }
+  .site-footer__inner { grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; text-align: center; }
+  .site-footer__brand { justify-self: center; }
+  .site-footer__description { grid-column: 1; grid-row: auto; }
+  .site-footer__links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .site-footer__links a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
+  .site-footer__bottom { grid-column: 1; grid-row: auto; flex-direction: column; align-items: center; gap: 10px; overflow-wrap: anywhere; }
   .bottombar { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content; align-items: center; gap: 8px; padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)); }
   .bottombar > * { min-width: 0; }
   .bottombar select { max-width: 125px; }
@@ -89,7 +90,7 @@ main .link-button:is(:hover, :focus-visible, :active),
   .bottombar .btn { padding: 8px 12px; font-size: 13px; white-space: nowrap; }
   .bottombar__cart { display: grid; justify-items: center; align-content: center; gap: 2px; min-height: 44px; padding: 4px; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 12px; cursor: pointer; }
   .bottombar__cart strong { font-size: 13px; overflow-wrap: anywhere; line-height: 1.2; }
-  .site-footer { padding-bottom: 12px; }
+  .site-footer { padding-bottom: 16px; }
   .recent-list li > .row { flex-wrap: wrap; }
   .viewer-controls .btn, .viewer-modes .btn { min-height: 44px; }
 }
