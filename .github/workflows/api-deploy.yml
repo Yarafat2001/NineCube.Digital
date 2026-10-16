@@ -1,0 +1,51 @@
+name: Deploy API to Azure App Service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/NineCube.Api/**'
+      - 'src/NineCube.Application/**'
+      - 'src/NineCube.Domain/**'
+      - 'src/NineCube.Infrastructure/**'
+      - '.github/workflows/api-deploy.yml'
+  workflow_dispatch:
+
+env:
+  AZURE_API_APP_NAME: ninecube-api   # <-- set your Azure App Service name here
+  DOTNET_VERSION: '10.0.x'
+
+permissions:
+  contents: read
+  id-token: write   # needed for OIDC auth to Azure
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.azure-webapp-url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore src/NineCube.Api/NineCube.Api.csproj
+
+      - name: Build
+        run: dotnet build src/NineCube.Api/NineCube.Api.csproj --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish src/NineCube.Api/NineCube.Api.csproj --configuration Release --output ./publish
+
+      - name: Deploy to Azure App Service
+        id: deploy
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_API_APP_NAME }}
+          package: ./publish
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISH_PROFILE }}
