@@ -29,7 +29,6 @@ services:
         value: https://yarafat2001.github.io
     healthCheckPath: /health
 
-  - type: postgres
+  - type: postgresql
     name: ninecube-db
     plan: free
-    ipAllowList: []
