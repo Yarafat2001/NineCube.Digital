@@ -17,6 +17,10 @@ using NineCube.Infrastructure.Persistence;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+// Render's PORT is a runtime setting, not a Docker build-time substitution.
+if (int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var renderPort)
+    && renderPort is > 0 and <= 65535)
+    builder.WebHost.UseUrls($"http://0.0.0.0:{renderPort}");
 
 // ---------------------------------------------------------------- logging
 builder.Host.UseSerilog((context, _, configuration) => configuration
@@ -131,9 +135,8 @@ var app = builder.Build();
     }
     catch (Exception ex)
     {
-        logger.LogWarning(ex, "Database migration/seeding failed at startup - API will still start. " +
-            "Set ConnectionStrings__Default environment variable to a valid PostgreSQL connection string " +
-            "and redeploy to enable database features.");
+        logger.LogCritical(ex, "Database migration/seeding failed. Startup aborted; check PostgreSQL configuration and migration errors above.");
+        throw;
     }
 }
 

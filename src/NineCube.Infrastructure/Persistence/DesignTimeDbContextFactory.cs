@@ -18,7 +18,7 @@ public sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<App
             ?? "Host=localhost;Database=NineCubeOrderProcessing;Username=postgres;Password=DesignTimePlaceholder!1;";
 
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseNpgsql(connectionString)
+            .UseNpgsql(PostgresConnectionConfiguration.Normalize(connectionString))
             .Options;
 
         return new AppDbContext(options);

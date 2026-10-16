@@ -29,4 +29,5 @@ services:
 
 databases:
   - name: ninecube-db
+    region: oregon
     plan: free

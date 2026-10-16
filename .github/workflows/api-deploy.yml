@@ -8,6 +8,9 @@ on:
       - 'src/NineCube.Application/**'
       - 'src/NineCube.Domain/**'
       - 'src/NineCube.Infrastructure/**'
+      - 'render.yaml'
+      - '.dockerignore'
+      - 'tools/deployment-checks/**'
       - '.github/workflows/api-deploy.yml'
   workflow_dispatch:
 
@@ -36,4 +39,7 @@ jobs:
 
       - name: Docker build check
         run: |
-          docker build src/NineCube.Api/ -t ninecube-api:ci --target build
+          docker build -f src/NineCube.Api/Dockerfile -t ninecube-api:ci .
+
+      - name: Deployment configuration regression checks
+        run: dotnet run --project tools/deployment-checks/DeploymentChecks.csproj --configuration Release

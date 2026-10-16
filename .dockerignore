@@ -1,4 +1,12 @@
 .git
+**/node_modules
+web/
+tools/
+seed/
+.env
+.env.*
+**/__pycache__
+**/.deps
 .gitignore
 **/bin
 **/obj

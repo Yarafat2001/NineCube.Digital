@@ -18,8 +18,8 @@ RUN dotnet publish "NineCube.Api.csproj" -c Release -o /app/publish /p:UseAppHos
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Render injects PORT; ASP.NET Core listens on it via ASPNETCORE_URLS
-ENV ASPNETCORE_URLS=http://+:${PORT:-8080}
+# Program.cs honors Render's runtime PORT; 8080 is the local container default.
+ENV ASPNETCORE_HTTP_PORTS=8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Non-root user for security
