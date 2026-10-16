@@ -124,8 +124,17 @@ var app = builder.Build();
     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasherService>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-    await DatabaseSeeder.MigrateAndSeedAsync(
-        db, app.Configuration, app.Environment.IsDevelopment(), hasher, logger);
+    try
+    {
+        await DatabaseSeeder.MigrateAndSeedAsync(
+            db, app.Configuration, app.Environment.IsDevelopment(), hasher, logger);
+    }
+    catch (Exception ex)
+    {
+        logger.LogWarning(ex, "Database migration/seeding failed at startup - API will still start. " +
+            "Set ConnectionStrings__Default environment variable to a valid PostgreSQL connection string " +
+            "and redeploy to enable database features.");
+    }
 }
 
 // ---------------------------------------------------------------- pipeline
