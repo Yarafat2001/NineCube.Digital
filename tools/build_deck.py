@@ -17,8 +17,14 @@ from pathlib import Path
 
 from pptx import Presentation
 from pptx.dml.color import RGBColor
+from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Emu, Inches, Pt
+
+ROOT = Path(__file__).resolve().parent.parent
+LOGO = ROOT / "logos" / "ninecube-logo-vector.png"
+MARK = ROOT / "logos" / "ninecube-mark.png"
+SCREENS = ROOT / "docs" / "manual"
 
 # --------------------------------------------------------------------------- theme
 
@@ -67,15 +73,20 @@ def style(run, size, colour, bold=False, italic=False):
 
 def title_bar(slide, title: str, kicker: str | None = None):
     top = Inches(0.45)
+    width = W - 2 * MARGIN
+    if MARK.exists():
+        logo_plate(slide, W - MARGIN - Inches(0.4), Inches(0.5), Inches(0.4), MARK, pad_ratio=0.18)
+        width = width - Inches(0.78)
     if kicker:
-        frame = textbox(slide, MARGIN, top, W - 2 * MARGIN, Inches(0.32))
+        frame = textbox(slide, MARGIN, top, width, Inches(0.32))
         style(frame.paragraphs[0].add_run(), 12, BRAND, bold=True)
         frame.paragraphs[0].runs[0].text = kicker.upper()
         top = Inches(0.78)
 
-    frame = textbox(slide, MARGIN, top, W - 2 * MARGIN, Inches(0.7))
+    size = 30 if len(title) <= 48 else 26 if len(title) <= 62 else 23
+    frame = textbox(slide, MARGIN, top, width, Inches(0.7))
     para = frame.paragraphs[0]
-    style(para.add_run(), 30, TEXT, bold=True)
+    style(para.add_run(), size, TEXT, bold=True)
     para.runs[0].text = title
     return top + Inches(0.85)
 
@@ -134,9 +145,57 @@ def table(slide, top, headers, rows, *, left=MARGIN, width=None, height=None, si
 
 
 def note(slide, text, colour=MUTED, top=None, size=12):
-    frame = textbox(slide, MARGIN, top or (H - Inches(0.72)), W - 2 * MARGIN, Inches(0.4))
+    lines = -(-len(text) // 118)
+    height = Inches(max(0.4, 0.21 * lines + 0.1))
+    frame = textbox(slide, MARGIN, top or (H - height - Inches(0.2)), W - 2 * MARGIN, height)
     style(frame.paragraphs[0].add_run(), size, colour, italic=True)
     frame.paragraphs[0].runs[0].text = text
+
+
+def logo_plate(slide, left, top, width, source, pad_ratio=0.14):
+    """The brand artwork is near-black and orange on white; on this ink background the black faces
+    would disappear, so the white field of the artwork is kept as a deliberate plate."""
+    from PIL import Image
+
+    with Image.open(source) as im:
+        aspect = im.size[0] / im.size[1]
+    pad = Emu(int(width * pad_ratio))
+    height = Emu(int(width / aspect))
+    plate = slide.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE, left - pad, top - pad, width + 2 * pad, height + 2 * pad
+    )
+    plate.adjustments[0] = 0.12
+    plate.fill.solid()
+    plate.fill.fore_color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+    plate.line.fill.background()
+    plate.shadow.inherit = False
+    slide.shapes.add_picture(str(source), left, top, width=width, height=height)
+    return top + height + 2 * pad
+
+
+def figure(slide, left, top, width, filename, caption):
+    """One annotated screen from docs/manual/, at its true 1440x900 ratio, with the caption the
+    manual gives it. The border keeps a light screenshot from reading as a blank panel."""
+    path = SCREENS / filename
+    height = Emu(int(width / 1.6))
+    picture = slide.shapes.add_picture(str(path), left, top, width=width, height=height)
+    picture.line.color.rgb = RGBColor(0x45, 0x3F, 0x41)
+    picture.line.width = Pt(1.25)
+    frame = textbox(slide, left, top + height + Inches(0.08), width, Inches(0.5))
+    para = frame.paragraphs[0]
+    style(para.add_run(), 10.5, MUTED)
+    para.runs[0].text = caption
+
+
+def screen_pair(prs, kicker, title, pair, note_text):
+    slide = blank(prs)
+    top = title_bar(slide, title, kicker)
+    gap = Inches(0.34)
+    width = Emu(int((W - 2 * MARGIN - gap) / 2))
+    for index, (filename, caption) in enumerate(pair):
+        figure(slide, MARGIN + index * (width + gap), top, width, filename, caption)
+    note(slide, note_text)
+    return slide
 
 
 # --------------------------------------------------------------------------- slides
@@ -144,22 +203,25 @@ def note(slide, text, colour=MUTED, top=None, size=12):
 
 def slide_title(prs):
     slide = blank(prs)
-    frame = textbox(slide, MARGIN, Inches(2.1), W - 2 * MARGIN, Inches(1.2))
+    logo_plate(slide, MARGIN, Inches(0.72), Inches(2.55), LOGO)
+
+    frame = textbox(slide, MARGIN, Inches(3.05), W - 2 * MARGIN, Inches(0.82))
     para = frame.paragraphs[0]
     style(para.add_run(), 44, TEXT, bold=True)
     para.runs[0].text = "Order Processing"
 
-    frame = textbox(slide, MARGIN, Inches(3.0), W - 2 * MARGIN, Inches(0.5))
+    frame = textbox(slide, MARGIN, Inches(3.95), W - 2 * MARGIN, Inches(0.5))
     para = frame.paragraphs[0]
     style(para.add_run(), 20, BRAND)
     para.runs[0].text = "NineCube.Digital — a reliable order + stock feature for a small retailer"
 
-    frame = textbox(slide, MARGIN, Inches(3.8), W - 2 * MARGIN, Inches(1.6))
+    frame = textbox(slide, MARGIN, Inches(4.75), W - 2 * MARGIN, Inches(1.6))
     for i, line in enumerate(
         [
             "ASP.NET Core 10 Web API · EF Core · SQL Server · JWT + 4 roles",
             "React 18 + TypeScript SPA · hand-written glass / neumorphic CSS",
             "108 backend integration tests · 159 frontend tests · 107 browser tests — all green",
+            "183-product catalogue · 55 endpoints · 28 annotated screens in the user manual",
         ]
     ):
         para = frame.paragraphs[0] if i == 0 else frame.add_paragraph()
@@ -167,7 +229,7 @@ def slide_title(prs):
         style(para.add_run(), 15, MUTED)
         para.runs[0].text = line
 
-    note(slide, "Candidate: Yeasin Arafat · Submission: 15 October", top=Inches(6.2), size=14)
+    note(slide, "Candidate: Yeasin Arafat · Submission: 15 October · figures on the slides measured 16 October", top=Inches(6.55), size=13)
 
 
 def slide_problem(prs):
@@ -227,7 +289,7 @@ def slide_architecture(prs):
 
 def slide_monolith(prs):
     slide = blank(prs)
-    top = title_bar(slide, "Why a modular monolith — and when microservices would be right", "architecture decision")
+    top = title_bar(slide, "Why a modular monolith, not microservices", "architecture decision")
     bullets(
         slide, top,
         [
@@ -282,6 +344,28 @@ def slide_data(prs):
             ("Stock is reserved at placement; cancel/reject release it exactly once (conditional status update)", 0, MUTED),
         ],
     )
+
+
+def slide_numbers(prs):
+    slide = blank(prs)
+    top = title_bar(slide, "What is in the system, counted on 16 October", "the data behind the claims")
+    table(
+        slide, top,
+        ["", "Counted", "Where the number comes from"],
+        [
+            ("Catalogue", "183 products, every one with an image", "SELECT COUNT(*) FROM Products — 183 of 183 carry an ImageUrl"),
+            ("Facets", "29 brands · 103 product lines · 46 tags", "Brands / ProductLines / Tags tables; 501 product-tag links"),
+            ("Category tree", "43 categories, deepest branch 3 levels, 198 product links", "Categories + ProductCategories; one primary per product, enforced by index"),
+            ("Stock signal", "160 in stock · 10 low (1-10 units) · 23 out of stock", "Products.StockQuantity, the same figures the badges read"),
+            ("Orders on this machine", "20 orders, 21 lines: 4 Pending, 9 Confirmed, 7 Shipped", "Development seed plus the browser runs — demo data, not a sales claim"),
+            ("Audit and ledger", "38 stock movements · 1,018 audit entries · 20 notifications", "InventoryMovements / AuditLogs / Notifications, append-only"),
+            ("API surface", "55 endpoints — 24 GET, 17 POST, 10 PUT, 4 DELETE", "HTTP method attributes across the controllers"),
+            ("Schema", "13 EF Core migrations, 18 tables", "Persistence/Migrations + sys.tables"),
+            ("Code", "15,631 lines of C# · 15,554 lines of TypeScript and CSS", "wc -l over the sources, excluding bin, obj and node_modules"),
+        ],
+        size=11,
+    )
+    note(slide, "Counted with sqlcmd against the LocalDB database the app runs on, and grep/wc over the sources, on 16 October. The manual's 28 annotated screens come from the same instance.")
 
 
 def slide_api(prs):
@@ -356,6 +440,58 @@ def slide_frontend(prs):
     )
 
 
+def slide_screens_shop(prs):
+    screen_pair(
+        prs,
+        "the customer's screens",
+        "Browsing and buying, photographed from the running app",
+        [
+            ("05-catalogue.png", "The catalogue: the sidebar tree, the facet chips and the URL that carries them"),
+            ("06-cart.png", "The cart and checkout: the stepper cannot pass live stock, and a 409 names the short items"),
+        ],
+        "USER_MANUAL 2.1-2.2 · catalogue-roles.test.tsx, catalogue-sidebar.test.tsx, sidebar-layout.spec.ts, laptop-catalogue.spec.ts, checkout.test.tsx, order-flow.spec.ts",
+    )
+
+
+def slide_screens_account(prs):
+    screen_pair(
+        prs,
+        "the customer's own account",
+        "What the customer sees after the order",
+        [
+            ("10-dashboard.png", "Your dashboard: the tiles, the recent orders and the spend the account is entitled to"),
+            ("12-notifications.png", "Notifications: what changed, when, and a link to the order it is about"),
+        ],
+        "USER_MANUAL 2.4 and 6.3 · account.test.tsx, modern-customer.spec.ts, sticky-notifications.test.tsx, sticky-notifications.spec.ts, ProfileAndDashboardTests.cs, NotificationTests.cs",
+    )
+
+
+def slide_screens_staff(prs):
+    screen_pair(
+        prs,
+        "the staff screens",
+        "The order console, and the category manager beside it",
+        [
+            ("13-staff-console.png", "The staff order console: the queues a Sales Manager works, and nothing else"),
+            ("13b-category-stock-dark.png", "Categories & stock, in the dark theme: the tree, its branch totals, and no stock control"),
+        ],
+        "USER_MANUAL 3.1 and 3.3 · staff-order-bulk.test.tsx + staff-order-bulk.spec.ts for the queues, categories.test.tsx + staff-organization.spec.ts + CategoryTests.cs for the tree",
+    )
+
+
+def slide_screens_inventory(prs):
+    screen_pair(
+        prs,
+        "the inventory screens",
+        "Bulk edits that leave stock alone",
+        [
+            ("16-bulk-edit.png", "Bulk editing products: category, tags, brand and active state — stock is not in the list"),
+            ("18b-movement-history.png", "The movement ledger for one product: every change with its user, reason and balance"),
+        ],
+        "USER_MANUAL 4.2-4.3 · inventory-bulk.test.tsx + BulkProductUpdateTests.cs hold the bulk path, StockAdjustmentTests.cs the ledger, and actionable-surfaces.spec.ts checks both in a browser",
+    )
+
+
 def slide_decisions(prs):
     slide = blank(prs)
     top = title_bar(slide, "Implementation decisions worth calling out", "implementation")
@@ -389,7 +525,7 @@ def slide_catalogue(prs):
             ("Order lines snapshot product name and primary category at placement, so a later rename never rewrites an invoice.", 0, TEXT),
             ("", 0, TEXT),
             ("None of it can move a stock figure — five category tests and one bulk test assert exactly that.", 0, OK),
-            ("Seed data: 171 products, 32 tags, 186 category links, priced in BDT, insert-only so a rerun is a no-op (SEED_REPORT.md).", 0, MUTED),
+            ("Seed data: 183 products priced in BDT, 46 tags and 198 category links in the database today, loaded insert-only so a rerun changes nothing (counted 16 October; SEED_REPORT.md records the pipeline runs).", 0, MUTED),
         ],
         size=14,
     )
@@ -422,12 +558,14 @@ def slide_docs(prs):
     bullets(
         slide, top,
         [
-            ("USER_MANUAL.md — every screen, photographed from a real browser against the real API, role by role.", 0, TEXT),
+            ("USER_MANUAL.md — every screen, photographed from a real browser against the real API, role by role. NineCube-User-Manual.docx is the same text laid out for print, with the 28 figures numbered.", 0, TEXT),
+            ("tools/build_manual_docx.py writes that document from the Markdown, so the two cannot disagree.", 1, BRAND),
             ("docs/manual/ — 28 annotated PNGs with numbered callouts drawn over the measured bounding boxes of the actual controls, plus callouts.json.", 1, BRAND),
             ("web/scripts/capture-manual.mjs regenerates them; a callout whose control is not on screen is reported, so the pictures cannot drift from the words.", 0, MUTED),
             ("Every behaviour in the manual names the tests that cover it — 108 backend, 159 frontend, 107 browser.", 0, TEXT),
             ("FIX_REPORT.md records each defect as a measured cause, a fix, and the test that now holds it. README.md §15 states what AI assistance was used and how it was verified.", 0, TEXT),
             ("Nothing is claimed as tested that was not executed; what could not run here is marked NOT RUN.", 0, OK),
+            ("This deck is generated too: tools/build_deck.py draws its tables from the code and its screens from docs/manual/, and a geometry audit refuses a slide whose text will not fit.", 0, MUTED),
         ],
         size=14,
     )
@@ -537,9 +675,14 @@ def main() -> None:
         slide_monolith,
         slide_roles,
         slide_data,
+        slide_numbers,
         slide_api,
         slide_concurrency,
         slide_frontend,
+        slide_screens_shop,
+        slide_screens_account,
+        slide_screens_staff,
+        slide_screens_inventory,
         slide_catalogue,
         slide_role_work,
         slide_decisions,

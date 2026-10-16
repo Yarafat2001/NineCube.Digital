@@ -569,7 +569,7 @@ provenance fields now have columns of their own
 The requested 15-root Bangladesh category tree was not present at that point and
 was not created by that run. It was installed later, once, through
 `seed/seed_categories_bd.py` — see [SEED_REPORT.md](SEED_REPORT.md), and the tree
-now reads 16 roots (the 15 plus `Uncategorized`) against 171 products.
+now reads 16 roots (the 15 plus `Uncategorized`) against 183 products, counted on 16 October.
 
 
 ---

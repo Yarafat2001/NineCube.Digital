@@ -738,3 +738,5 @@ measured bounding boxes of the controls, and writes 28 PNGs plus `docs/manual/ca
 are in the dark one, which is the only way to show that the treatment holds in both. A callout whose
 control is not on screen is reported rather than silently dropped, so the pictures cannot drift away
 from the wording in this manual without somebody noticing.
+
+This file is the source. `python tools/build_manual_docx.py` lays the same text out as `NineCube-User-Manual.docx` for print: a cover with the brand artwork, a contents list, one page break per part, and the 28 screens as numbered figures carrying the captions written here. Nothing is retyped between the two, so they cannot say different things.

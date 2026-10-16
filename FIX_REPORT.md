@@ -1,6 +1,78 @@
 # FIX_REPORT
 
-## Laptop configurations and compact SKUs ? 16 October 2026
+# Round 8 — the deck carries the product, and the manual gets a printed form
+
+Date: 2026-10-16. Brief: "update the ppt use more relevant type data give some sample screen image and
+Logo use give as professional type ppt and also give the User manual as docx file with image".
+
+## What the deck was, and what it is now
+
+`tools/build_deck.py` produced 18 slides of text and tables — accurate, but nothing of it looked like
+the system it describes, and the brand appeared only as the word "NineCube" in a title. The deck is now
+23 slides:
+
+- The cover carries `logos/ninecube-logo-vector.png`, and every content slide carries the cube mark.
+  The artwork is near-black and orange on white, so on the ink background it sits on a white plate;
+  laid straight onto `#1B181A` the black faces of the cube would have vanished. `logos/ninecube-mark.png`
+  is the cube cropped from the same file, so the mark and the logo cannot diverge.
+- Four slides show eight real screens, taken from `docs/manual/` at their true 1440×900 ratio with the
+  caption the manual gives them: the catalogue and the cart (2.1-2.2), the dashboard and the inbox
+  (2.4, 6.3), the order console and the category manager in the dark theme (3.1, 3.3), the bulk editor
+  and the movement ledger (4.2-4.3). Each names the tests that hold what the picture shows.
+- A new slide, "What is in the system, counted on 16 October", replaces adjectives with counts, and
+  says where each was counted: 183 products, all 183 with an image; 29 brands and 103 product lines;
+  43 categories to a depth of 3, 198 product-category links; 46 tags over 501 product-tag links;
+  160 in stock, 10 low, 23 out; 20 orders and 21 lines; 38 stock movements, 1,018 audit entries,
+  20 notifications; 55 endpoints (24 GET, 17 POST, 10 PUT, 4 DELETE); 13 migrations over 18 tables;
+  15,631 lines of C# and 15,554 of TypeScript and CSS.
+
+The orders are Development seed plus the browser runs, so the slide says so rather than presenting
+574.50 of mixed-BDT demo total as revenue.
+
+## The geometry audit found the branding did not fit
+
+Adding the mark to `title_bar()` put it on top of the heading on all 22 content slides — 38×26 px over
+the kicker and 38×17 px over the title — because the heading boxes ran the full text width. The cover
+title box also overshot the line below it by 29 px, and nine text boxes — three long titles and six
+notes — overflowed their frames by 10 to 38 px.
+
+Fixed in the helpers rather than slide by slide: `title_bar()` now reserves 0.78 in for the mark and
+sizes the heading by length (30 pt to 48 characters, 26 pt to 62, 23 pt beyond), and `note()` sizes its
+box from the text instead of assuming one line. Two titles were rewritten shorter rather than shrunk
+into unreadability. The deterministic audit over the rebuilt file reports **23 slides, no issues**.
+It is a geometry and shaped-text check, not a visual one: this machine has no PowerPoint or LibreOffice
+automation, so nobody has seen the slides rendered.
+
+## The manual as a document
+
+`NineCube-User-Manual.docx` (10.9 MB) is generated from `USER_MANUAL.md` by the new
+`tools/build_manual_docx.py` — nothing is retyped, so the two cannot drift. A4, 2 cm margins, Segoe UI
+with Consolas for commands, a cover with the brand artwork, a contents list built from the part and
+section headings, a page break per part, a page number in the footer, and the 28 screens as numbered
+figures at 16.2 cm with the captions the Markdown already carries. The Markdown's own legend numbering
+is kept literally, because Word list numbering restarts per list and the legends are per figure.
+
+Verified on the package rather than on screen: the zip is intact, all 14 XML parts parse, 29 media
+files are embedded (28 screens plus the logo), 3 tables came across with 6, 5 and 9 rows, 99 bullet
+and 137 numbered legend paragraphs, and no paragraph leaks `**`, a backtick, a leading `#` or a pipe —
+after the first build leaked the document's own H1, which the cover now supplies instead.
+
+## The counts the deck would have contradicted
+
+Writing the numbers down exposed three current-state sentences still claiming 171 products, which was
+true before the 12 laptop configurations in the first section of this report landed. README (two
+places) and TESTING.md now read 183 with the date and the command used. `SEED_REPORT.md` and the dated
+entries above keep their own figures, since they record runs rather than state.
+
+## Blocked, not skipped
+
+PowerPoint has `NineCube-OrderProcessing.pptx` open, so the submission filename cannot be rewritten.
+The current build is `NineCube-OrderProcessing-2026-10-16.pptx`; closing the deck and running
+`python tools/build_deck.py` puts the same 23 slides under the submission name.
+
+---
+
+## Laptop configurations and compact SKUs — 16 October 2026
 
 - Added 12 real laptop configurations across Apple, Dell, HP, Lenovo, ASUS, Acer, MSI and Walton,
   each with two checked local gallery images, concise configuration names, sourced BDT prices,
@@ -16,7 +88,7 @@
   `seed/clean/sku-migration.json`, and `web/e2e/laptop-catalogue.spec.ts`.
 
 
-## Product image database backfill ? 16 October 2026
+## Product image database backfill — 16 October 2026
 
 - Added 145 validated, locally cached source images to the products that had no database image.
 - All 171 products now load images successfully; the real browser also verified all 171 URLs.
