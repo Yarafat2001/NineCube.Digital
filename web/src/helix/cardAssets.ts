@@ -8,7 +8,7 @@
  */
 export const CARD_COUNT = 9;
 
-export const CARD_DIRECTORY = '/assets';
+export const CARD_DIRECTORY = `${import.meta.env.BASE_URL}assets`;
 
 const photoDescriptions = [
   'Coffee and handcrafted ceramic cups', 'Wireless headphones on a yellow background',
@@ -62,7 +62,7 @@ export async function loadCardAssets(request: typeof fetch = fetch): Promise<str
     // Absolute rather than root-relative: `fetch` in the test environment (jsdom + Node) needs a
     // full URL, and the resolved value is identical to the path the browser would have used.
     const manifestUrl =
-      typeof window === 'undefined' ? `${CARD_DIRECTORY}/assets.json` : new URL(`${CARD_DIRECTORY}/assets.json`, window.location.origin).toString();
+      typeof window === 'undefined' ? `${CARD_DIRECTORY}/assets.json` : new URL(`${CARD_DIRECTORY}/assets.json`, document.baseURI).toString();
 
     const response = await request(manifestUrl);
 

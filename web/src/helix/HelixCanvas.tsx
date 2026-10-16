@@ -6,6 +6,7 @@ import './showcase.css';
 import { ShowcaseHeroPhoto } from './ShowcaseHeroPhoto';
 import { CategoryPreview } from './CategoryPreview';
 import { HeroPromotions } from './HeroPromotions';
+import { DEFAULT_CARD_ASSETS } from './cardAssets';
 import { ShowcaseFooterContent } from './ShowcaseFooterContent';
 
 export interface HelixCanvasProps {
@@ -110,7 +111,7 @@ export default function HelixCanvas({ cardAssets, onFailure }: HelixCanvasProps)
     <div className="showcase" data-testid="showcase">
       <section id="introTrack" className="intro-track" ref={introTrackRef}>
         <div id="introStage" className="intro-stage" ref={introStageRef}>
-          <ShowcaseHeroPhoto src={cardAssets[0] ?? '/assets/work-01.svg'} />
+          <ShowcaseHeroPhoto src={cardAssets[0] ?? DEFAULT_CARD_ASSETS[0]} />
           <div id="introBlock" className="intro-block" ref={introBlockRef}>
             <div className="kicker">{showcaseCopy.kicker}</div>
             <h1>
