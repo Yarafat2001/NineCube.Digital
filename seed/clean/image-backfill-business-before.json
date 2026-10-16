@@ -1,0 +1,1283 @@
+[
+  {
+    "Id": 1,
+    "Sku": "NC-1001",
+    "Price": 249.0,
+    "StockQuantity": 11,
+    "IsActive": true
+  },
+  {
+    "Id": 2,
+    "Sku": "NC-1002",
+    "Price": 39.9,
+    "StockQuantity": 4,
+    "IsActive": true
+  },
+  {
+    "Id": 3,
+    "Sku": "NC-1003",
+    "Price": 89.5,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 4,
+    "Sku": "NC-1004",
+    "Price": 64.0,
+    "StockQuantity": 18,
+    "IsActive": true
+  },
+  {
+    "Id": 5,
+    "Sku": "NC-1005",
+    "Price": 6.75,
+    "StockQuantity": 226,
+    "IsActive": true
+  },
+  {
+    "Id": 6,
+    "Sku": "NC-1006",
+    "Price": 24.0,
+    "StockQuantity": 3,
+    "IsActive": true
+  },
+  {
+    "Id": 7,
+    "Sku": "NC-1007",
+    "Price": 32.4,
+    "StockQuantity": 60,
+    "IsActive": true
+  },
+  {
+    "Id": 8,
+    "Sku": "NC-1008",
+    "Price": 45.0,
+    "StockQuantity": 5,
+    "IsActive": true
+  },
+  {
+    "Id": 9,
+    "Sku": "NC-1009",
+    "Price": 29.99,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 10,
+    "Sku": "NC-1010",
+    "Price": 14.5,
+    "StockQuantity": 96,
+    "IsActive": true
+  },
+  {
+    "Id": 11,
+    "Sku": "DJ-48",
+    "Price": 7.99,
+    "StockQuantity": 37,
+    "IsActive": true
+  },
+  {
+    "Id": 12,
+    "Sku": "DJ-49",
+    "Price": 5.99,
+    "StockQuantity": 75,
+    "IsActive": true
+  },
+  {
+    "Id": 13,
+    "Sku": "DJ-50",
+    "Price": 9.99,
+    "StockQuantity": 73,
+    "IsActive": true
+  },
+  {
+    "Id": 14,
+    "Sku": "DJ-51",
+    "Price": 39.99,
+    "StockQuantity": 9,
+    "IsActive": true
+  },
+  {
+    "Id": 15,
+    "Sku": "DJ-52",
+    "Price": 29.99,
+    "StockQuantity": 40,
+    "IsActive": true
+  },
+  {
+    "Id": 16,
+    "Sku": "DJ-53",
+    "Price": 12.99,
+    "StockQuantity": 14,
+    "IsActive": true
+  },
+  {
+    "Id": 17,
+    "Sku": "DJ-54",
+    "Price": 8.99,
+    "StockQuantity": 22,
+    "IsActive": true
+  },
+  {
+    "Id": 18,
+    "Sku": "DJ-55",
+    "Price": 6.99,
+    "StockQuantity": 40,
+    "IsActive": true
+  },
+  {
+    "Id": 19,
+    "Sku": "DJ-56",
+    "Price": 49.99,
+    "StockQuantity": 21,
+    "IsActive": true
+  },
+  {
+    "Id": 20,
+    "Sku": "DJ-57",
+    "Price": 9.99,
+    "StockQuantity": 85,
+    "IsActive": true
+  },
+  {
+    "Id": 21,
+    "Sku": "DJ-58",
+    "Price": 3.99,
+    "StockQuantity": 7,
+    "IsActive": true
+  },
+  {
+    "Id": 22,
+    "Sku": "DJ-59",
+    "Price": 4.99,
+    "StockQuantity": 46,
+    "IsActive": true
+  },
+  {
+    "Id": 23,
+    "Sku": "DJ-60",
+    "Price": 10.99,
+    "StockQuantity": 84,
+    "IsActive": true
+  },
+  {
+    "Id": 24,
+    "Sku": "DJ-61",
+    "Price": 34.99,
+    "StockQuantity": 84,
+    "IsActive": true
+  },
+  {
+    "Id": 25,
+    "Sku": "DJ-62",
+    "Price": 5.99,
+    "StockQuantity": 13,
+    "IsActive": true
+  },
+  {
+    "Id": 26,
+    "Sku": "DJ-63",
+    "Price": 7.99,
+    "StockQuantity": 68,
+    "IsActive": true
+  },
+  {
+    "Id": 57,
+    "Sku": "BD-LEGA-PROD-57-CF8F21",
+    "Price": 45000.0,
+    "StockQuantity": 20,
+    "IsActive": true
+  },
+  {
+    "Id": 58,
+    "Sku": "BD-LEGA-PROD-58-4683A6",
+    "Price": 40000.0,
+    "StockQuantity": 85,
+    "IsActive": true
+  },
+  {
+    "Id": 59,
+    "Sku": "BD-LEGA-PROD-59-EEBE2D",
+    "Price": 14000.0,
+    "StockQuantity": 78,
+    "IsActive": true
+  },
+  {
+    "Id": 60,
+    "Sku": "BD-LEGA-PROD-60-F12D5D",
+    "Price": 40000.0,
+    "StockQuantity": 180,
+    "IsActive": true
+  },
+  {
+    "Id": 61,
+    "Sku": "BD-LEGA-PROD-61-66F585",
+    "Price": 35000.0,
+    "StockQuantity": 103,
+    "IsActive": true
+  },
+  {
+    "Id": 62,
+    "Sku": "BD-LEGA-PROD-62-4BE14D",
+    "Price": 55000.0,
+    "StockQuantity": 80,
+    "IsActive": true
+  },
+  {
+    "Id": 63,
+    "Sku": "BD-LEGA-PROD-63-516F55",
+    "Price": 24000.0,
+    "StockQuantity": 122,
+    "IsActive": true
+  },
+  {
+    "Id": 64,
+    "Sku": "BD-LEGA-PROD-64-EB70A6",
+    "Price": 30000.0,
+    "StockQuantity": 179,
+    "IsActive": true
+  },
+  {
+    "Id": 65,
+    "Sku": "BD-LEGA-PROD-65-4D27F7",
+    "Price": 22000.0,
+    "StockQuantity": 142,
+    "IsActive": true
+  },
+  {
+    "Id": 66,
+    "Sku": "BD-LEGA-PROD-66-F261F1",
+    "Price": 28000.0,
+    "StockQuantity": 105,
+    "IsActive": true
+  },
+  {
+    "Id": 67,
+    "Sku": "BD-LEGA-PROD-67-1A7876",
+    "Price": 25.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 68,
+    "Sku": "BD-LEGA-PROD-68-C19D5F",
+    "Price": 20.0,
+    "StockQuantity": 26,
+    "IsActive": true
+  },
+  {
+    "Id": 69,
+    "Sku": "BD-LEGA-PROD-69-2788C3",
+    "Price": 230.0,
+    "StockQuantity": 142,
+    "IsActive": true
+  },
+  {
+    "Id": 70,
+    "Sku": "BD-LEGA-PROD-70-2AC6E3",
+    "Price": 30.0,
+    "StockQuantity": 100,
+    "IsActive": true
+  },
+  {
+    "Id": 71,
+    "Sku": "BD-LEGA-PROD-71-56571D",
+    "Price": 130.0,
+    "StockQuantity": 40,
+    "IsActive": true
+  },
+  {
+    "Id": 72,
+    "Sku": "BD-LEGA-PROD-72-911506",
+    "Price": 160.0,
+    "StockQuantity": 64,
+    "IsActive": true
+  },
+  {
+    "Id": 73,
+    "Sku": "BD-LEGA-PROD-73-C1A96C",
+    "Price": 50.0,
+    "StockQuantity": 26,
+    "IsActive": true
+  },
+  {
+    "Id": 74,
+    "Sku": "BD-LEGA-PROD-74-9DC0B0",
+    "Price": 630.0,
+    "StockQuantity": 75,
+    "IsActive": true
+  },
+  {
+    "Id": 75,
+    "Sku": "BD-LEGA-PROD-75-A47327",
+    "Price": 360.0,
+    "StockQuantity": 198,
+    "IsActive": true
+  },
+  {
+    "Id": 76,
+    "Sku": "BD-LEGA-PROD-76-1CDAAC",
+    "Price": 15.0,
+    "StockQuantity": 87,
+    "IsActive": true
+  },
+  {
+    "Id": 77,
+    "Sku": "BD-LEGA-PROD-77-44588B",
+    "Price": 200.0,
+    "StockQuantity": 35,
+    "IsActive": true
+  },
+  {
+    "Id": 78,
+    "Sku": "BD-LEGA-PROD-78-296012",
+    "Price": 200.0,
+    "StockQuantity": 169,
+    "IsActive": true
+  },
+  {
+    "Id": 79,
+    "Sku": "BD-LEGA-PROD-79-E5AB11",
+    "Price": 15.0,
+    "StockQuantity": 32,
+    "IsActive": true
+  },
+  {
+    "Id": 80,
+    "Sku": "BD-LEGA-PROD-80-9ED7DB",
+    "Price": 35.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 81,
+    "Sku": "BD-LEGA-PROD-81-E93C67",
+    "Price": 720.0,
+    "StockQuantity": 148,
+    "IsActive": true
+  },
+  {
+    "Id": 89,
+    "Sku": "BD-MOTO-HELM-SIZE-5E6486",
+    "Price": 1300.0,
+    "StockQuantity": 101,
+    "IsActive": true
+  },
+  {
+    "Id": 90,
+    "Sku": "BD-CAR-CLEA-KIT-76ECD6",
+    "Price": 500.0,
+    "StockQuantity": 38,
+    "IsActive": true
+  },
+  {
+    "Id": 91,
+    "Sku": "BD-APEX-CROS-MEN-8BCE88",
+    "Price": 2990.0,
+    "StockQuantity": 40,
+    "IsActive": true
+  },
+  {
+    "Id": 92,
+    "Sku": "BD-BATA-POWE-FANN-6262DC",
+    "Price": 799.0,
+    "StockQuantity": 37,
+    "IsActive": true
+  },
+  {
+    "Id": 93,
+    "Sku": "BD-APEX-NINO-ROSS-AA8144",
+    "Price": 1690.0,
+    "StockQuantity": 102,
+    "IsActive": true
+  },
+  {
+    "Id": 94,
+    "Sku": "BD-BATA-POWE-FANN-304FEF",
+    "Price": 799.0,
+    "StockQuantity": 36,
+    "IsActive": true
+  },
+  {
+    "Id": 95,
+    "Sku": "BD-APEX-NINO-ROSS-8FDCA6",
+    "Price": 2690.0,
+    "StockQuantity": 39,
+    "IsActive": true
+  },
+  {
+    "Id": 96,
+    "Sku": "BD-APEX-NINO-ROSS-6C4CD9",
+    "Price": 2490.0,
+    "StockQuantity": 85,
+    "IsActive": true
+  },
+  {
+    "Id": 97,
+    "Sku": "BD-APEX-POLI-MEN-3EA445",
+    "Price": 2990.0,
+    "StockQuantity": 95,
+    "IsActive": true
+  },
+  {
+    "Id": 98,
+    "Sku": "BD-APEX-POLI-MEN-1EB4A7",
+    "Price": 3490.0,
+    "StockQuantity": 49,
+    "IsActive": true
+  },
+  {
+    "Id": 99,
+    "Sku": "BD-APEX-POLI-MEN-13F029",
+    "Price": 2490.0,
+    "StockQuantity": 64,
+    "IsActive": true
+  },
+  {
+    "Id": 100,
+    "Sku": "BD-APEX-VENT-MENS-71E1F5",
+    "Price": 1290.0,
+    "StockQuantity": 50,
+    "IsActive": true
+  },
+  {
+    "Id": 101,
+    "Sku": "BD-APEX-VENT-MENS-95ED63",
+    "Price": 1990.0,
+    "StockQuantity": 48,
+    "IsActive": true
+  },
+  {
+    "Id": 102,
+    "Sku": "BD-HATI-DAZZ-101-12B63C",
+    "Price": 77150.0,
+    "StockQuantity": 96,
+    "IsActive": true
+  },
+  {
+    "Id": 103,
+    "Sku": "BD-HATI-DESI-154-52B219",
+    "Price": 80200.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 104,
+    "Sku": "BD-HATI-ELEG-189-93F10C",
+    "Price": 58900.0,
+    "StockQuantity": 34,
+    "IsActive": true
+  },
+  {
+    "Id": 105,
+    "Sku": "BD-HATI-EPIP-115-0201B6",
+    "Price": 54600.0,
+    "StockQuantity": 46,
+    "IsActive": true
+  },
+  {
+    "Id": 106,
+    "Sku": "BD-HATI-GETA-207-646C35",
+    "Price": 70000.0,
+    "StockQuantity": 118,
+    "IsActive": true
+  },
+  {
+    "Id": 107,
+    "Sku": "BD-HATI-KENT-187-300228",
+    "Price": 52800.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 108,
+    "Sku": "BD-HATI-MIRA-175-7A9D44",
+    "Price": 42400.0,
+    "StockQuantity": 46,
+    "IsActive": true
+  },
+  {
+    "Id": 109,
+    "Sku": "BD-HATI-MYTH-184-D92CD6",
+    "Price": 49400.0,
+    "StockQuantity": 112,
+    "IsActive": true
+  },
+  {
+    "Id": 110,
+    "Sku": "BD-HATI-NEME-197-605BA8",
+    "Price": 82200.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 111,
+    "Sku": "BD-HATI-THRI-162-525004",
+    "Price": 52200.0,
+    "StockQuantity": 74,
+    "IsActive": true
+  },
+  {
+    "Id": 112,
+    "Sku": "BD-HATI-TIAR-190-48C63B",
+    "Price": 61900.0,
+    "StockQuantity": 51,
+    "IsActive": true
+  },
+  {
+    "Id": 113,
+    "Sku": "BD-HATI-VEGA-128-CDB0C9",
+    "Price": 68000.0,
+    "StockQuantity": 116,
+    "IsActive": true
+  },
+  {
+    "Id": 114,
+    "Sku": "BD-HATI-ALES-204-0C4DD4",
+    "Price": 27950.0,
+    "StockQuantity": 109,
+    "IsActive": true
+  },
+  {
+    "Id": 115,
+    "Sku": "BD-HATI-ARIA-132-348DC7",
+    "Price": 24600.0,
+    "StockQuantity": 88,
+    "IsActive": true
+  },
+  {
+    "Id": 116,
+    "Sku": "BD-HATI-BAGP-133-558D01",
+    "Price": 35900.0,
+    "StockQuantity": 36,
+    "IsActive": true
+  },
+  {
+    "Id": 117,
+    "Sku": "BD-HATI-BELI-138-026F89",
+    "Price": 37112.0,
+    "StockQuantity": 69,
+    "IsActive": true
+  },
+  {
+    "Id": 118,
+    "Sku": "BD-HATI-BENC-333-361F86",
+    "Price": 16800.0,
+    "StockQuantity": 43,
+    "IsActive": true
+  },
+  {
+    "Id": 119,
+    "Sku": "BD-HATI-BORG-208-917388",
+    "Price": 30075.0,
+    "StockQuantity": 51,
+    "IsActive": true
+  },
+  {
+    "Id": 120,
+    "Sku": "BD-HATI-BROO-325-D8528D",
+    "Price": 21700.0,
+    "StockQuantity": 53,
+    "IsActive": true
+  },
+  {
+    "Id": 121,
+    "Sku": "BD-HATI-BURG-327-B9B687",
+    "Price": 21700.0,
+    "StockQuantity": 39,
+    "IsActive": true
+  },
+  {
+    "Id": 122,
+    "Sku": "BD-HATI-CEZA-112-71B9B8",
+    "Price": 11000.0,
+    "StockQuantity": 49,
+    "IsActive": true
+  },
+  {
+    "Id": 123,
+    "Sku": "BD-HATI-CEZA-112-D1DB4E",
+    "Price": 11000.0,
+    "StockQuantity": 4,
+    "IsActive": true
+  },
+  {
+    "Id": 124,
+    "Sku": "BD-HATI-CLIV-332-FBE52C",
+    "Price": 18100.0,
+    "StockQuantity": 82,
+    "IsActive": true
+  },
+  {
+    "Id": 125,
+    "Sku": "BD-HATI-CORN-330-06FB9F",
+    "Price": 23600.0,
+    "StockQuantity": 83,
+    "IsActive": true
+  },
+  {
+    "Id": 126,
+    "Sku": "BD-HATI-COSY-101-67749F",
+    "Price": 18100.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 127,
+    "Sku": "BD-HATI-COUP-134-725FDB",
+    "Price": 28625.0,
+    "StockQuantity": 81,
+    "IsActive": true
+  },
+  {
+    "Id": 128,
+    "Sku": "BD-HATI-DEGA-103-391A31",
+    "Price": 21000.0,
+    "StockQuantity": 3,
+    "IsActive": true
+  },
+  {
+    "Id": 129,
+    "Sku": "BD-SOYB-COOK-OIL-CA6651",
+    "Price": 850.0,
+    "StockQuantity": 81,
+    "IsActive": true
+  },
+  {
+    "Id": 130,
+    "Sku": "BD-COCO-OIL-1-L-6B3E27",
+    "Price": 420.0,
+    "StockQuantity": 53,
+    "IsActive": true
+  },
+  {
+    "Id": 131,
+    "Sku": "BD-MOIS-FACE-CREA-6EEEB7",
+    "Price": 250.0,
+    "StockQuantity": 45,
+    "IsActive": true
+  },
+  {
+    "Id": 132,
+    "Sku": "BD-LIPS-846750",
+    "Price": 450.0,
+    "StockQuantity": 80,
+    "IsActive": true
+  },
+  {
+    "Id": 133,
+    "Sku": "BD-ROSE-ATTA-10-M-FC70F2",
+    "Price": 600.0,
+    "StockQuantity": 63,
+    "IsActive": true
+  },
+  {
+    "Id": 134,
+    "Sku": "BD-BODY-SPRA-200-0F4EDF",
+    "Price": 350.0,
+    "StockQuantity": 149,
+    "IsActive": true
+  },
+  {
+    "Id": 135,
+    "Sku": "BD-TALL-TUBU-BATT-A3D4D3",
+    "Price": 7800.0,
+    "StockQuantity": 132,
+    "IsActive": true
+  },
+  {
+    "Id": 136,
+    "Sku": "BD-LAPT-8-GB-RAM-BCF03A",
+    "Price": 58000.0,
+    "StockQuantity": 76,
+    "IsActive": true
+  },
+  {
+    "Id": 137,
+    "Sku": "BD-WALT-CRYS-SERI-E79B33",
+    "Price": 650.0,
+    "StockQuantity": 43,
+    "IsActive": true
+  },
+  {
+    "Id": 138,
+    "Sku": "BD-WALT-MOON-LIGH-E270E2",
+    "Price": 70.0,
+    "StockQuantity": 53,
+    "IsActive": true
+  },
+  {
+    "Id": 139,
+    "Sku": "BD-WALT-PUBL-SERI-682E02",
+    "Price": 150.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 140,
+    "Sku": "BD-WALT-PUBL-SERI-5CD73E",
+    "Price": 755.0,
+    "StockQuantity": 106,
+    "IsActive": true
+  },
+  {
+    "Id": 141,
+    "Sku": "BD-WALT-RAIN-BULB-8F63D2",
+    "Price": 260.0,
+    "StockQuantity": 43,
+    "IsActive": true
+  },
+  {
+    "Id": 142,
+    "Sku": "BD-WALT-ULTR-SERI-CB7890",
+    "Price": 240.0,
+    "StockQuantity": 82,
+    "IsActive": true
+  },
+  {
+    "Id": 143,
+    "Sku": "BD-ORAL-REHY-SALT-7AE4CF",
+    "Price": 25.0,
+    "StockQuantity": 30,
+    "IsActive": true
+  },
+  {
+    "Id": 144,
+    "Sku": "BD-PARA-500-MG-TA-EDE701",
+    "Price": 15.0,
+    "StockQuantity": 30,
+    "IsActive": true
+  },
+  {
+    "Id": 145,
+    "Sku": "BD-125C-COMM-MOTO-5B2863",
+    "Price": 185000.0,
+    "StockQuantity": 49,
+    "IsActive": true
+  },
+  {
+    "Id": 146,
+    "Sku": "BD-COTT-PANJ-61CA07",
+    "Price": 1800.0,
+    "StockQuantity": 64,
+    "IsActive": true
+  },
+  {
+    "Id": 147,
+    "Sku": "BD-EMBR-EID-PANJ-DBF2B0",
+    "Price": 3500.0,
+    "StockQuantity": 54,
+    "IsActive": true
+  },
+  {
+    "Id": 148,
+    "Sku": "BD-WALT-WFC-3D8-G-406171",
+    "Price": 59390.0,
+    "StockQuantity": 48,
+    "IsActive": true
+  },
+  {
+    "Id": 149,
+    "Sku": "BD-WALT-WFC-3D8-G-4FE6B1",
+    "Price": 59590.0,
+    "StockQuantity": 91,
+    "IsActive": true
+  },
+  {
+    "Id": 150,
+    "Sku": "BD-WALT-WFC-3F5-I-4137EE",
+    "Price": 61290.0,
+    "StockQuantity": 63,
+    "IsActive": true
+  },
+  {
+    "Id": 151,
+    "Sku": "BD-WALT-WFE-3A2-G-052E6D",
+    "Price": 50190.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 152,
+    "Sku": "BD-WALT-WFE-3A2-G-E0A7A5",
+    "Price": 50490.0,
+    "StockQuantity": 68,
+    "IsActive": true
+  },
+  {
+    "Id": 153,
+    "Sku": "BD-WALT-WFE-3B0-G-4C2AB4",
+    "Price": 51690.0,
+    "StockQuantity": 81,
+    "IsActive": true
+  },
+  {
+    "Id": 154,
+    "Sku": "BD-WALT-WFE-3B0-G-713B3F",
+    "Price": 55190.0,
+    "StockQuantity": 34,
+    "IsActive": true
+  },
+  {
+    "Id": 155,
+    "Sku": "BD-WALT-WFE-3B0-G-2E23AA",
+    "Price": 51990.0,
+    "StockQuantity": 103,
+    "IsActive": true
+  },
+  {
+    "Id": 156,
+    "Sku": "BD-WALT-WFE-3B0-G-C7B897",
+    "Price": 50690.0,
+    "StockQuantity": 77,
+    "IsActive": true
+  },
+  {
+    "Id": 157,
+    "Sku": "BD-WALT-WFE-3C3-G-802C28",
+    "Price": 53690.0,
+    "StockQuantity": 96,
+    "IsActive": true
+  },
+  {
+    "Id": 158,
+    "Sku": "BD-WALT-WFE-3C3-G-ED3DAB",
+    "Price": 51790.0,
+    "StockQuantity": 115,
+    "IsActive": true
+  },
+  {
+    "Id": 159,
+    "Sku": "BD-WALT-WFE-3C3-G-38B36B",
+    "Price": 50990.0,
+    "StockQuantity": 62,
+    "IsActive": true
+  },
+  {
+    "Id": 160,
+    "Sku": "BD-WALT-WFE-3E8-G-5B837A",
+    "Price": 53790.0,
+    "StockQuantity": 117,
+    "IsActive": true
+  },
+  {
+    "Id": 161,
+    "Sku": "BD-WALT-WFE-3E8-G-5E4C95",
+    "Price": 58690.0,
+    "StockQuantity": 46,
+    "IsActive": true
+  },
+  {
+    "Id": 162,
+    "Sku": "BD-WALT-WFE-3E8-G-906761",
+    "Price": 54290.0,
+    "StockQuantity": 91,
+    "IsActive": true
+  },
+  {
+    "Id": 163,
+    "Sku": "BD-MINI-RICE-5-KG-34AEC5",
+    "Price": 650.0,
+    "StockQuantity": 58,
+    "IsActive": true
+  },
+  {
+    "Id": 164,
+    "Sku": "BD-BASM-RICE-1-KG-75BDC1",
+    "Price": 380.0,
+    "StockQuantity": 98,
+    "IsActive": true
+  },
+  {
+    "Id": 165,
+    "Sku": "BD-COTT-SARE-A6D9EB",
+    "Price": 3000.0,
+    "StockQuantity": 30,
+    "IsActive": true
+  },
+  {
+    "Id": 166,
+    "Sku": "BD-JAMD-STYL-SARE-BF4F58",
+    "Price": 8000.0,
+    "StockQuantity": 200,
+    "IsActive": true
+  },
+  {
+    "Id": 167,
+    "Sku": "BD-MEN-COTT-CASU-055A81",
+    "Price": 1100.0,
+    "StockQuantity": 91,
+    "IsActive": true
+  },
+  {
+    "Id": 168,
+    "Sku": "BD-MEN-FORM-DRES-808376",
+    "Price": 1800.0,
+    "StockQuantity": 171,
+    "IsActive": true
+  },
+  {
+    "Id": 169,
+    "Sku": "BD-APEX-ADID-DURA-2E013B",
+    "Price": 12000.0,
+    "StockQuantity": 45,
+    "IsActive": true
+  },
+  {
+    "Id": 170,
+    "Sku": "BD-BATA-BATA-MEN-DB5496",
+    "Price": 4999.0,
+    "StockQuantity": 52,
+    "IsActive": true
+  },
+  {
+    "Id": 171,
+    "Sku": "BD-APEX-ADID-FORD-E61385",
+    "Price": 14000.0,
+    "StockQuantity": 85,
+    "IsActive": true
+  },
+  {
+    "Id": 172,
+    "Sku": "BD-BATA-BATA-MEN-26B606",
+    "Price": 4999.0,
+    "StockQuantity": 41,
+    "IsActive": true
+  },
+  {
+    "Id": 173,
+    "Sku": "BD-APEX-ADID-QUES-EA6518",
+    "Price": 13000.0,
+    "StockQuantity": 74,
+    "IsActive": true
+  },
+  {
+    "Id": 174,
+    "Sku": "BD-BATA-BATA-MEN-A83D04",
+    "Price": 5999.0,
+    "StockQuantity": 46,
+    "IsActive": true
+  },
+  {
+    "Id": 175,
+    "Sku": "BD-APEX-ADID-QUST-443F29",
+    "Price": 9990.0,
+    "StockQuantity": 81,
+    "IsActive": true
+  },
+  {
+    "Id": 176,
+    "Sku": "BD-BATA-BATA-MEN-1AB91F",
+    "Price": 2699.0,
+    "StockQuantity": 3,
+    "IsActive": true
+  },
+  {
+    "Id": 177,
+    "Sku": "BD-APEX-ADID-ULTR-BC3344",
+    "Price": 14000.0,
+    "StockQuantity": 90,
+    "IsActive": true
+  },
+  {
+    "Id": 178,
+    "Sku": "BD-BATA-BATA-MEN-396A47",
+    "Price": 1999.0,
+    "StockQuantity": 34,
+    "IsActive": true
+  },
+  {
+    "Id": 179,
+    "Sku": "BD-APEX-APEX-MEN-35C3B0",
+    "Price": 1990.0,
+    "StockQuantity": 119,
+    "IsActive": true
+  },
+  {
+    "Id": 180,
+    "Sku": "BD-BATA-BATA-MEN-AB0A4D",
+    "Price": 1999.0,
+    "StockQuantity": 102,
+    "IsActive": true
+  },
+  {
+    "Id": 181,
+    "Sku": "BD-APEX-APEX-MENS-74DE95",
+    "Price": 1290.0,
+    "StockQuantity": 46,
+    "IsActive": true
+  },
+  {
+    "Id": 182,
+    "Sku": "BD-BATA-BATA-MEN-DCAF13",
+    "Price": 1999.0,
+    "StockQuantity": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 183,
+    "Sku": "BD-APEX-APEX-MENS-E0FB23",
+    "Price": 3490.0,
+    "StockQuantity": 36,
+    "IsActive": true
+  },
+  {
+    "Id": 184,
+    "Sku": "BD-WALT-NEXG-N10-AC4DE5",
+    "Price": 18499.0,
+    "StockQuantity": 105,
+    "IsActive": true
+  },
+  {
+    "Id": 185,
+    "Sku": "BD-WALT-NEXG-N26-741839",
+    "Price": 16499.0,
+    "StockQuantity": 110,
+    "IsActive": true
+  },
+  {
+    "Id": 186,
+    "Sku": "BD-WALT-NEXG-N27-EB7257",
+    "Price": 15999.0,
+    "StockQuantity": 48,
+    "IsActive": true
+  },
+  {
+    "Id": 187,
+    "Sku": "BD-WALT-NEXG-N28-74BA9E",
+    "Price": 20499.0,
+    "StockQuantity": 42,
+    "IsActive": true
+  },
+  {
+    "Id": 188,
+    "Sku": "BD-WALT-NEXG-N28-50901A",
+    "Price": 22999.0,
+    "StockQuantity": 86,
+    "IsActive": true
+  },
+  {
+    "Id": 189,
+    "Sku": "BD-WALT-NEXG-N74-0D4615",
+    "Price": 14999.0,
+    "StockQuantity": 118,
+    "IsActive": true
+  },
+  {
+    "Id": 190,
+    "Sku": "BD-WALT-NEXG-N75-934916",
+    "Price": 14738.0,
+    "StockQuantity": 3,
+    "IsActive": true
+  },
+  {
+    "Id": 191,
+    "Sku": "BD-WALT-NEXG-N76-FC6EF6",
+    "Price": 16999.0,
+    "StockQuantity": 109,
+    "IsActive": true
+  },
+  {
+    "Id": 192,
+    "Sku": "BD-WALT-NEXG-N77-AFA92E",
+    "Price": 18999.0,
+    "StockQuantity": 71,
+    "IsActive": true
+  },
+  {
+    "Id": 193,
+    "Sku": "BD-WALT-ORBI-Y13-3E0F86",
+    "Price": 7999.0,
+    "StockQuantity": 91,
+    "IsActive": true
+  },
+  {
+    "Id": 194,
+    "Sku": "BD-WALT-ORBI-Y70C-7893B6",
+    "Price": 9049.0,
+    "StockQuantity": 55,
+    "IsActive": true
+  },
+  {
+    "Id": 195,
+    "Sku": "BD-WALT-ORBI-Y71-25D1BA",
+    "Price": 13499.0,
+    "StockQuantity": 100,
+    "IsActive": true
+  },
+  {
+    "Id": 196,
+    "Sku": "BD-WALT-ORBI-Y72-20659E",
+    "Price": 16499.0,
+    "StockQuantity": 34,
+    "IsActive": true
+  },
+  {
+    "Id": 197,
+    "Sku": "BD-WALT-XANO-X1-U-D9736A",
+    "Price": 19693.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 198,
+    "Sku": "BD-WALT-XANO-X21-7D1EFD",
+    "Price": 23006.0,
+    "StockQuantity": 41,
+    "IsActive": true
+  },
+  {
+    "Id": 199,
+    "Sku": "BD-WALT-XANO-X22-8835DC",
+    "Price": 25999.0,
+    "StockQuantity": 54,
+    "IsActive": true
+  },
+  {
+    "Id": 200,
+    "Sku": "BD-WALT-XANO-X50-5D87FF",
+    "Price": 30999.0,
+    "StockQuantity": 68,
+    "IsActive": true
+  },
+  {
+    "Id": 201,
+    "Sku": "BD-WALT-XANO-X91-2AEC11",
+    "Price": 31369.0,
+    "StockQuantity": 70,
+    "IsActive": true
+  },
+  {
+    "Id": 202,
+    "Sku": "BD-WALT-ZENX-2-67CE99",
+    "Price": 15999.0,
+    "StockQuantity": 98,
+    "IsActive": true
+  },
+  {
+    "Id": 203,
+    "Sku": "BD-WALT-ZENX-Z3-8861AF",
+    "Price": 16499.0,
+    "StockQuantity": 86,
+    "IsActive": true
+  },
+  {
+    "Id": 204,
+    "Sku": "BD-CRIC-BAT-EF390A",
+    "Price": 2500.0,
+    "StockQuantity": 49,
+    "IsActive": true
+  },
+  {
+    "Id": 205,
+    "Sku": "BD-BADM-RACK-SET-8FCF36",
+    "Price": 1200.0,
+    "StockQuantity": 44,
+    "IsActive": true
+  },
+  {
+    "Id": 206,
+    "Sku": "BD-INTE-PLAS-PAIN-132395",
+    "Price": 1100.0,
+    "StockQuantity": 164,
+    "IsActive": true
+  },
+  {
+    "Id": 207,
+    "Sku": "BD-EXTE-EMUL-PAIN-4D626F",
+    "Price": 2600.0,
+    "StockQuantity": 52,
+    "IsActive": true
+  },
+  {
+    "Id": 208,
+    "Sku": "BD-ANAL-WRIS-WATC-B57A76",
+    "Price": 1400.0,
+    "StockQuantity": 57,
+    "IsActive": true
+  },
+  {
+    "Id": 217,
+    "Sku": "BD-APPL-MACB-AIR-FDAAD1",
+    "Price": 161500.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 218,
+    "Sku": "BD-MSI-RAID-18-HX-C8E76A",
+    "Price": 630000.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 219,
+    "Sku": "BD-WALT-PREL-N41-F03720",
+    "Price": 28500.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 220,
+    "Sku": "BD-ACER-ASPI-3-A3-11D6DD",
+    "Price": 57000.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 221,
+    "Sku": "BD-LENO-IDEA-1-15-DD9BFE",
+    "Price": 72500.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 222,
+    "Sku": "BD-DELL-PRO-15-PV-871A89",
+    "Price": 72900.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 223,
+    "Sku": "BD-ACER-ASPI-LITE-1A3A43",
+    "Price": 72900.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 224,
+    "Sku": "BD-HP-15-FC06-8GB-B7CF5C",
+    "Price": 95000.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 225,
+    "Sku": "BD-ASUS-VIVO-14-A-D2833A",
+    "Price": 93000.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 226,
+    "Sku": "BD-MSI-MODE-15-F1-45BA5B",
+    "Price": 94500.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 227,
+    "Sku": "BD-DELL-INSP-3530-D39C5D",
+    "Price": 94000.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  },
+  {
+    "Id": 228,
+    "Sku": "BD-LENO-IDEA-SLIM-00FF31",
+    "Price": 99000.0,
+    "StockQuantity": 0,
+    "IsActive": true
+  }
+]

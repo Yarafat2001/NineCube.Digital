@@ -1,0 +1,129 @@
+
+Running 15 tests using 1 worker
+
+  x  1 [chromium] › catalogue-images.spec.ts:45:3 › Catalogue cards › fits the viewport at every width, keeps the SKU off the card and always shows media (42.9s)
+  ok 2 [chromium] › catalogue-images.spec.ts:94:3 › Product pictures › an upload is stored, served from /uploads and drawn on the card (1.8m)
+  x  3 [chromium] › catalogue-images.spec.ts:155:3 › Brand and series filter › a deep link restores the selection, the chips and the result count (7.3m)
+  x  4 [chromium] › order-flow.spec.ts:45:3 › order flow › a customer reserves stock and a staff member confirms the order (27.5s)
+  ok 5 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1024px (18.5s)
+WIDTH 1280px {"documentOverflow":0,"panelClientWidth":280,"panelOverflow":0,"panelPosition":"sticky","panelTop":428,"panelBottom":1109,"navbarBottom":91,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":800}
+  ok 6 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px (11.1s)
+WIDTH 1440px {"documentOverflow":0,"panelClientWidth":315,"panelOverflow":0,"panelPosition":"sticky","panelTop":431,"panelBottom":1212,"navbarBottom":91,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":900}
+  ok 7 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1440px (13.7s)
+  ok 8 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1920px (14.8s)
+  ok 9 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px at 125% zoom (18.4s)
+  ok 10 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px at 150% zoom (18.9s)
+  ok 11 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1440px at 150% zoom (9.0s)
+WIDTH 1920px at 150% zoom {"documentOverflow":0,"panelClientWidth":280,"panelOverflow":0,"panelPosition":"sticky","panelTop":428,"panelBottom":1029,"navbarBottom":91,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":720}
+  ok 12 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1920px at 150% zoom (14.7s)
+STUCK  {"documentOverflow":0,"panelClientWidth":315,"panelOverflow":0,"panelPosition":"sticky","panelTop":103,"panelBottom":884,"navbarBottom":87,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":900} {"offset":103,"panelHeight":781,"stuckFrom":328,"stuckUntil":555}
+INSIDE {"headerBefore":{"x":33,"y":104,"width":314.796875,"height":66.6875},"headerAfter":{"x":33,"y":104,"width":314.796875,"height":66.6875},"bodyScroll":400}
+  ok 13 [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body (22.7s)
+  ok 14 [chromium] › sidebar-layout.spec.ts:140:3 › catalogue sidebar layout › keeps the header popovers inside the viewport (19.4s)
+  ok 15 [chromium] › sidebar-layout.spec.ts:163:3 › catalogue sidebar layout › photographs the fixed sidebar at 1280 and 1440 (22.6s)
+
+
+  1) [chromium] › catalogue-images.spec.ts:45:3 › Catalogue cards › fits the viewport at every width, keeps the SKU off the card and always shows media 
+
+    Error: the grid never goes multi-column at 768px
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThanOrEqual[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: >= [32m2[39m
+    Received:    [31m1[39m
+
+      83 |       // 320px fits a single 200px column; every wider viewport must place cards side by side.
+      84 |       const widestRow = Math.max(...[...rows.values()].map(heights => heights.length));
+    > 85 |       expect(widestRow, `the grid never goes multi-column at ${width}px`).toBeGreaterThanOrEqual(width >= 480 ? 2 : 1);
+         |                                                                           ^
+      86 |     }
+      87 |   });
+      88 | });
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\catalogue-images.spec.ts:85:75
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\catalogue-images-Catalogue-53983-card-and-always-shows-media-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\catalogue-images-Catalogue-53983-card-and-always-shows-media-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\catalogue-images-Catalogue-53983-card-and-always-shows-media-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › catalogue-images.spec.ts:155:3 › Brand and series filter › a deep link restores the selection, the chips and the result count 
+
+    [31mTest timeout of 300000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 300000ms exceeded.
+    Call log:
+      [2m- waiting for getByRole('button', { name: 'Reset all filters' })[22m
+
+
+      183 |     await expect(page.getByText(new RegExp(`${promised} products? found`))).toBeVisible(LOADED);
+      184 |
+    > 185 |     await page.getByRole('button', { name: 'Reset all filters' }).click();
+          |                                                                   ^
+      186 |     await expect(page).toHaveURL(/\/products$/);
+      187 |   });
+      188 | });
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\catalogue-images.spec.ts:185:67
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\catalogue-images-Brand-and-8698c--chips-and-the-result-count-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\catalogue-images-Brand-and-8698c--chips-and-the-result-count-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\catalogue-images-Brand-and-8698c--chips-and-the-result-count-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › order-flow.spec.ts:45:3 › order flow › a customer reserves stock and a staff member confirms the order 
+
+    Error: [31mTimed out 15000ms waiting for [39m[2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m()[22m
+
+    Locator: locator('article').filter({ hasText: 'Paper Filters (100 pack)' })
+    Expected: visible
+    Received: <element(s) not found>
+    Call log:
+      [2m- expect.toBeVisible with timeout 15000ms[22m
+    [2m  - waiting for locator('article').filter({ hasText: 'Paper Filters (100 pack)' })[22m
+
+
+      50 |
+      51 |     const card = productCard(page, sku);
+    > 52 |     await expect(card).toBeVisible();
+         |                        ^
+      53 |
+      54 |     const before = await stockOf(card);
+      55 |
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\order-flow.spec.ts:52:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\order-flow-order-flow-a-cu-e20de-f-member-confirms-the-order-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\order-flow-order-flow-a-cu-e20de-f-member-confirms-the-order-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\order-flow-order-flow-a-cu-e20de-f-member-confirms-the-order-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Slow test file: [chromium] › sidebar-layout.spec.ts (3.1m)
+  Slow test file: [chromium] › order-flow.spec.ts (27.5s)
+  Consider splitting slow test files to speed up parallel execution
+  3 failed
+    [chromium] › catalogue-images.spec.ts:45:3 › Catalogue cards › fits the viewport at every width, keeps the SKU off the card and always shows media 
+    [chromium] › catalogue-images.spec.ts:155:3 › Brand and series filter › a deep link restores the selection, the chips and the result count 
+    [chromium] › order-flow.spec.ts:45:3 › order flow › a customer reserves stock and a staff member confirms the order 
+  12 passed (14.8m)

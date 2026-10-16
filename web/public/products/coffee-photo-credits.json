@@ -1,0 +1,102 @@
+[
+  {
+    "sku": "NC-1001",
+    "name": "Espresso Machine Pro",
+    "filename": "nc-1001.jpg",
+    "photographer": "Crew",
+    "source": "https://unsplash.com/photos/9rTEwV_G0Do",
+    "image": "https://images.unsplash.com/photo-1461988091159-192b6df7054f?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1002",
+    "name": "Milk Frother",
+    "filename": "nc-1002.jpg",
+    "photographer": "Ashkan Forouzani",
+    "source": "https://unsplash.com/photos/4F15y143dIs",
+    "image": "https://images.unsplash.com/photo-1604946326876-e8cdb157ec59?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1003",
+    "name": "Burr Coffee Grinder",
+    "filename": "nc-1003.jpg",
+    "photographer": "Dinker Gulati",
+    "source": "https://unsplash.com/photos/qxwTns6lGpw",
+    "image": "https://images.unsplash.com/photo-1594379264803-4abcc0fbdee5?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1004",
+    "name": "Pour Over Kettle",
+    "filename": "nc-1004.jpg",
+    "photographer": "syahmi syahir",
+    "source": "https://unsplash.com/photos/AQTgvFfwOcg",
+    "image": "https://images.unsplash.com/photo-1774294536061-1a5dd16437d2?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1005",
+    "name": "Paper Filters (100 pack)",
+    "filename": "nc-1005.jpg",
+    "photographer": "Ryan Wallace",
+    "source": "https://unsplash.com/photos/Smjhc_mXIt8",
+    "image": "https://images.unsplash.com/photo-1749467737893-21ae7ea75f6c?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1006",
+    "name": "Ceramic Mug Set",
+    "filename": "nc-1006.jpg",
+    "photographer": "Tom Crew",
+    "source": "https://unsplash.com/photos/INY4JowWde4",
+    "image": "https://images.unsplash.com/photo-1525972757199-cf2ad7cc4f4b?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1007",
+    "name": "Single Origin Beans 1kg",
+    "filename": "nc-1007.jpg",
+    "photographer": "engin akyurt",
+    "source": "https://unsplash.com/photos/vIKHx-ewFFg",
+    "image": "https://images.unsplash.com/photo-1634250530142-9f100192b8c8?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1008",
+    "name": "Cold Brew Carafe",
+    "filename": "nc-1008.jpg",
+    "photographer": "Anshu A",
+    "source": "https://unsplash.com/photos/vggj7D4Ns1E",
+    "image": "https://images.unsplash.com/photo-1564759913726-da6f4c234e63?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1009",
+    "name": "Tamper & Mat Bundle",
+    "filename": "nc-1009.jpg",
+    "photographer": "Babak Eshaghian",
+    "source": "https://unsplash.com/photos/xqSkOUl3V7U",
+    "image": "https://images.unsplash.com/photo-1758887255513-9752751dfd4c?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  },
+  {
+    "sku": "NC-1010",
+    "name": "Reusable Cup",
+    "filename": "nc-1010.jpg",
+    "photographer": "Globelet Reusable",
+    "source": "https://unsplash.com/photos/vB6rYZ9rZ6g",
+    "image": "https://images.unsplash.com/photo-1557344229-de2faa179661?auto=format&fit=max&w=960&q=82&fm=jpg",
+    "license": "https://unsplash.com/license",
+    "usage": "Illustrative photo matched to demo product type"
+  }
+]

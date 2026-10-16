@@ -1,0 +1,659 @@
+###############################################################################
+# NineCube.Digital - Order Processing
+# Manual API walkthrough.
+#
+# How to use
+# ----------
+# 1. Start SQL Server and the API (see README).
+# 2. Use a client that understands this file:
+#      * VS Code "REST Client" (humao.rest-client) - uses the `@name` capture syntax below.
+#      * JetBrains HTTP Client - replace the `{{name.response.body.accessToken}}` captures
+#        with `client.global.set(...)` response handlers, or paste the tokens manually.
+# 3. Send the requests top to bottom. Named requests capture what later requests need.
+#
+# Demo passwords come from your .env (NINECUBE_SEED_PASSWORD or the per-role variables).
+# Passwords below are placeholders - replace them before sending.
+###############################################################################
+
+@host = http://localhost:5080
+@customerEmail = customer@ninecube.demo
+@staffEmail = staff@ninecube.demo
+@inventoryEmail = inventory@ninecube.demo
+@adminEmail = admin@ninecube.demo
+@demoPassword = CHANGE_ME_FROM_YOUR_ENV
+
+# ids you may need to paste after creating records
+@productId = 1
+@orderId = 1
+
+###############################################################################
+# 0. Health
+###############################################################################
+
+### 0.1 Health check - database reachable
+# EXPECT 200 { "status": "Healthy", "checks": [ { "name": "sqlserver", "status": "Healthy" } ] }
+GET {{host}}/health
+
+### 0.2 Swagger UI (browser)
+# EXPECT 200 in a browser
+GET {{host}}/swagger/index.html
+
+###############################################################################
+# 1. Authentication
+###############################################################################
+
+### 1.1 Register a brand new customer
+# EXPECT 201, body contains accessToken + user.role = "Customer"
+# Registration can ONLY create Customers - there is no role field in the body.
+# @name registerCustomer
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "manual-customer@example.com",
+  "password": "Str0ng!Passw0rd",
+  "name": "Manual Customer"
+}
+
+### 1.2 Registering the same email again
+# EXPECT 409, code = "duplicate_email"
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "manual-customer@example.com",
+  "password": "Str0ng!Passw0rd",
+  "name": "Manual Customer"
+}
+
+### 1.3 Register with a weak password
+# EXPECT 400, code = "invalid_request" and errors.Password present
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "weak@example.com",
+  "password": "short",
+  "name": "Weak"
+}
+
+### 1.4 Login - Customer
+# EXPECT 200, user.role = "Customer"
+# @name loginCustomer
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{customerEmail}}",
+  "password": "{{demoPassword}}"
+}
+
+### 1.5 Login - Staff (Sales Manager)
+# EXPECT 200, user.role = "Staff"
+# @name loginStaff
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{staffEmail}}",
+  "password": "{{demoPassword}}"
+}
+
+### 1.6 Login - Inventory Manager
+# EXPECT 200, user.role = "InventoryManager"
+# @name loginInventory
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{inventoryEmail}}",
+  "password": "{{demoPassword}}"
+}
+
+### 1.7 Login - Administrator
+# EXPECT 200, user.role = "Administrator"
+# @name loginAdmin
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{demoPassword}}"
+}
+
+### 1.8 Wrong password
+# EXPECT 401, code = "unauthorized"  (never a 500, never a hint about which field was wrong)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{customerEmail}}",
+  "password": "definitely-wrong"
+}
+
+### 1.9 Current user
+# EXPECT 200 with the user summary for the token
+GET {{host}}/api/auth/me
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 1.10 No token at all
+# EXPECT 401, code = "unauthenticated", plus a correlationId
+GET {{host}}/api/auth/me
+
+###############################################################################
+# 2. Products
+###############################################################################
+
+### 2.1 List products (search + paging)
+# EXPECT 200, { items: [...], totalCount, totalPages }
+GET {{host}}/api/products?page=1&pageSize=10
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 2.2 Search products
+# EXPECT 200, only products whose name or SKU contains "coffee"
+GET {{host}}/api/products?q=coffee
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 2.3 One product (live stock)
+# EXPECT 200 with stockQuantity
+GET {{host}}/api/products/{{productId}}
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 2.4 Unknown product
+# EXPECT 404, code = "not_found"
+GET {{host}}/api/products/987654
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 2.5 Low stock list  (Staff, Inventory Manager, Administrator)
+# EXPECT 200 with the products at or below the configured threshold
+GET {{host}}/api/products/low-stock
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+### 2.6 Low stock threshold (any authenticated caller)
+# EXPECT 200 { "lowStockThreshold": 5 }
+GET {{host}}/api/products/low-stock-threshold
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 2.7 Customer tries to read the low stock list
+# EXPECT 403, code = "forbidden"
+GET {{host}}/api/products/low-stock
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 2.8 Create a product (Inventory Manager)
+# EXPECT 201, stockQuantity = 0 - new products start empty and are stocked by adjustment
+# @name createProduct
+POST {{host}}/api/products
+Content-Type: application/json
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+{
+  "sku": "MANUAL-001",
+  "name": "Manual Test Product",
+  "price": 42.50,
+  "isActive": true
+}
+
+### 2.9 Create a product with a duplicate SKU
+# EXPECT 409, code = "duplicate_sku"
+POST {{host}}/api/products
+Content-Type: application/json
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+{
+  "sku": "MANUAL-001",
+  "name": "Duplicate",
+  "price": 1.00,
+  "isActive": true
+}
+
+### 2.10 Staff tries to create a product (separation of duties)
+# EXPECT 403, code = "forbidden"
+POST {{host}}/api/products
+Content-Type: application/json
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+{
+  "sku": "NOPE-001",
+  "name": "Staff cannot do this",
+  "price": 1.00,
+  "isActive": true
+}
+
+### 2.11 Update a product (Inventory Manager)
+# EXPECT 200 with the new name/price/isActive
+PUT {{host}}/api/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+{
+  "name": "Manual Test Product (renamed)",
+  "price": 44.00,
+  "isActive": true
+}
+
+### 2.12 Positive stock adjustment with a reason
+# EXPECT 200 and the new stock; a ledger row is written with your user id and this reason
+POST {{host}}/api/products/{{productId}}/stock-adjustments
+Content-Type: application/json
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+{
+  "delta": 50,
+  "reason": "Goods received note GRN-1042"
+}
+
+### 2.13 Negative stock adjustment that would go below zero
+# EXPECT 409, code = "stock_adjustment_conflict", stock unchanged
+POST {{host}}/api/products/{{productId}}/stock-adjustments
+Content-Type: application/json
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+{
+  "delta": -100000,
+  "reason": "Should be rejected"
+}
+
+### 2.14 Adjustment without a reason
+# EXPECT 400, code = "invalid_request" (a reason is mandatory)
+POST {{host}}/api/products/{{productId}}/stock-adjustments
+Content-Type: application/json
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+{
+  "delta": -1,
+  "reason": ""
+}
+
+### 2.15 Zero delta
+# EXPECT 400
+POST {{host}}/api/products/{{productId}}/stock-adjustments
+Content-Type: application/json
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+{
+  "delta": 0,
+  "reason": "no-op"
+}
+
+### 2.16 Movement ledger for a product
+# EXPECT 200 with every delta, reason, user and timestamp
+GET {{host}}/api/products/{{productId}}/movements
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+###############################################################################
+# 3. Orders
+###############################################################################
+
+### 3.1 Place a valid order
+# EXPECT 201, status "Pending", totalAmount = price x quantity, Location header pointing at the order
+# The Idempotency-Key is what makes a retry safe.
+# @name placeOrder
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0001
+
+{
+  "items": [
+    { "productId": 1, "quantity": 2 },
+    { "productId": 2, "quantity": 1 }
+  ]
+}
+
+### 3.2 Replay the exact same Idempotency-Key
+# EXPECT 200 (not 201) with the SAME order id, and no additional stock reservation
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0001
+
+{
+  "items": [
+    { "productId": 1, "quantity": 2 },
+    { "productId": 2, "quantity": 1 }
+  ]
+}
+
+### 3.3 Duplicate lines are merged
+# EXPECT 201 with ONE line for product 1 and quantity 5
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0002
+
+{
+  "items": [
+    { "productId": 1, "quantity": 2 },
+    { "productId": 1, "quantity": 3 }
+  ]
+}
+
+### 3.4 More than the available stock
+# EXPECT 409, code = "insufficient_stock" and shortItems[0] = { requested, available }
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0003
+
+{
+  "items": [
+    { "productId": 1, "quantity": 9999 }
+  ]
+}
+
+### 3.5 Multi-item order where the second item is short
+# EXPECT 409 and NO stock change for the first item either (the whole transaction rolls back)
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0004
+
+{
+  "items": [
+    { "productId": 1, "quantity": 1 },
+    { "productId": 3, "quantity": 9999 }
+  ]
+}
+
+### 3.6 Unknown product id
+# EXPECT 400, code = "invalid_request"
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0005
+
+{
+  "items": [
+    { "productId": 987654, "quantity": 1 }
+  ]
+}
+
+### 3.7 Quantity zero
+# EXPECT 400 (FluentValidation at the edge)
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0006
+
+{
+  "items": [
+    { "productId": 1, "quantity": 0 }
+  ]
+}
+
+### 3.8 Quantity above the 1000 cap
+# EXPECT 400
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0007
+
+{
+  "items": [
+    { "productId": 1, "quantity": 1001 }
+  ]
+}
+
+### 3.9 Empty item list
+# EXPECT 400
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: manual-key-0008
+
+{
+  "items": []
+}
+
+### 3.10 Malformed JSON
+# EXPECT 400 with code = "invalid_request" from the model binder
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+{ "items": [ { "productId": 1, "quantity": "not-a-number" } ] }
+
+### 3.11 Staff cannot place an order
+# EXPECT 403, code = "forbidden"
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+{ "items": [ { "productId": 1, "quantity": 1 } ] }
+
+### 3.12 Customer lists their own orders
+# EXPECT 200, totalCount = only this customer's orders
+GET {{host}}/api/orders?page=1&pageSize=20
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 3.13 Customer filters by status
+# EXPECT 200 only with status Pending
+GET {{host}}/api/orders?status=Pending
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 3.14 Staff lists every order
+# EXPECT 200, totalCount = every order in the system
+GET {{host}}/api/orders?page=1&pageSize=20
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 3.15 Read one order (owner)
+# EXPECT 200
+GET {{host}}/api/orders/{{orderId}}
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 3.16 Read somebody else's order
+# EXPECT 404 (not 403 - the API must not leak that the order exists)
+GET {{host}}/api/orders/{{orderId}}
+Authorization: Bearer {{registerCustomer.response.body.accessToken}}
+
+### 3.17 Invoice
+# EXPECT 200 with lines, subtotal and total
+GET {{host}}/api/orders/{{orderId}}/invoice
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+###############################################################################
+# 4. Order status transitions
+###############################################################################
+
+### 4.1 Confirm a Pending order  (Staff)
+# EXPECT 200, status "Confirmed"
+POST {{host}}/api/orders/{{orderId}}/confirm
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 4.2 Confirm it again
+# EXPECT 409, code = "invalid_state_transition", currentStatus = "Confirmed"
+POST {{host}}/api/orders/{{orderId}}/confirm
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 4.3 Ship a Confirmed order  (Staff)
+# EXPECT 200, status "Shipped"
+POST {{host}}/api/orders/{{orderId}}/ship
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 4.4 Ship it again
+# EXPECT 409
+POST {{host}}/api/orders/{{orderId}}/ship
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 4.5 Cancel a Shipped order
+# EXPECT 409, code = "invalid_state_transition" and the stock is NOT returned
+POST {{host}}/api/orders/{{orderId}}/cancel
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 4.6 Inventory Manager tries to confirm an order
+# EXPECT 403 (separation of duties)
+POST {{host}}/api/orders/{{orderId}}/confirm
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+### 4.7 Reject a Pending order  (Staff) - also releases the stock
+# EXPECT 200, status "Rejected"; the reserved stock comes back and a ledger row is written
+POST {{host}}/api/orders/{{placeOrder.response.body.id}}/reject
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 4.8 Confirm a Rejected order
+# EXPECT 409 (Rejected is terminal)
+POST {{host}}/api/orders/{{placeOrder.response.body.id}}/confirm
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 4.9 Customer cancels their own Pending order
+# EXPECT 200, status "Cancelled", reserved stock returned to the product
+POST {{host}}/api/orders/{{orderId}}/cancel
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 4.10 Cancel the same order twice
+# EXPECT 409, currentStatus = "Cancelled" and stock is restored exactly once
+POST {{host}}/api/orders/{{orderId}}/cancel
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 4.11 Customer cancels somebody else's order
+# EXPECT 404
+POST {{host}}/api/orders/{{orderId}}/cancel
+Authorization: Bearer {{registerCustomer.response.body.accessToken}}
+
+###############################################################################
+# 5. Reports
+###############################################################################
+
+### 5.1 Sales summary (Staff)
+# EXPECT 200 with totalOrders, totalRevenue and a per-status breakdown
+GET {{host}}/api/reports/sales?from=2026-01-01T00:00:00Z&to=2030-01-01T00:00:00Z
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 5.2 Customer tries to read the report
+# EXPECT 403
+GET {{host}}/api/reports/sales
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+
+### 5.3 Invalid range
+# EXPECT 400 (from must be earlier than to)
+GET {{host}}/api/reports/sales?from=2030-01-01T00:00:00Z&to=2026-01-01T00:00:00Z
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+###############################################################################
+# 6. Administration
+###############################################################################
+
+### 6.1 List users
+# EXPECT 200
+GET {{host}}/api/admin/users
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### 6.2 Create a staff user
+# EXPECT 201
+# @name createStaffUser
+POST {{host}}/api/admin/users
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "email": "manual-staff@example.com",
+  "password": "Str0ng!Passw0rd",
+  "role": "Staff",
+  "name": "Manual Staff"
+}
+
+### 6.3 Change a user's role
+# EXPECT 200 and the role is applied immediately - even to tokens that are already issued,
+# because the role claim is re-read from the database on every request.
+PUT {{host}}/api/admin/users/{{createStaffUser.response.body.id}}/role
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "role": "InventoryManager"
+}
+
+### 6.4 Deactivate a user
+# EXPECT 200, isActive false; that user can no longer log in and existing tokens stop working
+PUT {{host}}/api/admin/users/{{createStaffUser.response.body.id}}/active
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "isActive": false
+}
+
+### 6.5 Deactivate yourself (the last administrator)
+# EXPECT 409 - the system will not let you lock everyone out
+PUT {{host}}/api/admin/users/1/active
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "isActive": false
+}
+
+### 6.6 Audit log
+# EXPECT 200 with logins, role changes, order status changes and stock adjustments
+GET {{host}}/api/admin/audit-logs?page=1&pageSize=50
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### 6.7 Audit log filtered by action prefix
+# EXPECT 200 only with order.* entries
+GET {{host}}/api/admin/audit-logs?action=order.
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### 6.8 Read settings
+# EXPECT 200 { "lowStockThreshold": 5 }
+GET {{host}}/api/admin/settings
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+### 6.9 Change the low stock threshold
+# EXPECT 200; the new value changes the low-stock highlighting everywhere
+PUT {{host}}/api/admin/settings
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "lowStockThreshold": 8
+}
+
+### 6.10 Staff tries to read the audit log
+# EXPECT 403
+GET {{host}}/api/admin/audit-logs
+Authorization: Bearer {{loginStaff.response.body.accessToken}}
+
+### 6.11 Administrator tries to adjust stock (read-only on inventory)
+# EXPECT 403
+POST {{host}}/api/products/{{productId}}/stock-adjustments
+Content-Type: application/json
+Authorization: Bearer {{loginAdmin.response.body.accessToken}}
+
+{
+  "delta": -1,
+  "reason": "Admin is read-only"
+}
+
+###############################################################################
+# 7. Concurrency spot checks (run the two requests in section 7.1 back to back)
+#
+# These are covered properly by the automated tests (ConcurrencyTests), but a manual
+# check is useful: set a product to exactly 1 unit, then fire 7.1a and 7.1b as fast as
+# your client allows. EXPECT exactly one 201 and one 409, and final stock 0.
+###############################################################################
+
+### 7.0 Reset a product to exactly one unit
+POST {{host}}/api/products/{{productId}}/stock-adjustments
+Content-Type: application/json
+Authorization: Bearer {{loginInventory.response.body.accessToken}}
+
+{
+  "delta": -100000,
+  "reason": "placeholder - replace with the correct delta to reach 1"
+}
+
+### 7.1a Race - customer A
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{loginCustomer.response.body.accessToken}}
+Idempotency-Key: race-a
+
+{ "items": [ { "productId": 1, "quantity": 1 } ] }
+
+### 7.1b Race - customer B
+POST {{host}}/api/orders
+Content-Type: application/json
+Authorization: Bearer {{registerCustomer.response.body.accessToken}}
+Idempotency-Key: race-b
+
+{ "items": [ { "productId": 1, "quantity": 1 } ] }

@@ -1,0 +1,861 @@
+[
+  {
+    "name": "01-showcase-hero",
+    "file": "01-showcase-hero.png",
+    "title": "The public showcase, at the top of the page",
+    "purpose": "The only screen a visitor sees before signing in. It calls no API, so no stock, price or customer data appears here.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The brand mark. It links to the catalogue once you are signed in, and to this page while you are not",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "The navigation tray. While signed out it holds Home and Collection only",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Theme control: System follows your device, Light and Dark are remembered between visits",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Sign in opens the login page",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "The opening line of the showcase",
+        "found": true
+      },
+      {
+        "n": 6,
+        "label": "Explore the collection goes straight to the catalogue, where you still have to sign in",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "02-showcase-end",
+    "file": "02-showcase-end.png",
+    "title": "The end of the showcase",
+    "purpose": "The scroll scene ends on a closing panel and a footer, so the way into the shop is never more than a scroll away.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Open the catalogue is the main route into the shop",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Sign in and Create account are repeated here so a reader who scrolled past the header is not stuck",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "03-sign-in",
+    "file": "03-sign-in.png",
+    "title": "Signing in",
+    "purpose": "Every screen except this showcase needs an account, because live stock is treated as commercial information.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Your email address, exactly as it was registered",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Your password. It is never shown in the address bar or stored in the browser beyond the session",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Sign in. The button reads Signing in… while the request is in flight and cannot be pressed twice",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "New customer? Create an account",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "04-register",
+    "file": "04-register.png",
+    "title": "Creating a customer account",
+    "purpose": "Self-registration always creates a Customer. Staff, Inventory and Administrator logins are made by an Administrator on the Administration screen.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Your full name, as it will appear on orders and invoices",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Email address, which is also your login",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "A password of at least 8 characters",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Create account",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "05-catalogue",
+    "file": "05-catalogue.png",
+    "title": "The catalogue",
+    "purpose": "The working screen for a customer: live availability straight from stock, with the server as the source of truth for every quantity.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The tab you are on is filled with the amber selection colour, the same look the open account menu and the switched-on theme take",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Your role’s tabs. A customer sees Products and My Orders",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Cart, notification bell and account menu live in this group",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Search by product name or SKU. It waits 300 ms after you stop typing",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "The category tree with product counts. Clicking a branch filters the grid",
+        "found": true
+      },
+      {
+        "n": 6,
+        "label": "Availability, price range and sort live in the same panel",
+        "found": true
+      },
+      {
+        "n": 7,
+        "label": "A product card. The chips under the name are shortcuts that apply that filter",
+        "found": true
+      },
+      {
+        "n": 8,
+        "label": "The stock badge: In stock, Low stock with the count left, Out of stock or Inactive. It carries a glyph and a word, never colour alone",
+        "found": true
+      },
+      {
+        "n": 9,
+        "label": "The quantity stepper cannot be raised above what is in stock",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "06-cart",
+    "file": "06-cart.png",
+    "title": "The cart and checkout",
+    "purpose": "The cart lives in your browser until you place the order. Stock is only reserved at that moment, which is the first point where the promise can actually be kept.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Each line shows the unit price and what is available right now",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "The stepper per line, capped at live stock",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Remove takes just that line out",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Total, priced in the store currency",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "Place order sends the whole basket as one request with an idempotency key",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "07-my-orders",
+    "file": "07-my-orders.png",
+    "title": "My orders",
+    "purpose": "Every order on the account with its current status, and the printable invoice for each.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Filter by status. The list is paged at ten orders",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "A row: order number, when it was placed, how many items, the total and where it is now",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "View opens the order with its timeline",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Invoice opens the printable version",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "08-order-detail",
+    "file": "08-order-detail.png",
+    "title": "One order, start to finish",
+    "purpose": "The timeline says exactly where the order is, and the sentence under it says what that status means for you.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The current status",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Pending, Confirmed, Shipped, or the terminal Rejected or Cancelled",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Printable invoice",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "The lines as they were bought, with the price the server charged at that moment",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "Cancel order releases the reserved stock. It is offered only while the order is Pending or Confirmed",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "09-invoice",
+    "file": "09-invoice.png",
+    "title": "The invoice",
+    "purpose": "A single page you can print or save as PDF. Printing always uses white paper, whatever theme you read it in.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Print calls the browser’s own print dialog",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Billed to",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Payment is handled outside this system, and the invoice says so rather than implying it was taken",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Line items with quantity, unit price and amount",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "10-dashboard",
+    "file": "10-dashboard.png",
+    "title": "Your dashboard",
+    "purpose": "The account summary: what you have ordered, what it cost, and what needs your attention.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Total orders, total spent, active orders and delivered, counted from your own orders",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Shortcuts to the three pages a customer uses",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Orders by status. Shipped means in transit here; delivery confirmation is a separate status this system does not have",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Edit profile",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "11-profile",
+    "file": "11-profile.png",
+    "title": "Profile, password and addresses",
+    "purpose": "Your contact details, the password you sign in with, and the delivery addresses checkout offers.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Name and phone. Your email is the login, so it is shown but not editable",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Save changes",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Change password asks for the current one first, and rates the strength of the new one",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "11b-addresses",
+    "file": "11b-addresses.png",
+    "title": "Saved delivery addresses",
+    "purpose": "The address book checkout offers, on the same profile page below the password card.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Saved delivery addresses. The default one is offered at checkout",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "The form below the list adds an address; Save address keeps it for the next order",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "12-notifications",
+    "file": "12-notifications.png",
+    "title": "Notifications",
+    "purpose": "Order updates for everyone, plus new-order and low-stock messages for staff.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Filter the inbox: All, Unread, Orders, Promotions",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Mark all as read",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "The inbox: what changed, when, and a link to the order it is about. Ticking rows makes Mark as read and Delete apply to the selection",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Preferences. Order notices are always on; promotions can be muted per channel, with quiet hours",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "13-staff-console",
+    "file": "13-staff-console.png",
+    "title": "The staff order console",
+    "purpose": "Staff move orders through the lifecycle. They cannot create products or touch stock - that is the Inventory Manager’s job.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "A staff member’s tabs: Products, Orders, Sales",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "The three queues a staff member works through: To confirm, To ship, and Invoices & history",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Switch between the order list and category management",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "The queue you are in: every order still Pending, oldest first",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "Confirm accepts the order and keeps the stock reserved",
+        "found": true
+      },
+      {
+        "n": 6,
+        "label": "Reject declines it and releases the reserved stock back to the shelf",
+        "found": true
+      },
+      {
+        "n": 7,
+        "label": "Tick rows to confirm or reject a batch at once",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "14-sales-summary",
+    "file": "14-sales-summary.png",
+    "title": "Sales summary",
+    "purpose": "Read-only reporting over every order. Cancelled and rejected orders are counted but bring in no revenue.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "From and To are calendar days in your own time zone, converted to UTC at the edges",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Apply range",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Orders, revenue and the range you asked for",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "14b-sales-breakdown",
+    "file": "14b-sales-breakdown.png",
+    "title": "The same figures as a breakdown",
+    "purpose": "Below the tiles on the sales page: the charts, and the table behind them with each status’s share.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Orders and revenue by status, drawn as charts",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "The same numbers as a table, so the report is readable without the chart",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "13b-category-stock-dark",
+    "file": "13b-category-stock-dark.png",
+    "title": "Categories & stock, in the dark theme",
+    "purpose": "The staff screen has a second half: the category tree, with the stock that sits under each branch. The figures are read from the catalogue and are never edited here.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The staff screen splits in two: the order console and this category manager. The half you are on carries the amber fill",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "The section heading",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "The two views: the tree with its stock summary, and the product category and tag editor",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Find a category by its own name or its parent’s. It filters as you type and goes back to the first page",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "Create category opens the same form on an empty record",
+        "found": true
+      },
+      {
+        "n": 6,
+        "label": "The summary counts every product in the branch, not only the ones filed directly under it",
+        "found": true
+      },
+      {
+        "n": 7,
+        "label": "Category, Products, In stock, Low stock and Manage",
+        "found": true
+      },
+      {
+        "n": 8,
+        "label": "One row per category, indented by how deep it sits. An inactive category carries its own badge",
+        "found": true
+      },
+      {
+        "n": 9,
+        "label": "Edit opens the category form. Nothing on this screen changes a stock figure",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "13c-category-editor-dark",
+    "file": "13c-category-editor-dark.png",
+    "title": "The category editor, in the dark theme",
+    "purpose": "Everything that can be done to one category: rename it, change its slug, move it under another parent, reorder it, switch it off and delete it.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The dialog is named after the category, so a screen reader and the address of the request agree",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Close dialog. Escape does the same thing and hands focus back to the Edit button you came from",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Category name, required, up to 120 characters",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "The slug used in the address bar, written for you from the name and still editable",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "Parent category. Choosing another branch is what moves this one",
+        "found": true
+      },
+      {
+        "n": 6,
+        "label": "Sort order inside the parent",
+        "found": true
+      },
+      {
+        "n": 7,
+        "label": "Active category. Switching it off hides the branch and everything under it from browsing, and leaves stock alone",
+        "found": true
+      },
+      {
+        "n": 8,
+        "label": "Save category",
+        "found": true
+      },
+      {
+        "n": 9,
+        "label": "Move category reparents on its own. A branch moved under one of its own descendants is refused: \"A category cannot move under itself or a descendant.\"",
+        "found": true
+      },
+      {
+        "n": 10,
+        "label": "Reassign products and children to: where the contents go when the category is deleted",
+        "found": true
+      },
+      {
+        "n": 11,
+        "label": "Delete category. Greyed out while the category still holds products or children, so nothing is orphaned",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "13d-product-organization-dark",
+    "file": "13d-product-organization-dark.png",
+    "title": "Product categories & tags: choosing the product",
+    "purpose": "The second view files a product under the categories and tags the catalogue filters on. It is paged at twenty products, the same list the customer browses.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The two views, with this one selected",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "The heading of the view",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Find a product by name or SKU. It waits a quarter of a second after you stop typing",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "The product, named with its SKU so two similar names cannot be confused",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "Twenty products to a page; the inventory list pages the same table at fifty",
+        "found": true
+      },
+      {
+        "n": 6,
+        "label": "Once a product is chosen its own editor appears below, holding the categories it is filed under today",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "13e-product-tags-dark",
+    "file": "13e-product-tags-dark.png",
+    "title": "Filing a product under categories and tags",
+    "purpose": "The same screen scrolled to that editor: what a product belongs to, which of those is its primary category, and its tags.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Every category in the tree, indented, with the ones this product is filed under ticked. The list scrolls inside its own box",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Primary category: the one the product page marks \"· primary\" and the order line records. Always one of the ticked ones",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Tags, comma separated. The customer’s filter chips are built from these",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Save product categories sends the whole set as one request, so a product is never left between two states",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "15-inventory",
+    "file": "15-inventory.png",
+    "title": "Inventory",
+    "purpose": "Where products are created and stock is corrected. Every change is appended to the ledger, and the database refuses to go below zero.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Search by name or SKU",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "New product. A new product starts at zero stock on purpose - stock arrives through an adjustment so it is audited",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Stock and availability per row. Rows at or below the low-stock threshold are marked",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Edit opens the product form",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "Adjust stock opens the signed adjustment",
+        "found": true
+      },
+      {
+        "n": 6,
+        "label": "History opens the same dialog on the movement ledger",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "16-bulk-edit",
+    "file": "16-bulk-edit.png",
+    "title": "Bulk editing products",
+    "purpose": "Category, tag, brand and active state can be set for a page of products at once. Stock is never part of a bulk edit - it keeps its atomic, single-product path.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "How many products are selected",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "The action. Stock is deliberately absent from this list",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "The parameter the action needs: a category, tags, or a brand and series",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Review changes opens the confirmation dialog",
+        "found": true
+      },
+      {
+        "n": 5,
+        "label": "Clear drops the selection and the bar goes with it",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "17-bulk-confirm",
+    "file": "17-bulk-confirm.png",
+    "title": "Confirming a bulk edit",
+    "purpose": "Nothing is written until this dialog is confirmed, and the summary says what will happen.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "What is about to change, and to how many products",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Products that already match are skipped, so re-running is safe",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Apply changes sends one request for the whole selection",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Cancel closes it without a request",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "18-adjust-stock",
+    "file": "18-adjust-stock.png",
+    "title": "Adjusting stock",
+    "purpose": "The only way stock changes outside an order, and it always carries a reason.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The product and its current quantity",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "A signed number: negative for shrinkage or damage, positive for a delivery",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Reason is mandatory, and lands in the ledger with your name",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Apply adjustment. If it would take the product below zero the server refuses it",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "18b-movement-history",
+    "file": "18b-movement-history.png",
+    "title": "The movement ledger for one product",
+    "purpose": "The same dialog, scrolled down: every stock change against the product, with who made it and why. A product nobody has touched says so.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The ledger heading. Opening it from a row puts the keyboard focus here, so the history can be read straight away",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Movement history for this product: when, by how much, why and who. A product with no movements yet says so",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "19-admin-users",
+    "file": "19-admin-users.png",
+    "title": "Administration: users",
+    "purpose": "Administrators create staff logins, change roles and switch accounts off. They are read-only on orders and inventory, so nobody can both sell and silently restock.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "The three sections: Users, Audit log, Settings",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Create a user: email, password, role, and a name when the role is Customer",
+        "found": true
+      },
+      {
+        "n": 3,
+        "label": "Change a role from the row itself. It takes effect on the user’s next request",
+        "found": true
+      },
+      {
+        "n": 4,
+        "label": "Deactivate keeps the history and blocks the login. The last active administrator cannot be removed",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "20-admin-audit",
+    "file": "20-admin-audit.png",
+    "title": "Administration: audit log",
+    "purpose": "What happened, who did it and when. It is the record the concurrency design writes as it goes.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Filter by action prefix, for example order. or user.",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "When, actor, action, entity and the details of the change",
+        "found": true
+      }
+    ]
+  },
+  {
+    "name": "21-admin-settings",
+    "file": "21-admin-settings.png",
+    "title": "Administration: settings",
+    "purpose": "The one business number an administrator can edit.",
+    "callouts": [
+      {
+        "n": 1,
+        "label": "Low stock threshold. Products at or below it are flagged everywhere in the app, and the inventory rows are marked",
+        "found": true
+      },
+      {
+        "n": 2,
+        "label": "Save settings writes it to the database, not to a config file",
+        "found": true
+      }
+    ]
+  }
+]

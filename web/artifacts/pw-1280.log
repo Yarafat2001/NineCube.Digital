@@ -1,0 +1,640 @@
+
+Running 3 tests using 1 worker
+
+  x  1 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px (2.1m)
+  x  2 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px at 125% zoom (2.0m)
+  x  3 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px at 150% zoom (1.9m)
+
+
+  1) [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px 
+
+    Error: [31mTimed out 90000ms waiting for [39m[2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m()[22m
+
+    Locator: locator('.category-filter-panel, .category-filter-trigger').first()
+    Expected: visible
+    Received: hidden
+    Call log:
+      [2m- expect.toBeVisible with timeout 90000ms[22m
+    [2m  - waiting for locator('.category-filter-panel, .category-filter-trigger').first()[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+
+
+      75 |       // A deep, long-named category: the row that used to widen its column past the viewport.
+      76 |       await page.goto('/products?category=home-appliances&inStock=true');
+    > 77 |       await expect(page.locator('.category-filter-panel, .category-filter-trigger').first()).toBeVisible(LOADED);
+         |                                                                                              ^
+      78 |
+      79 |       const metrics = await measure(page);
+      80 |       expect(metrics.documentOverflow, `page scrolls sideways: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(1);
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\sidebar-layout.spec.ts:77:94
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-c26f9-ut-holds-the-line-at-1280px-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-c26f9-ut-holds-the-line-at-1280px-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-layout-catalogue-s-c26f9-ut-holds-the-line-at-1280px-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px at 125% zoom 
+
+    Error: [31mTimed out 90000ms waiting for [39m[2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m()[22m
+
+    Locator: locator('.category-filter-panel, .category-filter-trigger').first()
+    Expected: visible
+    Received: hidden
+    Call log:
+      [2m- expect.toBeVisible with timeout 90000ms[22m
+    [2m  - waiting for locator('.category-filter-panel, .category-filter-trigger').first()[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+
+
+      75 |       // A deep, long-named category: the row that used to widen its column past the viewport.
+      76 |       await page.goto('/products?category=home-appliances&inStock=true');
+    > 77 |       await expect(page.locator('.category-filter-panel, .category-filter-trigger').first()).toBeVisible(LOADED);
+         |                                                                                              ^
+      78 |
+      79 |       const metrics = await measure(page);
+      80 |       expect(metrics.documentOverflow, `page scrolls sideways: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(1);
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\sidebar-layout.spec.ts:77:94
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-c86f7--line-at-1280px-at-125-zoom-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-c86f7--line-at-1280px-at-125-zoom-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-layout-catalogue-s-c86f7--line-at-1280px-at-125-zoom-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px at 150% zoom 
+
+    Error: [31mTimed out 90000ms waiting for [39m[2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m()[22m
+
+    Locator: locator('.category-filter-panel, .category-filter-trigger').first()
+    Expected: visible
+    Received: hidden
+    Call log:
+      [2m- expect.toBeVisible with timeout 90000ms[22m
+    [2m  - waiting for locator('.category-filter-panel, .category-filter-trigger').first()[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+    [2m  -   locator resolved to <button type="button" class="btn category-filter-trigger">Filters (2)</button>[22m
+    [2m  -   unexpected value "hidden"[22m
+
+
+      75 |       // A deep, long-named category: the row that used to widen its column past the viewport.
+      76 |       await page.goto('/products?category=home-appliances&inStock=true');
+    > 77 |       await expect(page.locator('.category-filter-panel, .category-filter-trigger').first()).toBeVisible(LOADED);
+         |                                                                                              ^
+      78 |
+      79 |       const metrics = await measure(page);
+      80 |       expect(metrics.documentOverflow, `page scrolls sideways: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(1);
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\sidebar-layout.spec.ts:77:94
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-61e43--line-at-1280px-at-150-zoom-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-61e43--line-at-1280px-at-150-zoom-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-layout-catalogue-s-61e43--line-at-1280px-at-150-zoom-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px ─
+    [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px at 125% zoom 
+    [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px at 150% zoom 

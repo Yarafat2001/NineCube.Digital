@@ -1,0 +1,379 @@
+[
+  {
+    "at": "2026-10-14T14:10:04.785667+00:00",
+    "inserted": {
+      "smartphones": 10,
+      "uncategorized": 15
+    },
+    "skipped": [],
+    "before": {
+      "Products": 26,
+      "ProductCategories": 26,
+      "Tags": 0,
+      "ProductTags": 0
+    },
+    "after": {
+      "Products": 51,
+      "ProductCategories": 51,
+      "Tags": 22,
+      "ProductTags": 50
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  },
+  {
+    "at": "2026-10-14T14:10:06.662805+00:00",
+    "inserted": {
+      "smartphones": 0,
+      "uncategorized": 0
+    },
+    "skipped": [],
+    "before": {
+      "Products": 51,
+      "ProductCategories": 51,
+      "Tags": 22,
+      "ProductTags": 50
+    },
+    "after": {
+      "Products": 51,
+      "ProductCategories": 51,
+      "Tags": 22,
+      "ProductTags": 50
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  },
+  {
+    "at": "2026-10-14T14:10:08.756694+00:00",
+    "inserted": {
+      "smartphones": 0,
+      "uncategorized": 0
+    },
+    "skipped": [],
+    "before": {
+      "Products": 51,
+      "ProductCategories": 51,
+      "Tags": 22,
+      "ProductTags": 50
+    },
+    "after": {
+      "Products": 51,
+      "ProductCategories": 51,
+      "Tags": 22,
+      "ProductTags": 50
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  },
+  {
+    "at": "2026-10-14T19:08:24.949287+00:00",
+    "inserted": {
+      "auto-accessories": 2,
+      "bags": 11,
+      "beds": 12,
+      "chairs": 15,
+      "cooking-oil": 2,
+      "cosmetics": 2,
+      "fragrances": 2,
+      "ips-batteries": 1,
+      "laptops": 1,
+      "led-lighting": 6,
+      "medicines": 2,
+      "motorbikes": 1,
+      "panjabi": 2,
+      "refrigerators": 15,
+      "rice": 2,
+      "sarees": 2,
+      "shirts": 2,
+      "shoes": 15,
+      "smartphones": 20,
+      "sports-accessories": 2,
+      "uncategorized": 0,
+      "wall-paint": 2,
+      "watches": 1
+    },
+    "skipped": [],
+    "links_added": 15,
+    "tags_added": 391,
+    "before": {
+      "Products": 51,
+      "ProductCategories": 51,
+      "Tags": 22,
+      "ProductTags": 50
+    },
+    "after": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  },
+  {
+    "at": "2026-10-14T19:08:58.426994+00:00",
+    "inserted": {
+      "auto-accessories": 0,
+      "bags": 0,
+      "beds": 0,
+      "chairs": 0,
+      "cooking-oil": 0,
+      "cosmetics": 0,
+      "fragrances": 0,
+      "ips-batteries": 0,
+      "laptops": 0,
+      "led-lighting": 0,
+      "medicines": 0,
+      "motorbikes": 0,
+      "panjabi": 0,
+      "refrigerators": 0,
+      "rice": 0,
+      "sarees": 0,
+      "shirts": 0,
+      "shoes": 0,
+      "smartphones": 0,
+      "sports-accessories": 0,
+      "uncategorized": 0,
+      "wall-paint": 0,
+      "watches": 0
+    },
+    "skipped": [],
+    "links_added": 0,
+    "tags_added": 0,
+    "before": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "after": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  },
+  {
+    "at": "2026-10-14T19:09:45.536964+00:00",
+    "inserted": {
+      "auto-accessories": 0,
+      "bags": 0,
+      "beds": 0,
+      "chairs": 0,
+      "cooking-oil": 0,
+      "cosmetics": 0,
+      "fragrances": 0,
+      "ips-batteries": 0,
+      "laptops": 0,
+      "led-lighting": 0,
+      "medicines": 0,
+      "motorbikes": 0,
+      "panjabi": 0,
+      "refrigerators": 0,
+      "rice": 0,
+      "sarees": 0,
+      "shirts": 0,
+      "shoes": 0,
+      "smartphones": 0,
+      "sports-accessories": 0,
+      "uncategorized": 0,
+      "wall-paint": 0,
+      "watches": 0
+    },
+    "skipped": [],
+    "links_added": 0,
+    "tags_added": 0,
+    "before": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "after": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  },
+  {
+    "at": "2026-10-14T19:12:18.393823+00:00",
+    "inserted": {
+      "auto-accessories": 0,
+      "bags": 0,
+      "beds": 0,
+      "chairs": 0,
+      "cooking-oil": 0,
+      "cosmetics": 0,
+      "fragrances": 0,
+      "ips-batteries": 0,
+      "laptops": 0,
+      "led-lighting": 0,
+      "medicines": 0,
+      "motorbikes": 0,
+      "panjabi": 0,
+      "refrigerators": 0,
+      "rice": 0,
+      "sarees": 0,
+      "shirts": 0,
+      "shoes": 0,
+      "smartphones": 0,
+      "sports-accessories": 0,
+      "uncategorized": 0,
+      "wall-paint": 0,
+      "watches": 0
+    },
+    "skipped": [],
+    "links_added": 0,
+    "tags_added": 0,
+    "before": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "after": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  },
+  {
+    "at": "2026-10-14T19:13:01.759085+00:00",
+    "kind": "scenarios",
+    "inserted": 4,
+    "counts": {
+      "Products": 176,
+      "ProductCategories": 192,
+      "Categories": 45
+    },
+    "note": "Dev-only TEST: fixtures and two TEST categories; excluded from catalogue validation"
+  },
+  {
+    "at": "2026-10-14T19:20:15.291637+00:00",
+    "kind": "scenario-cleanup",
+    "removed": {
+      "products": 0,
+      "categories": 0,
+      "tags": 0
+    },
+    "counts": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Categories": 43
+    },
+    "note": "All TEST: rows removed; counts restored"
+  },
+  {
+    "at": "2026-10-14T20:01:37.593639+00:00",
+    "kind": "provenance-backfill",
+    "rows": 25,
+    "remaining_missing_source_url": 0
+  },
+  {
+    "at": "2026-10-15T12:41:06.069032+00:00",
+    "inserted": {
+      "auto-accessories": 0,
+      "bags": 0,
+      "beds": 0,
+      "chairs": 0,
+      "cooking-oil": 0,
+      "cosmetics": 0,
+      "fragrances": 0,
+      "ips-batteries": 0,
+      "laptops": 0,
+      "led-lighting": 0,
+      "medicines": 0,
+      "motorbikes": 0,
+      "panjabi": 0,
+      "refrigerators": 0,
+      "rice": 0,
+      "sarees": 0,
+      "shirts": 0,
+      "shoes": 0,
+      "smartphones": 0,
+      "sports-accessories": 0,
+      "uncategorized": 0,
+      "wall-paint": 0,
+      "watches": 0
+    },
+    "skipped": [],
+    "links_added": 0,
+    "tags_added": 0,
+    "before": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "after": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  },
+  {
+    "at": "2026-10-15T12:41:13.829726+00:00",
+    "inserted": {
+      "auto-accessories": 0,
+      "bags": 0,
+      "beds": 0,
+      "chairs": 0,
+      "cooking-oil": 0,
+      "cosmetics": 0,
+      "fragrances": 0,
+      "ips-batteries": 0,
+      "laptops": 0,
+      "led-lighting": 0,
+      "medicines": 0,
+      "motorbikes": 0,
+      "panjabi": 0,
+      "refrigerators": 0,
+      "rice": 0,
+      "sarees": 0,
+      "shirts": 0,
+      "shoes": 0,
+      "smartphones": 0,
+      "sports-accessories": 0,
+      "uncategorized": 0,
+      "wall-paint": 0,
+      "watches": 0
+    },
+    "skipped": [],
+    "links_added": 0,
+    "tags_added": 0,
+    "before": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "after": {
+      "Products": 171,
+      "ProductCategories": 186,
+      "Tags": 32,
+      "ProductTags": 441
+    },
+    "existing_products_unchanged": true,
+    "categories_unchanged": true,
+    "order_items_unchanged": true
+  }
+]

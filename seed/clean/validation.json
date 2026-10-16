@@ -1,0 +1,621 @@
+{
+  "leaf_counts": [
+    {
+      "Slug": "auto-accessories",
+      "Name": "Auto Accessories",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "bags",
+      "Name": "Bags",
+      "ProductCount": 11,
+      "PrimaryCount": 11
+    },
+    {
+      "Slug": "beds",
+      "Name": "Beds",
+      "ProductCount": 12,
+      "PrimaryCount": 12
+    },
+    {
+      "Slug": "chairs",
+      "Name": "Chairs",
+      "ProductCount": 15,
+      "PrimaryCount": 15
+    },
+    {
+      "Slug": "coffee-tea",
+      "Name": "Coffee & Tea",
+      "ProductCount": 10,
+      "PrimaryCount": 10
+    },
+    {
+      "Slug": "cooking-oil",
+      "Name": "Cooking Oil",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "cosmetics",
+      "Name": "Cosmetics",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "fragrances",
+      "Name": "Fragrances",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "ips-batteries",
+      "Name": "IPS Batteries",
+      "ProductCount": 1,
+      "PrimaryCount": 1
+    },
+    {
+      "Slug": "laptops",
+      "Name": "Laptops",
+      "ProductCount": 1,
+      "PrimaryCount": 1
+    },
+    {
+      "Slug": "led-lighting",
+      "Name": "LED Lighting",
+      "ProductCount": 6,
+      "PrimaryCount": 6
+    },
+    {
+      "Slug": "medicines",
+      "Name": "Medicines",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "motorbikes",
+      "Name": "Motorbikes",
+      "ProductCount": 1,
+      "PrimaryCount": 1
+    },
+    {
+      "Slug": "packaged-food",
+      "Name": "Packaged Food",
+      "ProductCount": 15,
+      "PrimaryCount": 0
+    },
+    {
+      "Slug": "panjabi",
+      "Name": "Panjabi",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "refrigerators",
+      "Name": "Refrigerators",
+      "ProductCount": 15,
+      "PrimaryCount": 15
+    },
+    {
+      "Slug": "rice",
+      "Name": "Rice",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "sarees",
+      "Name": "Sarees",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "shirts",
+      "Name": "Shirts",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "shoes",
+      "Name": "Shoes",
+      "ProductCount": 15,
+      "PrimaryCount": 15
+    },
+    {
+      "Slug": "smartphones",
+      "Name": "Smartphones",
+      "ProductCount": 30,
+      "PrimaryCount": 30
+    },
+    {
+      "Slug": "sports-accessories",
+      "Name": "Sports Accessories",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "uncategorized",
+      "Name": "Uncategorized",
+      "ProductCount": 15,
+      "PrimaryCount": 15
+    },
+    {
+      "Slug": "wall-paint",
+      "Name": "Wall Paint",
+      "ProductCount": 2,
+      "PrimaryCount": 2
+    },
+    {
+      "Slug": "watches",
+      "Name": "Watches",
+      "ProductCount": 1,
+      "PrimaryCount": 1
+    }
+  ],
+  "leaves_under_eight": [
+    {
+      "slug": "auto-accessories",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "cooking-oil",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "cosmetics",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "fragrances",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "ips-batteries",
+      "products": 1,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "laptops",
+      "products": 1,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "led-lighting",
+      "products": 6,
+      "reason": "Official catalogue leaf capped by volume guidance or awaiting more verified rows"
+    },
+    {
+      "slug": "medicines",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "motorbikes",
+      "products": 1,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "panjabi",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "rice",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "sarees",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "shirts",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "sports-accessories",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "wall-paint",
+      "products": 2,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    },
+    {
+      "slug": "watches",
+      "products": 1,
+      "reason": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+    }
+  ],
+  "category_counts": [
+    {
+      "Id": 1,
+      "Slug": "uncategorized",
+      "ProductCount": 15,
+      "InStockCount": 13,
+      "DirectProductCount": 15
+    },
+    {
+      "Id": 2,
+      "Slug": "home",
+      "ProductCount": 26,
+      "InStockCount": 24,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 3,
+      "Slug": "kitchen",
+      "ProductCount": 26,
+      "InStockCount": 24,
+      "DirectProductCount": 16
+    },
+    {
+      "Id": 4,
+      "Slug": "coffee-tea",
+      "ProductCount": 10,
+      "InStockCount": 8,
+      "DirectProductCount": 10
+    },
+    {
+      "Id": 5,
+      "Slug": "electronics",
+      "ProductCount": 46,
+      "InStockCount": 44,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 6,
+      "Slug": "phones",
+      "ProductCount": 30,
+      "InStockCount": 29,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 7,
+      "Slug": "smartphones",
+      "ProductCount": 30,
+      "InStockCount": 29,
+      "DirectProductCount": 30
+    },
+    {
+      "Id": 10,
+      "Slug": "grocery",
+      "ProductCount": 19,
+      "InStockCount": 17,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 11,
+      "Slug": "rice",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 12,
+      "Slug": "cooking-oil",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 13,
+      "Slug": "packaged-food",
+      "ProductCount": 15,
+      "InStockCount": 13,
+      "DirectProductCount": 15
+    },
+    {
+      "Id": 14,
+      "Slug": "fashion",
+      "ProductCount": 6,
+      "InStockCount": 6,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 15,
+      "Slug": "shirts",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 16,
+      "Slug": "panjabi",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 17,
+      "Slug": "sarees",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 18,
+      "Slug": "furniture",
+      "ProductCount": 27,
+      "InStockCount": 23,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 19,
+      "Slug": "chairs",
+      "ProductCount": 15,
+      "InStockCount": 14,
+      "DirectProductCount": 15
+    },
+    {
+      "Id": 20,
+      "Slug": "beds",
+      "ProductCount": 12,
+      "InStockCount": 9,
+      "DirectProductCount": 12
+    },
+    {
+      "Id": 21,
+      "Slug": "footwear",
+      "ProductCount": 15,
+      "InStockCount": 15,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 22,
+      "Slug": "shoes",
+      "ProductCount": 15,
+      "InStockCount": 15,
+      "DirectProductCount": 15
+    },
+    {
+      "Id": 23,
+      "Slug": "beauty",
+      "ProductCount": 4,
+      "InStockCount": 4,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 24,
+      "Slug": "cosmetics",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 25,
+      "Slug": "fragrances",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 26,
+      "Slug": "health",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 27,
+      "Slug": "medicines",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 28,
+      "Slug": "sports",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 29,
+      "Slug": "sports-accessories",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 30,
+      "Slug": "accessories",
+      "ProductCount": 12,
+      "InStockCount": 12,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 31,
+      "Slug": "bags",
+      "ProductCount": 11,
+      "InStockCount": 11,
+      "DirectProductCount": 11
+    },
+    {
+      "Id": 32,
+      "Slug": "watches",
+      "ProductCount": 1,
+      "InStockCount": 1,
+      "DirectProductCount": 1
+    },
+    {
+      "Id": 33,
+      "Slug": "automotive",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 34,
+      "Slug": "auto-accessories",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 35,
+      "Slug": "motorcycles",
+      "ProductCount": 1,
+      "InStockCount": 1,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 36,
+      "Slug": "motorbikes",
+      "ProductCount": 1,
+      "InStockCount": 1,
+      "DirectProductCount": 1
+    },
+    {
+      "Id": 37,
+      "Slug": "paint",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 38,
+      "Slug": "wall-paint",
+      "ProductCount": 2,
+      "InStockCount": 2,
+      "DirectProductCount": 2
+    },
+    {
+      "Id": 39,
+      "Slug": "batteries",
+      "ProductCount": 1,
+      "InStockCount": 1,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 40,
+      "Slug": "ips-batteries",
+      "ProductCount": 1,
+      "InStockCount": 1,
+      "DirectProductCount": 1
+    },
+    {
+      "Id": 41,
+      "Slug": "electrical",
+      "ProductCount": 6,
+      "InStockCount": 5,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 42,
+      "Slug": "led-lighting",
+      "ProductCount": 6,
+      "InStockCount": 5,
+      "DirectProductCount": 6
+    },
+    {
+      "Id": 43,
+      "Slug": "home-appliances",
+      "ProductCount": 15,
+      "InStockCount": 14,
+      "DirectProductCount": 0
+    },
+    {
+      "Id": 44,
+      "Slug": "refrigerators",
+      "ProductCount": 15,
+      "InStockCount": 14,
+      "DirectProductCount": 15
+    },
+    {
+      "Id": 45,
+      "Slug": "laptops",
+      "ProductCount": 1,
+      "InStockCount": 1,
+      "DirectProductCount": 1
+    }
+  ],
+  "invalid_primary_products": [],
+  "nonpositive_prices": [],
+  "duplicate_skus": [],
+  "duplicate_slugs": [],
+  "orphan_tags": [],
+  "missing_source_urls": [],
+  "missing_seed_products": [],
+  "missing_seed_links": [],
+  "missing_seed_tags": [],
+  "api_count_mismatches": [],
+  "api_checks": [
+    {
+      "check": "descendant category query",
+      "passed": true,
+      "detail": "api=46 sql=46"
+    },
+    {
+      "check": "direct-only category query (empty parent)",
+      "passed": true,
+      "detail": "status=200 total=0"
+    },
+    {
+      "check": "cross-listed product appears under both categories",
+      "passed": true,
+      "detail": "ching-s-schezwan-chutney-30-g"
+    },
+    {
+      "check": "cross-listed product appears once in combined descendant query",
+      "passed": true,
+      "detail": "occurrences=1"
+    },
+    {
+      "check": "price filter bounds",
+      "passed": true,
+      "detail": "count=29"
+    },
+    {
+      "check": "tag filter",
+      "passed": true,
+      "detail": "api=41 sql=41"
+    },
+    {
+      "check": "inStock filter",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "sort=name follows SQL collation order",
+      "passed": true,
+      "detail": "api=20 sql=20"
+    },
+    {
+      "check": "sort=price ascending",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "sort=stock descending (app behaviour)",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "sort=newest responds",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "unknown category returns 404",
+      "passed": true,
+      "detail": "status=404"
+    },
+    {
+      "check": "keyword search",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "unique_logical_slugs": true,
+  "reruns_stable": true,
+  "out_of_stock_seed_percent": 6.21,
+  "low_stock_seed_percent": 3.45,
+  "preservation_checks_passed": true
+}

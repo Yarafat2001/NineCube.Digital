@@ -1,0 +1,38 @@
+
+Running 1 test using 1 worker
+
+STUCK  {"documentOverflow":0,"panelClientWidth":315,"panelOverflow":0,"panelPosition":"sticky","panelTop":-63,"panelBottom":718,"navbarBottom":87,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":900}
+  x  1 [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body (12.5s)
+
+
+  1) [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThanOrEqual[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: >= [32m87[39m
+    Received:    [31m-63[39m
+
+      103 |     expect(metrics.headerVar, `--header-height ${metrics.headerVar}px vs a ${metrics.navbarHeight}px bar`)
+      104 |       .toBeCloseTo(metrics.navbarHeight, 0);
+    > 105 |     expect(metrics.panelTop).toBeGreaterThanOrEqual(metrics.navbarBottom);
+          |                              ^
+      106 |     expect(metrics.panelBottom).toBeLessThanOrEqual(metrics.innerHeight + 1);
+      107 |     expect(metrics.bodyIsScroller).toBe(true);
+      108 |     expect(metrics.selectsInsidePanel).toBe(0);
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\sidebar-layout.spec.ts:105:30
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body 

@@ -1,0 +1,322 @@
+{
+  "batchcomplete": "",
+  "continue": {
+    "gsroffset": 3,
+    "continue": "gsroffset||"
+  },
+  "query": {
+    "pages": {
+      "27800244": {
+        "pageid": 27800244,
+        "ns": 6,
+        "title": "File:13-07-13 ADAC Truck GP 04 Cleaning car.jpg",
+        "index": 1,
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg/960px-13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "thumbwidth": 960,
+            "thumbheight": 473,
+            "responsiveUrls": {
+              "2": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg/1920px-13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+            },
+            "thumbattribs": {
+              "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg/960px-13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+              "decoding": "async",
+              "loading": "lazy",
+              "width": 960,
+              "height": 473,
+              "srcset": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg/1920px-13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail 2x"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/8/86/13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:13-07-13_ADAC_Truck_GP_04_Cleaning_car.jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=27800244",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2013-08-20 19:02:38",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "13-07-13 ADAC Truck GP 04 Cleaning car",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Street sweeper vehicles in Germany|GFDL|Personality rights warning|License migration redundant|Supported by Wikimedia Deutschland|Festivalsommer 2013|Images with Festivalsommer Nikon-Kit I|Items with ticket accreditation|Files by User:Achim Raschka from de.wikipedia/People|Street sweeper vehicles in racing circuits|User Achim Raschka supported by Wikimedia Deutschland|Images with Festivalsommer Nikon 70-200mm I|Internationaler ADAC Truck Grand Prix 2013",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "International ADAC Truck Racing Grand Prix, N\u00fcrburgring, Germany; MAN Cleaning truck",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2013-07-13",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/User:Achim_Raschka\" title=\"User:Achim Raschka\">Achim Raschka</a> (<a href=\"//commons.wikimedia.org/wiki/User_talk:Achim_Raschka\" title=\"User talk:Achim Raschka\"><span class=\"signature-talk\">talk</span></a>)",
+                "source": "commons-desc-page"
+              },
+              "Permission": {
+                "value": "Own work, copyleft: Multi-license with GFDL and Creative Commons CC-BY-SA-3.0 and older versions (2.5, 2.0 and 1.0)",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 4.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 4.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/4.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "personality",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-4.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            }
+          }
+        ]
+      },
+      "27800384": {
+        "pageid": 27800384,
+        "ns": 6,
+        "title": "File:13-07-13 ADAC Truck GP 05 Cleaning car.jpg",
+        "index": 2,
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg/960px-13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "thumbwidth": 960,
+            "thumbheight": 486,
+            "responsiveUrls": {
+              "2": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg/1920px-13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+            },
+            "thumbattribs": {
+              "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg/960px-13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+              "decoding": "async",
+              "loading": "lazy",
+              "width": 960,
+              "height": 486,
+              "srcset": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg/1920px-13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail 2x"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:13-07-13_ADAC_Truck_GP_05_Cleaning_car.jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=27800384",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2013-08-20 19:11:52",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "13-07-13 ADAC Truck GP 05 Cleaning car",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Street sweeper vehicles in Germany|GFDL|Personality rights warning|License migration redundant|Supported by Wikimedia Deutschland|Festivalsommer 2013|Images with Festivalsommer Nikon-Kit I|Items with ticket accreditation|MAN cab-over-engine trucks|Files by User:Achim Raschka from de.wikipedia/People|Street sweeper vehicles in racing circuits|User Achim Raschka supported by Wikimedia Deutschland|Images with Festivalsommer Nikon 70-200mm I|Internationaler ADAC Truck Grand Prix 2013",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "International ADAC Truck Racing Grand Prix, N\u00fcrburgring, Germany; MAN Cleaning truck",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2013-07-13",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/User:Achim_Raschka\" title=\"User:Achim Raschka\">Achim Raschka</a> (<a href=\"//commons.wikimedia.org/wiki/User_talk:Achim_Raschka\" title=\"User talk:Achim Raschka\"><span class=\"signature-talk\">talk</span></a>)",
+                "source": "commons-desc-page"
+              },
+              "Permission": {
+                "value": "Own work, copyleft: Multi-license with GFDL and Creative Commons CC-BY-SA-3.0 and older versions (2.5, 2.0 and 1.0)",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 4.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 4.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/4.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "personality",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-4.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            }
+          }
+        ]
+      },
+      "76107826": {
+        "pageid": 76107826,
+        "ns": 6,
+        "title": "File:Congressional Research Service Report R45451 - Clean Air Act Issues in the 116th Congress.pdf",
+        "index": 3,
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Congressional_Research_Service_Report_R45451_-_Clean_Air_Act_Issues_in_the_116th_Congress.pdf/page1-960px-Congressional_Research_Service_Report_R45451_-_Clean_Air_Act_Issues_in_the_116th_Congress.pdf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "thumbwidth": 960,
+            "thumbheight": 1242,
+            "thumbattribs": {
+              "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Congressional_Research_Service_Report_R45451_-_Clean_Air_Act_Issues_in_the_116th_Congress.pdf/page1-960px-Congressional_Research_Service_Report_R45451_-_Clean_Air_Act_Issues_in_the_116th_Congress.pdf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+              "decoding": "async",
+              "loading": "lazy",
+              "width": 960,
+              "height": 1242
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Congressional_Research_Service_Report_R45451_-_Clean_Air_Act_Issues_in_the_116th_Congress.pdf?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Congressional_Research_Service_Report_R45451_-_Clean_Air_Act_Issues_in_the_116th_Congress.pdf",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=76107826",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2019-01-26 10:06:33",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Congressional Research Service Report R45451 - Clean Air Act Issues in the 116th Congress",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "PD US Government|Clean Air Act|2019-01-03|CC-PD-Mark|Congressional Research Service reports for the 116th United States Congress|Documents related to climate change|English-language PDF files",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Clean Air Act Issues in the 116th Congress",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2019-01-03",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://crsreports.congress.gov/product/pdf/R/R45451\">https://crsreports.congress.gov/product/pdf/R/R45451</a>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "James E. McCarthy, Kate C. Shouse, Richard K. Lattanzio",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "Public domain",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Public domain",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "false",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Copyrighted": {
+                "value": "False",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "pd",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

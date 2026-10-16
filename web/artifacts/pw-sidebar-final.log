@@ -1,0 +1,23 @@
+
+Running 11 tests using 1 worker
+
+  ok 1 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1024px (12.7s)
+WIDTH 1280px {"documentOverflow":0,"panelClientWidth":280,"panelOverflow":0,"panelPosition":"sticky","panelTop":428,"panelBottom":1109,"navbarBottom":91,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":800}
+  ok 2 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px (6.7s)
+WIDTH 1440px {"documentOverflow":0,"panelClientWidth":315,"panelOverflow":0,"panelPosition":"sticky","panelTop":431,"panelBottom":1212,"navbarBottom":91,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":900}
+  ok 3 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1440px (11.4s)
+  ok 4 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1920px (12.8s)
+  ok 5 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px at 125% zoom (7.6s)
+  ok 6 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px at 150% zoom (12.7s)
+  ok 7 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1440px at 150% zoom (10.5s)
+WIDTH 1920px at 150% zoom {"documentOverflow":0,"panelClientWidth":280,"panelOverflow":0,"panelPosition":"sticky","panelTop":428,"panelBottom":1029,"navbarBottom":91,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":720}
+  ok 8 [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1920px at 150% zoom (11.3s)
+STUCK  {"documentOverflow":0,"panelClientWidth":315,"panelOverflow":0,"panelPosition":"sticky","panelTop":103,"panelBottom":884,"navbarBottom":87,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":900} {"offset":103,"panelHeight":781,"stuckFrom":328,"stuckUntil":555}
+INSIDE {"headerBefore":{"x":33,"y":104,"width":314.796875,"height":66.6875},"headerAfter":{"x":33,"y":104,"width":314.796875,"height":66.6875},"bodyScroll":400}
+  ok 9 [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body (14.4s)
+  ok 10 [chromium] › sidebar-layout.spec.ts:140:3 › catalogue sidebar layout › keeps the header popovers inside the viewport (12.5s)
+  ok 11 [chromium] › sidebar-layout.spec.ts:163:3 › catalogue sidebar layout › photographs the fixed sidebar at 1280 and 1440 (24.2s)
+
+  Slow test file: [chromium] › sidebar-layout.spec.ts (2.3m)
+  Consider splitting slow test files to speed up parallel execution
+  11 passed (2.4m)

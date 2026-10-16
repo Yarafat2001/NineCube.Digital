@@ -1,0 +1,58 @@
+
+:root{--paper:#d6d6d3;--ink:#242424}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+body{overflow-x:hidden}
+.nav{position:fixed;z-index:20;top:0;left:0;right:0;padding:16px 22px;display:flex;justify-content:space-between;font-size:9px;color:#fff;mix-blend-mode:difference}
+.outro{min-height:100vh;padding:8vw;display:flex;flex-direction:column;justify-content:center;background:var(--paper);color:var(--ink);overflow:hidden;will-change:background-color,color}
+.intro-track{height:100vh;background:#0a0f1f;overflow:hidden}
+.intro-stage{position:relative;height:100vh;overflow:hidden;background:#0a0f1f;color:#f5f9ff;will-change:background-color,color}
+.intro-block{position:absolute;left:8vw;right:8vw;top:50%;transform:translateY(-50%);will-change:transform,color;transform-origin:left top}
+.kicker{font-size:9px;letter-spacing:.18em}
+.intro-block h1,.outro h2{font-size:clamp(64px,10vw,160px);letter-spacing:-.07em;line-height:.84;margin:.15em 0}
+.outro-block{will-change:transform,color}
+.intro-block p{margin:0;font-size:clamp(12px,1vw,18px)}
+.track{height:690vh}
+.sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper)}
+.transition-shade{position:absolute;inset:0;z-index:0;background:#0a0f1f;pointer-events:none;will-change:opacity}
+.transition-title{position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,1400px);text-align:center;font-size:clamp(28px,4.2vw,76px);font-weight:500;letter-spacing:-.045em;line-height:.95;color:var(--ink);opacity:0;pointer-events:none;will-change:opacity,transform}
+#scene{position:absolute;inset:0;width:100%;height:100%;z-index:5;display:block}
+.editorial{position:absolute;inset:0;z-index:2;pointer-events:none}
+.editorial h2{
+  position:absolute;
+  margin:0;
+  font-size:clamp(42px,7.4vw,132px);
+  font-weight:500;
+  letter-spacing:-.065em;
+  line-height:.8;
+  white-space:nowrap;
+  will-change:transform,opacity;
+}
+.plus-gap{display:inline-block;margin-left:0;font-size:1.16em;line-height:1;transform:translateY(.055em)}
+.line1{left:34%;top:29%;display:flex;align-items:center;gap:.62em}
+.line2{left:62%;top:49%}
+
+/* Keep the same editorial relationship as the desktop design while
+   allowing it to scale and reposition on narrower viewports. */
+@media (max-width:1200px){
+  .editorial h2{font-size:clamp(46px,8.4vw,104px)}
+  .line1{left:31%;top:30%}
+  .line2{left:55%;top:49%}
+  }
+
+@media (max-width:768px){
+  .editorial h2{
+    font-size:clamp(40px,12.8vw,82px);
+    letter-spacing:-.07em;
+  }
+  .line1{left:8%;top:27%}
+  .line2{left:30%;top:45%}
+  }
+
+@media (max-width:480px){
+  .editorial h2{font-size:clamp(36px,13.5vw,62px)}
+  .line1{left:6%;top:26%}
+  .line2{left:24%;top:43%}
+  }
+.progress{position:absolute;left:2%;right:2%;bottom:2%;height:1px;background:rgba(0,0,0,.12);z-index:10}
+.progress i{display:block;width:100%;height:100%;background:#222;transform-origin:left;transform:scaleX(0)}

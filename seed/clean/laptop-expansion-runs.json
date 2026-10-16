@@ -1,0 +1,24 @@
+[
+  {
+    "at": "2026-10-16T04:57:23.141290+00:00",
+    "before": 171,
+    "after": 183,
+    "added": 12,
+    "shortenedSkus": 145,
+    "maxSkuLength": 24,
+    "existingProductsPreserved": true,
+    "ordersPreserved": true,
+    "categoriesPreserved": true
+  },
+  {
+    "at": "2026-10-16T05:01:24.457109+00:00",
+    "before": 183,
+    "after": 183,
+    "added": 0,
+    "shortenedSkus": 145,
+    "maxSkuLength": 24,
+    "existingProductsPreserved": true,
+    "ordersPreserved": true,
+    "categoriesPreserved": true
+  }
+]

@@ -1,0 +1,45 @@
+
+Running 4 tests using 1 worker
+
+  x  1 [chromium] › catalogue-images.spec.ts:45:3 › Catalogue cards › fits the viewport at every width, keeps the SKU off the card and always shows media (51.6s)
+  ok 2 [chromium] › catalogue-images.spec.ts:94:3 › Product pictures › an upload is stored, served from /uploads and drawn on the card (1.6m)
+  ok 3 [chromium] › catalogue-images.spec.ts:155:3 › Brand and series filter › a deep link restores the selection, the chips and the result count (46.8s)
+  ok 4 [chromium] › order-flow.spec.ts:52:3 › order flow › a customer reserves stock and a staff member confirms the order (3.4m)
+
+
+  1) [chromium] › catalogue-images.spec.ts:45:3 › Catalogue cards › fits the viewport at every width, keeps the SKU off the card and always shows media 
+
+    Error: the grid never goes multi-column at 1024px
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThanOrEqual[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: >= [32m2[39m
+    Received:    [31m1[39m
+
+      83 |       // 320px fits a single 200px column; every wider viewport must place cards side by side.
+      84 |       const widestRow = Math.max(...[...rows.values()].map(heights => heights.length));
+    > 85 |       expect(widestRow, `the grid never goes multi-column at ${width}px`).toBeGreaterThanOrEqual(width >= 480 ? 2 : 1);
+         |                                                                           ^
+      86 |     }
+      87 |   });
+      88 | });
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\catalogue-images.spec.ts:85:75
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\catalogue-images-Catalogue-53983-card-and-always-shows-media-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\catalogue-images-Catalogue-53983-card-and-always-shows-media-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\catalogue-images-Catalogue-53983-card-and-always-shows-media-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Slow test file: [chromium] › order-flow.spec.ts (3.4m)
+  Consider splitting slow test files to speed up parallel execution
+  1 failed
+    [chromium] › catalogue-images.spec.ts:45:3 › Catalogue cards › fits the viewport at every width, keeps the SKU off the card and always shows media 
+  3 passed (7.0m)

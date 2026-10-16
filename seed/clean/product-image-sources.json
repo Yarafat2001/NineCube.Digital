@@ -1,0 +1,266 @@
+{
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#65": {
+    "imageSourceUrl": "https://static.myoas.net/v2/realme-gt-luna-a/images/specs/2-c89f67769e.png",
+    "photoPage": "https://www.realme.com/global/realme-gt-master-edition/specs",
+    "match": "exact model official photo",
+    "rights": "Manufacturer catalogue photo; copyright retained by source"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#66": {
+    "imageSourceUrl": "https://www.oppo.com/content/dam/oppo/product-asset-library/specs/reno8/Reno8-specs.png",
+    "photoPage": "https://www.oppo.com/kh/smartphones/series-reno/reno8/specs/",
+    "match": "exact model official photo",
+    "rights": "Manufacturer catalogue photo; copyright retained by source"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#57": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/IPhone_12_Blue.svg/960px-IPhone_12_Blue.svg.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "exact model image",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:IPhone_12_Blue.svg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:TheGoldenBox\" title=\"User:TheGoldenBox\">Rafael Fernandez</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#58": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/GalaxyS21.png/960px-GalaxyS21.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "exact model image",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:GalaxyS21.png",
+    "rights": "CC BY 4.0",
+    "artist": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Marcusph&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:Marcusph (page does not exist)\">Marcusph</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#60": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/OnePlus_9_Pro_Camera_Module_with_Hasselblad_logo.jpg/960px-OnePlus_9_Pro_Camera_Module_with_Hasselblad_logo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "exact model image",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:OnePlus_9_Pro_Camera_Module_with_Hasselblad_logo.jpg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:Magdum_Photo\" title=\"User:Magdum Photo\">金琛玮</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#62": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/IPhone_13_vector.svg/960px-IPhone_13_vector.svg.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "exact model image",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:IPhone_13_vector.svg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:TheGoldenBox\" title=\"User:TheGoldenBox\">Rafael Fernandez</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#63": {
+    "imageSourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Samsung-Galaxy-A52-Awesome-White.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "match": "exact model image",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Samsung-Galaxy-A52-Awesome-White.jpg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Samsung&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:Samsung (page does not exist)\">Samsung</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#64": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Xiaomi_Mi_11_front.jpg/960px-Xiaomi_Mi_11_front.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "exact model image",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Xiaomi_Mi_11_front.jpg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:30000lightyears\" title=\"User:30000lightyears\">30000lightyears</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#61": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Google_Pixel_6_front.svg/960px-Google_Pixel_6_front.svg.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "exact model illustration",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Google_Pixel_6_front.svg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Mliu92\" title=\"User:Mliu92\">Mliu92</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv#59": {
+    "imageSourceUrl": "https://i01.appmifile.com/webfile/globalimg/7/90155702-FE00-FABE-F057-A71B1E563CA4.png",
+    "match": "exact model official photo",
+    "photoPage": "https://www.mi.com/in/redmi-note-10/specs/",
+    "rights": "Source copyright retained; see linked image description for creator and license"
+  },
+  "https://en.wikipedia.org/wiki/Soybean_oil#129": {
+    "imageSourceUrl": "https://cdn.dummyjson.com/product-images/groceries/cooking-oil/1.webp",
+    "match": "representative photo of generic item",
+    "photoPage": "https://dummyjson.com/products/20",
+    "rights": "Source copyright retained; see linked image description for creator and license"
+  },
+  "https://en.wikipedia.org/wiki/Lipstick#132": {
+    "imageSourceUrl": "https://cdn.dummyjson.com/product-images/beauty/red-lipstick/1.webp",
+    "match": "representative photo of generic item",
+    "photoPage": "https://dummyjson.com/products/4",
+    "rights": "Source copyright retained; see linked image description for creator and license"
+  },
+  "https://en.wikipedia.org/wiki/Laptop#136": {
+    "imageSourceUrl": "https://cdn.dummyjson.com/product-images/laptops/huawei-matebook-x-pro/1.webp",
+    "match": "representative photo of generic item",
+    "photoPage": "https://dummyjson.com/products/80",
+    "rights": "Source copyright retained; see linked image description for creator and license"
+  },
+  "https://en.wikipedia.org/wiki/Motorcycle#145": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/%E3%83%9B%E3%83%B3%E3%83%80_CG125.jpg/960px-%E3%83%9B%E3%83%B3%E3%83%80_CG125.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:%E3%83%9B%E3%83%B3%E3%83%80_CG125.jpg",
+    "match": "representative photo of generic 125 cc commuter motorcycle",
+    "artist": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:%E3%82%82%E3%82%93%E3%81%BE%E3%81%88_%E3%81%82%E3%81%8D%E3%82%89?action=edit&amp;redlink=1\" title=\"User:もんまえ あきら (page does not exist)\" class=\"new\" typeof=\"mw:LocalizedAttrs\" data-mw-i18n='{\"title\":{\"lang\":\"x-page\",\"key\":\"red-link-title\",\"params\":[\"User:もんまえ あきら\"]}}'>もんまえ あきら</a>",
+    "rights": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://en.wikipedia.org/wiki/Rice#163": {
+    "imageSourceUrl": "https://cdn.dummyjson.com/product-images/groceries/rice/1.webp",
+    "match": "representative photo of generic item",
+    "photoPage": "https://dummyjson.com/products/38",
+    "rights": "Source copyright retained; see linked image description for creator and license"
+  },
+  "https://en.wikipedia.org/wiki/Shirt#167": {
+    "imageSourceUrl": "https://cdn.dummyjson.com/product-images/mens-shirts/blue-&-black-check-shirt/1.webp",
+    "match": "representative photo of generic item",
+    "photoPage": "https://dummyjson.com/products/83",
+    "rights": "Source copyright retained; see linked image description for creator and license"
+  },
+  "https://en.wikipedia.org/wiki/Cricket_bat#204": {
+    "imageSourceUrl": "https://cdn.dummyjson.com/product-images/sports-accessories/cricket-bat/1.webp",
+    "match": "representative photo of generic item",
+    "photoPage": "https://dummyjson.com/products/143",
+    "rights": "Source copyright retained; see linked image description for creator and license"
+  },
+  "https://en.wikipedia.org/wiki/Watch#208": {
+    "imageSourceUrl": "https://cdn.dummyjson.com/product-images/mens-watches/brown-leather-belt-watch/1.webp",
+    "match": "representative photo of generic item",
+    "photoPage": "https://dummyjson.com/products/93",
+    "rights": "Source copyright retained; see linked image description for creator and license"
+  },
+  "https://en.wikipedia.org/wiki/Coconut_oil#130": {
+    "imageSourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Coconut_and_oil.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Coconut_and_oil.jpg",
+    "rights": "CC BY-SA 2.0",
+    "artist": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/81249109@N04\">Phu Thinh Co</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "https://en.wikipedia.org/wiki/Kurta#146": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Kurta_traditional_front_sandalwood_buttons.jpg/960px-Kurta_traditional_front_sandalwood_buttons.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Kurta_traditional_front_sandalwood_buttons.jpg",
+    "rights": "Public domain",
+    "artist": "<a href=\"https://en.wikipedia.org/wiki/User:Fowler%26fowler\" class=\"extiw\" title=\"wikipedia:User:Fowler&amp;fowler\">Fowler&amp;fowler</a> at <a href=\"https://en.wikipedia.org/wiki/\" class=\"extiw\" title=\"wikipedia:\">English Wikipedia</a>",
+    "licenseUrl": null
+  },
+  "https://en.wikipedia.org/wiki/Kurta#147": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Kurta_traditional_front_sandalwood_buttons.jpg/960px-Kurta_traditional_front_sandalwood_buttons.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Kurta_traditional_front_sandalwood_buttons.jpg",
+    "rights": "Public domain",
+    "artist": "<a href=\"https://en.wikipedia.org/wiki/User:Fowler%26fowler\" class=\"extiw\" title=\"wikipedia:User:Fowler&amp;fowler\">Fowler&amp;fowler</a> at <a href=\"https://en.wikipedia.org/wiki/\" class=\"extiw\" title=\"wikipedia:\">English Wikipedia</a>",
+    "licenseUrl": null
+  },
+  "https://en.wikipedia.org/wiki/Basmati#164": {
+    "imageSourceUrl": "https://upload.wikimedia.org/wikipedia/commons/0/07/Khyma_and_Basmati_rice.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Khyma_and_Basmati_rice.jpg",
+    "rights": "CC BY-SA 3.0",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Nagualdesign\" title=\"User:Nagualdesign\">nagualdesign</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "https://en.wikipedia.org/wiki/Sari#165": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Sari_on_mannequin_for_demo.jpg/960px-Sari_on_mannequin_for_demo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Sari_on_mannequin_for_demo.jpg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Suyash.dwivedi\" title=\"User:Suyash.dwivedi\">Suyash.dwivedi</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://en.wikipedia.org/wiki/Jamdani#166": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/%E0%A6%9C%E0%A6%BE%E0%A6%AE%E0%A6%A6%E0%A6%BE%E0%A6%A8%E0%A6%BF_%E0%A6%B6%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BF.jpg/960px-%E0%A6%9C%E0%A6%BE%E0%A6%AE%E0%A6%A6%E0%A6%BE%E0%A6%A8%E0%A6%BF_%E0%A6%B6%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BF.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:%E0%A6%9C%E0%A6%BE%E0%A6%AE%E0%A6%A6%E0%A6%BE%E0%A6%A8%E0%A6%BF_%E0%A6%B6%E0%A6%BE%E0%A6%A1%E0%A6%BC%E0%A6%BF.jpg",
+    "rights": "CC0",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Salim_Khandoker\" title=\"User:Salim Khandoker\">Salim_Khandoker</a>",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "https://en.wikipedia.org/wiki/Dress_shirt#168": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Camisade_pu%C3%B1o_doble.jpg/960px-Camisade_pu%C3%B1o_doble.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Camisade_pu%C3%B1o_doble.jpg",
+    "rights": "CC BY-SA 3.0",
+    "artist": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:Incal\" title=\"User:Incal\">Incal</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "https://en.wikipedia.org/wiki/Helmet#89": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Full-Face_Helmet_9274.jpg/960px-Full-Face_Helmet_9274.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Full-Face_Helmet_9274.jpg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Ashley_Pomeroy\" title=\"User:Ashley Pomeroy\">Ashley Pomeroy</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://en.wikipedia.org/wiki/Oral_rehydration_therapy#143": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/UNICEF-ORS.jpg/960px-UNICEF-ORS.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:UNICEF-ORS.jpg",
+    "rights": "CC BY-SA 4.0",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Olle_Gustavsson\" title=\"User:Olle Gustavsson\">Olle Gustavsson</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "https://en.wikipedia.org/wiki/Badminton#205": {
+    "imageSourceUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Heads_of_badminton_raquets.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Heads_of_badminton_raquets.jpg",
+    "rights": "Public domain",
+    "artist": null,
+    "licenseUrl": null
+  },
+  "https://en.wikipedia.org/wiki/Paint#206": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/EWM_paint_2007.jpg/960px-EWM_paint_2007.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:EWM_paint_2007.jpg",
+    "rights": "Public domain",
+    "artist": "Tom Murphy VII",
+    "licenseUrl": null
+  },
+  "https://en.wikipedia.org/wiki/Interior_design#207": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/EWM_paint_2007.jpg/960px-EWM_paint_2007.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:EWM_paint_2007.jpg",
+    "rights": "Public domain",
+    "artist": "Tom Murphy VII",
+    "licenseUrl": null
+  },
+  "https://en.wikipedia.org/wiki/Cosmetics#131": {
+    "imageSourceUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Cold_Cream-2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Cold_Cream-2.jpg",
+    "rights": "Public domain",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:BD2412\" title=\"User:BD2412\">BD2412</a>",
+    "licenseUrl": null
+  },
+  "https://en.wikipedia.org/wiki/Perfume#133": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Minyak_atar_%28attar%29_yang_dijual_di_dataran_puncak_Jabal_Rahmah%2C_Mekah.jpg/960px-Minyak_atar_%28attar%29_yang_dijual_di_dataran_puncak_Jabal_Rahmah%2C_Mekah.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Minyak_atar_(attar)_yang_dijual_di_dataran_puncak_Jabal_Rahmah,_Mekah.jpg",
+    "rights": "CC0",
+    "artist": "<a rel=\"mw:WikiLink\" href=\"https://commons.wikimedia.org/wiki/User:Kerina_yin\" title=\"User:Kerina yin\">Kerina yin</a>",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "https://en.wikipedia.org/wiki/Deodorant#134": {
+    "imageSourceUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Old_spice_deodorant_body_spray.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "match": "representative photo of generic item",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Old_spice_deodorant_body_spray.jpg",
+    "rights": "Public domain",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Armbrust\" title=\"User:Armbrust\">Armbrust</a>",
+    "licenseUrl": null
+  },
+  "https://en.wikipedia.org/wiki/Paracetamol#144": {
+    "imageSourceUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Medication_Paracetamol.JPG/960px-Medication_Paracetamol.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "photoPage": "https://commons.wikimedia.org/wiki/File:Medication_Paracetamol.JPG",
+    "match": "representative 500 mg paracetamol packaging",
+    "rights": "CC BY-SA 3.0",
+    "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Mk2010\" title=\"User:Mk2010\">Mk2010</a>",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "https://en.wikipedia.org/wiki/Car_wash#90": {
+    "imageSourceUrl": "https://www.turtlewax.com/cdn/shop/files/DTCKITUS0002_2025-Complete-Car-Care-Kit_NoBrush_PDP_Square_Tile1_1.jpg?v=1780929599",
+    "photoPage": "https://www.turtlewax.com/products/complete-car-care-kit",
+    "match": "representative photo of generic item",
+    "rights": "Manufacturer product photograph; copyright retained by source"
+  },
+  "https://en.wikipedia.org/wiki/Deep-cycle_battery#135": {
+    "imageSourceUrl": "https://www.exidecare.com/assets/ProductImages/ELUltraBattery150.jpg",
+    "photoPage": "https://www.exidecare.com/brand/exide-el-ultra-tubular-inverter-battery",
+    "match": "representative photo of generic 150 Ah tall tubular battery",
+    "rights": "Exide manufacturer photo; copyright retained by source"
+  }
+}

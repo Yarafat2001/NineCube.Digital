@@ -1,0 +1,49 @@
+{
+  "type": "standard",
+  "title": "Honda CG125",
+  "displaytitle": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Honda CG125</span></span>",
+  "namespace": {
+    "id": 0,
+    "text": ""
+  },
+  "wikibase_item": "Q972048",
+  "titles": {
+    "canonical": "Honda_CG125",
+    "normalized": "Honda CG125",
+    "display": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Honda CG125</span></span>"
+  },
+  "pageid": 3497843,
+  "thumbnail": {
+    "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/%E3%83%9B%E3%83%B3%E3%83%80_CG125.jpg/330px-%E3%83%9B%E3%83%B3%E3%83%80_CG125.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "width": 330,
+    "height": 252
+  },
+  "originalimage": {
+    "source": "https://upload.wikimedia.org/wikipedia/commons/d/dc/%E3%83%9B%E3%83%B3%E3%83%80_CG125.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "width": 2912,
+    "height": 2224
+  },
+  "lang": "en",
+  "dir": "ltr",
+  "revision": "1371047138",
+  "tid": "267c0e88-9f8f-11f1-afae-75c0895fdf07",
+  "timestamp": "2026-08-24T07:41:00Z",
+  "description": "Honda motorcycle",
+  "description_source": "local",
+  "content_urls": {
+    "desktop": {
+      "page": "https://en.wikipedia.org/wiki/Honda_CG125",
+      "revisions": "https://en.wikipedia.org/wiki/Honda_CG125?action=history",
+      "edit": "https://en.wikipedia.org/wiki/Honda_CG125?action=edit",
+      "talk": "https://en.wikipedia.org/wiki/Talk:Honda_CG125"
+    },
+    "mobile": {
+      "page": "https://en.wikipedia.org/wiki/Honda_CG125",
+      "revisions": "https://en.wikipedia.org/wiki/Special:History/Honda_CG125",
+      "edit": "https://en.wikipedia.org/wiki/Honda_CG125?action=edit",
+      "talk": "https://en.wikipedia.org/wiki/Talk:Honda_CG125"
+    }
+  },
+  "extract": "The CG125 or Honda CG is a commuter motorcycle made by Honda. It was in production from 1976 to 2008 in Japan and has been in production since 1992 in Pakistan. The CG was originally manufactured in Japan, but the source for the global market was eventually moved to Brazil in 1985, and to Pakistan and Turkey in 1992 for the W and M models.",
+  "extract_html": "<p>The <b>CG125</b> or <b>Honda CG</b> is a commuter motorcycle made by Honda. It was in production from 1976 to 2008 in Japan and has been in production since 1992 in Pakistan. The CG was originally manufactured in Japan, but the source for the global market was eventually moved to Brazil in 1985, and to Pakistan and Turkey in 1992 for the W and M models.</p>"
+}

@@ -1,0 +1,335 @@
+{
+  "IPhone_12": {
+    "type": "standard",
+    "title": "IPhone 12",
+    "displaytitle": "iPhone 12",
+    "namespace": {
+      "id": 0,
+      "text": ""
+    },
+    "wikibase_item": "Q96608989",
+    "titles": {
+      "canonical": "IPhone_12",
+      "normalized": "IPhone 12",
+      "display": "iPhone 12"
+    },
+    "pageid": 64474493,
+    "thumbnail": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/IPhone_12_Blue.svg/330px-IPhone_12_Blue.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 330,
+      "height": 664
+    },
+    "originalimage": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/IPhone_12_Blue.svg/500px-IPhone_12_Blue.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 363,
+      "height": 730
+    },
+    "lang": "en",
+    "dir": "ltr",
+    "revision": "1378960512",
+    "tid": "91aa38e6-c1fb-11f1-81c1-7303c84ea20f",
+    "timestamp": "2026-10-07T03:02:45Z",
+    "description": "14th-generation smartphone by Apple",
+    "description_source": "local",
+    "content_urls": {
+      "desktop": {
+        "page": "https://en.wikipedia.org/wiki/IPhone_12",
+        "revisions": "https://en.wikipedia.org/wiki/IPhone_12?action=history",
+        "edit": "https://en.wikipedia.org/wiki/IPhone_12?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:IPhone_12"
+      },
+      "mobile": {
+        "page": "https://en.wikipedia.org/wiki/IPhone_12",
+        "revisions": "https://en.wikipedia.org/wiki/Special:History/IPhone_12",
+        "edit": "https://en.wikipedia.org/wiki/IPhone_12?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:IPhone_12"
+      }
+    },
+    "extract": "The iPhone 12 and iPhone 12 Mini are smartphones that were developed and marketed by Apple. They are the fourteenth-generation iPhones, succeeding the iPhone 11. They were unveiled at a virtually held Apple Special Event at Apple Park in Cupertino, California, on October 13, 2020, alongside the \"premium flagship\" iPhone 12 Pro and iPhone 12 Pro Max and HomePod Mini. Pre-orders for the iPhone 12 started on October 16, 2020, and the phone was released in most countries on October 23, 2020, alongside the iPhone 12 Pro and fourth-generation iPad Air. Pre-orders for the iPhone 12 Mini began on November 6, 2020, and the phone was released on November 13, 2020, alongside the iPhone 12 Pro Max.",
+    "extract_html": "<p>The <b>iPhone 12</b> and <b>iPhone 12 Mini</b> are smartphones that were developed and marketed by Apple. They are the fourteenth-generation iPhones, succeeding the iPhone 11. They were unveiled at a virtually held Apple Special Event at Apple Park in Cupertino, California, on October 13, 2020, alongside the \"premium flagship\" iPhone 12 Pro and iPhone 12 Pro Max and HomePod Mini. Pre-orders for the iPhone 12 started on October 16, 2020, and the phone was released in most countries on October 23, 2020, alongside the iPhone 12 Pro and fourth-generation iPad Air. Pre-orders for the iPhone 12 Mini began on November 6, 2020, and the phone was released on November 13, 2020, alongside the iPhone 12 Pro Max.</p>"
+  },
+  "Samsung_Galaxy_S21": {
+    "type": "standard",
+    "title": "Samsung Galaxy S21",
+    "displaytitle": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Samsung Galaxy S21</span></span>",
+    "namespace": {
+      "id": 0,
+      "text": ""
+    },
+    "wikibase_item": "Q104537157",
+    "titles": {
+      "canonical": "Samsung_Galaxy_S21",
+      "normalized": "Samsung Galaxy S21",
+      "display": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Samsung Galaxy S21</span></span>"
+    },
+    "pageid": 66351666,
+    "thumbnail": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/GalaxyS21.png/330px-GalaxyS21.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 330,
+      "height": 177
+    },
+    "originalimage": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/GalaxyS21.png/3840px-GalaxyS21.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 5319,
+      "height": 2856
+    },
+    "lang": "en",
+    "dir": "ltr",
+    "revision": "1380483275",
+    "tid": "8c35a96c-c8f7-11f1-8b74-e13b7cc0f793",
+    "timestamp": "2026-10-16T00:21:36Z",
+    "description": "2021 flagship smartphones by Samsung Electronics",
+    "description_source": "local",
+    "content_urls": {
+      "desktop": {
+        "page": "https://en.wikipedia.org/wiki/Samsung_Galaxy_S21",
+        "revisions": "https://en.wikipedia.org/wiki/Samsung_Galaxy_S21?action=history",
+        "edit": "https://en.wikipedia.org/wiki/Samsung_Galaxy_S21?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:Samsung_Galaxy_S21"
+      },
+      "mobile": {
+        "page": "https://en.wikipedia.org/wiki/Samsung_Galaxy_S21",
+        "revisions": "https://en.wikipedia.org/wiki/Special:History/Samsung_Galaxy_S21",
+        "edit": "https://en.wikipedia.org/wiki/Samsung_Galaxy_S21?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:Samsung_Galaxy_S21"
+      }
+    },
+    "extract": "The Samsung Galaxy S21 is a series of high-end Android-based smartphones developed, marketed, and manufactured by Samsung Electronics as part of its flagship Galaxy S series. They collectively serve as the successor to the Galaxy S20 series. The first three smartphones were unveiled at Samsung's Galaxy Unpacked event on January 14, 2021, while the Galaxy S21 FE was unveiled at Samsung's CES on January 4, 2022. The first three phones were released in the United States and Europe on January 29, 2021, while the Fan Edition was released globally on January 7, 2022. All four S21 series models were the first Samsung candybar flagships not given a 4G version. They were succeeded by the Galaxy S22 series announced on February 9, 2022.",
+    "extract_html": "<p>The <b>Samsung Galaxy S21</b> is a series of high-end Android-based smartphones developed, marketed, and manufactured by Samsung Electronics as part of its flagship Galaxy S series. They collectively serve as the successor to the Galaxy S20 series. The first three smartphones were unveiled at Samsung's Galaxy Unpacked event on January 14, 2021, while the <b>Galaxy S21 FE</b> was unveiled at Samsung's CES on January 4, 2022. The first three phones were released in the United States and Europe on January 29, 2021, while the Fan Edition was released globally on January 7, 2022. All four S21 series models were the first Samsung candybar flagships not given a 4G version. They were succeeded by the Galaxy S22 series announced on February 9, 2022.</p>"
+  },
+  "OnePlus_9": {
+    "type": "standard",
+    "title": "OnePlus 9",
+    "displaytitle": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">OnePlus 9</span></span>",
+    "namespace": {
+      "id": 0,
+      "text": ""
+    },
+    "wikibase_item": "Q106129681",
+    "titles": {
+      "canonical": "OnePlus_9",
+      "normalized": "OnePlus 9",
+      "display": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">OnePlus 9</span></span>"
+    },
+    "pageid": 67039976,
+    "thumbnail": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/OnePlus_9_Pro_Camera_Module_with_Hasselblad_logo.jpg/330px-OnePlus_9_Pro_Camera_Module_with_Hasselblad_logo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 330,
+      "height": 495
+    },
+    "originalimage": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/OnePlus_9_Pro_Camera_Module_with_Hasselblad_logo.jpg/3840px-OnePlus_9_Pro_Camera_Module_with_Hasselblad_logo.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 6336,
+      "height": 9504
+    },
+    "lang": "en",
+    "dir": "ltr",
+    "revision": "1361478839",
+    "tid": "b9a90a6c-72ac-11f1-a940-8d056836a1b5",
+    "timestamp": "2026-06-28T04:49:20Z",
+    "description": "Android-based smartphone series by OnePlus",
+    "description_source": "local",
+    "content_urls": {
+      "desktop": {
+        "page": "https://en.wikipedia.org/wiki/OnePlus_9",
+        "revisions": "https://en.wikipedia.org/wiki/OnePlus_9?action=history",
+        "edit": "https://en.wikipedia.org/wiki/OnePlus_9?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:OnePlus_9"
+      },
+      "mobile": {
+        "page": "https://en.wikipedia.org/wiki/OnePlus_9",
+        "revisions": "https://en.wikipedia.org/wiki/Special:History/OnePlus_9",
+        "edit": "https://en.wikipedia.org/wiki/OnePlus_9?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:OnePlus_9"
+      }
+    },
+    "extract": "The OnePlus 9 and OnePlus 9 Pro are Android-based smartphones manufactured by OnePlus, unveiled on March 23, 2021. The phones feature upgraded cameras developed in partnership with Hasselblad.",
+    "extract_html": "<p>The <b>OnePlus 9</b> and <b>OnePlus</b> <b>9 Pro</b> are Android-based smartphones manufactured by OnePlus, unveiled on March 23, 2021. The phones feature upgraded cameras developed in partnership with Hasselblad.</p>"
+  },
+  "Pixel_6": {
+    "type": "standard",
+    "title": "Pixel 6",
+    "displaytitle": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Pixel 6</span></span>",
+    "namespace": {
+      "id": 0,
+      "text": ""
+    },
+    "wikibase_item": "Q108939091",
+    "titles": {
+      "canonical": "Pixel_6",
+      "normalized": "Pixel 6",
+      "display": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Pixel 6</span></span>"
+    },
+    "pageid": 68388430,
+    "lang": "en",
+    "dir": "ltr",
+    "revision": "1379478320",
+    "tid": "3da88dd6-c471-11f1-a016-3737660bea55",
+    "timestamp": "2026-10-10T06:10:07Z",
+    "description": "2021 Android smartphones developed by Google",
+    "description_source": "local",
+    "content_urls": {
+      "desktop": {
+        "page": "https://en.wikipedia.org/wiki/Pixel_6",
+        "revisions": "https://en.wikipedia.org/wiki/Pixel_6?action=history",
+        "edit": "https://en.wikipedia.org/wiki/Pixel_6?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:Pixel_6"
+      },
+      "mobile": {
+        "page": "https://en.wikipedia.org/wiki/Pixel_6",
+        "revisions": "https://en.wikipedia.org/wiki/Special:History/Pixel_6",
+        "edit": "https://en.wikipedia.org/wiki/Pixel_6?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:Pixel_6"
+      }
+    },
+    "extract": "The Pixel 6 and Pixel 6 Pro are a pair of Android-based smartphones designed, developed, and marketed by Google as part of the Google Pixel product line. They collectively serve as the successor to the Pixel 5. The phones were first previewed in August 2021, confirming reports that they would be powered by a custom system-on-chip named Google Tensor. The cameras are housed in a horizontal bar on the back, while the front features a hole-punch display notch in the center. They shipped with Android 12, with Google announcing numerous artificial intelligence and ambient computing features during the phones' launch event.",
+    "extract_html": "<p>The <b>Pixel 6</b> and <b>Pixel 6 Pro</b> are a pair of Android-based smartphones designed, developed, and marketed by Google as part of the Google Pixel product line. They collectively serve as the successor to the Pixel 5. The phones were first previewed in August 2021, confirming reports that they would be powered by a custom system-on-chip named Google Tensor. The cameras are housed in a horizontal bar on the back, while the front features a hole-punch display notch in the center. They shipped with Android 12, with Google announcing numerous artificial intelligence and ambient computing features during the phones' launch event.</p>"
+  },
+  "IPhone_13": {
+    "type": "standard",
+    "title": "IPhone 13",
+    "displaytitle": "iPhone 13",
+    "namespace": {
+      "id": 0,
+      "text": ""
+    },
+    "wikibase_item": "Q108118280",
+    "titles": {
+      "canonical": "IPhone_13",
+      "normalized": "IPhone 13",
+      "display": "iPhone 13"
+    },
+    "pageid": 68695051,
+    "thumbnail": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/IPhone_13_vector.svg/330px-IPhone_13_vector.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 330,
+      "height": 664
+    },
+    "originalimage": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/IPhone_13_vector.svg/500px-IPhone_13_vector.svg.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 363,
+      "height": 730
+    },
+    "lang": "en",
+    "dir": "ltr",
+    "revision": "1380007245",
+    "tid": "f23ee98f-c6cd-11f1-8a1b-8bbc8be4b678",
+    "timestamp": "2026-10-13T06:18:46Z",
+    "description": "2021 smartphone by Apple",
+    "description_source": "local",
+    "content_urls": {
+      "desktop": {
+        "page": "https://en.wikipedia.org/wiki/IPhone_13",
+        "revisions": "https://en.wikipedia.org/wiki/IPhone_13?action=history",
+        "edit": "https://en.wikipedia.org/wiki/IPhone_13?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:IPhone_13"
+      },
+      "mobile": {
+        "page": "https://en.wikipedia.org/wiki/IPhone_13",
+        "revisions": "https://en.wikipedia.org/wiki/Special:History/IPhone_13",
+        "edit": "https://en.wikipedia.org/wiki/IPhone_13?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:IPhone_13"
+      }
+    },
+    "extract": "The iPhone 13 and iPhone 13 Mini are smartphones that were developed and marketed by Apple. They are the fifteenth generation of iPhones, succeeding the iPhone 12 and 12 Mini. They were unveiled at an Apple Event in Apple Park in Cupertino, California, on September 14, 2021, alongside the higher-priced iPhone 13 Pro and iPhone 13 Pro Max flagships. They were later released on September 24, 2021. Notable improvements over the iPhone 12 include 128gb of base storage, a maximum storage capacity of 512gb, BeiDou positioning support, and HDR video recording at 60 frames per second, doubling the frame rate of its predecessor.",
+    "extract_html": "<p>The <b>iPhone 13</b> and <b>iPhone 13 Mini</b> are smartphones that were developed and marketed by Apple. They are the fifteenth generation of iPhones, succeeding the iPhone 12 and 12 Mini. They were unveiled at an Apple Event in Apple Park in Cupertino, California, on September 14, 2021, alongside the higher-priced iPhone 13 Pro and iPhone 13 Pro Max flagships. They were later released on September 24, 2021. Notable improvements over the iPhone 12 include 128gb of base storage, a maximum storage capacity of 512gb, BeiDou positioning support, and HDR video recording at 60 frames per second, doubling the frame rate of its predecessor.</p>"
+  },
+  "Samsung_Galaxy_A52": {
+    "type": "standard",
+    "title": "Samsung Galaxy A52",
+    "displaytitle": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Samsung Galaxy A52</span></span>",
+    "namespace": {
+      "id": 0,
+      "text": ""
+    },
+    "wikibase_item": "Q106044016",
+    "titles": {
+      "canonical": "Samsung_Galaxy_A52",
+      "normalized": "Samsung Galaxy A52",
+      "display": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Samsung Galaxy A52</span></span>"
+    },
+    "pageid": 67113577,
+    "thumbnail": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Samsung-Galaxy-A52-Awesome-White.jpg/330px-Samsung-Galaxy-A52-Awesome-White.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 330,
+      "height": 685
+    },
+    "originalimage": {
+      "source": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Samsung-Galaxy-A52-Awesome-White.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "width": 698,
+      "height": 1448
+    },
+    "lang": "en",
+    "dir": "ltr",
+    "revision": "1380481539",
+    "tid": "7293623a-c8f5-11f1-b70b-be7fc3f8cd61",
+    "timestamp": "2026-10-16T00:06:34Z",
+    "description": "2021 mid-range smartphone by Samsung Electronics",
+    "description_source": "local",
+    "content_urls": {
+      "desktop": {
+        "page": "https://en.wikipedia.org/wiki/Samsung_Galaxy_A52",
+        "revisions": "https://en.wikipedia.org/wiki/Samsung_Galaxy_A52?action=history",
+        "edit": "https://en.wikipedia.org/wiki/Samsung_Galaxy_A52?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:Samsung_Galaxy_A52"
+      },
+      "mobile": {
+        "page": "https://en.wikipedia.org/wiki/Samsung_Galaxy_A52",
+        "revisions": "https://en.wikipedia.org/wiki/Special:History/Samsung_Galaxy_A52",
+        "edit": "https://en.wikipedia.org/wiki/Samsung_Galaxy_A52?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:Samsung_Galaxy_A52"
+      }
+    },
+    "extract": "The Samsung Galaxy A52 is a mid-range Android-based smartphone manufactured, developed and produced by Samsung Electronics as part of its Galaxy A series. It was announced on 17 March 2021 at the Samsung's virtual Awesome Unpacked event alongside the Galaxy A72. An upgraded variant of the 5G version, Galaxy A52s, was first released in August 2021.",
+    "extract_html": "<p>The <b>Samsung Galaxy A52</b> is a mid-range Android-based smartphone manufactured, developed and produced by Samsung Electronics as part of its Galaxy A series. It was announced on 17 March 2021 at the Samsung's virtual <i>Awesome Unpacked</i> event alongside the Galaxy A72. An upgraded variant of the 5G version, <b>Galaxy A52s</b>, was first released in August 2021.</p>"
+  },
+  "Xiaomi_Mi_11": {
+    "type": "standard",
+    "title": "Xiaomi 11",
+    "displaytitle": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Xiaomi 11</span></span>",
+    "namespace": {
+      "id": 0,
+      "text": ""
+    },
+    "wikibase_item": "Q104531763",
+    "titles": {
+      "canonical": "Xiaomi_11",
+      "normalized": "Xiaomi 11",
+      "display": "<span lang=\"en\" dir=\"ltr\"><span class=\"mw-page-title-main\">Xiaomi 11</span></span>"
+    },
+    "pageid": 66222662,
+    "thumbnail": {
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Xiaomi_Mi_11_front.jpg/330px-Xiaomi_Mi_11_front.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "width": 330,
+      "height": 585
+    },
+    "originalimage": {
+      "source": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Xiaomi_Mi_11_front.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "width": 2256,
+      "height": 4000
+    },
+    "lang": "en",
+    "dir": "ltr",
+    "revision": "1361537186",
+    "tid": "416e34d6-7304-11f1-86c0-5510ec152729",
+    "timestamp": "2026-06-28T15:15:54Z",
+    "description": "Android smartphone",
+    "description_source": "local",
+    "content_urls": {
+      "desktop": {
+        "page": "https://en.wikipedia.org/wiki/Xiaomi_11",
+        "revisions": "https://en.wikipedia.org/wiki/Xiaomi_11?action=history",
+        "edit": "https://en.wikipedia.org/wiki/Xiaomi_11?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:Xiaomi_11"
+      },
+      "mobile": {
+        "page": "https://en.wikipedia.org/wiki/Xiaomi_11",
+        "revisions": "https://en.wikipedia.org/wiki/Special:History/Xiaomi_11",
+        "edit": "https://en.wikipedia.org/wiki/Xiaomi_11?action=edit",
+        "talk": "https://en.wikipedia.org/wiki/Talk:Xiaomi_11"
+      }
+    },
+    "extract": "The Xiaomi 11 is an Android-based high-end smartphone developed by Xiaomi Inc. It was introduced as the successor to the Xiaomi 10 series and serves as the flagship model in the Xiaomi 11 lineup. The device features upgraded hardware specifications, including a high-resolution display and improved camera system, aimed at competing with other premium smartphones. The Xiaomi 11 was first unveiled in China in December 2020 and launched globally on 8 February 2021.",
+    "extract_html": "<p>The <b>Xiaomi 11</b> is an Android-based high-end smartphone developed by Xiaomi Inc. It was introduced as the successor to the Xiaomi 10 series and serves as the flagship model in the Xiaomi 11 lineup. The device features upgraded hardware specifications, including a high-resolution display and improved camera system, aimed at competing with other premium smartphones. The Xiaomi 11 was first unveiled in China in December 2020 and launched globally on 8 February 2021.</p>"
+  }
+}

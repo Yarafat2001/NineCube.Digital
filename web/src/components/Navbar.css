@@ -1,0 +1,163 @@
+/* Pushes the CTA to the right when there is no links tray (signed out, or a role with no links). */
+.navbar__spacer {
+  flex: 1 1 auto;
+}
+
+/* A flex container overrides the default [hidden] display, so it is restored explicitly. */
+.navbar__tray[hidden] {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ header popovers
+
+   The bell and the account menu are the only way to reach the account area, so unlike the old
+   sign-out CTA they are never hidden at narrow widths - the navbar wraps its tray instead. */
+.nav-pop {
+  position: relative;
+  display: flex;
+}
+
+.nav-pop__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+/* Icon-only bell: compact square just left of the Account avatar. The resting
+   surface matches the tray; hover/open use the selected-bg/amber treatment. */
+.nav-pop__trigger--icon {
+  position: relative;
+  gap: 0;
+  padding: 8px;
+  border-radius: var(--radius-pill);
+}
+
+.nav-pop__trigger--icon .nav-pop__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.nav-pop__glyph {
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+/* Right-cluster pill containers share the tray's effect (see app.css — the
+   tray, user chip, theme group and .navbar__actions pill use one rule).
+   Inside the shared pill the controls go flat so the container reads as one. */
+.navbar__actions .nav-pop__trigger,
+.navbar__actions .nav-control {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.navbar__actions .nav-pop__trigger:hover,
+.navbar__actions .nav-pop__trigger[aria-expanded='true'] {
+  background: var(--selected-bg);
+  border-color: var(--selected-bar);
+  color: var(--accent-text);
+}
+
+/* Narrow headers keep the controls but drop their words. Both triggers carry an aria-label, so the
+   name survives the label - the bell's also holds the unread count, which stays as a number. */
+@media (max-width: 600px) {
+  .nav-pop__label {
+    display: none;
+  }
+}
+
+/* Icon + number: the badge never communicates unread state by colour alone. */
+.nav-pop__badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.nav-pop__panel {
+  position: absolute;
+  z-index: var(--z-popover, 60);
+  top: calc(100% + var(--space-2));
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(340px, calc(100vw - 24px));
+  max-height: min(70dvh, 520px);
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+.nav-pop__item {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: inherit;
+  text-align: left;
+}
+
+.nav-pop__item:hover,
+.nav-pop__item:focus-visible {
+  background: var(--surface-hover, color-mix(in srgb, currentColor 10%, transparent));
+}
+
+.nav-pop__item--action {
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notif-item {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: start;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: break-word;
+}
+
+.notif-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.notif-item[data-read='true'] {
+  opacity: 0.72;
+}
+
+.notif-item__type {
+  font-size: var(--text-lg);
+  line-height: 1.2;
+}
+
+.notif-item__title {
+  display: block;
+  font-weight: 650;
+}
+
+.notif-item__time {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}

@@ -1,0 +1,373 @@
+[
+  {
+    "Id": 1,
+    "Name": "Uncategorized",
+    "Slug": "uncategorized",
+    "Path": "/uncategorized/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 2,
+    "Name": "Home",
+    "Slug": "home",
+    "Path": "/home/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 3,
+    "Name": "Kitchen",
+    "Slug": "kitchen",
+    "ParentId": 2,
+    "Path": "/home/kitchen/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 4,
+    "Name": "Coffee & Tea",
+    "Slug": "coffee-tea",
+    "ParentId": 3,
+    "Path": "/home/kitchen/coffee-tea/",
+    "Depth": 3,
+    "IsActive": true
+  },
+  {
+    "Id": 5,
+    "Name": "Electronics",
+    "Slug": "electronics",
+    "Path": "/electronics/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 6,
+    "Name": "Phones",
+    "Slug": "phones",
+    "ParentId": 5,
+    "Path": "/electronics/phones/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 7,
+    "Name": "Smartphones",
+    "Slug": "smartphones",
+    "ParentId": 6,
+    "Path": "/electronics/phones/smartphones/",
+    "Depth": 3,
+    "IsActive": true
+  },
+  {
+    "Id": 10,
+    "Name": "Grocery",
+    "Slug": "grocery",
+    "Path": "/grocery/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 11,
+    "Name": "Rice",
+    "Slug": "rice",
+    "ParentId": 10,
+    "Path": "/grocery/rice/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 12,
+    "Name": "Cooking Oil",
+    "Slug": "cooking-oil",
+    "ParentId": 10,
+    "Path": "/grocery/cooking-oil/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 13,
+    "Name": "Packaged Food",
+    "Slug": "packaged-food",
+    "ParentId": 10,
+    "Path": "/grocery/packaged-food/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 14,
+    "Name": "Fashion",
+    "Slug": "fashion",
+    "Path": "/fashion/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 15,
+    "Name": "Shirts",
+    "Slug": "shirts",
+    "ParentId": 14,
+    "Path": "/fashion/shirts/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 16,
+    "Name": "Panjabi",
+    "Slug": "panjabi",
+    "ParentId": 14,
+    "Path": "/fashion/panjabi/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 17,
+    "Name": "Sarees",
+    "Slug": "sarees",
+    "ParentId": 14,
+    "Path": "/fashion/sarees/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 18,
+    "Name": "Furniture",
+    "Slug": "furniture",
+    "Path": "/furniture/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 19,
+    "Name": "Chairs",
+    "Slug": "chairs",
+    "ParentId": 18,
+    "Path": "/furniture/chairs/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 20,
+    "Name": "Beds",
+    "Slug": "beds",
+    "ParentId": 18,
+    "Path": "/furniture/beds/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 21,
+    "Name": "Footwear",
+    "Slug": "footwear",
+    "Path": "/footwear/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 22,
+    "Name": "Shoes",
+    "Slug": "shoes",
+    "ParentId": 21,
+    "Path": "/footwear/shoes/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 23,
+    "Name": "Beauty",
+    "Slug": "beauty",
+    "Path": "/beauty/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 24,
+    "Name": "Cosmetics",
+    "Slug": "cosmetics",
+    "ParentId": 23,
+    "Path": "/beauty/cosmetics/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 25,
+    "Name": "Fragrances",
+    "Slug": "fragrances",
+    "ParentId": 23,
+    "Path": "/beauty/fragrances/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 26,
+    "Name": "Health",
+    "Slug": "health",
+    "Path": "/health/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 27,
+    "Name": "Medicines",
+    "Slug": "medicines",
+    "ParentId": 26,
+    "Path": "/health/medicines/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 28,
+    "Name": "Sports",
+    "Slug": "sports",
+    "Path": "/sports/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 29,
+    "Name": "Sports Accessories",
+    "Slug": "sports-accessories",
+    "ParentId": 28,
+    "Path": "/sports/sports-accessories/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 30,
+    "Name": "Accessories",
+    "Slug": "accessories",
+    "Path": "/accessories/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 31,
+    "Name": "Bags",
+    "Slug": "bags",
+    "ParentId": 30,
+    "Path": "/accessories/bags/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 32,
+    "Name": "Watches",
+    "Slug": "watches",
+    "ParentId": 30,
+    "Path": "/accessories/watches/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 33,
+    "Name": "Automotive",
+    "Slug": "automotive",
+    "Path": "/automotive/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 34,
+    "Name": "Auto Accessories",
+    "Slug": "auto-accessories",
+    "ParentId": 33,
+    "Path": "/automotive/auto-accessories/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 35,
+    "Name": "Motorcycles",
+    "Slug": "motorcycles",
+    "Path": "/motorcycles/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 36,
+    "Name": "Motorbikes",
+    "Slug": "motorbikes",
+    "ParentId": 35,
+    "Path": "/motorcycles/motorbikes/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 37,
+    "Name": "Paint",
+    "Slug": "paint",
+    "Path": "/paint/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 38,
+    "Name": "Wall Paint",
+    "Slug": "wall-paint",
+    "ParentId": 37,
+    "Path": "/paint/wall-paint/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 39,
+    "Name": "Batteries",
+    "Slug": "batteries",
+    "Path": "/batteries/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 40,
+    "Name": "IPS Batteries",
+    "Slug": "ips-batteries",
+    "ParentId": 39,
+    "Path": "/batteries/ips-batteries/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 41,
+    "Name": "Electrical",
+    "Slug": "electrical",
+    "Path": "/electrical/",
+    "Depth": 1,
+    "IsActive": true
+  },
+  {
+    "Id": 42,
+    "Name": "LED Lighting",
+    "Slug": "led-lighting",
+    "ParentId": 41,
+    "Path": "/electrical/led-lighting/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 43,
+    "Name": "Home Appliances",
+    "Slug": "home-appliances",
+    "ParentId": 5,
+    "Path": "/electronics/home-appliances/",
+    "Depth": 2,
+    "IsActive": true
+  },
+  {
+    "Id": 44,
+    "Name": "Refrigerators",
+    "Slug": "refrigerators",
+    "ParentId": 43,
+    "Path": "/electronics/home-appliances/refrigerators/",
+    "Depth": 3,
+    "IsActive": true
+  },
+  {
+    "Id": 45,
+    "Name": "Laptops",
+    "Slug": "laptops",
+    "ParentId": 5,
+    "Path": "/electronics/laptops/",
+    "Depth": 2,
+    "IsActive": true
+  }
+]

@@ -1,0 +1,177 @@
+[
+  {
+    "slug": "auto-accessories",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "bags",
+    "cleanProducts": 11,
+    "crossListed": 0,
+    "kind": "official-catalogue",
+    "note": ""
+  },
+  {
+    "slug": "beds",
+    "cleanProducts": 12,
+    "crossListed": 0,
+    "kind": "official-catalogue",
+    "note": ""
+  },
+  {
+    "slug": "chairs",
+    "cleanProducts": 15,
+    "crossListed": 0,
+    "kind": "official-catalogue",
+    "note": ""
+  },
+  {
+    "slug": "coffee-tea",
+    "cleanProducts": 0,
+    "crossListed": 0,
+    "kind": "none",
+    "note": "No new approved-source rows for this leaf; existing database coverage is unchanged"
+  },
+  {
+    "slug": "cooking-oil",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "cosmetics",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "fragrances",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "ips-batteries",
+    "cleanProducts": 1,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "laptops",
+    "cleanProducts": 1,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "led-lighting",
+    "cleanProducts": 6,
+    "crossListed": 0,
+    "kind": "official-catalogue",
+    "note": "Official catalogue leaf capped by volume guidance or awaiting more verified rows"
+  },
+  {
+    "slug": "medicines",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "motorbikes",
+    "cleanProducts": 1,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "packaged-food",
+    "cleanProducts": 0,
+    "crossListed": 15,
+    "kind": "cross-listed",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "panjabi",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "refrigerators",
+    "cleanProducts": 15,
+    "crossListed": 0,
+    "kind": "official-catalogue",
+    "note": ""
+  },
+  {
+    "slug": "rice",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "sarees",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "shirts",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "shoes",
+    "cleanProducts": 15,
+    "crossListed": 0,
+    "kind": "official-catalogue",
+    "note": ""
+  },
+  {
+    "slug": "smartphones",
+    "cleanProducts": 30,
+    "crossListed": 0,
+    "kind": "official-catalogue",
+    "note": ""
+  },
+  {
+    "slug": "sports-accessories",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "uncategorized",
+    "cleanProducts": 15,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": ""
+  },
+  {
+    "slug": "wall-paint",
+    "cleanProducts": 2,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  },
+  {
+    "slug": "watches",
+    "cleanProducts": 1,
+    "crossListed": 0,
+    "kind": "open-data",
+    "note": "Generic fallbacks only (brief section 4.7); never fabricate to reach a number"
+  }
+]

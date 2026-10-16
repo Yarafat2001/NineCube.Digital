@@ -1,0 +1,130 @@
+{
+  "/inventory light Edit": {
+    "fill": [
+      255,
+      255,
+      255
+    ],
+    "surface": [
+      245,
+      247,
+      252
+    ],
+    "fillApart": 13,
+    "edge": [
+      131,
+      143,
+      162
+    ],
+    "edgeApart": 179,
+    "ink": "rgb(15, 23, 42)"
+  },
+  "/inventory light Adjust stock": {
+    "fill": [
+      253,
+      180,
+      55
+    ],
+    "surface": [
+      245,
+      247,
+      252
+    ],
+    "fillApart": 208,
+    "edge": [
+      245,
+      163,
+      23
+    ],
+    "edgeApart": 244,
+    "ink": "rgb(26, 17, 0)"
+  },
+  "/inventory light History": {
+    "ink": "rgb(154, 63, 0)",
+    "plainInk": "rgb(15, 23, 42)"
+  },
+  "/inventory dark Edit": {
+    "fill": [
+      35,
+      32,
+      34
+    ],
+    "surface": [
+      66,
+      69,
+      80
+    ],
+    "fillApart": 66,
+    "edge": [
+      119,
+      114,
+      123
+    ],
+    "edgeApart": 82,
+    "ink": "rgb(245, 242, 243)"
+  },
+  "/inventory dark Adjust stock": {
+    "fill": [
+      255,
+      190,
+      101
+    ],
+    "surface": [
+      66,
+      69,
+      80
+    ],
+    "fillApart": 226,
+    "edge": [
+      255,
+      191,
+      102
+    ],
+    "edgeApart": 226,
+    "ink": "rgb(26, 17, 0)"
+  },
+  "/inventory dark History": {
+    "ink": "rgb(255, 195, 107)",
+    "plainInk": "rgb(245, 242, 243)"
+  },
+  "/admin light Deactivate": {
+    "fill": [
+      254,
+      226,
+      226
+    ],
+    "surface": [
+      231,
+      237,
+      247
+    ],
+    "fillApart": 33,
+    "edge": [
+      250,
+      170,
+      171
+    ],
+    "edgeApart": 103,
+    "ink": "rgb(127, 29, 29)"
+  },
+  "/admin dark Deactivate": {
+    "fill": [
+      76,
+      37,
+      44
+    ],
+    "surface": [
+      40,
+      42,
+      52
+    ],
+    "fillApart": 37,
+    "edge": [
+      199,
+      118,
+      120
+    ],
+    "edgeApart": 189,
+    "ink": "rgb(255, 185, 181)"
+  }
+}

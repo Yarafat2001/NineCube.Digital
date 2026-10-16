@@ -1,0 +1,117 @@
+{
+  "summary": {
+    "ProductCount": 183,
+    "UniqueSkus": 183,
+    "MaxSkuLength": 24
+  },
+  "laptops": [
+    {
+      "Id": 136,
+      "Sku": "BD-LAPT-8-GB-RAM-BCF03A",
+      "Name": "Generic Laptop 8 GB RAM 256 GB SSD",
+      "StockQuantity": 76,
+      "ImageCount": 1
+    },
+    {
+      "Id": 217,
+      "Sku": "BD-APPL-MACB-AIR-FDAAD1",
+      "Name": "Apple MacBook Air M5 13 (16GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "Apple",
+      "ImageCount": 2
+    },
+    {
+      "Id": 218,
+      "Sku": "BD-MSI-RAID-18-HX-C8E76A",
+      "Name": "MSI Raider 18 HX AI (32GB/2TB)",
+      "StockQuantity": 0,
+      "Brand": "MSI",
+      "ImageCount": 2
+    },
+    {
+      "Id": 219,
+      "Sku": "BD-WALT-PREL-N41-F03720",
+      "Name": "Walton Prelude N41 Pro (8GB/256GB)",
+      "StockQuantity": 0,
+      "Brand": "Walton",
+      "ImageCount": 2
+    },
+    {
+      "Id": 220,
+      "Sku": "BD-ACER-ASPI-3-A3-11D6DD",
+      "Name": "Acer Aspire 3 A325-42-V2 (8GB/256GB)",
+      "StockQuantity": 0,
+      "Brand": "Acer",
+      "ImageCount": 2
+    },
+    {
+      "Id": 221,
+      "Sku": "BD-LENO-IDEA-1-15-DD9BFE",
+      "Name": "Lenovo IdeaPad 1 15AMN7 (16GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "Lenovo",
+      "ImageCount": 2
+    },
+    {
+      "Id": 222,
+      "Sku": "BD-DELL-PRO-15-PV-871A89",
+      "Name": "Dell Pro 15 PV15250 (8GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "Dell",
+      "ImageCount": 2
+    },
+    {
+      "Id": 223,
+      "Sku": "BD-ACER-ASPI-LITE-1A3A43",
+      "Name": "Acer Aspire Lite AL15-41 (16GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "Acer",
+      "ImageCount": 2
+    },
+    {
+      "Id": 224,
+      "Sku": "BD-HP-15-FC06-8GB-B7CF5C",
+      "Name": "HP 15-fc0634AU (8GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "HP",
+      "ImageCount": 2
+    },
+    {
+      "Id": 225,
+      "Sku": "BD-ASUS-VIVO-14-A-D2833A",
+      "Name": "ASUS Vivobook 14 A1404VA (16GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "ASUS",
+      "ImageCount": 2
+    },
+    {
+      "Id": 226,
+      "Sku": "BD-MSI-MODE-15-F1-45BA5B",
+      "Name": "MSI Modern 15 F1MG (16GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "MSI",
+      "ImageCount": 2
+    },
+    {
+      "Id": 227,
+      "Sku": "BD-DELL-INSP-3530-D39C5D",
+      "Name": "Dell Inspiron 3530 i7 (16GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "Dell",
+      "ImageCount": 2
+    },
+    {
+      "Id": 228,
+      "Sku": "BD-LENO-IDEA-SLIM-00FF31",
+      "Name": "Lenovo IdeaPad Slim 3 15AMN8 (16GB/512GB)",
+      "StockQuantity": 0,
+      "Brand": "Lenovo",
+      "ImageCount": 2
+    }
+  ],
+  "idempotent": true,
+  "sqlSafetyTests": 5,
+  "skuTests": 3,
+  "browserTest": "passed",
+  "productionBuild": "passed"
+}

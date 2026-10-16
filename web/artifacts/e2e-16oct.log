@@ -1,0 +1,132 @@
+
+Running 107 tests using 1 worker
+
+[1A[2K[1/107] [chromium] › actionable-surfaces.spec.ts:118:3 › actionable chips, one-line actions and self-contained dialogs › a card chip is painted as the filter it applies, and applies it
+[1A[2K[2/107] [chromium] › actionable-surfaces.spec.ts:166:3 › actionable chips, one-line actions and self-contained dialogs › the inventory actions stay on one line and the dialogs stay inside themselves
+[1A[2K[3/107] [chromium] › actionable-surfaces.spec.ts:225:3 › actionable chips, one-line actions and self-contained dialogs › the current navbar tab is filled as the selected one, and stays readable inside it
+[1A[2K[4/107] [chromium] › actionable-surfaces.spec.ts:277:3 › actionable chips, one-line actions and self-contained dialogs › every row action reads as a control on its own table
+[1A[2K[5/107] [chromium] › actionable-surfaces.spec.ts:364:3 › actionable chips, one-line actions and self-contained dialogs › History opens the same dialog on the ledger, not on the empty form
+[1A[2K[6/107] [chromium] › admin-order-permissions.spec.ts:3:1 › administrator reads orders and invoices without forbidden status controls
+[1A[2K[7/107] [chromium] › appearance.spec.ts:4:3 › auth appearance and footer stay aligned at 390px
+[1A[2K[8/107] [chromium] › appearance.spec.ts:4:3 › auth appearance and footer stay aligned at 768px
+[1A[2K[9/107] [chromium] › appearance.spec.ts:4:3 › auth appearance and footer stay aligned at 1024px
+[1A[2K[10/107] [chromium] › appearance.spec.ts:4:3 › auth appearance and footer stay aligned at 1440px
+[1A[2K[11/107] [chromium] › catalogue-glass.spec.ts:7:42 › catalogue image stages and navigation glass › dark: shared glass and original image background
+[1A[2K[12/107] [chromium] › catalogue-glass.spec.ts:7:42 › catalogue image stages and navigation glass › light: shared glass and original image background
+[1A[2K[13/107] [chromium] › catalogue-images.spec.ts:45:3 › Catalogue cards › fits the viewport at every width, keeps the SKU off the card and always shows media
+[1A[2K[14/107] [chromium] › catalogue-images.spec.ts:103:3 › Product pictures › an upload is stored, served from /uploads and drawn on the card
+[1A[2K[15/107] [chromium] › catalogue-images.spec.ts:164:3 › Brand and series filter › a deep link restores the selection, the chips and the result count
+[1A[2K[16/107] [chromium] › categories.spec.ts:5:3 › catalogue categories and filters work at 390px
+[1A[2K[17/107] [chromium] › categories.spec.ts:5:3 › catalogue categories and filters work at 768px
+[1A[2K[18/107] [chromium] › categories.spec.ts:5:3 › catalogue categories and filters work at 1024px
+[1A[2K[19/107] [chromium] › categories.spec.ts:5:3 › catalogue categories and filters work at 1440px
+[1A[2K[20/107] [chromium] › categories.spec.ts:57:1 › staff category editor shows cycle conflicts and protects stock
+[1A[2K[21/107] [chromium] › categories.spec.ts:77:1 › staff can create, rename, move, deactivate and delete a category
+[1A[2K[22/107] [chromium] › home-footer.spec.ts:4:3 › home footer stays readable and aligned at 390px
+[1A[2K[23/107] [chromium] › home-footer.spec.ts:4:3 › home footer stays readable and aligned at 768px
+[1A[2K[24/107] [chromium] › home-footer.spec.ts:4:3 › home footer stays readable and aligned at 1024px
+[1A[2K[25/107] [chromium] › home-footer.spec.ts:4:3 › home footer stays readable and aligned at 1440px
+[1A[2K[26/107] [chromium] › home-footer.spec.ts:37:1 › reduced-motion home uses the same complete footer
+[1A[2K[27/107] [chromium] › light-theme-surfaces.spec.ts:9:1 › products page surfaces differ in light and dark, drawer at mobile
+[1A[2K[28/107] [chromium] › modern-customer.spec.ts:9:7 › modern customer pages › 390px light: surfaces, account menu, pages and motion
+[1A[2K[29/107] [chromium] › modern-customer.spec.ts:9:7 › modern customer pages › 390px dark: surfaces, account menu, pages and motion
+[1A[2K[30/107] [chromium] › modern-customer.spec.ts:9:7 › modern customer pages › 768px light: surfaces, account menu, pages and motion
+[1A[2K[31/107] [chromium] › modern-customer.spec.ts:9:7 › modern customer pages › 768px dark: surfaces, account menu, pages and motion
+[1A[2K[32/107] [chromium] › modern-customer.spec.ts:9:7 › modern customer pages › 1440px light: surfaces, account menu, pages and motion
+[1A[2K[33/107] [chromium] › modern-customer.spec.ts:9:7 › modern customer pages › 1440px dark: surfaces, account menu, pages and motion
+[1A[2K[34/107] [chromium] › modern-customer.spec.ts:73:3 › modern customer pages › touch cards and long Bengali names stay within the viewport without tilt
+[1A[2K[35/107] [chromium] › navbar-matched.spec.ts:13:42 › matching navbar selection states › light: the current tab is selected in the same amber as the open account menu
+[1A[2K[36/107] [chromium] › navbar-matched.spec.ts:13:42 › matching navbar selection states › dark: the current tab is selected in the same amber as the open account menu
+[1A[2K[37/107] [chromium] › order-appearance.spec.ts:5:3 › order detail and invoice remain readable at 390px
+[1A[2K[38/107] [chromium] › order-appearance.spec.ts:5:3 › order detail and invoice remain readable at 768px
+[1A[2K[39/107] [chromium] › order-appearance.spec.ts:5:3 › order detail and invoice remain readable at 1024px
+[1A[2K[40/107] [chromium] › order-appearance.spec.ts:5:3 › order detail and invoice remain readable at 1440px
+[1A[2K[41/107] [chromium] › order-flow.spec.ts:52:3 › order flow › a customer reserves stock and a staff member confirms the order
+[1A[2K[42/107] [chromium] › product-detail-responsive.spec.ts:8:5 › responsive product detail › 390px light: gallery, purchase and cart
+[1A[2K[43/107] [chromium] › product-detail-responsive.spec.ts:8:5 › responsive product detail › 768px light: gallery, purchase and cart
+[1A[2K[44/107] [chromium] › product-detail-responsive.spec.ts:8:5 › responsive product detail › 1440px light: gallery, purchase and cart
+[1A[2K[45/107] [chromium] › product-detail-responsive.spec.ts:8:5 › responsive product detail › 390px dark: gallery, purchase and cart
+[1A[2K[46/107] [chromium] › product-detail-responsive.spec.ts:8:5 › responsive product detail › 768px dark: gallery, purchase and cart
+[1A[2K[47/107] [chromium] › product-detail-responsive.spec.ts:8:5 › responsive product detail › 1440px dark: gallery, purchase and cart
+[1A[2K[48/107] [chromium] › public-home.spec.ts:4:1 › public home uses local photography and a direct collection entry
+[1A[2K[49/107] [chromium] › public-home.spec.ts:46:3 › customer login and home visits stay inside the workspace
+[1A[2K[50/107] [chromium] › public-home.spec.ts:46:3 › staff login and home visits stay inside the workspace
+[1A[2K[51/107] [chromium] › public-home.spec.ts:46:3 › inventory login and home visits stay inside the workspace
+[1A[2K[52/107] [chromium] › public-home.spec.ts:46:3 › admin login and home visits stay inside the workspace
+[1A[2K[53/107] [chromium] › sales-analytics.spec.ts:6:70 › sales analytics › 390px light: real report charts and filters
+[1A[2K[54/107] [chromium] › sales-analytics.spec.ts:6:70 › sales analytics › 1440px light: real report charts and filters
+[1A[2K[55/107] [chromium] › sales-analytics.spec.ts:6:70 › sales analytics › 390px dark: real report charts and filters
+[1A[2K[56/107] [chromium] › sales-analytics.spec.ts:6:70 › sales analytics › 1440px dark: real report charts and filters
+[1A[2K[57/107] [chromium] › showcase.spec.ts:60:3 › showcase › renders mixed formats and transparent textures without asset or shader failures
+[1A[2K[58/107] [chromium] › showcase.spec.ts:86:5 › showcase › runs, times and blends correctly at 1440px
+[1A[2K[59/107] [chromium] › showcase.spec.ts:86:5 › showcase › runs, times and blends correctly at 1024px
+[1A[2K[60/107] [chromium] › showcase.spec.ts:86:5 › showcase › runs, times and blends correctly at 768px
+[1A[2K[61/107] [chromium] › showcase.spec.ts:86:5 › showcase › runs, times and blends correctly at 390px
+[1A[2K[62/107] [chromium] › showcase.spec.ts:188:3 › showcase › mounts and disposes cleanly on navigation, including a second visit
+[1A[2K[63/107] [chromium] › showcase.spec.ts:215:3 › showcase › falls back to the static grid when the visitor prefers reduced motion
+[1A[2K[64/107] [chromium] › showcase.spec.ts:225:3 › showcase › falls back to the static grid when WebGL is unavailable
+[1A[2K[65/107] [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1024px
+[1A[2K[66/107] [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px
+[1A[2K[chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px
+WIDTH 1280px {"documentOverflow":0,"panelClientWidth":280,"panelOverflow":0,"panelPosition":"sticky","panelTop":448,"panelBottom":1139,"navbarBottom":93,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":77,"headerVar":77,"innerHeight":800}
+
+[1A[2K[67/107] [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1440px
+[1A[2K[chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1440px
+WIDTH 1440px {"documentOverflow":0,"panelClientWidth":315,"panelOverflow":0,"panelPosition":"sticky","panelTop":451,"panelBottom":1242,"navbarBottom":93,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":77,"headerVar":77,"innerHeight":900}
+
+[1A[2K[68/107] [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1920px
+[1A[2K[69/107] [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px at 125% zoom
+[1A[2K[70/107] [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1280px at 150% zoom
+[1A[2K[71/107] [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1440px at 150% zoom
+[1A[2K[72/107] [chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1920px at 150% zoom
+[1A[2K[chromium] › sidebar-layout.spec.ts:71:5 › catalogue sidebar layout › holds the line at 1920px at 150% zoom
+WIDTH 1920px at 150% zoom {"documentOverflow":0,"panelClientWidth":280,"panelOverflow":0,"panelPosition":"sticky","panelTop":448,"panelBottom":1059,"navbarBottom":93,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":77,"headerVar":77,"innerHeight":720}
+
+[1A[2K[73/107] [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body
+[1A[2K[chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body
+STUCK  {"documentOverflow":0,"panelClientWidth":315,"panelOverflow":0,"panelPosition":"sticky","panelTop":93,"panelBottom":884,"navbarBottom":85,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":77,"headerVar":77,"innerHeight":900} {"offset":93,"panelHeight":791,"stuckFrom":358,"stuckUntil":575}
+
+[1A[2KINSIDE {"headerBefore":{"x":33,"y":94,"width":314.796875,"height":68.6875},"headerAfter":{"x":33,"y":94,"width":314.796875,"height":68.6875},"bodyScroll":400}
+
+[1A[2K[74/107] [chromium] › sidebar-layout.spec.ts:140:3 › catalogue sidebar layout › keeps the header popovers inside the viewport
+[1A[2K[75/107] [chromium] › sidebar-layout.spec.ts:163:3 › catalogue sidebar layout › photographs the fixed sidebar at 1280 and 1440
+[1A[2K[76/107] [chromium] › staff-order-bulk.spec.ts:6:33 › bulk order console › 390px: review and partial conflicts
+[1A[2K[77/107] [chromium] › staff-order-bulk.spec.ts:6:33 › bulk order console › 1440px: review and partial conflicts
+[1A[2K[78/107] [chromium] › staff-organization.spec.ts:6:73 › compact staff organization › 390px light: category dialog and compact views
+[1A[2K[79/107] [chromium] › staff-organization.spec.ts:6:73 › compact staff organization › 1440px light: category dialog and compact views
+[1A[2K[80/107] [chromium] › staff-organization.spec.ts:6:73 › compact staff organization › 390px dark: category dialog and compact views
+[1A[2K[81/107] [chromium] › staff-organization.spec.ts:6:73 › compact staff organization › 1440px dark: category dialog and compact views
+[1A[2K[82/107] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 390px in light
+[1A[2K[83/107] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 390px in dark
+[1A[2K[84/107] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 768px in light
+[1A[2K[85/107] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 768px in dark
+[1A[2K[86/107] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 1440px in light
+[1A[2K[87/107] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 1440px in dark
+[1A[2K[88/107] [chromium] › surface-depth.spec.ts:37:3 › shared surface depth › sales tiles, charts and every table carry the accent edge
+[1A[2K[89/107] [chromium] › surface-depth.spec.ts:70:3 › shared surface depth › rows fade in with motion allowed and stand still without it
+[1A[2K[90/107] [chromium] › theme-images.spec.ts:4:1 › logo is visible and selected themes persist across reloads
+[1A[2K[91/107] [chromium] › theme-images.spec.ts:26:1 › API catalogue photographs load and broken images have a fallback
+[1A[2K[92/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @390px › customer@ninecube.demo stays clean at 390px
+[1A[2K[93/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @390px › staff@ninecube.demo stays clean at 390px
+[1A[2K[94/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @390px › inventory@ninecube.demo stays clean at 390px
+[1A[2K[95/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @390px › admin@ninecube.demo stays clean at 390px
+[1A[2K[96/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @768px › customer@ninecube.demo stays clean at 768px
+[1A[2K[97/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @768px › staff@ninecube.demo stays clean at 768px
+[1A[2K[98/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @768px › inventory@ninecube.demo stays clean at 768px
+[1A[2K[99/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @768px › admin@ninecube.demo stays clean at 768px
+[1A[2K[100/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @1024px › customer@ninecube.demo stays clean at 1024px
+[1A[2K[101/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @1024px › staff@ninecube.demo stays clean at 1024px
+[1A[2K[102/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @1024px › inventory@ninecube.demo stays clean at 1024px
+[1A[2K[103/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @1024px › admin@ninecube.demo stays clean at 1024px
+[1A[2K[104/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @1440px › customer@ninecube.demo stays clean at 1440px
+[1A[2K[105/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @1440px › staff@ninecube.demo stays clean at 1440px
+[1A[2K[106/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @1440px › inventory@ninecube.demo stays clean at 1440px
+[1A[2K[107/107] [chromium] › ui-audit.spec.ts:46:9 › ui-audit › @1440px › admin@ninecube.demo stays clean at 1440px
+[1A[2K  Slow test file: [chromium] › categories.spec.ts (16.4m)
+  Slow test file: [chromium] › modern-customer.spec.ts (7.6m)
+  Slow test file: [chromium] › showcase.spec.ts (7.5m)
+  Slow test file: [chromium] › ui-audit.spec.ts (6.7m)
+  Slow test file: [chromium] › home-footer.spec.ts (5.6m)
+  Consider splitting slow test files to speed up parallel execution
+  107 passed (1.1h)
+EXIT=0

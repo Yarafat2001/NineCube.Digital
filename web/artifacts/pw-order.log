@@ -1,0 +1,44 @@
+
+Running 1 test using 1 worker
+
+  x  1 [chromium] › order-flow.spec.ts:45:3 › order flow › a customer reserves stock and a staff member confirms the order (28.7s)
+
+
+  1) [chromium] › order-flow.spec.ts:45:3 › order flow › a customer reserves stock and a staff member confirms the order 
+
+    Error: [31mTimed out 15000ms waiting for [39m[2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m()[22m
+
+    Locator: locator('article').filter({ hasText: 'Paper Filters (100 pack)' })
+    Expected: visible
+    Received: <element(s) not found>
+    Call log:
+      [2m- expect.toBeVisible with timeout 15000ms[22m
+    [2m  - waiting for locator('article').filter({ hasText: 'Paper Filters (100 pack)' })[22m
+
+
+      50 |
+      51 |     const card = productCard(page, sku);
+    > 52 |     await expect(card).toBeVisible();
+         |                        ^
+      53 |
+      54 |     const before = await stockOf(card);
+      55 |
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\order-flow.spec.ts:52:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\order-flow-order-flow-a-cu-e20de-f-member-confirms-the-order-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\order-flow-order-flow-a-cu-e20de-f-member-confirms-the-order-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\order-flow-order-flow-a-cu-e20de-f-member-confirms-the-order-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Slow test file: [chromium] › order-flow.spec.ts (28.7s)
+  Consider splitting slow test files to speed up parallel execution
+  1 failed
+    [chromium] › order-flow.spec.ts:45:3 › order flow › a customer reserves stock and a staff member confirms the order 

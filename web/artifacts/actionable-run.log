@@ -1,0 +1,45 @@
+
+Running 5 tests using 1 worker
+
+  ok 1 [chromium] › actionable-surfaces.spec.ts:90:3 › actionable chips, one-line actions and self-contained dialogs › a card chip is painted as the filter it applies, and applies it (56.7s)
+  ok 2 [chromium] › actionable-surfaces.spec.ts:138:3 › actionable chips, one-line actions and self-contained dialogs › the inventory actions stay on one line and the dialogs stay inside themselves (1.0m)
+  ok 3 [chromium] › actionable-surfaces.spec.ts:197:3 › actionable chips, one-line actions and self-contained dialogs › the current navbar tab sinks below its glass instead of shouting amber (34.2s)
+  x  4 [chromium] › actionable-surfaces.spec.ts:252:3 › actionable chips, one-line actions and self-contained dialogs › every row action reads as a control on its own table (58.3s)
+  ok 5 [chromium] › actionable-surfaces.spec.ts:325:3 › actionable chips, one-line actions and self-contained dialogs › History opens the same dialog on the ledger, not on the empty form (42.3s)
+
+
+  1) [chromium] › actionable-surfaces.spec.ts:252:3 › actionable chips, one-line actions and self-contained dialogs › every row action reads as a control on its own table 
+
+    Error: /inventory light Edit: the button's own rgb(255,255,255) is 13 away from the row's rgb(245,247,252)
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThanOrEqual[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: >= [32m25[39m
+    Received:    [31m13[39m
+
+      299 |             measured[key] = { fill: behind.map(Math.round), surface: surface.map(Math.round), separation, ink: control.ink };
+      300 |             expect(separation, `${key}: the button's own rgb(${behind.map(Math.round)}) is ${separation} away from the row's rgb(${surface.map(Math.round)})`)
+    > 301 |               .toBeGreaterThanOrEqual(25);
+          |                ^
+      302 |           } else {
+      303 |             measured[key] = { ink: control.ink, plainInk };
+      304 |             // A bare row link is an action, so it must not wear the row's own text colour.
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\actionable-surfaces.spec.ts:301:16
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\actionable-surfaces.spec.ts:292:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\actionable-surfaces-action-fdbc6--a-control-on-its-own-table-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\actionable-surfaces-action-fdbc6--a-control-on-its-own-table-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\actionable-surfaces-action-fdbc6--a-control-on-its-own-table-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › actionable-surfaces.spec.ts:252:3 › actionable chips, one-line actions and self-contained dialogs › every row action reads as a control on its own table 
+  4 passed (4.6m)

@@ -1,0 +1,501 @@
+/* Shared depth, controls and customer pages. Colours come only from tokens.css. */
+a { color: var(--accent-text); text-decoration: none; }
+a:hover { text-decoration: none; }
+.link-button { color: var(--accent-text); text-decoration: none; cursor: pointer; }
+a:not(.btn):not(.filter-chip):focus-visible { outline: var(--focus-ring); outline-offset: 3px; border-radius: var(--radius-sm); }
+.card-glass, .category-filter-panel, .cart-panel, .navbar {
+  background: var(--surface-glass); border: 1px solid var(--border);
+  backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-md);
+}
+.navbar { background: var(--surface-navbar); }
+/* Pills and their inner controls are styled by app.css + Navbar.css so all four
+   navbar pills share one effect; keep the generic rule off anything in .navbar. */
+.navbar .nav-control { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; color: var(--text); flex-shrink: 0; font: inherit; cursor: pointer; }
+.nav-control:not(.navbar *):hover, .nav-control:not(.navbar *)[aria-expanded='true'] { background: var(--selected-bg); border-color: var(--border-strong); }
+.nav-control:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+.navbar__user.nav-control { cursor: default; }
+/* Cap applies only where the row has room; at <=600px the chip fills its slot (app.css). */
+@media (min-width: 601px) { .navbar__user.nav-control { max-width: 220px; } }
+.avatar { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; color: var(--accent-text); background: var(--selected-bg); border: 1px solid var(--border-strong); font-size: var(--text-xl); font-weight: 750; flex-shrink: 0; }
+.avatar--small { width: 28px; height: 28px; font-size: var(--text-sm); }
+.account-name { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-chevron { width: 16px; transition: transform var(--transition); }
+.account-chevron[data-open='true'] { transform: rotate(180deg); }
+.nav-pop__panel.nav-pop__portal { position: fixed; right: auto; margin: 0; z-index: var(--z-menu); padding: 8px; border: 1px solid var(--border-strong); border-radius: 16px; background: var(--surface-menu); backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-lg); max-height: calc(100dvh - var(--sticky-top) - 24px); overflow-y: auto; }
+.nav-pop__portal .row-between { padding: 8px; }
+.nav-pop__item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; border: 0; padding: 10px 12px; border-radius: 10px; color: var(--text); text-decoration: none; background: transparent; font: inherit; cursor: pointer; }
+.nav-pop__item:hover, .nav-pop__item:focus-visible, .nav-pop__item[aria-current='page'] { background: var(--selected-bg); color: var(--accent-text); }
+.nav-pop__item[aria-current='page'] { box-shadow: inset 3px 0 0 var(--selected-bar); font-weight: 700; }
+.nav-pop__item--danger { color: var(--bad-text); }
+.nav-pop__item--danger:hover { background: var(--bad-bg); color: var(--bad-text); }
+.menu-separator { border-top: 1px solid var(--border); margin: 6px 4px; }
+.btn { align-items: center; justify-content: center; gap: 8px; background: var(--surface-glass); border: 1px solid var(--border-strong); box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm); color: var(--text); text-decoration: none; }
+.btn--primary { background: var(--accent-gradient); color: var(--on-accent); border-color: var(--accent); box-shadow: var(--shadow-md); }
+.btn--ghost { background: transparent; box-shadow: none; border-color: transparent; }
+.filter-panel__reset.btn--ghost { background: transparent; box-shadow: none; border-color: transparent; }
+.btn--danger { background: var(--bad-bg); color: var(--bad-text); border-color: var(--bad-border); }
+.btn:hover:not(:disabled), .btn:focus-visible { border-color: var(--accent-text); }
+input, select, textarea { background: var(--surface-sunken); border-color: var(--border-strong); color: var(--text); }
+.card-glass > h2, .card-glass > h3, .card-glass > .row-between { margin-bottom: 12px; }
+.stack { gap: 24px; }
+.filter-panel__body { overscroll-behavior: contain; }
+.brand-list { max-height: none; overflow: visible; padding-right: 0; }
+.brand-list[aria-busy='true'] .brand-option__count { visibility: hidden; }
+.grid-products { perspective: 900px; }
+.product-card { position: relative; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); box-shadow: inset 0 1px 0 var(--surface-highlight), var(--card-shadow); transform-style: preserve-3d; transition: transform 230ms ease, opacity 230ms ease; isolation: isolate; }
+.product-card::after { position: absolute; inset: 0; border-radius: inherit; box-shadow: var(--card-shadow-hover); opacity: 0; transition: opacity 230ms; pointer-events: none; content: ''; }
+.product-card__media { background: transparent; position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 18px; transform: translateZ(40px); }
+.product-card__media::before { content: none; }
+.product-card__image, .product-card__image--photo { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 0; background: transparent; filter: none; }
+.product-card .badge { transform: translateZ(60px); }
+.product-card__media .image-placeholder { background: var(--neutral-tint); color: var(--neutral); height: 100%; }
+.product-card:focus-within { transform: translateY(-6px); outline: var(--focus-ring); outline-offset: 3px; }
+.product-card:focus-within::after { opacity: 1; }
+.product-card:hover, .product-card:focus-within { z-index: 2; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .product-card:hover { transform: perspective(900px) translateY(-6px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
+  .product-card:hover::after { opacity: 1; }
+}
+.dashboard-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+/* One depth treatment for the summary surfaces: solid card surface, the product-card shadow pair,
+   a hover lift and a top accent edge. The customer dashboard tiles, the sales tiles and the sales
+   charts all take it, so a page reads as one family instead of a grid plus two plain panels. */
+:is(.dashboard-stats, .sales-stats) .stat-tile, .sales-chart { position: relative; min-width: 0; padding: 24px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--card-shadow); overflow: hidden; transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition-fast); }
+:is(.dashboard-stats, .sales-stats) .stat-tile::before, .sales-chart::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--accent-gradient); opacity: .85; }
+:is(.dashboard-stats, .sales-stats) .stat-tile:hover, .sales-chart:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); border-color: var(--border-strong); }
+/* The dashboard tile is a stack of label, value and caption pinned to the left; the sales tile is
+   two block lines and the chart card is a normal flow column, so only this one is a flex box. */
+.dashboard-stats .stat-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+/* A data table is the same kind of surface, so it opens with the same edge; its rows stay dense and
+   unlifted because the content is read, not hovered. */
+.table-surface { position: relative; }
+.table-surface::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--accent-gradient); opacity: .85; z-index: var(--z-sticky); }
+@keyframes row-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  /* Rows arrive with the data, so a refetch reads as the list settling rather than the page
+     glitching. The stagger stops at the eighth row: a long table should not wait for a queue. */
+  .table-surface tbody tr { animation: row-in 180ms ease both; }
+  .table-surface tbody tr:nth-child(2) { animation-delay: 25ms; }
+  .table-surface tbody tr:nth-child(3) { animation-delay: 50ms; }
+  .table-surface tbody tr:nth-child(4) { animation-delay: 75ms; }
+  .table-surface tbody tr:nth-child(5) { animation-delay: 100ms; }
+  .table-surface tbody tr:nth-child(6) { animation-delay: 125ms; }
+  .table-surface tbody tr:nth-child(7) { animation-delay: 150ms; }
+  .table-surface tbody tr:nth-child(n + 8) { animation-delay: 175ms; }
+}
+.stat-icon { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--selected-bg); color: var(--accent-text); border: 1px solid var(--selected-bar); }
+.stat-icon[data-tone='ok'] { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
+.stat-icon[data-tone='info'] { background: var(--info-tint); color: var(--info); border-color: var(--info); }
+.stat-icon[data-tone='warn'] { background: var(--warn-bg); color: var(--warn-text); border-color: var(--warn-border); }
+.stat-icon[data-tone='danger'] { background: var(--bad-bg); color: var(--bad-text); border-color: var(--bad-border); }
+.stat-icon[data-tone='neutral'] { background: var(--neutral-tint); color: var(--neutral); border-color: var(--border-strong); }
+.status-chart { display: flex; height: 16px; overflow: hidden; border-radius: var(--radius-pill); background: var(--surface-sunken); margin: 12px 0 24px; }
+.status-chart span { min-width: 0; background: var(--chart-color); }
+.status-chart [data-status='Pending'] { --chart-color: var(--warn-text); }
+.status-chart [data-status='Confirmed'] { --chart-color: var(--info); }
+.status-chart [data-status='Shipped'] { --chart-color: var(--ok-text); }
+.status-chart [data-status='Cancelled'], .status-chart [data-status='Rejected'] { --chart-color: var(--bad-text); }
+.status-chart [data-status='Processing'], .status-chart [data-status='Delivered'] { --chart-color: var(--neutral); }
+.status-tally { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.status-tally li { padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.quick-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.profile-header { display: flex; align-items: center; gap: 20px; padding: 24px; }
+.profile-header > div { min-width: 0; overflow-wrap: anywhere; }
+.profile-layout { align-items: start; }
+.skeleton--card { border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--card-shadow); }
+.password-input { display: flex; align-items: stretch; gap: 8px; }
+.password-input input { min-width: 0; flex: 1; }
+.unread-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--accent-text); flex-shrink: 0; }
+.notif-item[data-read='false'] { background: var(--selected-bg); border-color: var(--border-strong); }
+.notif-item[data-read='false'] .notif-item__title { font-weight: 750; }
+.notif-item[data-read='true'] { opacity: 1; }
+.nav-pop__portal .notif-item { grid-template-columns: 22px minmax(0, 1fr) 9px; }
+.notif-list--page .notif-item--row { grid-template-columns: 20px 24px minmax(0, 1fr) auto; gap: 16px; padding: 20px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.notif-list--page .notif-item--row[data-read='false'] { background: var(--selected-bg); }
+.notif-list--page .notif-item__body { min-width: 0; }
+.notif-list--page .notif-item__title { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.notification-pills { display: inline-flex; padding: 4px; gap: 4px; border: 1px solid var(--border); border-radius: var(--radius-pill); background: var(--surface-sunken); }
+.notification-pills .btn[aria-pressed='true'] { background: var(--selected-bg); border-color: var(--selected-bar); color: var(--accent-text); font-weight: 700; }
+.notification-empty { display: grid; place-items: center; gap: 16px; padding: 40px; color: var(--accent-text); border: 1px solid var(--border); border-radius: 20px; background: var(--product-spotlight); }
+.notification-empty > svg { width: 64px; height: 64px; }
+@media (max-width: 900px) { .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .account-name { max-width: 82px; } .dashboard-stats .stat-tile { padding: 16px; } .stat-tile__value { overflow-wrap: anywhere; font-size: var(--text-xl); } .profile-header { align-items: flex-start; } .notif-item--row { grid-template-columns: 20px 22px minmax(0, 1fr); } .notif-item--row > .row { grid-column: 3; } }
+/* Navbar order/flex at <=600px lives in app.css (higher intent, single source of
+   truth): restating it here at higher specificity silently changed the sequence. */
+@media (max-width: 600px) {
+  .nav-pop__trigger { padding-inline: 8px; }
+}
+@media (max-width: 768px) {
+  .notif-list--page .notif-item--row { grid-template-columns: 20px 24px minmax(0, 1fr); padding: 16px; gap: 12px; }
+  .notif-list--page .notif-item--row > .row { grid-column: 3; flex-wrap: wrap; }
+}
+@supports not (backdrop-filter: blur(16px)) { .card-glass, .navbar, .nav-control, .category-filter-panel, .cart-panel, .nav-pop__panel.nav-pop__portal { background: var(--surface); } }
+@media (prefers-reduced-motion: reduce) { .product-card, .product-card::after, .account-chevron, :is(.dashboard-stats, .sales-stats) .stat-tile, .sales-chart { transition: none; } .product-card:hover, .product-card:focus-within, :is(.dashboard-stats, .sales-stats) .stat-tile:hover, .sales-chart:hover { transform: none; } .product-card__media, .product-card .badge { transform: none; } }
+
+/* Keep the same material at rest, during hover and after route changes. */
+:root .navbar :is(.navbar__tray, .navbar__user.nav-control, .theme-controls, .navbar__actions .nav-pop__trigger) {
+  background: var(--nav-glass);
+  border: 1px solid var(--nav-glass-edge);
+  box-shadow: var(--nav-glass-shadow);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+}
+:root .navbar :is(.navbar__link:not([aria-current='page']), .theme-control:not([aria-pressed='true']), .navbar__actions .nav-control):is(:hover, [aria-expanded='true']) {
+  background: var(--nav-hover);
+  color: var(--text);
+  border-color: transparent;
+  box-shadow: inset 0 1px 0 var(--surface-highlight);
+}
+
+/* Transparent product cutouts need a neutral backing to remain visible at night.
+   Opaque photographs keep every pixel of their original background. */
+:root[data-theme='dark'] .product-card__media { background: #F4F5F7; }
+:root .navbar .navbar__actions {
+  padding: 0;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+:root .navbar .navbar__actions .nav-pop__trigger {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+/* .nav-control is repeated on purpose: Navbar.css opens the trigger with a rule of the same shape,
+   and the selected amber has to win that exchange rather than sit underneath it. */
+:root .navbar .navbar__actions .nav-control.nav-pop__trigger:is([aria-expanded='true'], :active) {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: var(--accent-text);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--surface-highlight);
+}
+:root .navbar .navbar__actions .nav-pop__trigger:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* The avatar stays readable even inside an orange selected trigger. */
+.navbar .avatar--small {
+  color: var(--avatar-ink);
+  background: var(--avatar-surface);
+  border-color: var(--avatar-edge);
+  font-weight: 800;
+}
+.product-card {
+  background: var(--product-card-glass);
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  border-color: var(--nav-glass-edge);
+}
+.navbar {
+  background: var(--navbar-glass);
+  border-color: var(--nav-glass-edge);
+  backdrop-filter: blur(24px) saturate(145%);
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-lg);
+}
+:root .navbar :is(.navbar__link:not([aria-current='page']), .theme-control:not([aria-pressed='true']), .navbar__actions .nav-pop__trigger):is([aria-expanded='true'], :active),
+.nav-pop__portal .nav-pop__item:not(.nav-pop__item--danger):is([aria-current='page']) {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: var(--accent-text);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+}
+.nav-pop__portal .nav-pop__item[aria-current='page'] {
+  box-shadow: inset 3px 0 0 var(--avatar-edge), inset 0 1px 0 var(--surface-highlight);
+}
+
+/* Shared page surfaces: catalogue, account, authentication and staff tools. */
+:root :is(.card, .card-glass, .category-filter-panel, .cart-panel, .address-card, .table-surface, .notif-list--page .notif-item--row) {
+  background: var(--product-card-glass);
+  border-color: var(--nav-glass-edge);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--card-shadow);
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+}
+:root :is([role='tablist'], .notification-pills) {
+  padding: 6px;
+  gap: 6px;
+  border: 1px solid var(--nav-glass-edge);
+  border-radius: var(--radius-lg);
+  background: var(--nav-glass);
+  box-shadow: var(--nav-glass-shadow);
+}
+/* A control has to look like a control. --nav-glass is the material of the card, tray and table it
+   sits on, so a secondary button on a translucent row read as plain text - most visibly in the
+   Actions columns. A solid raised surface with the strong edge is what makes it a button on every
+   page at once, which is the only way the language stays universal. */
+:root .btn:not(.btn--primary):not(.btn--danger):not(.btn--ghost) {
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+}
+:root .btn:not(.btn--danger):not(:disabled):not([aria-disabled='true']):is(:active, [aria-selected='true'], [aria-pressed='true'], [aria-current='page']),
+:root .category-tree__all[aria-pressed='true'],
+:root .category-tree__row[data-selected='true'],
+:root .brand-option[data-checked='true'] {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: var(--accent-text);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+}
+:root .category-tree__row[data-selected='true'] :is(button, .category-tree__count, .category-tree__hint),
+:root .brand-option[data-checked='true'] .brand-option__count {
+  color: var(--on-accent);
+}
+:root .brand-option[data-checked='true'] { border-radius: var(--radius-sm); }
+:root .category-tree__row[data-selected='true'] { border-left-color: var(--avatar-edge); }
+:root .btn[aria-disabled='true'] { opacity: .55; cursor: not-allowed; }
+:root input:is([type='checkbox'], [type='radio']) { accent-color: var(--accent); }
+@supports not (backdrop-filter: blur(1px)) {
+  :root :is(.card, .card-glass, .product-card, .address-card, .table-surface, .navbar) { background: var(--surface); }
+}
+
+/* Hover is deliberately quieter than selection. Noninteractive surfaces do not
+   advertise a click, and the selected orange state remains unambiguous. */
+:root .navbar :is(.navbar__link:not([aria-current='page']), .theme-control:not([aria-pressed='true']), .navbar__actions .nav-pop__trigger:not([aria-expanded='true'])):hover,
+:root .btn:not(.btn--primary):not(.btn--danger):not(:disabled):not([aria-disabled='true']):not([aria-selected='true']):not([aria-pressed='true']):not([aria-current='page']):hover,
+:root .nav-pop__portal .nav-pop__item:not(.nav-pop__item--danger):not([aria-current='page']):is(:hover, :focus-visible),
+:root :is(a.filter-chip, button.filter-chip):hover,
+:root .category-tree__all:not([aria-pressed='true']):hover,
+:root .category-tree__row:not([data-selected='true']):hover {
+  background: var(--nav-hover);
+  color: var(--text);
+  border-color: var(--nav-glass-edge);
+  box-shadow: inset 0 1px 0 var(--surface-highlight);
+}
+:root .category-tree__row:not([data-selected='true']):hover :is(button, .category-tree__count, .category-tree__hint) { color: var(--text); }
+:root :is(.navbar__tray, .navbar__actions, .theme-controls, .navbar__user, .card, .card-glass, .product-card, .filter-chip) { cursor: auto; }
+:root :is(button, a[href], summary, label[for], [role='button'], [role='tab']):not(:disabled):not([aria-disabled='true']) { cursor: pointer; }
+:root :is(button, .btn):is(:disabled, [aria-disabled='true']) { cursor: not-allowed; }
+
+/* Actionable hover feedback, without tinting static containers. */
+:root .navbar .navbar__actions .nav-pop__trigger { cursor: pointer; }
+:root .navbar .navbar__actions .nav-pop__trigger:not([aria-expanded='true']):hover {
+  background: var(--nav-hover);
+  border-color: var(--accent);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), 0 0 0 1px var(--accent);
+}
+main :is(a[href]:not(.btn):not(.filter-chip):not(.navbar__link), .link-button):hover {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+:root [role='tab']:not([aria-selected='true']):hover {
+  background: var(--nav-hover);
+  color: var(--text);
+  border-color: var(--accent);
+}
+.cart-sheet__close { display: flex; margin: 0 0 12px auto; }
+@media (min-width: 769px) {
+  .sheet-backdrop:has([aria-label='Your cart']) { align-items: center; padding: 24px; }
+  .sheet[aria-label='Your cart'] { border: 1px solid var(--nav-glass-edge); border-radius: var(--radius-lg); }
+}
+@media (min-width: 769px) {
+  .catalogue-layout.catalogue-layout--cart-on-demand { grid-template-columns: var(--sidebar-width) minmax(0, 1fr); }
+}
+
+/* Status names, icons and counts share a semantic tone across pages. */
+.status-tally li { --status-fill: var(--neutral-tint); --status-ink: var(--neutral); --status-edge: var(--border-strong); }
+.status-tally [data-status='Pending'] { --status-fill: var(--warn-bg); --status-ink: var(--warn-text); --status-edge: var(--warn-border); }
+.status-tally :is([data-status='Confirmed'], [data-status='Processing']) { --status-fill: var(--info-tint); --status-ink: var(--info); --status-edge: var(--info); }
+.status-tally :is([data-status='Shipped'], [data-status='Delivered']) { --status-fill: var(--ok-bg); --status-ink: var(--ok-text); --status-edge: var(--ok-border); }
+.status-tally [data-status='Rejected'] { --status-fill: var(--bad-bg); --status-ink: var(--bad-text); --status-edge: var(--bad-border); }
+:root .status-tally li {
+  background: var(--status-fill);
+  color: var(--status-ink);
+  border: 1px solid var(--status-edge);
+  padding: 12px;
+  font-weight: 600;
+}
+.status-tally li svg { flex-shrink: 0; stroke-width: 2; }
+.status-tally__count { color: inherit; font-weight: 800; }
+.badge { font-weight: 700; }
+
+.status-chart [data-status='Cancelled'] { --chart-color: var(--neutral); }
+.status-chart [data-status='Processing'] { --chart-color: var(--info); }
+.status-chart [data-status='Delivered'] { --chart-color: var(--ok-text); }
+
+/* Applied filters use the same glass shell and readable amber chips. */
+.filter-chips--active {
+  background: var(--nav-glass);
+  border-color: var(--nav-glass-edge);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+}
+.filter-chips--active .filter-chip {
+  background: var(--selected-bg);
+  color: var(--accent-text);
+  border-color: var(--selected-bar);
+  font-weight: 650;
+}
+:root .filter-chips--active button.filter-chip:hover {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: var(--accent-text);
+}
+
+/* A card chip is a shortcut to a filtered catalogue, not a label. On --surface-sunken it read as a
+   black hole punched in the glass card, so it takes the same amber language as an applied filter and
+   the full accent wash on hover. Only the actionable ones: the "+3" counter stays neutral. */
+:root .product-card :is(a, button).filter-chip {
+  background: var(--selected-bg);
+  color: var(--accent-text);
+  border-color: var(--selected-bar);
+  font-weight: 650;
+}
+:root .product-card :is(a, button).filter-chip:hover {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: var(--selected-bar);
+}
+:root .product-card .filter-chip--extra {
+  background: var(--neutral-tint);
+  color: var(--text-muted);
+  border-color: var(--border-strong);
+}
+@media (min-width: 769px) {
+  .category-filter-panel { align-self: start; }
+}
+
+/* Product detail: restrained image scale and a responsive purchase panel. */
+.product-detail-page { width: min(1280px, 100% - 48px); gap: 24px; padding-block: 32px 48px; }
+.product-detail-page .category-breadcrumb { font-size: var(--text-sm); overflow-wrap: anywhere; }
+.product-detail { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); }
+.product-detail > * { min-width: 0; }
+.product-detail__gallery { display: grid; gap: 16px; }
+.product-detail__media {
+  aspect-ratio: auto;
+  height: clamp(320px, 38vw, 540px);
+  background: var(--product-photo-surface);
+  border: 1px solid var(--nav-glass-edge);
+  border-radius: 24px;
+  padding: clamp(20px, 4vw, 48px);
+  box-shadow: var(--card-shadow);
+}
+.product-detail__media .product-card__image { object-fit: contain; object-position: center; padding: 0; filter: none; }
+.product-detail__media .image-placeholder { background: transparent; color: var(--product-photo-ink); border: 0; }
+.product-detail__thumbs { display: flex; flex-wrap: wrap; gap: 10px; }
+.product-detail__thumbs button { width: 68px; height: 68px; background: var(--product-photo-surface); padding: 6px; flex: 0 0 auto; }
+.product-detail__thumbs button:is(:hover, :focus-visible, [aria-pressed='true']) { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.product-detail__summary { padding: clamp(20px, 2.5vw, 32px); gap: 20px; border-radius: 24px; }
+.product-detail__summary h1 { font-size: clamp(26px, 2.5vw, 36px); line-height: 1.2; overflow-wrap: anywhere; }
+.product-detail__price { font-size: clamp(28px, 2.8vw, 38px); font-weight: 800; line-height: 1.2; }
+.product-detail__summary > .badge { align-self: flex-start; }
+.product-detail__summary .sku-line { flex-wrap: wrap; }
+.product-detail__summary code { overflow-wrap: anywhere; }
+.product-detail__description h2 { font-size: var(--text-base); margin-bottom: 8px; }
+.product-detail__description p { color: var(--text-muted); line-height: 1.7; }
+.product-detail__summary .filter-chips { margin: 0; }
+.product-detail__purchase { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding-top: 20px; border-top: 1px solid var(--border); }
+.product-detail__purchase > .btn { flex: 1; min-height: 48px; }
+.product-detail__added { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; color: var(--ok-text); }
+@media (max-width: 768px) {
+  .product-detail-page { width: calc(100% - 32px); padding-block: 24px 32px; gap: 20px; }
+  .product-detail { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .product-detail__media { height: clamp(260px, 75vw, 420px); padding: 24px; border-radius: 20px; }
+  .product-detail__summary { padding: 20px; border-radius: 20px; }
+}
+
+/* Staff workflows stay compact; editors open beside the task in a dialog. */
+.staff-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.staff-toolbar .field { margin: 0; min-width: 160px; }
+.staff-toolbar > .btn, .staff-toolbar select { min-height: 44px; }
+.staff-sections { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.staff-orders[hidden], .category-manager [hidden] { display: none !important; }
+.category-manager__toolbar { display: flex; align-items: flex-end; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
+.category-manager__toolbar .field { flex: 1 1 260px; max-width: 480px; margin: 0; }
+.category-manager th:last-child { width: 100px; }
+.category-manager td:last-child .btn { min-width: 64px; }
+.category-manager :is(td, th) { padding: 14px 16px; }
+.category-manager tbody tr:hover, .staff-orders tbody tr:hover { background: var(--nav-hover); }
+.category-manager .checkbox { display: flex; align-items: center; justify-content: flex-start; gap: 10px; }
+.category-manager input:is([type='checkbox'], [type='radio']) { width: 18px; height: 18px; flex: 0 0 18px; margin: 0; }
+.category-manager .modal { width: min(620px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); overflow-y: auto; }
+.category-manager .modal form { padding: 20px; }
+.category-manager__assignments { max-height: 260px; overflow-y: auto; padding: 12px; border: 1px solid var(--border-strong); border-radius: 12px; }
+.category-manager__assignments .checkbox { padding-block: 6px; }
+@media (max-width: 600px) {
+  .staff-toolbar { width: 100%; }
+  .staff-toolbar .field { flex: 1 1 100%; }
+  .staff-toolbar > .btn { flex: 1 1 auto; }
+  .category-manager__toolbar > .btn { width: 100%; }
+  .category-manager .modal form { padding: 14px; }
+}
+
+/* Sales analysis shares the same surfaces and semantic status palette. */
+.sales-filters { align-items: end; }
+.sales-filters .field { margin: 0; }
+.sales-filters :is(input, select, button) { min-height: 44px; }
+.sales-stats .stat-tile { border-radius: 20px; }
+.sales-stats .stat-tile__value { overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.sales-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.sales-chart { border-radius: var(--radius-lg); }
+.sales-chart h2 { font-size: var(--text-lg); }
+.sales-chart > .muted { font-size: var(--text-sm); line-height: 1.6; }
+.sales-distribution { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 24px; margin-top: 24px; }
+.sales-donut { width: min(210px, 100%); flex: 0 1 210px; height: auto; }
+.sales-donut__base { stroke: var(--neutral-tint); }
+.sales-donut__segment { stroke: var(--sales-tone, var(--neutral)); }
+.sales-donut__total { fill: var(--text); font-size: 30px; font-weight: 800; }
+.sales-donut__label { fill: var(--text-muted); font-size: 13px; }
+.sales-legend { list-style: none; padding: 0; flex: 1 1 180px; display: grid; gap: 14px; }
+.sales-legend li { display: grid; grid-template-columns: minmax(0, 1fr) auto 56px; gap: 12px; align-items: center; font-size: var(--text-sm); }
+.sales-legend__name { display: flex; align-items: center; gap: 8px; }
+.sales-legend__dot { height: 10px; width: 10px; border-radius: 50%; background: var(--sales-tone, var(--neutral)); flex-shrink: 0; }
+.sales-legend li > .muted { text-align: right; }
+.sales-charts [data-status='Pending'] { --sales-tone: var(--warn-text); }
+.sales-charts [data-status='Confirmed'] { --sales-tone: var(--info); }
+.sales-charts [data-status='Shipped'] { --sales-tone: var(--ok-text); }
+.sales-charts [data-status='Rejected'] { --sales-tone: var(--bad-text); }
+.sales-charts [data-status='Cancelled'] { --sales-tone: var(--neutral); }
+.sales-revenue { list-style: none; padding: 0; margin-top: 24px; display: grid; gap: 18px; }
+.sales-revenue__label { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; font-size: var(--text-sm); }
+.sales-revenue__label strong { font-variant-numeric: tabular-nums; }
+.sales-revenue__track { height: 10px; border-radius: 999px; overflow: hidden; background: var(--neutral-tint); }
+.sales-revenue__track > span { display: block; height: 100%; border-radius: inherit; background: var(--sales-tone, var(--neutral)); }
+@media (max-width: 900px) { .sales-charts { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) { .sales-chart, .sales-stats .stat-tile { padding: 20px; } .sales-filters { grid-template-columns: minmax(0, 1fr); } }
+
+.sales-page tbody tr:hover { background: var(--nav-hover); }
+
+/* Main navigation and right actions share the same interaction material. */
+:root .navbar :is(.navbar__link:not([aria-current='page']), .theme-control:not([aria-pressed='true']), .navbar__actions .nav-pop__trigger:not([aria-expanded='true'])):hover {
+  background: var(--nav-hover);
+  color: var(--text);
+  border-color: var(--accent);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), 0 0 0 1px var(--accent);
+}
+:root .navbar .navbar__link:focus-visible { border-radius: var(--radius-pill); outline: var(--focus-ring); outline-offset: 2px; }
+
+.sales-stats .stat-tile { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.sales-stats .stat-tile > .muted { font-size: var(--text-sm); margin: 0; }
+
+.order-bulkbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px; }
+.order-bulkbar > p { flex-basis: 100%; margin: 0; font-size: var(--text-sm); }
+.order-bulkbar select { width: auto; min-width: 160px; }
+.staff-orders tbody tr[data-selected='true'] { background: var(--selected-bg); box-shadow: inset 3px 0 0 var(--selected-bar); }
+.staff-orders table input[type='checkbox'] { width: 18px; height: 18px; }
+@media (max-width: 600px) { .order-bulkbar select { flex: 1 1 100%; width: 100%; } }
+
+@media (min-width: 769px) { .order-bulkbar { position: sticky; top: var(--sticky-top); z-index: var(--z-sticky); } }
+
+.order-closed-note { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: var(--text-sm); white-space: nowrap; }
+
+/* One selected-state rule: the real control owns its fill, without a moving layer. The tab you are
+   on takes the same amber as the switched-on theme choice and the open account menu, so the header
+   has a single "this one" look instead of three different ones. */
+:root .navbar :is(.navbar__link[aria-current='page'], .nav-pop__trigger[aria-expanded='true'], .theme-control[aria-pressed='true']) {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: var(--accent-text);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+}
+.order-queues { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid var(--nav-glass-edge); border-radius: 20px; background: var(--nav-glass); align-self: flex-start; }
+.staff-toolbar [hidden], .staff-orders :is(th, td)[hidden] { display: none !important; }
+
+.order-role-notice { padding: 16px 20px; border-left: 3px solid var(--info); line-height: 1.6; }

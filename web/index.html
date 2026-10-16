@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        let theme = 'system';
+        try { theme = localStorage.getItem('ninecube-theme') || 'system'; } catch {}
+        document.documentElement.dataset.theme = theme === 'light' || theme === 'dark'
+          ? theme : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      })();
+    </script>
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="NineCube.Digital order processing - browse live stock, place orders and manage fulfilment."
+    />
+    <link rel="icon" type="image/svg+xml" href="/ninecube-mark.svg" />
+    <title>NineCube.Digital - Order Processing</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

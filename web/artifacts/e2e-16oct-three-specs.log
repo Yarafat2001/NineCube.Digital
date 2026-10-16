@@ -1,0 +1,17 @@
+
+Running 9 tests using 1 worker
+
+[1A[2K[1/9] [chromium] › order-flow.spec.ts:52:3 › order flow › a customer reserves stock and a staff member confirms the order
+[1A[2K[2/9] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 390px in light
+[1A[2K[3/9] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 390px in dark
+[1A[2K[4/9] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 768px in light
+[1A[2K[5/9] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 768px in dark
+[1A[2K[6/9] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 1440px in light
+[1A[2K[7/9] [chromium] › sticky-notifications.spec.ts:11:5 › sticky + notification layers at 1440px in dark
+[1A[2K[8/9] [chromium] › surface-depth.spec.ts:37:3 › shared surface depth › sales tiles, charts and every table carry the accent edge
+[1A[2K[9/9] [chromium] › surface-depth.spec.ts:70:3 › shared surface depth › rows fade in with motion allowed and stand still without it
+[1A[2K  Slow test file: [chromium] › order-flow.spec.ts (2.7m)
+  Slow test file: [chromium] › surface-depth.spec.ts (1.2m)
+  Slow test file: [chromium] › sticky-notifications.spec.ts (55.0s)
+  Consider splitting slow test files to speed up parallel execution
+  9 passed (4.9m)

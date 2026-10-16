@@ -1,0 +1,53 @@
+# secrets
+.env
+.env.local
+*.user
+
+# .NET
+[Bb]in/
+[Oo]bj/
+*.suo
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# EF / local tool restore
+.dotnet/
+*.dbmdl
+
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# editors / OS
+.vs/
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+~$*
+
+# playwright
+web/playwright-report/
+web/test-results/
+web/blob-report/
+web/.playwright/
+
+# logs
+*.log
+
+# except the verification evidence the reports cite by path
+!web/artifacts/*.log
+
+# python
+__pycache__/
+*.pyc
+
+# playwright per-run scratch folders under the evidence dir
+web/artifacts/*test-results/
+web/artifacts/*-results/

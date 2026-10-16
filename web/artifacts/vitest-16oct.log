@@ -1,0 +1,58 @@
+
+[7m[1m[36m RUN [39m[22m[27m [36mv2.1.2[39m [90mC:/Users/yeasi/source/repos/NineCube.Digital/web[39m
+
+[90mstderr[2m | src/test/catalogue-filters.test.tsx[2m > [22m[2mBrand and series filters[2m > [22m[2mrestores the selection on reload and after navigating back and forward[22m[39m
+Warning: An update to RouterProvider inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at RouterProvider (C:\Users\yeasi\source\repos\NineCube.Digital\web\node_modules\react-router-dom\dist\umd\react-router-dom.development.js:455:7)
+
+[90mstderr[2m | src/test/catalogue-filters.test.tsx[2m > [22m[2mBrand and series filters[2m > [22m[2mrestores the selection on reload and after navigating back and forward[22m[39m
+Warning: An update to RouterProvider inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at RouterProvider (C:\Users\yeasi\source\repos\NineCube.Digital\web\node_modules\react-router-dom\dist\umd\react-router-dom.development.js:455:7)
+
+ [32m✓[39m src/test/modern-customer.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 14384[2mms[22m[39m
+ [32m✓[39m src/test/catalogue-sidebar.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 18280[2mms[22m[39m
+ [32m✓[39m src/test/checkout.test.tsx [2m ([22m[2m8 tests[22m[2m)[22m[33m 20108[2mms[22m[39m
+ [32m✓[39m src/test/inventory-bulk.test.tsx [2m ([22m[2m8 tests[22m[2m)[22m[33m 20296[2mms[22m[39m
+ [32m✓[39m src/test/catalogue-filters.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 24056[2mms[22m[39m
+ [32m✓[39m src/test/light-theme.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 585[2mms[22m[39m
+ [32m✓[39m src/test/categories.test.tsx [2m ([22m[2m8 tests[22m[2m)[22m[33m 26437[2mms[22m[39m
+ [32m✓[39m src/test/account.test.tsx [2m ([22m[2m14 tests[22m[2m)[22m[33m 30307[2mms[22m[39m
+ [32m✓[39m src/test/sticky-notifications.test.tsx [2m ([22m[2m8 tests[22m[2m)[22m[90m 55[2mms[22m[39m
+ [32m✓[39m src/test/actionable-surfaces.test.ts [2m ([22m[2m8 tests[22m[2m)[22m[90m 74[2mms[22m[39m
+ [32m✓[39m src/test/product-card.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 8650[2mms[22m[39m
+ [32m✓[39m src/test/staff-order-bulk.test.tsx [2m ([22m[2m4 tests[22m[2m)[22m[33m 11172[2mms[22m[39m
+ [32m✓[39m src/test/orders.test.tsx [2m ([22m[2m8 tests[22m[2m)[22m[33m 5053[2mms[22m[39m
+ [32m✓[39m src/test/helix-showcase.test.tsx [2m ([22m[2m8 tests[22m[2m)[22m[33m 1964[2mms[22m[39m
+ [32m✓[39m src/test/surface-depth.test.ts [2m ([22m[2m4 tests[22m[2m)[22m[90m 16[2mms[22m[39m
+ [32m✓[39m src/test/navbar.test.tsx [2m ([22m[2m7 tests[22m[2m)[22m[33m 5920[2mms[22m[39m
+ [32m✓[39m src/test/catalog.test.ts [2m ([22m[2m8 tests[22m[2m)[22m[90m 123[2mms[22m[39m
+ [32m✓[39m src/test/guards.test.tsx [2m ([22m[2m12 tests[22m[2m)[22m[33m 8133[2mms[22m[39m
+ [32m✓[39m src/test/sales-charts.test.tsx [2m ([22m[2m3 tests[22m[2m)[22m[33m 628[2mms[22m[39m
+ [32m✓[39m src/test/helpers.test.ts [2m ([22m[2m3 tests[22m[2m)[22m[90m 18[2mms[22m[39m
+ [32m✓[39m src/test/stepper.test.tsx [2m ([22m[2m4 tests[22m[2m)[22m[33m 1050[2mms[22m[39m
+ [32m✓[39m src/test/stock-badge.test.tsx [2m ([22m[2m5 tests[22m[2m)[22m[33m 413[2mms[22m[39m
+ [32m✓[39m src/test/catalogue-roles.test.tsx [2m ([22m[2m4 tests[22m[2m)[22m[33m 4432[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m23 passed[39m[22m[90m (23)[39m
+[2m      Tests [22m [1m[32m159 passed[39m[22m[90m (159)[39m
+[2m   Start at [22m 08:02:34
+[2m   Duration [22m 118.30s[2m (transform 8.62s, setup 181.88s, collect 63.76s, tests 202.15s, environment 286.13s, prepare 27.23s)[22m
+

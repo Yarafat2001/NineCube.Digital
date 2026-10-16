@@ -1,0 +1,4759 @@
+[
+  {
+    "name": "Schezwan Chutney 30 g",
+    "slug": "ching-s-schezwan-chutney-30-g",
+    "sku": "BD-CHIN-S-SCHE-CH-02F7B3",
+    "currency": "BDT",
+    "price": 25,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Schezwan Chutney 30 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: ching's",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "pack_quantity": "30 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/8901595863013",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Cadbury Dairy Milk Chocolate 24 g",
+    "slug": "cadbury-dairy-milk-chocolate-24-g",
+    "sku": "BD-CADB-DAIR-MILK-B5C056",
+    "currency": "BDT",
+    "price": 20,
+    "stockQuantity": 26,
+    "isActive": true,
+    "shortDescription": "Cadbury Dairy Milk Chocolate 24 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Cadbury",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "pack_quantity": "24 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/7622201149406",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Coca cola 1.75 litre",
+    "slug": "coca-cola-1-75-litre",
+    "sku": "BD-COCA-COLA-1-75-78792E",
+    "currency": "BDT",
+    "price": 230,
+    "stockQuantity": 142,
+    "isActive": true,
+    "shortDescription": "Coca cola 1.75 litre. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Coca-Cola",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "pack_quantity": "1.75 L"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/8907525000213",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Pran Drinko 250 ml",
+    "slug": "pran-drinko-250-ml",
+    "sku": "BD-PRAN-DRIN-250-3C9675",
+    "currency": "BDT",
+    "price": 30,
+    "stockQuantity": 100,
+    "isActive": true,
+    "shortDescription": "Pran Drinko 250 ml. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Pran",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "pack_quantity": "250 ml"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/0841165145355",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Cowhead milk 1 l",
+    "slug": "cowhead-milk-1-l",
+    "sku": "BD-COWH-MILK-1-L-FE1A7D",
+    "currency": "BDT",
+    "price": 130,
+    "stockQuantity": 40,
+    "isActive": true,
+    "shortDescription": "Cowhead milk 1 l. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Cowhead",
+      "Mid-range",
+      "Made in India"
+    ],
+    "specs": {
+      "pack_quantity": "1 l"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/8888440007108",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "samyang carbo sauce 200 g",
+    "slug": "samyang-carbo-sauce-200-g",
+    "sku": "BD-SAMY-CARB-SAUC-E83E6E",
+    "currency": "BDT",
+    "price": 160,
+    "stockQuantity": 64,
+    "isActive": true,
+    "shortDescription": "samyang carbo sauce 200 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Samyang",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "pack_quantity": "200 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/07374890",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Coca-Cola original test 400ml",
+    "slug": "coca-cola-original-test-400ml",
+    "sku": "BD-COCA-COLA-ORIG-26A583",
+    "currency": "BDT",
+    "price": 50,
+    "stockQuantity": 26,
+    "isActive": true,
+    "shortDescription": "Coca-Cola original test 400ml. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Coca-Cola",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "pack_quantity": "400 ml"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/8907525000145",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "quiker oats 450 450 g",
+    "slug": "quaker-quiker-oats-450-450-g",
+    "sku": "BD-QUAK-QUIK-OATS-4FF35B",
+    "currency": "BDT",
+    "price": 630,
+    "stockQuantity": 75,
+    "isActive": true,
+    "shortDescription": "quiker oats 450 450 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Quaker",
+      "Premium",
+      "Imported"
+    ],
+    "specs": {
+      "pack_quantity": "450 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/0735745809204",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Haribo Kingdom Tour Maxi Size 450 g",
+    "slug": "haribo-kingdom-tour-maxi-size-450-g",
+    "sku": "BD-HARI-KING-TOUR-6E8E73",
+    "currency": "BDT",
+    "price": 360,
+    "stockQuantity": 198,
+    "isActive": true,
+    "shortDescription": "Haribo Kingdom Tour Maxi Size 450 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Haribo",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "pack_quantity": "450 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/4001686397893",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Sun chips mix masala 20 g",
+    "slug": "quasem-food-products-limited-sun-chips-mix-masala-20-g",
+    "sku": "BD-QUAS-FOOD-PROD-45A9B6",
+    "currency": "BDT",
+    "price": 15,
+    "stockQuantity": 87,
+    "isActive": true,
+    "shortDescription": "Sun chips mix masala 20 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Quasem food products limited",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "pack_quantity": "20 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/8941160000313",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "goldmark special chocolate cookies 250 g",
+    "slug": "goldmark-special-chocolate-cookies-250-g",
+    "sku": "BD-GOLD-SPEC-CHOC-31649B",
+    "currency": "BDT",
+    "price": 200,
+    "stockQuantity": 35,
+    "isActive": true,
+    "shortDescription": "goldmark special chocolate cookies 250 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: GoldMark",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "pack_quantity": "250 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/8941165002510",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "crispy crunch tea special biscuits 250 g",
+    "slug": "bisk-club-crispy-crunch-tea-special-biscuits-250-g",
+    "sku": "BD-BISK-CLUB-CRIS-FA8051",
+    "currency": "BDT",
+    "price": 200,
+    "stockQuantity": 169,
+    "isActive": true,
+    "shortDescription": "crispy crunch tea special biscuits 250 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: bisk club",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "pack_quantity": "250 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/0841165102730",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Bombay sweets alooz chips 20 g",
+    "slug": "bombay-sweets-alooz-chips-20-g",
+    "sku": "BD-BOMB-SWEE-ALOO-40D924",
+    "currency": "BDT",
+    "price": 15,
+    "stockQuantity": 32,
+    "isActive": true,
+    "shortDescription": "Bombay sweets alooz chips 20 g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Bombay sweets",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "pack_quantity": "20 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/8941154030135",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Pran mishti jolpai 45g",
+    "slug": "pran-mishti-jolpai-45g",
+    "sku": "BD-PRAN-MISH-JOLP-3C54F8",
+    "currency": "BDT",
+    "price": 35,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Pran mishti jolpai 45g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Pran",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "pack_quantity": "45 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/0840205723126",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "quekar oat 900g",
+    "slug": "quaker-quekar-oat-900g",
+    "sku": "BD-QUAK-QUEK-OAT-37A898",
+    "currency": "BDT",
+    "price": 720,
+    "stockQuantity": 148,
+    "isActive": true,
+    "shortDescription": "quekar oat 900g. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "uncategorized",
+    "extraCategorySlugs": [
+      "packaged-food"
+    ],
+    "tags": [
+      "Brand: Quaker",
+      "Premium",
+      "Imported"
+    ],
+    "specs": {
+      "pack_quantity": "900 g"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Community-contributed product identity needs verification",
+      "Primary Uncategorized kept from the first import; grocery tree was added afterwards, so the product is cross-listed to packaged-food"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Open Food Facts",
+    "source_url": "https://world.openfoodfacts.org/product/0735745809198",
+    "source_license": "ODbL-1.0 / DbCL-1.0"
+  },
+  {
+    "name": "Apple iPhone 12",
+    "slug": "apple-iphone-12",
+    "sku": "BD-APPL-IPHO-12-0D1480",
+    "currency": "BDT",
+    "price": 45000,
+    "stockQuantity": 20,
+    "isActive": true,
+    "shortDescription": "Apple iPhone 12. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apple",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2020",
+      "os": "iOS",
+      "ram_gb": "4",
+      "storage_gb": "64",
+      "battery_mah": "2815"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Samsung Galaxy S21",
+    "slug": "samsung-galaxy-s21",
+    "sku": "BD-SAMS-GALA-S21-10F622",
+    "currency": "BDT",
+    "price": 40000,
+    "stockQuantity": 85,
+    "isActive": true,
+    "shortDescription": "Samsung Galaxy S21. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Samsung",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2021",
+      "os": "Android",
+      "ram_gb": "8",
+      "storage_gb": "128",
+      "battery_mah": "4000"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Xiaomi Redmi Note 10",
+    "slug": "xiaomi-redmi-note-10",
+    "sku": "BD-XIAO-REDM-NOTE-4ACD76",
+    "currency": "BDT",
+    "price": 14000,
+    "stockQuantity": 78,
+    "isActive": true,
+    "shortDescription": "Xiaomi Redmi Note 10. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Xiaomi",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2021",
+      "os": "Android",
+      "ram_gb": "4",
+      "storage_gb": "64",
+      "battery_mah": "5000"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "OnePlus 9 Pro",
+    "slug": "oneplus-9-pro",
+    "sku": "BD-ONEP-9-PRO-D9C1CC",
+    "currency": "BDT",
+    "price": 40000,
+    "stockQuantity": 180,
+    "isActive": true,
+    "shortDescription": "OnePlus 9 Pro. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: OnePlus",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2021",
+      "os": "Android",
+      "ram_gb": "12",
+      "storage_gb": "256",
+      "battery_mah": "4500"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Google Pixel 6",
+    "slug": "google-pixel-6",
+    "sku": "BD-GOOG-PIXE-6-8F272B",
+    "currency": "BDT",
+    "price": 35000,
+    "stockQuantity": 103,
+    "isActive": true,
+    "shortDescription": "Google Pixel 6. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Google",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2021",
+      "os": "Android",
+      "ram_gb": "8",
+      "storage_gb": "128",
+      "battery_mah": "4614"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Apple iPhone 13",
+    "slug": "apple-iphone-13",
+    "sku": "BD-APPL-IPHO-13-49F51E",
+    "currency": "BDT",
+    "price": 55000,
+    "stockQuantity": 80,
+    "isActive": true,
+    "shortDescription": "Apple iPhone 13. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apple",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2021",
+      "os": "iOS",
+      "ram_gb": "4",
+      "storage_gb": "128",
+      "battery_mah": "3240"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Samsung Galaxy A52",
+    "slug": "samsung-galaxy-a52",
+    "sku": "BD-SAMS-GALA-A52-3FC0CD",
+    "currency": "BDT",
+    "price": 24000,
+    "stockQuantity": 122,
+    "isActive": true,
+    "shortDescription": "Samsung Galaxy A52. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Samsung",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2021",
+      "os": "Android",
+      "ram_gb": "8",
+      "storage_gb": "128",
+      "battery_mah": "4500"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Xiaomi Mi 11",
+    "slug": "xiaomi-mi-11",
+    "sku": "BD-XIAO-MI-11-A40954",
+    "currency": "BDT",
+    "price": 30000,
+    "stockQuantity": 179,
+    "isActive": true,
+    "shortDescription": "Xiaomi Mi 11. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Xiaomi",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2021",
+      "os": "Android",
+      "ram_gb": "8",
+      "storage_gb": "256",
+      "battery_mah": "4600"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Realme GT Master Edition",
+    "slug": "realme-gt-master-edition",
+    "sku": "BD-REAL-GT-MAST-E-DDE1F4",
+    "currency": "BDT",
+    "price": 22000,
+    "stockQuantity": 142,
+    "isActive": true,
+    "shortDescription": "Realme GT Master Edition. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Realme",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2021",
+      "os": "Android",
+      "ram_gb": "8",
+      "storage_gb": "128",
+      "battery_mah": "4300"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Oppo Reno 8",
+    "slug": "oppo-reno-8",
+    "sku": "BD-OPPO-RENO-8-89C52C",
+    "currency": "BDT",
+    "price": 28000,
+    "stockQuantity": 105,
+    "isActive": true,
+    "shortDescription": "Oppo Reno 8. Check the sourced pack or model details before purchase.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Oppo",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "release_year": "2022",
+      "os": "Android",
+      "ram_gb": "8",
+      "storage_gb": "256",
+      "battery_mah": "4500"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Estimated BDT price",
+      "Older model: Bangladesh availability and source specifications require verification"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "jomarie04/smartphone-specifications-2020-2024",
+    "source_url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "source_license": "mit",
+    "revision": "4d19b89f8123effc01aa8b97f7cc4adbfef7d20e"
+  },
+  {
+    "name": "Apex Cross Men's Wallet (09110a72)",
+    "slug": "apex-cross-men-s-wallet-09110a72",
+    "sku": "BD-APEX-CROS-MEN-8BCE88",
+    "currency": "BDT",
+    "price": 2990.0,
+    "stockQuantity": 40,
+    "isActive": true,
+    "shortDescription": "Apex Cross Men's Wallet (09110a72). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "cross-mens-wallet-09110a72"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/cross-mens-wallet-09110a72",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata POWER FANNY PACK BAGS (9112201)",
+    "slug": "bata-power-fanny-pack-bags-9112201",
+    "sku": "BD-BATA-POWE-FANN-6262DC",
+    "currency": "BDT",
+    "price": 799.0,
+    "stockQuantity": 37,
+    "isActive": true,
+    "shortDescription": "Bata POWER FANNY PACK BAGS (9112201). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "9112201"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/power-fanny-pack-bags",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Nino Rossi Women's Bag (2)",
+    "slug": "apex-nino-rossi-women-s-bag-2",
+    "sku": "BD-APEX-NINO-ROSS-AA8144",
+    "currency": "BDT",
+    "price": 1690.0,
+    "stockQuantity": 102,
+    "isActive": true,
+    "shortDescription": "Apex Nino Rossi Women's Bag (2). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "nino-rossi-ladys-bag-0935ga82-2"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/nino-rossi-ladys-bag-0935ga82-2",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata POWER FANNY PACK BAGS (9116201)",
+    "slug": "bata-power-fanny-pack-bags-9116201",
+    "sku": "BD-BATA-POWE-FANN-304FEF",
+    "currency": "BDT",
+    "price": 799.0,
+    "stockQuantity": 36,
+    "isActive": true,
+    "shortDescription": "Bata POWER FANNY PACK BAGS (9116201). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "9116201"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/power-fanny-pack-bags-1",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Nino Rossi Women's Tote Bag (2)",
+    "slug": "apex-nino-rossi-women-s-tote-bag-2",
+    "sku": "BD-APEX-NINO-ROSS-8FDCA6",
+    "currency": "BDT",
+    "price": 2690.0,
+    "stockQuantity": 39,
+    "isActive": true,
+    "shortDescription": "Apex Nino Rossi Women's Tote Bag (2). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "nino-rossi-ladys-tote-bag-0931ga91-2"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/nino-rossi-ladys-tote-bag-0931ga91-2",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Apex Nino Rossi Women’s Tote Bag (3)",
+    "slug": "apex-nino-rossi-womens-tote-bag-3",
+    "sku": "BD-APEX-NINO-ROSS-6C4CD9",
+    "currency": "BDT",
+    "price": 2490.0,
+    "stockQuantity": 85,
+    "isActive": true,
+    "shortDescription": "Apex Nino Rossi Women’s Tote Bag (3). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "nino-rossi-womens-tote-bag-0932ja09-3"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/nino-rossi-womens-tote-bag-0932ja09-3",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Apex Police Men's Crossbody Bag (09015a01)",
+    "slug": "apex-police-men-s-crossbody-bag-09015a01",
+    "sku": "BD-APEX-POLI-MEN-3EA445",
+    "currency": "BDT",
+    "price": 2990.0,
+    "stockQuantity": 95,
+    "isActive": true,
+    "shortDescription": "Apex Police Men's Crossbody Bag (09015a01). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "police-mens-crossbody-bag-09015a01"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/police-mens-crossbody-bag-09015a01",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Apex Police Men's Crossbody Bag (09015a02)",
+    "slug": "apex-police-men-s-crossbody-bag-09015a02",
+    "sku": "BD-APEX-POLI-MEN-1EB4A7",
+    "currency": "BDT",
+    "price": 3490.0,
+    "stockQuantity": 49,
+    "isActive": true,
+    "shortDescription": "Apex Police Men's Crossbody Bag (09015a02). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "police-mens-crossbody-bag-09015a02"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/police-mens-crossbody-bag-09015a02",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Apex Police Men's Gym Bag (09095a05)",
+    "slug": "apex-police-men-s-gym-bag-09095a05",
+    "sku": "BD-APEX-POLI-MEN-13F029",
+    "currency": "BDT",
+    "price": 2490.0,
+    "stockQuantity": 64,
+    "isActive": true,
+    "shortDescription": "Apex Police Men's Gym Bag (09095a05). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "police-mens-gym-bag-09095a05"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/police-mens-gym-bag-09095a05",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Apex Venturini Men’s Leather Wallet (0931la28)",
+    "slug": "apex-venturini-mens-leather-wallet-0931la28",
+    "sku": "BD-APEX-VENT-MENS-71E1F5",
+    "currency": "BDT",
+    "price": 1290.0,
+    "stockQuantity": 50,
+    "isActive": true,
+    "shortDescription": "Apex Venturini Men’s Leather Wallet (0931la28). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before order",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "venturini-mens-leather-wallet-0931la28"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/venturini-mens-leather-wallet-0931la28",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Apex Venturini Men’s Long Wallet (0931la32)",
+    "slug": "apex-venturini-mens-long-wallet-0931la32",
+    "sku": "BD-APEX-VENT-MENS-95ED63",
+    "currency": "BDT",
+    "price": 1990.0,
+    "stockQuantity": 48,
+    "isActive": true,
+    "shortDescription": "Apex Venturini Men’s Long Wallet (0931la32). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering",
+    "primaryCategorySlug": "bags",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "venturini-mens-long-wallet-0931la32"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/venturini-mens-long-wallet-0931la32",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Hatil Dazzler-101",
+    "slug": "hatil-dazzler-101",
+    "sku": "BD-HATI-DAZZ-101-12B63C",
+    "currency": "BDT",
+    "price": 77150.0,
+    "stockQuantity": 96,
+    "isActive": true,
+    "shortDescription": "Hatil Dazzler-101. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "405-101-10-2-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/bed/dazzler-101",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Desire-154",
+    "slug": "hatil-desire-154",
+    "sku": "BD-HATI-DESI-154-52B219",
+    "currency": "BDT",
+    "price": 80200.0,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Hatil Desire-154. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "205-154-10-1-A-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/bed/desire-154",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Elegant-189",
+    "slug": "hatil-elegant-189",
+    "sku": "BD-HATI-ELEG-189-93F10C",
+    "currency": "BDT",
+    "price": 58900.0,
+    "stockQuantity": 34,
+    "isActive": true,
+    "shortDescription": "Hatil Elegant-189. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HCL-205-189-10-1K-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/elegant-189",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Epiphany-115",
+    "slug": "hatil-epiphany-115",
+    "sku": "BD-HATI-EPIP-115-0201B6",
+    "currency": "BDT",
+    "price": 54600.0,
+    "stockQuantity": 46,
+    "isActive": true,
+    "shortDescription": "Hatil Epiphany-115. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "205-115-10-1-A-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/bed/epiphany-",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Getafe-207",
+    "slug": "hatil-getafe-207",
+    "sku": "BD-HATI-GETA-207-646C35",
+    "currency": "BDT",
+    "price": 70000.0,
+    "stockQuantity": 118,
+    "isActive": true,
+    "shortDescription": "Hatil Getafe-207. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HIF-205-207-10-2-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/getafe-",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Kent-187",
+    "slug": "hatil-kent-187",
+    "sku": "BD-HATI-KENT-187-300228",
+    "currency": "BDT",
+    "price": 52800.0,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Hatil Kent-187. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HCL-205-187-10-1K-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/bed/kent-",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Mirage-175",
+    "slug": "hatil-mirage-175",
+    "sku": "BD-HATI-MIRA-175-7A9D44",
+    "currency": "BDT",
+    "price": 42400.0,
+    "stockQuantity": 46,
+    "isActive": true,
+    "shortDescription": "Hatil Mirage-175. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "205-175-10-1-A-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/bed/mirage",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Myth-184",
+    "slug": "hatil-myth-184",
+    "sku": "BD-HATI-MYTH-184-D92CD6",
+    "currency": "BDT",
+    "price": 49400.0,
+    "stockQuantity": 112,
+    "isActive": true,
+    "shortDescription": "Hatil Myth-184. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HCL-205-184-10-1-A-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/myth-184",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Nemesis-197 (5 Feet-Complete Bed)-2A",
+    "slug": "hatil-nemesis-197-5-feet-complete-bed-2a",
+    "sku": "BD-HATI-NEME-197-605BA8",
+    "currency": "BDT",
+    "price": 82200.0,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Hatil Nemesis-197 (5 Feet-Complete Bed)-2A. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "205-197"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/nemesis-197-5-feet-",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Thrill-162",
+    "slug": "hatil-thrill-162",
+    "sku": "BD-HATI-THRI-162-525004",
+    "currency": "BDT",
+    "price": 52200.0,
+    "stockQuantity": 74,
+    "isActive": true,
+    "shortDescription": "Hatil Thrill-162. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HCL-205-162-10-1A-RB-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/thrill-",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Tiara-190",
+    "slug": "hatil-tiara-190",
+    "sku": "BD-HATI-TIAR-190-48C63B",
+    "currency": "BDT",
+    "price": 61900.0,
+    "stockQuantity": 51,
+    "isActive": true,
+    "shortDescription": "Hatil Tiara-190. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HCL-205-190-10-1K-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/bed/tiara-190",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Vega-128",
+    "slug": "hatil-vega-128",
+    "sku": "BD-HATI-VEGA-128-CDB0C9",
+    "currency": "BDT",
+    "price": 68000.0,
+    "stockQuantity": 116,
+    "isActive": true,
+    "shortDescription": "Hatil Vega-128. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "beds",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "205-128-10-1-A-88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/vega-128",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:13.205674+00:00"
+  },
+  {
+    "name": "Hatil Alessandro-204",
+    "slug": "hatil-alessandro-204",
+    "sku": "BD-HATI-ALES-204-0C4DD4",
+    "currency": "BDT",
+    "price": 27950.0,
+    "stockQuantity": 109,
+    "isActive": true,
+    "shortDescription": "Hatil Alessandro-204. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HPL-507-204-9-1-00"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/alessandro-204",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Aria-132",
+    "slug": "hatil-aria-132",
+    "sku": "BD-HATI-ARIA-132-348DC7",
+    "currency": "BDT",
+    "price": 24600.0,
+    "stockQuantity": 88,
+    "isActive": true,
+    "shortDescription": "Hatil Aria-132. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HIF-507-132-10NB-1-8844"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/aria-132",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Bagpipes-133",
+    "slug": "hatil-bagpipes-133",
+    "sku": "BD-HATI-BAGP-133-558D01",
+    "currency": "BDT",
+    "price": 35900.0,
+    "stockQuantity": 36,
+    "isActive": true,
+    "shortDescription": "Hatil Bagpipes-133. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HIF-507-133-10SCB-1-8809"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/swivel-chair/bagpipes-133",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Belinda-138",
+    "slug": "hatil-belinda-138",
+    "sku": "BD-HATI-BELI-138-026F89",
+    "currency": "BDT",
+    "price": 37112.0,
+    "stockQuantity": 69,
+    "isActive": true,
+    "shortDescription": "Hatil Belinda-138. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HIF-507-138-10SCB-1-8809"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/swivel-chair/belinda-138",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Benchley-333",
+    "slug": "hatil-benchley-333",
+    "sku": "BD-HATI-BENC-333-361F86",
+    "currency": "BDT",
+    "price": 16800.0,
+    "stockQuantity": 43,
+    "isActive": true,
+    "shortDescription": "Hatil Benchley-333. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "Hpl-507-333-NB-1-44"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/executive-chair/benchley-333",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Borges-208",
+    "slug": "hatil-borges-208",
+    "sku": "BD-HATI-BORG-208-917388",
+    "currency": "BDT",
+    "price": 30075.0,
+    "stockQuantity": 51,
+    "isActive": true,
+    "shortDescription": "Hatil Borges-208. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HPL-507-208-9-1-00"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/swivel-chair/borges-208",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Brooker-325",
+    "slug": "hatil-brooker-325",
+    "sku": "BD-HATI-BROO-325-D8528D",
+    "currency": "BDT",
+    "price": 21700.0,
+    "stockQuantity": 53,
+    "isActive": true,
+    "shortDescription": "Hatil Brooker-325. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "Hpl-507-325-NB-1-44"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/executive-chair/brooker-325",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Burgess-327",
+    "slug": "hatil-burgess-327",
+    "sku": "BD-HATI-BURG-327-B9B687",
+    "currency": "BDT",
+    "price": 21700.0,
+    "stockQuantity": 39,
+    "isActive": true,
+    "shortDescription": "Hatil Burgess-327. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "Hpl-507-327-NB-1-44"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/executive-chair/burgess-327",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Cezanne-112 GL",
+    "slug": "hatil-cezanne-112-gl",
+    "sku": "BD-HATI-CEZA-112-71B9B8",
+    "currency": "BDT",
+    "price": 11000.0,
+    "stockQuantity": 49,
+    "isActive": true,
+    "shortDescription": "Hatil Cezanne-112 GL. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HPL-507-112-NBGL-1-44"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/executive-chair/cezanne-112-gl",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Cezanne-112 SP",
+    "slug": "hatil-cezanne-112-sp",
+    "sku": "BD-HATI-CEZA-112-D1DB4E",
+    "currency": "BDT",
+    "price": 11000.0,
+    "stockQuantity": 4,
+    "isActive": true,
+    "shortDescription": "Hatil Cezanne-112 SP. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HPL-507-112-SCBSP-1-09"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/executive-chair/cezanne-112-sp",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Clive-332",
+    "slug": "hatil-clive-332",
+    "sku": "BD-HATI-CLIV-332-FBE52C",
+    "currency": "BDT",
+    "price": 18100.0,
+    "stockQuantity": 82,
+    "isActive": true,
+    "shortDescription": "Hatil Clive-332. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "Hpl-507-332-NB-1-44"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/swivel-chair/clive-332",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Cornel-330",
+    "slug": "hatil-cornel-330",
+    "sku": "BD-HATI-CORN-330-06FB9F",
+    "currency": "BDT",
+    "price": 23600.0,
+    "stockQuantity": 83,
+    "isActive": true,
+    "shortDescription": "Hatil Cornel-330. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "Hpl-507-330-NB-1-44"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/swivel-chair/cornel-330",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Cosy-101",
+    "slug": "hatil-cosy-101",
+    "sku": "BD-HATI-COSY-101-67749F",
+    "currency": "BDT",
+    "price": 18100.0,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Hatil Cosy-101. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HPL-507-101-NB-1-44"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/executive-chair/cosy-101",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Couplet-134",
+    "slug": "hatil-couplet-134",
+    "sku": "BD-HATI-COUP-134-725FDB",
+    "currency": "BDT",
+    "price": 28625.0,
+    "stockQuantity": 81,
+    "isActive": true,
+    "shortDescription": "Hatil Couplet-134. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HIF-507-134-10NB-1-8844"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/content/couplet-134",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Hatil Degas-103",
+    "slug": "hatil-degas-103",
+    "sku": "BD-HATI-DEGA-103-391A31",
+    "currency": "BDT",
+    "price": 21000.0,
+    "stockQuantity": 3,
+    "isActive": true,
+    "shortDescription": "Hatil Degas-103. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "chairs",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Hatil",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "HIF-414-103-2-1-66,77,88"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Hatil official catalogue",
+    "source_url": "https://www.hatil.com/executive-chair/degas-103",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:02.409432+00:00"
+  },
+  {
+    "name": "Walton Crystal Series LED Bulb",
+    "slug": "walton-crystal-series-led-bulb",
+    "sku": "BD-WALT-CRYS-SERI-E79B33",
+    "currency": "BDT",
+    "price": 650.0,
+    "stockQuantity": 43,
+    "isActive": true,
+    "shortDescription": "Walton Crystal Series LED Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "led-lighting",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "series_page": true,
+      "listed_variant_prices_bdt": [
+        650.0,
+        900.0
+      ]
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Series page: shown price is the lowest listed variant; variant list retained in specs"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/led-light/led-bulb/crystal-series-led-bulb",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T18:59:41.516168+00:00"
+  },
+  {
+    "name": "Walton Moon Light",
+    "slug": "walton-moon-light",
+    "sku": "BD-WALT-MOON-LIGH-E270E2",
+    "currency": "BDT",
+    "price": 70.0,
+    "stockQuantity": 53,
+    "isActive": true,
+    "shortDescription": "Walton Moon Light. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "led-lighting",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "series_page": true,
+      "listed_variant_prices_bdt": [
+        70.0
+      ]
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Series page: shown price is the lowest listed variant; variant list retained in specs"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/led-light/led-bulb/moon-light",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T18:59:42.898365+00:00"
+  },
+  {
+    "name": "Walton Public Series A Shape LED Bulb",
+    "slug": "walton-public-series-a-shape-led-bulb",
+    "sku": "BD-WALT-PUBL-SERI-682E02",
+    "currency": "BDT",
+    "price": 150.0,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Walton Public Series A Shape LED Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "led-lighting",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "series_page": true,
+      "listed_variant_prices_bdt": [
+        150.0,
+        170.0,
+        200.0,
+        230.0,
+        260.0,
+        300.0,
+        380.0,
+        420.0,
+        545.0,
+        700.0
+      ]
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Series page: shown price is the lowest listed variant; variant list retained in specs"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/led-light/led-bulb/public-series-a-shape",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T18:59:37.926242+00:00"
+  },
+  {
+    "name": "Walton Public Series T Shape LED Bulb",
+    "slug": "walton-public-series-t-shape-led-bulb",
+    "sku": "BD-WALT-PUBL-SERI-5CD73E",
+    "currency": "BDT",
+    "price": 755.0,
+    "stockQuantity": 106,
+    "isActive": true,
+    "shortDescription": "Walton Public Series T Shape LED Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "led-lighting",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "series_page": true,
+      "listed_variant_prices_bdt": [
+        755.0,
+        1035.0,
+        1400.0,
+        1620.0
+      ]
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Series page: shown price is the lowest listed variant; variant list retained in specs"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/led-light/led-bulb/public-series-t-shape",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T18:59:40.003748+00:00"
+  },
+  {
+    "name": "Walton Rainbow Bulb",
+    "slug": "walton-rainbow-bulb",
+    "sku": "BD-WALT-RAIN-BULB-8F63D2",
+    "currency": "BDT",
+    "price": 260.0,
+    "stockQuantity": 43,
+    "isActive": true,
+    "shortDescription": "Walton Rainbow Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "led-lighting",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "series_page": true,
+      "listed_variant_prices_bdt": [
+        260.0
+      ]
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Series page: shown price is the lowest listed variant; variant list retained in specs"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/led-light/led-bulb/residential-rainbow-bulb",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T18:59:44.293916+00:00"
+  },
+  {
+    "name": "Walton Ultra series LED Bulb",
+    "slug": "walton-ultra-series-led-bulb",
+    "sku": "BD-WALT-ULTR-SERI-CB7890",
+    "currency": "BDT",
+    "price": 240.0,
+    "stockQuantity": 82,
+    "isActive": true,
+    "shortDescription": "Walton Ultra series LED Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "led-lighting",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "series_page": true,
+      "listed_variant_prices_bdt": [
+        240.0,
+        270.0,
+        320.0
+      ]
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Series page: shown price is the lowest listed variant; variant list retained in specs"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/led-light/led-bulb/ultra-series",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T18:58:16.320681+00:00"
+  },
+  {
+    "name": "Walton WFC-3D8-GJXB-FD (INVERTER)",
+    "slug": "walton-wfc-3d8-gjxb-fd-inverter",
+    "sku": "BD-WALT-WFC-3D8-G-406171",
+    "currency": "BDT",
+    "price": 59390.0,
+    "stockQuantity": 48,
+    "isActive": true,
+    "shortDescription": "Walton WFC-3D8-GJXB-FD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfc-3d8-gjxb-fd-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFC-3D8-GRHE-FD (INVERTER)",
+    "slug": "walton-wfc-3d8-grhe-fd-inverter",
+    "sku": "BD-WALT-WFC-3D8-G-4FE6B1",
+    "currency": "BDT",
+    "price": 59590.0,
+    "stockQuantity": 91,
+    "isActive": true,
+    "shortDescription": "Walton WFC-3D8-GRHE-FD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfc-3d8-grhe-fd-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFC-3F5-I5-GEDE-FD (INVERTER)",
+    "slug": "walton-wfc-3f5-i5-gede-fd-inverter",
+    "sku": "BD-WALT-WFC-3F5-I-4137EE",
+    "currency": "BDT",
+    "price": 61290.0,
+    "stockQuantity": 63,
+    "isActive": true,
+    "shortDescription": "Walton WFC-3F5-I5-GEDE-FD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfc-3f5-i5-gede-fd-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3A2-GDEL-XX (INVERTER)",
+    "slug": "walton-wfe-3a2-gdel-xx-inverter",
+    "sku": "BD-WALT-WFE-3A2-G-052E6D",
+    "currency": "BDT",
+    "price": 50190.0,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3A2-GDEL-XX (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3a2-gdel-xx-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3A2-GDEN-DD",
+    "slug": "walton-wfe-3a2-gden-dd",
+    "sku": "BD-WALT-WFE-3A2-G-E0A7A5",
+    "currency": "BDT",
+    "price": 50490.0,
+    "stockQuantity": 68,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3A2-GDEN-DD. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3a2-gden-dd",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3B0-GDEL-XX (INVERTER)",
+    "slug": "walton-wfe-3b0-gdel-xx-inverter",
+    "sku": "BD-WALT-WFE-3B0-G-4C2AB4",
+    "currency": "BDT",
+    "price": 51690.0,
+    "stockQuantity": 81,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3B0-GDEL-XX (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3b0-gdel-xx-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3B0-GDEN-DD (INVERTER)",
+    "slug": "walton-wfe-3b0-gden-dd-inverter",
+    "sku": "BD-WALT-WFE-3B0-G-713B3F",
+    "currency": "BDT",
+    "price": 55190.0,
+    "stockQuantity": 34,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3B0-GDEN-DD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3b0-gden-dd-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3B0-GDEN-XX (INVERTER)",
+    "slug": "walton-wfe-3b0-gden-xx-inverter",
+    "sku": "BD-WALT-WFE-3B0-G-2E23AA",
+    "currency": "BDT",
+    "price": 51990.0,
+    "stockQuantity": 103,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3B0-GDEN-XX (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3b0-gden-xx-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3B0-GDEV-XX (INVERTER)",
+    "slug": "walton-wfe-3b0-gdev-xx-inverter",
+    "sku": "BD-WALT-WFE-3B0-G-C7B897",
+    "currency": "BDT",
+    "price": 50690.0,
+    "stockQuantity": 77,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3B0-GDEV-XX (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3b0-gdev-xx-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3C3-GDEN-DD (INVERTER)",
+    "slug": "walton-wfe-3c3-gden-dd-inverter",
+    "sku": "BD-WALT-WFE-3C3-G-802C28",
+    "currency": "BDT",
+    "price": 53690.0,
+    "stockQuantity": 96,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3C3-GDEN-DD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3c3-gden-dd-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3C3-GDEN-XX",
+    "slug": "walton-wfe-3c3-gden-xx",
+    "sku": "BD-WALT-WFE-3C3-G-ED3DAB",
+    "currency": "BDT",
+    "price": 51790.0,
+    "stockQuantity": 115,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3C3-GDEN-XX. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3c3-gden-xx",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3C3-GDXX-XX",
+    "slug": "walton-wfe-3c3-gdxx-xx",
+    "sku": "BD-WALT-WFE-3C3-G-38B36B",
+    "currency": "BDT",
+    "price": 50990.0,
+    "stockQuantity": 62,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3C3-GDXX-XX. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3c3-gdxx-xx",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3E8-GDEL-XX",
+    "slug": "walton-wfe-3e8-gdel-xx",
+    "sku": "BD-WALT-WFE-3E8-G-5B837A",
+    "currency": "BDT",
+    "price": 53790.0,
+    "stockQuantity": 117,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3E8-GDEL-XX. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3e8-gdel-xx",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3E8-GDEN-DD (INVERTER)",
+    "slug": "walton-wfe-3e8-gden-dd-inverter",
+    "sku": "BD-WALT-WFE-3E8-G-5E4C95",
+    "currency": "BDT",
+    "price": 58690.0,
+    "stockQuantity": 46,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3E8-GDEN-DD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3e8-gden-dd-inverter",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Walton WFE-3E8-GDEN-XX",
+    "slug": "walton-wfe-3e8-gden-xx",
+    "sku": "BD-WALT-WFE-3E8-G-906761",
+    "currency": "BDT",
+    "price": 54290.0,
+    "stockQuantity": 91,
+    "isActive": true,
+    "shortDescription": "Walton WFE-3E8-GDEN-XX. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "refrigerators",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator/wfe-3e8-gden-xx",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:29:11.616123+00:00"
+  },
+  {
+    "name": "Apex Adidas Duramo SL Shoe - Women (64010a13)",
+    "slug": "apex-adidas-duramo-sl-shoe-women-64010a13",
+    "sku": "BD-APEX-ADID-DURA-2E013B",
+    "currency": "BDT",
+    "price": 12000.0,
+    "stockQuantity": 45,
+    "isActive": true,
+    "shortDescription": "Apex Adidas Duramo SL Shoe - Women (64010a13). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before orderi",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "adidas-duramo-sl-shoe-women-64010a13"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/adidas-duramo-sl-shoe-women-64010a13",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata BATA (MEN) BOGOTA MENS CASUAL (8545729)",
+    "slug": "bata-bata-men-bogota-mens-casual-8545729",
+    "sku": "BD-BATA-BATA-MEN-DB5496",
+    "currency": "BDT",
+    "price": 4999.0,
+    "stockQuantity": 52,
+    "isActive": true,
+    "shortDescription": "Bata BATA (MEN) BOGOTA MENS CASUAL (8545729). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "8545729"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/bata-men-bogota-mens-casual",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Adidas Ford Up - Men (94090a06)",
+    "slug": "apex-adidas-ford-up-men-94090a06",
+    "sku": "BD-APEX-ADID-FORD-E61385",
+    "currency": "BDT",
+    "price": 14000.0,
+    "stockQuantity": 85,
+    "isActive": true,
+    "shortDescription": "Apex Adidas Ford Up - Men (94090a06). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "adidas-ford-up-men-94090a06"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/adidas-ford-up-men-94090a06",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata BATA (MEN) BOGOTA MENS CASUAL (8546729)",
+    "slug": "bata-bata-men-bogota-mens-casual-8546729",
+    "sku": "BD-BATA-BATA-MEN-26B606",
+    "currency": "BDT",
+    "price": 4999.0,
+    "stockQuantity": 41,
+    "isActive": true,
+    "shortDescription": "Bata BATA (MEN) BOGOTA MENS CASUAL (8546729). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "8546729"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/bata-men-bogota-mens-casual-1",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Adidas Questar Shoes - Men (94090a22)",
+    "slug": "apex-adidas-questar-shoes-men-94090a22",
+    "sku": "BD-APEX-ADID-QUES-EA6518",
+    "currency": "BDT",
+    "price": 13000.0,
+    "stockQuantity": 74,
+    "isActive": true,
+    "shortDescription": "Apex Adidas Questar Shoes - Men (94090a22). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "adidas-questar-shoes-men-94090a22"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/adidas-questar-shoes-men-94090a22",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata BATA (MEN) IQUITOS MENS DRESS (8316245)",
+    "slug": "bata-bata-men-iquitos-mens-dress-8316245",
+    "sku": "BD-BATA-BATA-MEN-A83D04",
+    "currency": "BDT",
+    "price": 5999.0,
+    "stockQuantity": 46,
+    "isActive": true,
+    "shortDescription": "Bata BATA (MEN) IQUITOS MENS DRESS (8316245). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "8316245"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/bata-men-iquitos-mens-dress-1",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Adidas Qusteron Shoes - Women (64090a01)",
+    "slug": "apex-adidas-qusteron-shoes-women-64090a01",
+    "sku": "BD-APEX-ADID-QUST-443F29",
+    "currency": "BDT",
+    "price": 9990.0,
+    "stockQuantity": 81,
+    "isActive": true,
+    "shortDescription": "Apex Adidas Qusteron Shoes - Women (64090a01). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before orderi",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "qusteron-shoes-women-64090a01"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/qusteron-shoes-women-64090a01",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata BATA (MEN) LEEDS MENS SANDALS (8714853)",
+    "slug": "bata-bata-men-leeds-mens-sandals-8714853",
+    "sku": "BD-BATA-BATA-MEN-1AB91F",
+    "currency": "BDT",
+    "price": 2699.0,
+    "stockQuantity": 3,
+    "isActive": true,
+    "shortDescription": "Bata BATA (MEN) LEEDS MENS SANDALS (8714853). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "8714853"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/bata-men-leeds-mens-sandals-1",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Adidas Ultrabounce Shoes - Women (64020a21)",
+    "slug": "apex-adidas-ultrabounce-shoes-women-64020a21",
+    "sku": "BD-APEX-ADID-ULTR-BC3344",
+    "currency": "BDT",
+    "price": 14000.0,
+    "stockQuantity": 90,
+    "isActive": true,
+    "shortDescription": "Apex Adidas Ultrabounce Shoes - Women (64020a21). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ord",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Premium",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "adidas-ultrabounce-shoes-women-64020a21"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/adidas-ultrabounce-shoes-women-64020a21",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata BATA (MEN) MATTE MENS SANDALS (8313004)",
+    "slug": "bata-bata-men-matte-mens-sandals-8313004",
+    "sku": "BD-BATA-BATA-MEN-396A47",
+    "currency": "BDT",
+    "price": 1999.0,
+    "stockQuantity": 34,
+    "isActive": true,
+    "shortDescription": "Bata BATA (MEN) MATTE MENS SANDALS (8313004). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "8313004"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/bata-men-matte-mens-sandals",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Apex Men's Mule Sandal (9211ba98)",
+    "slug": "apex-apex-men-s-mule-sandal-9211ba98",
+    "sku": "BD-APEX-APEX-MEN-35C3B0",
+    "currency": "BDT",
+    "price": 1990.0,
+    "stockQuantity": 119,
+    "isActive": true,
+    "shortDescription": "Apex Apex Men's Mule Sandal (9211ba98). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "apex-mens-mule-sandal-9211ba98"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/apex-mens-mule-sandal-9211ba98",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata BATA (MEN) MATTE MENS SANDALS (8313005)",
+    "slug": "bata-bata-men-matte-mens-sandals-8313005",
+    "sku": "BD-BATA-BATA-MEN-AB0A4D",
+    "currency": "BDT",
+    "price": 1999.0,
+    "stockQuantity": 102,
+    "isActive": true,
+    "shortDescription": "Bata BATA (MEN) MATTE MENS SANDALS (8313005). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "8313005"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/bata-men-matte-mens-sandals-1",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Apex Men’s Backbelt Sandal (9251fl62)",
+    "slug": "apex-apex-mens-backbelt-sandal-9251fl62",
+    "sku": "BD-APEX-APEX-MENS-74DE95",
+    "currency": "BDT",
+    "price": 1290.0,
+    "stockQuantity": 46,
+    "isActive": true,
+    "shortDescription": "Apex Apex Men’s Backbelt Sandal (9251fl62). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "apex-mens-backbelt-sandal-9251fl62"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/apex-mens-backbelt-sandal-9251fl62",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Bata BATA (MEN) MATTE MENS SANDALS (8317004)",
+    "slug": "bata-bata-men-matte-mens-sandals-8317004",
+    "sku": "BD-BATA-BATA-MEN-DCAF13",
+    "currency": "BDT",
+    "price": 1999.0,
+    "stockQuantity": 2,
+    "isActive": true,
+    "shortDescription": "Bata BATA (MEN) MATTE MENS SANDALS (8317004). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Bata",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_sku": "8317004"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Starting variant price; selected size/colour may differ"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Bata official catalogue",
+    "source_url": "https://www.batabd.com/products/bata-men-matte-mens-sandals-2",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:53.086992+00:00"
+  },
+  {
+    "name": "Apex Apex Men’s Dress Shoe (91314a67)",
+    "slug": "apex-apex-mens-dress-shoe-91314a67",
+    "sku": "BD-APEX-APEX-MENS-E0FB23",
+    "currency": "BDT",
+    "price": 3490.0,
+    "stockQuantity": 36,
+    "isActive": true,
+    "shortDescription": "Apex Apex Men’s Dress Shoe (91314a67). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "shoes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Apex",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "source_identifier": "apex-mens-dress-shoe-91314a67"
+    },
+    "imageUrl": null,
+    "needs_review": false,
+    "review_reasons": [],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Apex official catalogue",
+    "source_url": "https://www.apex4u.com/product/apex-mens-dress-shoe-91314a67",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:19:55.627029+00:00"
+  },
+  {
+    "name": "Walton NEXG N10 ULTRA",
+    "slug": "walton-nexg-n10-ultra",
+    "sku": "BD-WALT-NEXG-N10-AC4DE5",
+    "currency": "BDT",
+    "price": 18499.0,
+    "stockQuantity": 105,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N10 ULTRA. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n10-ultra",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton NEXG N26",
+    "slug": "walton-nexg-n26",
+    "sku": "BD-WALT-NEXG-N26-741839",
+    "currency": "BDT",
+    "price": 16499.0,
+    "stockQuantity": 110,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N26. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n26",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton NEXG N27",
+    "slug": "walton-nexg-n27",
+    "sku": "BD-WALT-NEXG-N27-EB7257",
+    "currency": "BDT",
+    "price": 15999.0,
+    "stockQuantity": 48,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N27. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n27",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton NEXG N28",
+    "slug": "walton-nexg-n28",
+    "sku": "BD-WALT-NEXG-N28-74BA9E",
+    "currency": "BDT",
+    "price": 20499.0,
+    "stockQuantity": 42,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N28. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n28",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton NEXG N28 PRO",
+    "slug": "walton-nexg-n28-pro",
+    "sku": "BD-WALT-NEXG-N28-50901A",
+    "currency": "BDT",
+    "price": 22999.0,
+    "stockQuantity": 86,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N28 PRO. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n28-pro",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton NEXG N74",
+    "slug": "walton-nexg-n74",
+    "sku": "BD-WALT-NEXG-N74-0D4615",
+    "currency": "BDT",
+    "price": 14999.0,
+    "stockQuantity": 118,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N74. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n74",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton NEXG N75",
+    "slug": "walton-nexg-n75",
+    "sku": "BD-WALT-NEXG-N75-934916",
+    "currency": "BDT",
+    "price": 14738.0,
+    "stockQuantity": 3,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N75. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n75",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton NEXG N76",
+    "slug": "walton-nexg-n76",
+    "sku": "BD-WALT-NEXG-N76-FC6EF6",
+    "currency": "BDT",
+    "price": 16999.0,
+    "stockQuantity": 109,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N76. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n76",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton NEXG N77",
+    "slug": "walton-nexg-n77",
+    "sku": "BD-WALT-NEXG-N77-AFA92E",
+    "currency": "BDT",
+    "price": 18999.0,
+    "stockQuantity": 71,
+    "isActive": true,
+    "shortDescription": "Walton NEXG N77. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/nexg-n77",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton ORBIT Y13",
+    "slug": "walton-orbit-y13",
+    "sku": "BD-WALT-ORBI-Y13-3E0F86",
+    "currency": "BDT",
+    "price": 7999.0,
+    "stockQuantity": 91,
+    "isActive": true,
+    "shortDescription": "Walton ORBIT Y13. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/orbit-y13",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton ORBIT Y70C",
+    "slug": "walton-orbit-y70c",
+    "sku": "BD-WALT-ORBI-Y70C-7893B6",
+    "currency": "BDT",
+    "price": 9049.0,
+    "stockQuantity": 55,
+    "isActive": true,
+    "shortDescription": "Walton ORBIT Y70C. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/orbit-y70c",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton ORBIT Y71",
+    "slug": "walton-orbit-y71",
+    "sku": "BD-WALT-ORBI-Y71-25D1BA",
+    "currency": "BDT",
+    "price": 13499.0,
+    "stockQuantity": 100,
+    "isActive": true,
+    "shortDescription": "Walton ORBIT Y71. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/orbit-y71",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton ORBIT Y72",
+    "slug": "walton-orbit-y72",
+    "sku": "BD-WALT-ORBI-Y72-20659E",
+    "currency": "BDT",
+    "price": 16499.0,
+    "stockQuantity": 34,
+    "isActive": true,
+    "shortDescription": "Walton ORBIT Y72. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/orbit-y72",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton XANON X1 ULTRA",
+    "slug": "walton-xanon-x1-ultra",
+    "sku": "BD-WALT-XANO-X1-U-D9736A",
+    "currency": "BDT",
+    "price": 19693.0,
+    "stockQuantity": 0,
+    "isActive": true,
+    "shortDescription": "Walton XANON X1 ULTRA. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/xanon-x1-ultra",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton XANON X21",
+    "slug": "walton-xanon-x21",
+    "sku": "BD-WALT-XANO-X21-7D1EFD",
+    "currency": "BDT",
+    "price": 23006.0,
+    "stockQuantity": 41,
+    "isActive": true,
+    "shortDescription": "Walton XANON X21. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/xanon-x21",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton XANON X22 5G",
+    "slug": "walton-xanon-x22-5g",
+    "sku": "BD-WALT-XANO-X22-8835DC",
+    "currency": "BDT",
+    "price": 25999.0,
+    "stockQuantity": 54,
+    "isActive": true,
+    "shortDescription": "Walton XANON X22 5G. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/xanon-x22-5g",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton XANON X50",
+    "slug": "walton-xanon-x50",
+    "sku": "BD-WALT-XANO-X50-5D87FF",
+    "currency": "BDT",
+    "price": 30999.0,
+    "stockQuantity": 68,
+    "isActive": true,
+    "shortDescription": "Walton XANON X50. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/xanon-x50",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton XANON X91",
+    "slug": "walton-xanon-x91",
+    "sku": "BD-WALT-XANO-X91-2AEC11",
+    "currency": "BDT",
+    "price": 31369.0,
+    "stockQuantity": 70,
+    "isActive": true,
+    "shortDescription": "Walton XANON X91. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/xanon-x91",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton ZENX 2",
+    "slug": "walton-zenx-2",
+    "sku": "BD-WALT-ZENX-2-67CE99",
+    "currency": "BDT",
+    "price": 15999.0,
+    "stockQuantity": 98,
+    "isActive": true,
+    "shortDescription": "Walton ZENX 2. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/zenx-2",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Walton ZENX Z3",
+    "slug": "walton-zenx-z3",
+    "sku": "BD-WALT-ZENX-Z3-8861AF",
+    "currency": "BDT",
+    "price": 16499.0,
+    "stockQuantity": 86,
+    "isActive": true,
+    "shortDescription": "Walton ZENX Z3. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
+    "primaryCategorySlug": "smartphones",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Walton",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {},
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Listed price excludes VAT; confirm tax-inclusive payable price"
+    ],
+    "placeholder": false,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Official listed BDT price; variant and tax conditions apply",
+    "source_name": "Walton official catalogue",
+    "source_url": "https://waltonbd.com/mobile/smart-phone/zenx-z3",
+    "source_license": "Official factual product identity and listed price; images/text excluded",
+    "price_verified_at": "2026-10-14T14:20:29.324472+00:00"
+  },
+  {
+    "name": "Generic Miniket Rice 5 kg",
+    "slug": "generic-miniket-rice-5-kg",
+    "sku": "BD-MINI-RICE-5-KG-34AEC5",
+    "currency": "BDT",
+    "price": 650,
+    "stockQuantity": 58,
+    "isActive": true,
+    "shortDescription": "Generic Miniket Rice 5 kg. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "rice",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Rice"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Rice",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Basmati Rice 1 kg",
+    "slug": "generic-basmati-rice-1-kg",
+    "sku": "BD-BASM-RICE-1-KG-75BDC1",
+    "currency": "BDT",
+    "price": 380,
+    "stockQuantity": 98,
+    "isActive": true,
+    "shortDescription": "Generic Basmati Rice 1 kg. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "rice",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Basmati"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Basmati",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Soybean Cooking Oil 5 L",
+    "slug": "generic-soybean-cooking-oil-5-l",
+    "sku": "BD-SOYB-COOK-OIL-CA6651",
+    "currency": "BDT",
+    "price": 850,
+    "stockQuantity": 81,
+    "isActive": true,
+    "shortDescription": "Generic Soybean Cooking Oil 5 L. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "cooking-oil",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Soybean oil"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Soybean_oil",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Coconut Oil 1 L",
+    "slug": "generic-coconut-oil-1-l",
+    "sku": "BD-COCO-OIL-1-L-6B3E27",
+    "currency": "BDT",
+    "price": 420,
+    "stockQuantity": 53,
+    "isActive": true,
+    "shortDescription": "Generic Coconut Oil 1 L. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "cooking-oil",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Coconut oil"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Coconut_oil",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Men Cotton Casual Shirt",
+    "slug": "generic-men-cotton-casual-shirt",
+    "sku": "BD-MEN-COTT-CASU-055A81",
+    "currency": "BDT",
+    "price": 1100,
+    "stockQuantity": 91,
+    "isActive": true,
+    "shortDescription": "Generic Men Cotton Casual Shirt. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "shirts",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Shirt"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Shirt",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Men Formal Dress Shirt",
+    "slug": "generic-men-formal-dress-shirt",
+    "sku": "BD-MEN-FORM-DRES-808376",
+    "currency": "BDT",
+    "price": 1800,
+    "stockQuantity": 171,
+    "isActive": true,
+    "shortDescription": "Generic Men Formal Dress Shirt. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "shirts",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Dress shirt"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Dress_shirt",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Cotton Panjabi",
+    "slug": "generic-cotton-panjabi",
+    "sku": "BD-COTT-PANJ-61CA07",
+    "currency": "BDT",
+    "price": 1800,
+    "stockQuantity": 64,
+    "isActive": true,
+    "shortDescription": "Generic Cotton Panjabi. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "panjabi",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand",
+      "Eid"
+    ],
+    "specs": {
+      "reference_topic": "Kurta"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Kurta",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Embroidered Eid Panjabi",
+    "slug": "generic-embroidered-eid-panjabi",
+    "sku": "BD-EMBR-EID-PANJ-DBF2B0",
+    "currency": "BDT",
+    "price": 3500,
+    "stockQuantity": 54,
+    "isActive": true,
+    "shortDescription": "Generic Embroidered Eid Panjabi. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "panjabi",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand",
+      "Eid"
+    ],
+    "specs": {
+      "reference_topic": "Kurta"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Kurta",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Cotton Saree",
+    "slug": "generic-cotton-saree",
+    "sku": "BD-COTT-SARE-A6D9EB",
+    "currency": "BDT",
+    "price": 3000,
+    "stockQuantity": 30,
+    "isActive": true,
+    "shortDescription": "Generic Cotton Saree. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "sarees",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand",
+      "Eid"
+    ],
+    "specs": {
+      "reference_topic": "Saree"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Sari",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Jamdani-Style Saree",
+    "slug": "generic-jamdani-style-saree",
+    "sku": "BD-JAMD-STYL-SARE-BF4F58",
+    "currency": "BDT",
+    "price": 8000,
+    "stockQuantity": 200,
+    "isActive": true,
+    "shortDescription": "Generic Jamdani-Style Saree. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "sarees",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand",
+      "Eid"
+    ],
+    "specs": {
+      "reference_topic": "Jamdani"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Jamdani",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Moisturising Face Cream 50 g",
+    "slug": "generic-moisturising-face-cream-50-g",
+    "sku": "BD-MOIS-FACE-CREA-6EEEB7",
+    "currency": "BDT",
+    "price": 250,
+    "stockQuantity": 45,
+    "isActive": true,
+    "shortDescription": "Generic Moisturising Face Cream 50 g. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "cosmetics",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Cosmetics"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Cosmetics",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Lipstick",
+    "slug": "generic-lipstick",
+    "sku": "BD-LIPS-846750",
+    "currency": "BDT",
+    "price": 450,
+    "stockQuantity": 80,
+    "isActive": true,
+    "shortDescription": "Generic Lipstick. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "cosmetics",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Lipstick"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Lipstick",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Rose Attar 10 ml",
+    "slug": "generic-rose-attar-10-ml",
+    "sku": "BD-ROSE-ATTA-10-M-FC70F2",
+    "currency": "BDT",
+    "price": 600,
+    "stockQuantity": 63,
+    "isActive": true,
+    "shortDescription": "Generic Rose Attar 10 ml. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "fragrances",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Perfume"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Perfume",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Body Spray 200 ml",
+    "slug": "generic-body-spray-200-ml",
+    "sku": "BD-BODY-SPRA-200-0F4EDF",
+    "currency": "BDT",
+    "price": 350,
+    "stockQuantity": 149,
+    "isActive": true,
+    "shortDescription": "Generic Body Spray 200 ml. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "fragrances",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "reference_topic": "Deodorant"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Deodorant",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Oral Rehydration Salt Sachet",
+    "slug": "generic-oral-rehydration-salt-sachet",
+    "sku": "BD-ORAL-REHY-SALT-7AE4CF",
+    "currency": "BDT",
+    "price": 25,
+    "stockQuantity": 30,
+    "isActive": true,
+    "shortDescription": "Generic Oral Rehydration Salt Sachet. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "medicines",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand",
+      "DGDA Required"
+    ],
+    "specs": {
+      "reference_topic": "Oral rehydration therapy"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": true,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Oral_rehydration_therapy",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Paracetamol 500 mg Tablet Strip",
+    "slug": "generic-paracetamol-500-mg-tablet-strip",
+    "sku": "BD-PARA-500-MG-TA-EDE701",
+    "currency": "BDT",
+    "price": 15,
+    "stockQuantity": 30,
+    "isActive": true,
+    "shortDescription": "Generic Paracetamol 500 mg Tablet Strip. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "medicines",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand",
+      "DGDA Required"
+    ],
+    "specs": {
+      "reference_topic": "Paracetamol"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": true,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Paracetamol",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Cricket Bat",
+    "slug": "generic-cricket-bat",
+    "sku": "BD-CRIC-BAT-EF390A",
+    "currency": "BDT",
+    "price": 2500,
+    "stockQuantity": 49,
+    "isActive": true,
+    "shortDescription": "Generic Cricket Bat. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "sports-accessories",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "reference_topic": "Cricket bat"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Cricket_bat",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Badminton Racket Set",
+    "slug": "generic-badminton-racket-set",
+    "sku": "BD-BADM-RACK-SET-8FCF36",
+    "currency": "BDT",
+    "price": 1200,
+    "stockQuantity": 44,
+    "isActive": true,
+    "shortDescription": "Generic Badminton Racket Set. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "sports-accessories",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "reference_topic": "Badminton"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Badminton",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Analog Wrist Watch",
+    "slug": "generic-analog-wrist-watch",
+    "sku": "BD-ANAL-WRIS-WATC-B57A76",
+    "currency": "BDT",
+    "price": 1400,
+    "stockQuantity": 57,
+    "isActive": true,
+    "shortDescription": "Generic Analog Wrist Watch. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "watches",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "reference_topic": "Watch"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Watch",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Motorcycle Helmet Size M",
+    "slug": "generic-motorcycle-helmet-size-m",
+    "sku": "BD-MOTO-HELM-SIZE-5E6486",
+    "currency": "BDT",
+    "price": 1300,
+    "stockQuantity": 101,
+    "isActive": true,
+    "shortDescription": "Generic Motorcycle Helmet Size M. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "auto-accessories",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "reference_topic": "Helmet"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Helmet",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Car Cleaning Kit",
+    "slug": "generic-car-cleaning-kit",
+    "sku": "BD-CAR-CLEA-KIT-76ECD6",
+    "currency": "BDT",
+    "price": 500,
+    "stockQuantity": 38,
+    "isActive": true,
+    "shortDescription": "Generic Car Cleaning Kit. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "auto-accessories",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "reference_topic": "Car wash"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Car_wash",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic 125cc Commuter Motorcycle",
+    "slug": "generic-125cc-commuter-motorcycle",
+    "sku": "BD-125C-COMM-MOTO-5B2863",
+    "currency": "BDT",
+    "price": 185000,
+    "stockQuantity": 49,
+    "isActive": true,
+    "shortDescription": "Generic 125cc Commuter Motorcycle. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "motorbikes",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Imported"
+    ],
+    "specs": {
+      "reference_topic": "Motorcycle"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Motorcycle",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Interior Plastic Paint 10 kg",
+    "slug": "generic-interior-plastic-paint-10-kg",
+    "sku": "BD-INTE-PLAS-PAIN-132395",
+    "currency": "BDT",
+    "price": 1100,
+    "stockQuantity": 164,
+    "isActive": true,
+    "shortDescription": "Generic Interior Plastic Paint 10 kg. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "wall-paint",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Paint"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Paint",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Exterior Emulsion Paint 20 kg",
+    "slug": "generic-exterior-emulsion-paint-20-kg",
+    "sku": "BD-EXTE-EMUL-PAIN-4D626F",
+    "currency": "BDT",
+    "price": 2600,
+    "stockQuantity": 52,
+    "isActive": true,
+    "shortDescription": "Generic Exterior Emulsion Paint 20 kg. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "wall-paint",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Interior decoration"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Interior_design",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Tall Tubular Battery 150 Ah",
+    "slug": "generic-tall-tubular-battery-150-ah",
+    "sku": "BD-TALL-TUBU-BATT-A3D4D3",
+    "currency": "BDT",
+    "price": 7800,
+    "stockQuantity": 132,
+    "isActive": true,
+    "shortDescription": "Generic Tall Tubular Battery 150 Ah. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "ips-batteries",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Mid-range",
+      "Local Brand"
+    ],
+    "specs": {
+      "reference_topic": "Deep cycle battery"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Deep-cycle_battery",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  },
+  {
+    "name": "Generic Laptop 8 GB RAM 256 GB SSD",
+    "slug": "generic-laptop-8-gb-ram-256-gb-ssd",
+    "sku": "BD-LAPT-8-GB-RAM-BCF03A",
+    "currency": "BDT",
+    "price": 58000,
+    "stockQuantity": 76,
+    "isActive": true,
+    "shortDescription": "Generic Laptop 8 GB RAM 256 GB SSD. Unbranded placeholder describing the product type; verify an actual sourced item before selling.",
+    "primaryCategorySlug": "laptops",
+    "extraCategorySlugs": [],
+    "tags": [
+      "Brand: Generic",
+      "Budget",
+      "Imported"
+    ],
+    "specs": {
+      "reference_topic": "Laptop"
+    },
+    "imageUrl": null,
+    "needs_review": true,
+    "review_reasons": [
+      "Generic fallback (brief section 4.7): no usable official or open source for this leaf's brands",
+      "Estimated BDT price from documented price range; not a retailer quote",
+      "Brand, origin and compliance classification unverified per item"
+    ],
+    "placeholder": true,
+    "requires_dgda": false,
+    "requires_bsti": null,
+    "price_basis": "Estimated BDT seed price; not a retailer quote",
+    "source_name": "Generic fallback (documented price range)",
+    "source_url": "https://en.wikipedia.org/wiki/Laptop",
+    "source_license": "CC BY-SA 4.0 (reference page for product-type facts only; no text reuse)"
+  }
+]

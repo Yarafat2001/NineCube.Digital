@@ -1,0 +1,20 @@
+﻿import { test, expect } from '@playwright/test';
+import { seedPassword, seedPasswordMissing } from './seed-password';
+test('administrator reads orders and invoices without forbidden status controls',async({page,request})=>{
+ test.skip(!seedPassword,seedPasswordMissing);
+ const login=await request.post('http://127.0.0.1:5080/api/auth/login',{data:{email:'admin@ninecube.demo',password:seedPassword}});expect(login.ok()).toBeTruthy();const session=await login.json();
+ await page.addInitScript(s=>sessionStorage.setItem('ninecube.auth.session',JSON.stringify(s)),session);
+ const mutations:string[]=[];const forbidden:string[]=[];
+ page.on('request',r=>{if(r.method()==='POST'&&/\/api\/orders\/\d+\/(confirm|reject|ship|cancel)/.test(r.url()))mutations.push(r.url());});
+ page.on('response',r=>{if(r.status()===403&&r.url().includes('/api/orders'))forbidden.push(r.url());});
+ await page.goto('/staff');await expect(page.getByRole('note')).toContainText('Administrator order access is read-only');
+ await expect(page.getByRole('button',{name:'Invoices & history',exact:true})).toHaveAttribute('aria-pressed','true');
+ await expect(page.getByRole('checkbox')).toHaveCount(0);
+ await page.getByRole('button',{name:'To confirm',exact:true}).click();await expect(page.getByRole('button',{name:'Confirm order',exact:true})).toHaveCount(0);
+ await page.getByRole('button',{name:'To ship',exact:true}).click();await expect(page.getByRole('button',{name:'Mark as shipped',exact:true})).toHaveCount(0);
+ await page.getByRole('button',{name:'Invoices & history',exact:true}).click();
+ await page.getByRole('link',{name:/View invoice for order/}).first().click();
+ await expect(page.getByRole('heading',{name:'Invoice',exact:true})).toBeVisible();
+ await expect(page.getByRole('region',{name:/Invoice for order/})).toBeVisible();
+ expect(mutations).toEqual([]);expect(forbidden).toEqual([]);
+});

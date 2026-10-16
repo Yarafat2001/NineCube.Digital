@@ -1,0 +1,14 @@
+{
+  "first": [
+    {
+      "NotificationsInserted": 32
+    }
+  ],
+  "second": [
+    {
+      "NotificationsInserted": 0
+    }
+  ],
+  "products_categories_order_items_unchanged": true,
+  "orders_unchanged": true
+}

@@ -1,0 +1,134 @@
+{
+    "source":  "https://dummyjson.com/products/category/kitchen-accessories?limit=16",
+    "retrievedAt":  "2026-10-14",
+    "products":  [
+                     {
+                         "id":  48,
+                         "title":  "Bamboo Spatula",
+                         "description":  "The Bamboo Spatula is a versatile kitchen tool made from eco-friendly bamboo. Ideal for flipping, stirring, and serving various dishes.",
+                         "price":  7.99,
+                         "stock":  37,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/bamboo-spatula/thumbnail.webp"
+                     },
+                     {
+                         "id":  49,
+                         "title":  "Black Aluminium Cup",
+                         "description":  "The Black Aluminium Cup is a stylish and durable cup suitable for both hot and cold beverages. Its sleek black design adds a modern touch to your drinkware collection.",
+                         "price":  5.99,
+                         "stock":  75,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/black-aluminium-cup/thumbnail.webp"
+                     },
+                     {
+                         "id":  50,
+                         "title":  "Black Whisk",
+                         "description":  "The Black Whisk is a kitchen essential for whisking and beating ingredients. Its ergonomic handle and sleek design make it a practical and stylish tool.",
+                         "price":  9.99,
+                         "stock":  73,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/black-whisk/thumbnail.webp"
+                     },
+                     {
+                         "id":  51,
+                         "title":  "Boxed Blender",
+                         "description":  "The Boxed Blender is a powerful and compact blender perfect for smoothies, shakes, and more. Its convenient design and multiple functions make it a versatile kitchen appliance.",
+                         "price":  39.99,
+                         "stock":  9,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/boxed-blender/thumbnail.webp"
+                     },
+                     {
+                         "id":  52,
+                         "title":  "Carbon Steel Wok",
+                         "description":  "The Carbon Steel Wok is a versatile cooking pan suitable for stir-frying, sautéing, and deep frying. Its sturdy construction ensures even heat distribution for delicious meals.",
+                         "price":  29.99,
+                         "stock":  40,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/carbon-steel-wok/thumbnail.webp"
+                     },
+                     {
+                         "id":  53,
+                         "title":  "Chopping Board",
+                         "description":  "The Chopping Board is an essential kitchen accessory for food preparation. Made from durable material, it provides a safe and hygienic surface for cutting and chopping.",
+                         "price":  12.99,
+                         "stock":  14,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/chopping-board/thumbnail.webp"
+                     },
+                     {
+                         "id":  54,
+                         "title":  "Citrus Squeezer Yellow",
+                         "description":  "The Citrus Squeezer in Yellow is a handy tool for extracting juice from citrus fruits. Its vibrant color adds a cheerful touch to your kitchen gadgets.",
+                         "price":  8.99,
+                         "stock":  22,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/citrus-squeezer-yellow/thumbnail.webp"
+                     },
+                     {
+                         "id":  55,
+                         "title":  "Egg Slicer",
+                         "description":  "The Egg Slicer is a convenient tool for slicing boiled eggs evenly. It\u0027s perfect for salads, sandwiches, and other dishes where sliced eggs are desired.",
+                         "price":  6.99,
+                         "stock":  40,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/egg-slicer/thumbnail.webp"
+                     },
+                     {
+                         "id":  56,
+                         "title":  "Electric Stove",
+                         "description":  "The Electric Stove provides a portable and efficient cooking solution. Ideal for small kitchens or as an additional cooking surface for various culinary needs.",
+                         "price":  49.99,
+                         "stock":  21,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/electric-stove/thumbnail.webp"
+                     },
+                     {
+                         "id":  57,
+                         "title":  "Fine Mesh Strainer",
+                         "description":  "The Fine Mesh Strainer is a versatile tool for straining liquids and sifting dry ingredients. Its fine mesh ensures efficient filtering for smooth cooking and baking.",
+                         "price":  9.99,
+                         "stock":  85,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/fine-mesh-strainer/thumbnail.webp"
+                     },
+                     {
+                         "id":  58,
+                         "title":  "Fork",
+                         "description":  "The Fork is a classic utensil for various dining and serving purposes. Its durable and ergonomic design makes it a reliable choice for everyday use.",
+                         "price":  3.99,
+                         "stock":  7,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/fork/thumbnail.webp"
+                     },
+                     {
+                         "id":  59,
+                         "title":  "Glass",
+                         "description":  "The Glass is a versatile and elegant drinking vessel suitable for a variety of beverages. Its clear design allows you to enjoy the colors and textures of your drinks.",
+                         "price":  4.99,
+                         "stock":  46,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/glass/thumbnail.webp"
+                     },
+                     {
+                         "id":  60,
+                         "title":  "Grater Black",
+                         "description":  "The Grater in Black is a handy kitchen tool for grating cheese, vegetables, and more. Its sleek design and sharp blades make food preparation efficient and easy.",
+                         "price":  10.99,
+                         "stock":  84,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/grater-black/thumbnail.webp"
+                     },
+                     {
+                         "id":  61,
+                         "title":  "Hand Blender",
+                         "description":  "The Hand Blender is a versatile kitchen appliance for blending, pureeing, and mixing. Its compact design and powerful motor make it a convenient tool for various recipes.",
+                         "price":  34.99,
+                         "stock":  84,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/hand-blender/thumbnail.webp"
+                     },
+                     {
+                         "id":  62,
+                         "title":  "Ice Cube Tray",
+                         "description":  "The Ice Cube Tray is a practical accessory for making ice cubes in various shapes. Perfect for keeping your drinks cool and adding a fun element to your beverages.",
+                         "price":  5.99,
+                         "stock":  13,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/ice-cube-tray/thumbnail.webp"
+                     },
+                     {
+                         "id":  63,
+                         "title":  "Kitchen Sieve",
+                         "description":  "The Kitchen Sieve is a versatile tool for sifting and straining dry and wet ingredients. Its fine mesh design ensures smooth results in your cooking and baking.",
+                         "price":  7.99,
+                         "stock":  68,
+                         "thumbnail":  "https://cdn.dummyjson.com/product-images/kitchen-accessories/kitchen-sieve/thumbnail.webp"
+                     }
+                 ]
+}

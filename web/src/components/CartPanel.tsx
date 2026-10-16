@@ -1,0 +1,302 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { ApiError, apiRequest } from '../api/client';
+import { usePlaceOrder } from '../api/hooks';
+import type { Order, Product, ShortItem } from '../api/types';
+import { createIdempotencyKey, formatMoney } from '../lib/helpers';
+import { useAuth } from '../state/AuthContext';
+import { useCart } from '../state/CartContext';
+import { useToast } from './ui';
+
+export interface CartPanelProps {
+  onPlaced: (order: Order) => void;
+}
+
+/**
+ * Order builder.
+ *
+ * Double-submit protection works in three layers: the button is disabled while a request is in
+ * flight, a ref guard rejects a second click in the same tick, and the submission carries an
+ * Idempotency-Key so even a duplicated request on the wire returns the original order.
+ *
+ * The key is generated once per submission attempt and deliberately kept after a network or
+ * server error so an explicit retry is still idempotent. It is only cleared after the order is
+ * accepted or the request is rejected for a client reason.
+ */
+export function CartPanel({ onPlaced }: CartPanelProps) {
+  const cart = useCart();
+  const { token } = useAuth();
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const placeOrder = usePlaceOrder();
+
+  const [shortItems, setShortItems] = useState<ShortItem[]>([]);
+  const [inlineError, setInlineError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  const idempotencyKey = useRef<string | null>(null);
+  const inFlight = useRef(false);
+
+  const refreshStock = async (): Promise<Product[]> => {
+    const fresh = await Promise.all(
+      cart.lines.map((line) => apiRequest<Product>(`/api/products/${line.productId}`, { token }))
+    );
+    cart.reconcile(fresh);
+    await queryClient.invalidateQueries({ queryKey: ['products'] });
+    return fresh;
+  };
+
+  const submit = async () => {
+    if (inFlight.current || cart.lines.length === 0 || cart.mixedCurrencies) return;
+
+    inFlight.current = true;
+    setInlineError(null);
+    setShortItems([]);
+    setNotice(null);
+
+    if (!idempotencyKey.current) idempotencyKey.current = createIdempotencyKey();
+
+    try {
+      const order = await placeOrder.mutateAsync({
+        items: cart.lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
+        idempotencyKey: idempotencyKey.current
+      });
+
+      idempotencyKey.current = null;
+      setNotice(`Order #${order.id} placed.`);
+      toast.push('success', `Order #${order.id} placed for ${formatMoney(order.totalAmount, order.currency)}.`);
+      cart.clear();
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      onPlaced(order);
+    } catch (error) {
+      if (error instanceof ApiError && error.isUnauthorized) {
+        // The auth layer redirects; nothing useful to show here.
+        return;
+      }
+
+      if (error instanceof ApiError && error.isInsufficientStock) {
+        setShortItems(error.shortItems);
+        setInlineError('Some items no longer have enough stock. Your cart was kept so you can adjust it.');
+        toast.push('error', 'Not enough stock for one or more items.');
+        await refreshStock();
+        return;
+      }
+
+      if (error instanceof ApiError && (error.status === 400 || error.status === 404)) {
+        // A client-side problem will not succeed on retry, so start a fresh attempt next time.
+        idempotencyKey.current = null;
+        setInlineError(error.message);
+        toast.push('error', error.message);
+        return;
+      }
+
+      // Network or server error: keep the same idempotency key so a retry is safe.
+      const message =
+        error instanceof ApiError
+          ? `${error.message} You can safely press "Place order" again.`
+          : 'The order could not be placed. You can safely press "Place order" again.';
+
+      setInlineError(message);
+      toast.pushError(error);
+    } finally {
+      inFlight.current = false;
+    }
+  };
+
+  const busy = placeOrder.isPending;
+
+  return (
+    <section className="card-glass cart-panel" aria-labelledby="cart-heading">
+      <div className="row-between">
+        <h2 id="cart-heading" style={{ fontSize: 'var(--text-lg)' }}>
+          Your cart
+        </h2>
+        <span className="badge badge--neutral" data-testid="cart-count">
+          {cart.itemCount} item{cart.itemCount === 1 ? '' : 's'}
+        </span>
+      </div>
+
+      {cart.lines.length === 0 ? (
+        <p className="muted" data-testid="cart-empty">
+          Your cart is empty. Add products from the catalogue to build an order.
+        </p>
+      ) : (
+        <ul className="cart-lines">
+          {cart.lines.map((line) => (
+            <li className="cart-line" key={line.productId} data-testid={`cart-line-${line.productId}`}>
+              <div>
+                <div className="cart-line__name">{line.name}</div>
+                <div className="cart-line__meta mono">{line.sku}</div>
+                <div className="cart-line__meta">
+                  {formatMoney(line.unitPrice, line.currency)} each · {line.available} available
+                </div>
+              </div>
+              <div className="stack" style={{ alignItems: 'flex-end' }}>
+                <div className="stepper" role="group" aria-label={`Quantity for ${line.name}`}>
+                  <button
+                    type="button"
+                    className="btn btn--sm"
+                    aria-label={`Decrease quantity for ${line.name}`}
+                    onClick={() => cart.setQuantity(line.productId, line.quantity - 1)}
+                    disabled={line.quantity <= 1}
+                  >
+                    −
+                  </button>
+                  <span className="stepper__value">{line.quantity}</span>
+                  <button
+                    type="button"
+                    className="btn btn--sm"
+                    aria-label={`Increase quantity for ${line.name}`}
+                    onClick={() => cart.setQuantity(line.productId, line.quantity + 1)}
+                    disabled={line.quantity >= Math.min(line.available, 1000)}
+                  >
+                    +
+                  </button>
+                </div>
+                <span className="nowrap">{formatMoney(line.unitPrice * line.quantity, line.currency)}</span>
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={() => cart.remove(line.productId)}
+                  aria-label={`Remove ${line.name} from the cart`}
+                >
+                  Remove
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="cart-total">
+        <span>Total</span>
+        <strong data-testid="cart-total">{cart.mixedCurrencies ? 'Separate currencies' : formatMoney(cart.total, cart.currency)}</strong>
+      </div>
+
+      {shortItems.length > 0 ? (
+        <div role="alert" data-testid="short-items" className="inline-banner">
+          <span aria-hidden="true">⚠</span>
+          <span>
+            <strong>Stock changed in your cart.</strong> Not enough stock for {shortItems.length} item{shortItems.length === 1 ? '' : 's'}:
+          </span>
+          <ul className="short-items">
+            {shortItems.map((item) => (
+              <li key={item.productId}>
+                <span>
+                  {item.name} <span className="mono">{item.sku}</span>
+                </span>
+                <span className="nowrap">
+                  requested {item.requested} · available {item.available}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <span>Update the quantities and try again. This banner stays until resolved.</span>
+        </div>
+      ) : null}
+
+      {cart.mixedCurrencies ? <p role="alert">Place BDT and legacy-currency products in separate orders. Remove one currency to continue.</p> : null}
+      {inlineError ? (
+        <p role="alert" data-testid="cart-error" style={{ color: 'var(--danger)', fontWeight: 600 }}>
+          {inlineError}
+        </p>
+      ) : null}
+
+      {notice ? (
+        <p role="status" data-testid="cart-notice" style={{ color: 'var(--ok)', fontWeight: 600 }}>
+          {notice}
+        </p>
+      ) : null}
+
+      <button
+        type="button"
+        className="btn btn--primary"
+        onClick={submit}
+        disabled={busy || cart.lines.length === 0 || cart.mixedCurrencies}
+        data-testid="place-order"
+      >
+        {busy ? (
+          <>
+            <span className="spinner" aria-hidden="true" /> Placing order…
+          </>
+        ) : (
+          'Place order'
+        )}
+      </button>
+
+      <span className="visually-hidden" role="status" aria-live="polite">
+        {busy ? 'Placing your order' : ''}
+      </span>
+    </section>
+  );
+}
+
+/**
+ * Responsive cart dialog: a bottom sheet on mobile and centered panel on desktop.
+ * Opened from the shared navbar or mobile bottom bar.
+ */
+export function CartSheet({ onPlaced, onOpenChange }: CartPanelProps & { onOpenChange?: (open: boolean) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => { onOpenChange?.(open); }, [open, onOpenChange]);
+  const touchY = useRef<number | null>(null);
+  const returnTo = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const show = (event: Event) => {
+      const trigger = (event as CustomEvent<{ trigger?: HTMLElement }>).detail?.trigger;
+      returnTo.current = trigger ?? (document.activeElement as HTMLElement | null);
+      setOpen(true);
+    };
+    document.addEventListener('ninecube:open-cart-sheet', show);
+    return () => {
+      document.removeEventListener('ninecube:open-cart-sheet', show);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.documentElement.setAttribute('data-overlay-open', 'true');
+      ref.current?.querySelector<HTMLElement>('button, [href], input')?.focus();
+    } else {
+      document.documentElement.removeAttribute('data-overlay-open');
+      returnTo.current?.focus?.();
+    }
+  }, [open ]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); setOpen(false); return; }
+      if (event.key !== 'Tab') return;
+      const node = ref.current;
+      if (!node) return;
+      const items = Array.from(node.querySelectorAll<HTMLElement>('button, [href], input')).filter((el) => !el.hasAttribute('disabled'));
+      const first = items[0]; const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open ]);
+
+  if (!open) return null;
+
+  return createPortal(
+    <div className="sheet-backdrop" onClick={() => setOpen(false)} role="presentation">
+      <div ref={ref} className="sheet" role="dialog" aria-modal="true" aria-label="Your cart" data-overlay-open="true"
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => { touchY.current = e.touches[0]?.clientY ?? null; }}
+        onTouchEnd={(e) => {
+          const start = touchY.current; const end = e.changedTouches[0]?.clientY ?? null;
+          if (start !== null && end !== null && end - start > 80) setOpen(false);
+        }}>
+        <div className="sheet__handle" aria-hidden="true" />
+        <button type="button" className="btn cart-sheet__close" aria-label="Close cart" onClick={() => setOpen(false)}>Close</button>
+        <CartPanel onPlaced={(order) => { setOpen(false); onPlaced(order); }} />
+      </div>
+    </div>,
+    document.body
+  );
+}

@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+  ok 1 [chromium] › actionable-surfaces.spec.ts:280:3 › actionable chips, one-line actions and self-contained dialogs › every row action reads as a control on its own table (2.1m)
+
+  Slow test file: [chromium] › actionable-surfaces.spec.ts (2.1m)
+  Consider splitting slow test files to speed up parallel execution
+  1 passed (2.3m)

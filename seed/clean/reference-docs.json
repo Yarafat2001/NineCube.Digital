@@ -1,0 +1,182 @@
+{
+  "rice": [
+    {
+      "title": "Rice",
+      "url": "https://en.wikipedia.org/wiki/Rice",
+      "summary": "Rice is a cereal grain and, in its domesticated form, is the staple food of over half of the world's population, particularly in Africa and Asia. Rice is the seed of the grass species Oryza sativa —or, less commonly, Oryza glaberrima. Asian rice was domesticated in China some 13,",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Basmati",
+      "url": "https://en.wikipedia.org/wiki/Basmati",
+      "summary": "Basmati is a variety of long, slender-grained aromatic rice which originates from the Indian subcontinent, mainly in the regions of Haryana, Punjab, Sindh and many other states and provinces of India, Pakistan and Nepal. As of 2019, India accounted for 65% of the international tr",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "cooking-oil": [
+    {
+      "title": "Soybean oil",
+      "url": "https://en.wikipedia.org/wiki/Soybean_oil",
+      "summary": "Soybean oil is a vegetable oil extracted from soybean legumes. It is one of the most widely consumed cooking oils and the second most consumed vegetable oil. As a drying oil, processed soybean oil is also used as a base for printing inks and oil paints.",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Coconut oil",
+      "url": "https://en.wikipedia.org/wiki/Coconut_oil",
+      "summary": "Coconut oil is an edible oil derived from the meat of the coconut palm fruit. Coconut oil is a white solid fat below around 25 °C (77 °F), and a clear thin liquid oil at higher temperatures. Unrefined varieties have a distinct coconut aroma. Coconut oil is used as a food oil, and",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "shirts": [
+    {
+      "title": "Dress shirt",
+      "url": "https://en.wikipedia.org/wiki/Dress_shirt",
+      "summary": "In American English, a dress shirt, button shirt, button-front, button-front shirt, or button-up shirt — simply shirt in British English — is a garment with a collar and a full-length opening at the front, which is fastened using buttons or shirt studs. A button-down or button-do",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Shirt",
+      "url": "https://en.wikipedia.org/wiki/Shirt",
+      "summary": "A shirt is a cloth garment for the upper body.",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "panjabi": [
+    {
+      "title": "Kurta",
+      "url": "https://en.wikipedia.org/wiki/Kurta",
+      "summary": "A kurta is a loose collarless shirt or tunic worn in many regions of South Asia, and now also worn around the world. Tracing its roots to Central Asian nomadic tunics, or upper body garments, of the late-ancient- or early-medieval era, the kurta has evolved stylistically over the",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "sarees": [
+    {
+      "title": "Saree",
+      "url": "https://en.wikipedia.org/wiki/Sari",
+      "summary": "A sari is a draped cloth and women's garment in the Indian subcontinent. It consists of an un-stitched stretch of woven fabric arranged over the body as a dress, with one end attached to the waist, while the other end rests over one shoulder as a stole, sometimes baring a part of",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Jamdani",
+      "url": "https://en.wikipedia.org/wiki/Jamdani",
+      "summary": "Jamdani is a fine muslin textile produced for centuries in South Rupshi of Narayanganj district in Bangladesh on the bank of Shitalakshya River.",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "cosmetics": [
+    {
+      "title": "Cosmetics",
+      "url": "https://en.wikipedia.org/wiki/Cosmetics",
+      "summary": "Cosmetics are substances that are intended for application to the body for cleansing, beautifying, promoting attractiveness, or altering appearance. They are mixtures of chemical compounds derived from either natural sources or created synthetically. The products serve various pu",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Lipstick",
+      "url": "https://en.wikipedia.org/wiki/Lipstick",
+      "summary": "Lipstick is a cosmetic product used to apply color and texture to lips, often made of wax and oil. Different pigments are used to produce color, and minerals such as silica may be used to provide texture. The use of lipstick dates back to early civilizations such as Sumer and the",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "fragrances": [
+    {
+      "title": "Perfume",
+      "url": "https://en.wikipedia.org/wiki/Perfume",
+      "summary": "Perfume is a mixture of fragrant essential oils or aroma compounds (fragrances), fixatives and solvents, usually in liquid form, used to give the human body, animals, food, objects, and living-spaces an agreeable scent. Perfumes can be defined as substances that emit and diffuse ",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Deodorant",
+      "url": "https://en.wikipedia.org/wiki/Deodorant",
+      "summary": "A deodorant is a substance applied to the body to prevent or mask body odor caused by bacterial breakdown of perspiration, such as that in the armpits, groin, or feet. There are two types of deodorant; aerosol (spray) and stick. A subclass of deodorants called antiperspirants pre",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "medicines": [
+    {
+      "title": "Oral rehydration therapy",
+      "url": "https://en.wikipedia.org/wiki/Oral_rehydration_therapy",
+      "summary": "Oral rehydration therapy (ORT) is a type of fluid replacement used to prevent and treat dehydration, especially due to diarrhea. It involves drinking water with modest amounts of sugar and salts, specifically sodium and potassium. Oral rehydration therapy can also be given by a n",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Paracetamol",
+      "url": "https://en.wikipedia.org/wiki/Paracetamol",
+      "summary": "Paracetamol, or acetaminophen, is an analgesic and antipyretic agent used to treat fever and mild to moderate pain. It is a widely available over-the-counter drug sold generically or under various brand names, including Tylenol and Panadol.",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "sports-accessories": [
+    {
+      "title": "Cricket bat",
+      "url": "https://en.wikipedia.org/wiki/Cricket_bat",
+      "summary": "A cricket bat is a specialised piece of equipment used by batters in the sport of cricket to hit the ball, typically consisting of a cane handle attached to a flat-fronted willow-wood blade. It may also be used by a batter who is making batter's ground to avoid a run out, by hold",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Badminton",
+      "url": "https://en.wikipedia.org/wiki/Badminton",
+      "summary": "Badminton is a racquet sport played using racquets to hit a shuttlecock across a net. Although it may be played with larger teams, the most common forms of the game are \"singles\" and \"doubles\". Badminton is often played as a casual outdoor activity in a yard or on a beach; profes",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "watches": [
+    {
+      "title": "Watch",
+      "url": "https://en.wikipedia.org/wiki/Watch",
+      "summary": "A watch is a timepiece carried or worn by a person. It is designed to maintain a consistent movement despite the motions caused by the person's activities. A wristwatch is worn around the wrist, attached by a watch strap or another type of bracelet, including metal bands or leath",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "auto-accessories": [
+    {
+      "title": "Helmet",
+      "url": "https://en.wikipedia.org/wiki/Helmet",
+      "summary": "A helmet is a form of protective gear worn to protect the head. More specifically, a helmet complements the skull in protecting the human brain. Ceremonial or symbolic helmets without protective function are sometimes worn. Soldiers wear combat helmets, often made from Kevlar or ",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Car wash",
+      "url": "https://en.wikipedia.org/wiki/Car_wash",
+      "summary": "A car wash, or auto wash, is a facility used to clean the exterior, and in some cases the interior, of cars. Car washes can be self-service, full-service, or fully automated. Car washes may also be events where people pay to have their cars washed by volunteers, often using less ",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "motorbikes": [
+    {
+      "title": "Motorcycle",
+      "url": "https://en.wikipedia.org/wiki/Motorcycle",
+      "summary": "A motorcycle is a two or three-wheeled motor vehicle steered by a handlebar from a saddle-style seat.",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "wall-paint": [
+    {
+      "title": "Paint",
+      "url": "https://en.wikipedia.org/wiki/Paint",
+      "summary": "Paint is a material or mixture of colored liquid that, when applied to a solid material and allowed to dry, adds a film-like layer. As art, this is used to create an image or images known as a painting. Paint can be made in many colors and types. Most paints are either oil-based ",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "title": "Interior decoration",
+      "url": "https://en.wikipedia.org/wiki/Interior_design",
+      "summary": "Interior design is the art and science of enhancing the interior of a building to achieve a healthier and more aesthetically pleasing environment for the people using the space. With a keen eye for detail and a creative flair, an interior designer is someone who plans, researches",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "ips-batteries": [
+    {
+      "title": "Deep cycle battery",
+      "url": "https://en.wikipedia.org/wiki/Deep-cycle_battery",
+      "summary": "A deep-cycle battery is a battery designed to be regularly deeply discharged using most of its capacity. The term is traditionally mainly used for lead–acid batteries in the same form factor as automotive batteries; and contrasted with starter or cranking automotive batteries des",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "laptops": [
+    {
+      "title": "Laptop",
+      "url": "https://en.wikipedia.org/wiki/Laptop",
+      "summary": "A laptop is a portable personal computer (PC). Laptops typically have a clamshell form factor with a flat-panel screen on the inside of the upper lid and an alphanumeric keyboard and pointing device on the inside of the lower lid. Most of the computer's internal hardware is in th",
+      "license": "CC BY-SA 4.0"
+    }
+  ]
+}

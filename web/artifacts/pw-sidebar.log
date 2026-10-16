@@ -1,0 +1,81 @@
+
+Running 11 tests using 1 worker
+
+  ok 1 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1024px (11.8s)
+  ok 2 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px (10.6s)
+  ok 3 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1440px (14.0s)
+  ok 4 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1920px (14.7s)
+  ok 5 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px at 125% zoom (11.2s)
+  ok 6 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1280px at 150% zoom (10.0s)
+  ok 7 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1440px at 150% zoom (9.4s)
+  ok 8 [chromium] › sidebar-layout.spec.ts:72:5 › catalogue sidebar layout › holds the line at 1920px at 150% zoom (10.2s)
+  x  9 [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body (18.0s)
+  ok 10 [chromium] › sidebar-layout.spec.ts:110:3 › catalogue sidebar layout › keeps the header popovers inside the viewport (19.0s)
+  x  11 [chromium] › sidebar-layout.spec.ts:133:3 › catalogue sidebar layout › photographs the fixed sidebar at 1280 and 1440 (7.3m)
+
+
+  1) [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThanOrEqual[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: <= [32m901[39m
+    Received:    [31m1223[39m
+
+       97 |     // The gap the brief asks for: header bottom, plus the 16px offset, and nothing taller than the space left.
+       98 |     expect(metrics.panelTop).toBeGreaterThanOrEqual(metrics.navbarBottom);
+    >  99 |     expect(metrics.panelBottom).toBeLessThanOrEqual(metrics.innerHeight + 1);
+          |                                 ^
+      100 |     expect(metrics.bodyIsScroller).toBe(true);
+      101 |     expect(metrics.selectsInsidePanel).toBe(0);
+      102 |
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\sidebar-layout.spec.ts:99:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › sidebar-layout.spec.ts:133:3 › catalogue sidebar layout › photographs the fixed sidebar at 1280 and 1440 
+
+    [31mTest timeout of 300000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 300000ms exceeded.
+    Call log:
+      [2m- waiting for getByRole('textbox', { name: 'Email' })[22m
+
+
+      13 | async function signIn(page: Page) {
+      14 |   await page.goto('/login');
+    > 15 |   await page.getByRole('textbox', { name: 'Email' }).fill('customer@ninecube.demo');
+         |                                                      ^
+      16 |   await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
+      17 |   await page.getByRole('button', { name: 'Sign in' }).click();
+      18 |   await expect(page.getByRole('button', { name: 'Account' }), 'sign-in established no session')
+
+        at signIn (C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\sidebar-layout.spec.ts:15:54)
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\sidebar-layout.spec.ts:136:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-40409-ed-sidebar-at-1280-and-1440-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-40409-ed-sidebar-at-1280-and-1440-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-layout-catalogue-s-40409-ed-sidebar-at-1280-and-1440-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body 
+    [chromium] › sidebar-layout.spec.ts:133:3 › catalogue sidebar layout › photographs the fixed sidebar at 1280 and 1440 
+  9 passed (10.1m)

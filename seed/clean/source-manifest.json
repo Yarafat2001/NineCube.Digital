@@ -1,0 +1,1133 @@
+[
+  {
+    "url": "https://world.openfoodfacts.org/api/v2/search?countries_tags=en%3Abangladesh&categories_tags=en%3Acoffees&page=1&page_size=100&fields=code%2Cproduct_name%2Cproduct_name_en%2Cbrands%2Cquantity%2Ccategories_tags%2Ccountries_tags",
+    "fetched_at": "2026-10-14T14:04:12.133906+00:00",
+    "source": "Open Food Facts",
+    "license": "ODbL-1.0 / DbCL-1.0",
+    "file": "off-coffees-1.json",
+    "status": "blocked",
+    "error": "HTTP Error 503: Service Temporarily Unavailable"
+  },
+  {
+    "url": "https://world.openfoodfacts.org/api/v2/search?countries_tags=en%3Abangladesh&categories_tags=en%3Ateas&page=1&page_size=100&fields=code%2Cproduct_name%2Cproduct_name_en%2Cbrands%2Cquantity%2Ccategories_tags%2Ccountries_tags",
+    "fetched_at": "2026-10-14T14:04:14.392462+00:00",
+    "source": "Open Food Facts",
+    "license": "ODbL-1.0 / DbCL-1.0",
+    "file": "off-teas-1.json",
+    "status": "blocked",
+    "error": "HTTP Error 503: Service Temporarily Unavailable"
+  },
+  {
+    "url": "https://huggingface.co/api/datasets/jomarie04/smartphone-specifications-2020-2024",
+    "fetched_at": "2026-10-14T14:04:15.945031+00:00",
+    "source": "Hugging Face",
+    "license": "Metadata only",
+    "file": "hf-metadata.json",
+    "status": "ok",
+    "sha256": "b0acaf060f0e6e1fb5259d53ac832d9efda1f43a64b6ac91ee4363d384f87b45",
+    "bytes": 1313
+  },
+  {
+    "url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/README.md",
+    "fetched_at": "2026-10-14T14:04:17.847837+00:00",
+    "source": "jomarie04/smartphone-specifications-2020-2024",
+    "license": "mit",
+    "file": "hf-card.md",
+    "status": "ok",
+    "sha256": "e512c61ad2b622b0ddff8fa6403edaadc7acbb7723b62dd6d2c26eaed3d34353",
+    "bytes": 698
+  },
+  {
+    "url": "https://huggingface.co/datasets/jomarie04/smartphone-specifications-2020-2024/resolve/4d19b89f8123effc01aa8b97f7cc4adbfef7d20e/dataset.csv",
+    "fetched_at": "2026-10-14T14:04:19.542588+00:00",
+    "source": "jomarie04/smartphone-specifications-2020-2024",
+    "license": "mit",
+    "file": "hf-phones.csv",
+    "status": "ok",
+    "sha256": "3324845c3fd8097edcb64f36d62645750a44f5c57a06f28c424cd847e64c6b38",
+    "bytes": 532
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:04:21.041229+00:00",
+    "source": "Walton",
+    "license": "Official factual data; no image/text reuse license",
+    "file": "walton-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://world.openfoodfacts.org/api/v2/search?countries_tags=en%3Abangladesh&categories_tags=en%3Acoffees&page=1&page_size=100&fields=code%2Cproduct_name%2Cproduct_name_en%2Cbrands%2Cquantity%2Ccategories_tags%2Ccountries_tags",
+    "fetched_at": "2026-10-14T14:04:44.306993+00:00",
+    "source": "Open Food Facts",
+    "license": "ODbL-1.0 / DbCL-1.0",
+    "file": "off-coffees-1.json",
+    "status": "blocked",
+    "error": "HTTP Error 503: Service Temporarily Unavailable"
+  },
+  {
+    "url": "https://world.openfoodfacts.org/api/v2/search?countries_tags=en%3Abangladesh&categories_tags=en%3Ateas&page=1&page_size=100&fields=code%2Cproduct_name%2Cproduct_name_en%2Cbrands%2Cquantity%2Ccategories_tags%2Ccountries_tags",
+    "fetched_at": "2026-10-14T14:04:46.433143+00:00",
+    "source": "Open Food Facts",
+    "license": "ODbL-1.0 / DbCL-1.0",
+    "file": "off-teas-1.json",
+    "status": "blocked",
+    "error": "HTTP Error 503: Service Temporarily Unavailable"
+  },
+  {
+    "url": "https://world.openfoodfacts.org/api/v2/search?countries_tags=en%3Abangladesh&page_size=100&page=1&fields=code,product_name,brands,categories_tags,quantity,countries_tags",
+    "fetched_at": "2026-10-14T14:04:48.294069+00:00",
+    "source": "Open Food Facts",
+    "license": "ODbL-1.0 / DbCL-1.0",
+    "file": "off-bangladesh-1.json",
+    "status": "ok",
+    "sha256": "76c9e3a0b3d98bc1710ae12a02cd984dcc0240eb744cb23ca49bf6d3a24945b2",
+    "bytes": 15615
+  },
+  {
+    "url": "https://world.openfoodfacts.org/api/v2/search?countries_tags=en%3Abangladesh&page_size=100&page=2&fields=code,product_name,brands,categories_tags,quantity,countries_tags",
+    "fetched_at": "2026-10-14T14:04:52.521841+00:00",
+    "source": "Open Food Facts",
+    "license": "ODbL-1.0 / DbCL-1.0",
+    "file": "off-bangladesh-2.json",
+    "status": "blocked",
+    "error": "HTTP Error 503: Service Temporarily Unavailable"
+  },
+  {
+    "url": "https://www.batabd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:19:51.393460+00:00",
+    "source": "Bata",
+    "license": "Robots access policy",
+    "file": "bata-robots.txt",
+    "status": "ok",
+    "sha256": "d1021f1ea49ebf40e9139029c45137a36853d26df33074fd11416afe4a425222",
+    "bytes": 3642
+  },
+  {
+    "url": "https://www.batabd.com/products.json?limit=100",
+    "fetched_at": "2026-10-14T14:19:53.086992+00:00",
+    "source": "Bata",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "bata-catalogue.txt",
+    "status": "ok",
+    "sha256": "10d1749ca8f573167e37d817ed40df5e8e5a2c6edc9ad0f136fd4881573a4553",
+    "bytes": 490282
+  },
+  {
+    "url": "https://www.apex4u.com/robots.txt",
+    "fetched_at": "2026-10-14T14:19:53.520973+00:00",
+    "source": "Apex",
+    "license": "Robots access policy",
+    "file": "apex-robots.txt",
+    "status": "ok",
+    "sha256": "24f6eec7f28d6d521c1042e4cfa2fed3ab5db42f15cea49d10d33cceaa9e2901",
+    "bytes": 173
+  },
+  {
+    "url": "https://www.apex4u.com/",
+    "fetched_at": "2026-10-14T14:19:55.627029+00:00",
+    "source": "Apex",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "apex-catalogue.txt",
+    "status": "ok",
+    "sha256": "3ba0f80a1908efa0ec91882dbe0b453281a6d324832ad1bf07ba8be14f11cd90",
+    "bytes": 371651
+  },
+  {
+    "url": "https://www.aarong.com/robots.txt",
+    "fetched_at": "2026-10-14T14:19:56.076065+00:00",
+    "source": "Aarong",
+    "license": "Robots access policy",
+    "file": "aarong-robots.txt",
+    "status": "ok",
+    "sha256": "9d38de99a0490a637c58fcb4a71ca5a5c4e5ee2af9cc7b7004714aa42637f8e2",
+    "bytes": 349180
+  },
+  {
+    "url": "https://www.aarong.com/default/men/panjabi",
+    "fetched_at": "2026-10-14T14:20:00.046129+00:00",
+    "source": "Aarong",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "aarong-catalogue.txt",
+    "status": "ok",
+    "sha256": "017ed646d66cdce1f74398bfc67ad6cdaa6f0ed16e30b4380f412a84a3230a2c",
+    "bytes": 358666
+  },
+  {
+    "url": "https://www.hatil.com/robots.txt",
+    "fetched_at": "2026-10-14T14:20:00.881298+00:00",
+    "source": "Hatil",
+    "license": "Robots access policy",
+    "file": "hatil-robots.txt",
+    "status": "ok",
+    "sha256": "890070c876c69267a0a531016d3ff7fa0f22919e1c0366ba2aa461746529108a",
+    "bytes": 237
+  },
+  {
+    "url": "https://www.hatil.com/office/swivel-chair?pageLimit=24",
+    "fetched_at": "2026-10-14T14:20:02.409432+00:00",
+    "source": "Hatil",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "hatil-catalogue.txt",
+    "status": "ok",
+    "sha256": "b5dec2931fc3cfd103ab600c0835e68ea74d62a1c508445a7da34f381e7f4d3c",
+    "bytes": 606470
+  },
+  {
+    "url": "https://otobi.com/robots.txt",
+    "fetched_at": "2026-10-14T14:20:03.280003+00:00",
+    "source": "Otobi",
+    "license": "Robots access policy",
+    "file": "otobi-robots.txt",
+    "status": "ok",
+    "sha256": "0283655f861d10db7ec2dbdfbebe4381a4afc63246fb8d5986b148cb25fd171b",
+    "bytes": 92
+  },
+  {
+    "url": "https://otobi.com/",
+    "fetched_at": "2026-10-14T14:20:05.203952+00:00",
+    "source": "Otobi",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "otobi-catalogue.txt",
+    "status": "ok",
+    "sha256": "ea3cfbd527f9a712e60366b0883c6aecfce6aad9cb17cc843dc1ce0ce54574a4",
+    "bytes": 241524
+  },
+  {
+    "url": "https://www.pranfoods.net/robots.txt",
+    "fetched_at": "2026-10-14T14:20:09.883994+00:00",
+    "source": "Pran",
+    "license": "Robots access policy",
+    "file": "pran-robots.txt",
+    "status": "ok",
+    "sha256": "1e27daaf812af5b18f74a82244093fc2958074e45ca7bad6873e88d33ae85084",
+    "bytes": 11837
+  },
+  {
+    "url": "https://www.pranfoods.net/brands",
+    "fetched_at": "2026-10-14T14:20:11.385388+00:00",
+    "source": "Pran",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "pran-catalogue.txt",
+    "status": "ok",
+    "sha256": "08dd0945d6c0c51b01024201482215ec82b8753ac7955cbdfd263c7bc8598b29",
+    "bytes": 11864
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:20:11.654572+00:00",
+    "source": "Square",
+    "license": "Robots access policy",
+    "file": "square-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/products.php",
+    "fetched_at": "2026-10-14T14:20:12.893666+00:00",
+    "source": "Square",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "square-catalogue.txt",
+    "status": "ok",
+    "sha256": "37aabc494a6f9caa2cdbc6d5c880cd4cae1092d68d50c7a1fbd08ea9f206c0ba",
+    "bytes": 59098
+  },
+  {
+    "url": "https://www.aci-bd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:20:13.111042+00:00",
+    "source": "ACI",
+    "license": "Robots access policy",
+    "file": "aci-robots.txt",
+    "status": "ok",
+    "sha256": "851c18128a7495e6d909126720d982a9f537ff2b3be84f7a1d5f388dcace87c5",
+    "bytes": 673
+  },
+  {
+    "url": "https://www.aci-bd.com/our-businesses/consumer-brands.html",
+    "fetched_at": "2026-10-14T14:20:15.122682+00:00",
+    "source": "ACI",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "aci-catalogue.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.citygroup.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:20:16.113624+00:00",
+    "source": "Teer",
+    "license": "Robots access policy",
+    "file": "teer-robots.txt",
+    "status": "ok",
+    "sha256": "6951ff5559252220c00a2541089507c5f11c2d20cb8dae100929472b83a46723",
+    "bytes": 7490
+  },
+  {
+    "url": "https://www.citygroup.com.bd/brand/teer",
+    "fetched_at": "2026-10-14T14:20:17.391486+00:00",
+    "source": "Teer",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "teer-catalogue.txt",
+    "status": "ok",
+    "sha256": "956f75f016e59aeac748b14f3e3a4a2d811331a784a81e449ab150cb6a5e54c8",
+    "bytes": 7629
+  },
+  {
+    "url": "https://www.radhuni.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:20:17.582308+00:00",
+    "source": "Radhuni",
+    "license": "Robots access policy",
+    "file": "radhuni-robots.txt",
+    "status": "blocked",
+    "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+  },
+  {
+    "url": "https://www.rahimafrooz.com/robots.txt",
+    "fetched_at": "2026-10-14T14:20:17.630856+00:00",
+    "source": "Rahimafrooz",
+    "license": "Robots access policy",
+    "file": "rahimafrooz-robots.txt",
+    "status": "ok",
+    "sha256": "4b62ca6e9eb9b900b0443ef1f0f9c22aa172f9d2f8061180452e91dd54588134",
+    "bytes": 198
+  },
+  {
+    "url": "https://www.rahimafrooz.com/",
+    "fetched_at": "2026-10-14T14:20:24.117931+00:00",
+    "source": "Rahimafrooz",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "rahimafrooz-catalogue.txt",
+    "status": "ok",
+    "sha256": "588f9a8b99e59aee679cc215cce849cc465058101dc7dc201083658ee9c43717",
+    "bytes": 141195
+  },
+  {
+    "url": "https://www.bergerbd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:20:26.207223+00:00",
+    "source": "Berger",
+    "license": "Robots access policy",
+    "file": "berger-robots.txt",
+    "status": "ok",
+    "sha256": "5ed6bb861bc0b80e8ea33d6039732a60714d5588f78279d4d807d75c6852a163",
+    "bytes": 161
+  },
+  {
+    "url": "https://www.bergerbd.com/products/",
+    "fetched_at": "2026-10-14T14:20:27.491540+00:00",
+    "source": "Berger",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "berger-catalogue.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:20:28.080852+00:00",
+    "source": "Walton",
+    "license": "Robots access policy",
+    "file": "walton-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/mobile/smart-phone",
+    "fetched_at": "2026-10-14T14:20:29.324472+00:00",
+    "source": "Walton",
+    "license": "Official factual names/prices only; images and descriptions excluded",
+    "file": "walton-catalogue.txt",
+    "status": "ok",
+    "sha256": "d813d8a4cda41de4dc5725a44c38f3cec3a6b26c261bce360569b6d263961897",
+    "bytes": 304992
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:06.891048+00:00",
+    "source": "walton-refrigerators",
+    "license": "Robots access policy",
+    "file": "waltonbd-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/refrigerator/freezer",
+    "fetched_at": "2026-10-14T14:27:08.376118+00:00",
+    "source": "walton-refrigerators",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "walton-refrigerators.html",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:09.690877+00:00",
+    "source": "walton-lighting",
+    "license": "Robots access policy",
+    "file": "waltonbd-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/led-light/led-bulb",
+    "fetched_at": "2026-10-14T14:27:10.885854+00:00",
+    "source": "walton-lighting",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "walton-lighting.html",
+    "status": "ok",
+    "sha256": "630d2fc03261d08ce349ae979f58013d61f72ceeae5bbd8c6a3df57c7cb2f041",
+    "bytes": 218615
+  },
+  {
+    "url": "https://www.hatil.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:11.210181+00:00",
+    "source": "hatil-beds",
+    "license": "Robots access policy",
+    "file": "www-hatil-com-robots.txt",
+    "status": "ok",
+    "sha256": "890070c876c69267a0a531016d3ff7fa0f22919e1c0366ba2aa461746529108a",
+    "bytes": 237
+  },
+  {
+    "url": "https://www.hatil.com/bed-",
+    "fetched_at": "2026-10-14T14:27:12.640730+00:00",
+    "source": "hatil-beds",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "hatil-beds.html",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://otobi.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:13.102045+00:00",
+    "source": "otobi-beds",
+    "license": "Robots access policy",
+    "file": "otobi-com-robots.txt",
+    "status": "ok",
+    "sha256": "0283655f861d10db7ec2dbdfbebe4381a4afc63246fb8d5986b148cb25fd171b",
+    "bytes": 92
+  },
+  {
+    "url": "https://otobi.com/otobi-full-sitemap.html",
+    "fetched_at": "2026-10-14T14:27:15.039848+00:00",
+    "source": "otobi-beds",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "otobi-beds.html",
+    "status": "ok",
+    "sha256": "646d7d33d75bb2bbf92f062c0d5bb019478b61c9ccfe1f35cb9a5f926d7f871f",
+    "bytes": 49930
+  },
+  {
+    "url": "https://mcprod.aarong.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:16.202682+00:00",
+    "source": "aarong-panjabi",
+    "license": "Robots access policy",
+    "file": "mcprod-aarong-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "url": "https://www.aarong.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:16.704199+00:00",
+    "source": "aarong-shirts",
+    "license": "Robots access policy",
+    "file": "www-aarong-com-robots.txt",
+    "status": "ok",
+    "sha256": "9d38de99a0490a637c58fcb4a71ca5a5c4e5ee2af9cc7b7004714aa42637f8e2",
+    "bytes": 349180
+  },
+  {
+    "url": "https://www.aarong.com/default/men/shirts",
+    "fetched_at": "2026-10-14T14:27:19.849305+00:00",
+    "source": "aarong-shirts",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "aarong-shirts.html",
+    "status": "ok",
+    "sha256": "5e7bc1fdf426749db5d634473b91aa5750a945cb94bffb38672c9663884cb237",
+    "bytes": 358660
+  },
+  {
+    "url": "https://www.aarong.com/default/women/saree",
+    "fetched_at": "2026-10-14T14:27:21.589715+00:00",
+    "source": "aarong-sarees",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "aarong-sarees.html",
+    "status": "ok",
+    "sha256": "1a97ea5fab0c518c870264010c6b3cec95e19a6143fee4985b209e75002169c2",
+    "bytes": 362715
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:27:22.222044+00:00",
+    "source": "square-generics",
+    "license": "Robots access policy",
+    "file": "www-squarepharma-com-bd-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/products-by-generic.php",
+    "fetched_at": "2026-10-14T14:27:23.359750+00:00",
+    "source": "square-generics",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "square-generics.html",
+    "status": "ok",
+    "sha256": "3f3c755d54bceb09669e80ee3b62fe2bc511cae0cffc1177ac662ac618e4e166",
+    "bytes": 116354
+  },
+  {
+    "url": "https://www.aci-bd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:23.534838+00:00",
+    "source": "aci-products",
+    "license": "Robots access policy",
+    "file": "www-aci-bd-com-robots.txt",
+    "status": "ok",
+    "sha256": "851c18128a7495e6d909126720d982a9f537ff2b3be84f7a1d5f388dcace87c5",
+    "bytes": 673
+  },
+  {
+    "url": "https://www.aci-bd.com/",
+    "fetched_at": "2026-10-14T14:27:25.566395+00:00",
+    "source": "aci-products",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "aci-products.html",
+    "status": "ok",
+    "sha256": "8f9408b3ce447b0659a9fc39a772c43b5d5b36a19c8a49704be31bef66340960",
+    "bytes": 59395
+  },
+  {
+    "url": "https://www.bergerbd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:27.050002+00:00",
+    "source": "berger-products",
+    "license": "Robots access policy",
+    "file": "www-bergerbd-com-robots.txt",
+    "status": "ok",
+    "sha256": "5ed6bb861bc0b80e8ea33d6039732a60714d5588f78279d4d807d75c6852a163",
+    "bytes": 161
+  },
+  {
+    "url": "https://www.bergerbd.com/",
+    "fetched_at": "2026-10-14T14:27:28.311120+00:00",
+    "source": "berger-products",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "berger-products.html",
+    "status": "ok",
+    "sha256": "6cc0feaaaf44896c9be3eeac0edde05be4a78a105b77172c3b98d2318a9d0811",
+    "bytes": 288264
+  },
+  {
+    "url": "https://www.rahimafrooz.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:29.176032+00:00",
+    "source": "rahimafrooz-batteries",
+    "license": "Robots access policy",
+    "file": "www-rahimafrooz-com-robots.txt",
+    "status": "ok",
+    "sha256": "4b62ca6e9eb9b900b0443ef1f0f9c22aa172f9d2f8061180452e91dd54588134",
+    "bytes": 198
+  },
+  {
+    "url": "https://www.rahimafrooz.com/storage-power/",
+    "fetched_at": "2026-10-14T14:27:34.851007+00:00",
+    "source": "rahimafrooz-batteries",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "rahimafrooz-batteries.html",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.radhuni.com/robots.txt",
+    "fetched_at": "2026-10-14T14:27:38.658034+00:00",
+    "source": "radhuni-products",
+    "license": "Robots access policy",
+    "file": "www-radhuni-com-robots.txt",
+    "status": "blocked",
+    "error": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)>"
+  },
+  {
+    "url": "https://www.citygroup.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:27:39.735287+00:00",
+    "source": "teer-products",
+    "license": "Robots access policy",
+    "file": "www-citygroup-com-bd-robots.txt",
+    "status": "ok",
+    "sha256": "e5c4b84484ee4216e9373be99380320c25dd94805f99f0a805846f087636553f",
+    "bytes": 24
+  },
+  {
+    "url": "https://www.citygroup.com.bd/",
+    "fetched_at": "2026-10-14T14:27:41.006028+00:00",
+    "source": "teer-products",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "teer-products.html",
+    "status": "ok",
+    "sha256": "f7a479f9a28b76d0e05a1d51ca4abd4fc825d1091ab0859a0d9e093e9ffb5b8f",
+    "bytes": 63874
+  },
+  {
+    "url": "https://dgda.gov.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:27:41.282790+00:00",
+    "source": "dgda",
+    "license": "Robots access policy",
+    "file": "dgda-gov-bd-robots.txt",
+    "status": "blocked",
+    "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)>"
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:29:09.836828+00:00",
+    "source": "walton-refrigerators",
+    "license": "Robots access policy",
+    "file": "waltonbd-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/refrigerator-freezer/direct-cool-refrigerator",
+    "fetched_at": "2026-10-14T14:29:11.616123+00:00",
+    "source": "walton-refrigerators",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "walton-refrigerators.html",
+    "status": "ok",
+    "sha256": "bdd351078c244dff3961afcb4014f1e4baeaebeedc0c813b21f393845a80e9c7",
+    "bytes": 304614
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T14:29:13.029227+00:00",
+    "source": "walton-lighting",
+    "license": "Robots access policy",
+    "file": "waltonbd-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.hatil.com/collections/queen-beds",
+    "fetched_at": "2026-10-14T14:29:13.205674+00:00",
+    "source": "hatil-beds",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "hatil-beds.html",
+    "status": "ok",
+    "sha256": "36db149f6609dc0971bf26cfa591198edcb067f7c194caaab5acb8d6c4e5a397",
+    "bytes": 484558
+  },
+  {
+    "url": "https://mcprod.aarong.com/robots.txt",
+    "fetched_at": "2026-10-14T14:29:14.972772+00:00",
+    "source": "aarong-panjabi",
+    "license": "Robots access policy",
+    "file": "mcprod-aarong-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:29:15.922592+00:00",
+    "source": "square-generics",
+    "license": "Robots access policy",
+    "file": "www-squarepharma-com-bd-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.rahimafrooz.com/storage-power/",
+    "fetched_at": "2026-10-14T14:29:16.407532+00:00",
+    "source": "rahimafrooz-batteries",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "rahimafrooz-batteries.html",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.radhuni.com/robots.txt",
+    "fetched_at": "2026-10-14T14:29:21.080239+00:00",
+    "source": "radhuni-products",
+    "license": "Robots access policy",
+    "file": "www-radhuni-com-robots.txt",
+    "status": "blocked",
+    "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)>"
+  },
+  {
+    "url": "https://dgda.gov.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:29:21.859526+00:00",
+    "source": "dgda",
+    "license": "Robots access policy",
+    "file": "dgda-gov-bd-robots.txt",
+    "status": "blocked",
+    "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)>"
+  },
+  {
+    "url": "https://otobi.com/ProductCategory.aspx?pc=157",
+    "fetched_at": "2026-10-14T14:29:21.929451+00:00",
+    "source": "otobi-bed-list",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "otobi-bed-list.html",
+    "status": "ok",
+    "sha256": "1888ffaeb316148887dcbc57c11e3e94a6c72ae07892efd8cd408beb50603741",
+    "bytes": 200681
+  },
+  {
+    "url": "https://www.rahimafrooz.com/our-products/",
+    "fetched_at": "2026-10-14T14:29:26.189302+00:00",
+    "source": "rahimafrooz-product-list",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "rahimafrooz-product-list.html",
+    "status": "ok",
+    "sha256": "3d9fd35723a0305b03e4ce37a02cf7c497f78e50a5c5f221865c4e5baf670370",
+    "bytes": 108982
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T14:29:28.250261+00:00",
+    "source": "square-trade",
+    "license": "Robots access policy",
+    "file": "www-squarepharma-com-bd-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/products-by-tradename.php",
+    "fetched_at": "2026-10-14T14:29:29.400702+00:00",
+    "source": "square-trade",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "square-trade.html",
+    "status": "ok",
+    "sha256": "3f3c755d54bceb09669e80ee3b62fe2bc511cae0cffc1177ac662ac618e4e166",
+    "bytes": 116354
+  },
+  {
+    "url": "https://www.citygroup.com.bd/brand",
+    "fetched_at": "2026-10-14T14:29:29.553054+00:00",
+    "source": "teer-brand-list",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "teer-brand-list.html",
+    "status": "ok",
+    "sha256": "19a5a448cb5ea7b4f8aa40184bf8d81c00620a7bb8dea696b36461f11c567f37",
+    "bytes": 39193
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Rice",
+    "fetched_at": "2026-10-14T18:50:42.396397+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-rice.json",
+    "status": "ok",
+    "sha256": "d670a2f45dfb98930568bbc15580a32e657888531018978442ae029cc3329dda",
+    "bytes": 3694
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Basmati",
+    "fetched_at": "2026-10-14T18:50:44.361305+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-basmati.json",
+    "status": "ok",
+    "sha256": "363cd096a31f9e520d5d292f056243217941d49a12c058829eada90f811b0f1f",
+    "bytes": 2577
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Soybean_oil",
+    "fetched_at": "2026-10-14T18:50:45.889821+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-soybean_oil.json",
+    "status": "ok",
+    "sha256": "7b634854063d54fb790bf4ed8cb55ddb4521d6549116d9a352620fa912e99282",
+    "bytes": 2162
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Coconut_oil",
+    "fetched_at": "2026-10-14T18:50:47.470514+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-coconut_oil.json",
+    "status": "ok",
+    "sha256": "6c24b8205594c6bf1bf362eee35d27d2fe8b91e457c29c733803a500b5c59797",
+    "bytes": 2376
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Dress_shirt",
+    "fetched_at": "2026-10-14T18:50:49.001787+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-dress_shirt.json",
+    "status": "ok",
+    "sha256": "7286d324dab6f4cb574f2c664e10d46428e4d62fdae08cf9ef8e584a20551f98",
+    "bytes": 2446
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Shirt",
+    "fetched_at": "2026-10-14T18:50:50.587337+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-shirt.json",
+    "status": "ok",
+    "sha256": "eb1f06cc7186bd6abf09f141a04c9d38ddf6b8d63756455049191f2aa867260a",
+    "bytes": 1586
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Panjabi_(clothing)",
+    "fetched_at": "2026-10-14T18:50:52.107015+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-panjabi_(clothing).json",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Kurta",
+    "fetched_at": "2026-10-14T18:50:54.472682+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-kurta.json",
+    "status": "ok",
+    "sha256": "bbd14702976d8b7e56a2abf3bf8570611a89e04342b8e28f59399589c4f055a0",
+    "bytes": 2236
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Saree",
+    "fetched_at": "2026-10-14T18:50:55.854922+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-saree.json",
+    "status": "ok",
+    "sha256": "fabafef334f09fe6e23c5d61fb8b8ac6f86e84276ff8bcec7d44184b66e6f368",
+    "bytes": 3283
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Jamdani",
+    "fetched_at": "2026-10-14T18:50:57.262922+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-jamdani.json",
+    "status": "ok",
+    "sha256": "35a8aaf27d0315bbd40a69d8e38aab90bee0078e7663db01f4f7fd8021c56bdb",
+    "bytes": 2229
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Cosmetics",
+    "fetched_at": "2026-10-14T18:50:58.658010+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-cosmetics.json",
+    "status": "ok",
+    "sha256": "50d2f892bf29b4088259e5951b5c190a1dfd2206cd16579433416333f2362047",
+    "bytes": 2611
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Lipstick",
+    "fetched_at": "2026-10-14T18:51:00.249264+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-lipstick.json",
+    "status": "ok",
+    "sha256": "28ef64500dad3ae468fb1c3ecd693c0b76029ee87116aa58763ba18ee96c9b4d",
+    "bytes": 2599
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Perfume",
+    "fetched_at": "2026-10-14T18:51:01.890655+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-perfume.json",
+    "status": "ok",
+    "sha256": "b0c932b8d732b6b6c8ca68479a70816756d62bf9f8dc6a8cbc19ae8c4efa43b3",
+    "bytes": 2475
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Deodorant",
+    "fetched_at": "2026-10-14T18:51:03.249796+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-deodorant.json",
+    "status": "ok",
+    "sha256": "454be88c83a5cb5140345fb317213c40a92a5f4d48c2f842fbf64fc86812ebbe",
+    "bytes": 2700
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Oral_rehydration_therapy",
+    "fetched_at": "2026-10-14T18:51:04.799436+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-oral_rehydration_therapy.json",
+    "status": "ok",
+    "sha256": "99226aaaf88e3fc8162de4223d7d6eff9db76c5fd84751c5ad8623d3ad6301d8",
+    "bytes": 3263
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Paracetamol",
+    "fetched_at": "2026-10-14T18:51:06.401464+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-paracetamol.json",
+    "status": "ok",
+    "sha256": "1d505f3d7caa5800cd32c97ead998a4db3f1496d8ac23126d87304e8106c53ab",
+    "bytes": 2131
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Cricket_bat",
+    "fetched_at": "2026-10-14T18:51:08.056350+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-cricket_bat.json",
+    "status": "ok",
+    "sha256": "415bbdd1d6fd85dc2da0366db4676e36d8f7fc60bb013717ec9c08f2d26fce8f",
+    "bytes": 2273
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Badminton",
+    "fetched_at": "2026-10-14T18:51:09.577294+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-badminton.json",
+    "status": "ok",
+    "sha256": "924c6858e4ec2c8131a60b0f33ffb9b36375381e6d14eec5cb3ee4317a38ac4e",
+    "bytes": 2564
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Watch",
+    "fetched_at": "2026-10-14T18:51:11.259928+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-watch.json",
+    "status": "ok",
+    "sha256": "b360af73dc1e250b91ba623f961dbbaeebafb4829e462a8fb05493f651d83be7",
+    "bytes": 2496
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Helmet",
+    "fetched_at": "2026-10-14T18:51:12.699507+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-helmet.json",
+    "status": "ok",
+    "sha256": "93fd2246ddb03a5f6b92b382be2c9052e48cbd8d5dfb453c87194dcecb91e2ac",
+    "bytes": 2202
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Car_wash",
+    "fetched_at": "2026-10-14T18:51:14.250487+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-car_wash.json",
+    "status": "ok",
+    "sha256": "bd7b97381e70cefbce157aa6f387439ff6410df3bb536c8551e235471d83ee2b",
+    "bytes": 2503
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Motorcycle",
+    "fetched_at": "2026-10-14T18:51:15.924327+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-motorcycle.json",
+    "status": "ok",
+    "sha256": "ec8aa96e72ab80007ba91b7b9b48464fc111b29c7f6816257c2abbe3b13e1bff",
+    "bytes": 1817
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Paint",
+    "fetched_at": "2026-10-14T18:51:17.373944+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-paint.json",
+    "status": "ok",
+    "sha256": "e4980a6dce800ad763b2e9682f5144601ac5609395773587628c7f1a203ffac6",
+    "bytes": 2237
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Interior_decoration",
+    "fetched_at": "2026-10-14T18:51:18.836863+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-interior_decoration.json",
+    "status": "ok",
+    "sha256": "090c4938396130c340d0d6fac0b625516741b24ab6f82345f226f789fafa62be",
+    "bytes": 3253
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Deep_cycle_battery",
+    "fetched_at": "2026-10-14T18:51:20.431144+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-deep_cycle_battery.json",
+    "status": "ok",
+    "sha256": "7418f6abf8c9a0ed592fa935904bd44ef7ae2283b1fa093493bda843fe33ac60",
+    "bytes": 2769
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Lead-acid_battery",
+    "fetched_at": "2026-10-14T18:51:21.987497+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-lead-acid_battery.json",
+    "status": "blocked",
+    "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+    "url": "https://en.wikipedia.org/api/rest_v1/page/summary/Laptop",
+    "fetched_at": "2026-10-14T18:51:23.616508+00:00",
+    "source": "Wikipedia summary API",
+    "license": "CC BY-SA 4.0",
+    "file": "wiki-laptop.json",
+    "status": "ok",
+    "sha256": "4c342f10a487ca6b25d1fc774793290059656a235fce2747d2237cdc6eb150d1",
+    "bytes": 2765
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T18:57:04.837586+00:00",
+    "source": "walton-refrigerators",
+    "license": "Robots access policy",
+    "file": "waltonbd-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T18:57:06.562803+00:00",
+    "source": "walton-lighting",
+    "license": "Robots access policy",
+    "file": "waltonbd-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://mcprod.aarong.com/robots.txt",
+    "fetched_at": "2026-10-14T18:57:06.791462+00:00",
+    "source": "aarong-panjabi",
+    "license": "Robots access policy",
+    "file": "mcprod-aarong-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T18:57:07.235651+00:00",
+    "source": "square-generics",
+    "license": "Robots access policy",
+    "file": "www-squarepharma-com-bd-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.rahimafrooz.com/storage-power/",
+    "fetched_at": "2026-10-14T18:57:07.375245+00:00",
+    "source": "rahimafrooz-batteries",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "rahimafrooz-batteries.html",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://www.radhuni.com/robots.txt",
+    "fetched_at": "2026-10-14T18:57:14.082048+00:00",
+    "source": "radhuni-products",
+    "license": "Robots access policy",
+    "file": "www-radhuni-com-robots.txt",
+    "status": "blocked",
+    "error": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)>"
+  },
+  {
+    "url": "https://dgda.gov.bd/robots.txt",
+    "fetched_at": "2026-10-14T18:57:15.112920+00:00",
+    "source": "dgda",
+    "license": "Robots access policy",
+    "file": "dgda-gov-bd-robots.txt",
+    "status": "blocked",
+    "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)>"
+  },
+  {
+    "url": "https://www.squarepharma.com.bd/robots.txt",
+    "fetched_at": "2026-10-14T18:57:15.226537+00:00",
+    "source": "square-trade",
+    "license": "Robots access policy",
+    "file": "www-squarepharma-com-bd-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/robots.txt",
+    "fetched_at": "2026-10-14T18:57:15.393200+00:00",
+    "source": "walton-led",
+    "license": "Robots access policy",
+    "file": "waltonbd-com-robots.txt",
+    "status": "blocked",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "url": "https://waltonbd.com/led-bulb",
+    "fetched_at": "2026-10-14T18:57:16.612321+00:00",
+    "source": "walton-led",
+    "license": "Official factual names/prices; no image or description reuse",
+    "file": "walton-led.html",
+    "status": "ok",
+    "sha256": "54f246fa031a4531ebfd675737f15fe7534372ce67aa8a0486089b6dff7feffd",
+    "bytes": 218182
+  },
+  {
+    "url": "https://waltonbd.com/led-light/led-bulb",
+    "fetched_at": "2026-10-14T18:57:55.087981+00:00",
+    "source": "Walton LED product page",
+    "license": "Official factual name and listed price",
+    "file": "walton-led-probe.html",
+    "status": "ok",
+    "sha256": "630d2fc03261d08ce349ae979f58013d61f72ceeae5bbd8c6a3df57c7cb2f041",
+    "bytes": 218615
+  },
+  {
+    "url": "https://waltonbd.com/led-light/led-bulb/ultra-series",
+    "fetched_at": "2026-10-14T18:58:16.320681+00:00",
+    "source": "Walton LED product page",
+    "license": "Official factual name and listed price",
+    "file": "walton-led-product-ultra-series.html",
+    "status": "ok",
+    "sha256": "9400f1b65770f858cdb25942a482afcaffe86b69b36dec0d644b4fe7f235cd55",
+    "bytes": 217468
+  },
+  {
+    "url": "https://waltonbd.com/led-light/led-bulb/public-series-a-shape",
+    "fetched_at": "2026-10-14T18:59:37.926242+00:00",
+    "source": "Walton LED product page",
+    "license": "Official factual name and listed price; images/description excluded",
+    "file": "walton-led-product-public-series-a-shape.html",
+    "status": "ok",
+    "sha256": "d3aeef24c3a2662cd7a78e4430efb4f6c3a334b147c8171fa4df7cabc3dcce19",
+    "bytes": 232802
+  },
+  {
+    "url": "https://waltonbd.com/led-light/led-bulb/public-series-t-shape",
+    "fetched_at": "2026-10-14T18:59:40.003748+00:00",
+    "source": "Walton LED product page",
+    "license": "Official factual name and listed price; images/description excluded",
+    "file": "walton-led-product-public-series-t-shape.html",
+    "status": "ok",
+    "sha256": "3e5173c5f3c7df72f92f0f051999241ca005cfef8b2c8fce3418acb54ad55106",
+    "bytes": 229116
+  },
+  {
+    "url": "https://waltonbd.com/led-light/led-bulb/crystal-series-led-bulb",
+    "fetched_at": "2026-10-14T18:59:41.516168+00:00",
+    "source": "Walton LED product page",
+    "license": "Official factual name and listed price; images/description excluded",
+    "file": "walton-led-product-crystal-series-led-bulb.html",
+    "status": "ok",
+    "sha256": "e27a674af055232e15c9042e34b8fc121fd6dda5847e571a359affb9642aabc7",
+    "bytes": 220983
+  },
+  {
+    "url": "https://waltonbd.com/led-light/led-bulb/moon-light",
+    "fetched_at": "2026-10-14T18:59:42.898365+00:00",
+    "source": "Walton LED product page",
+    "license": "Official factual name and listed price; images/description excluded",
+    "file": "walton-led-product-moon-light.html",
+    "status": "ok",
+    "sha256": "8f6cf4be8991a4988a9a63c693512ada84742d08404d5f004a57cb93b29de2c5",
+    "bytes": 224207
+  },
+  {
+    "url": "https://waltonbd.com/led-light/led-bulb/residential-rainbow-bulb",
+    "fetched_at": "2026-10-14T18:59:44.293916+00:00",
+    "source": "Walton LED product page",
+    "license": "Official factual name and listed price; images/description excluded",
+    "file": "walton-led-product-residential-rainbow-bulb.html",
+    "status": "ok",
+    "sha256": "d63dd8a07d2a34f8a9c2380b8798a22cbf97dcbf60986ad6a26c4dcd0e935994",
+    "bytes": 228704
+  }
+]

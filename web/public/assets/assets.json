@@ -1,0 +1,31 @@
+{
+  "generatedBy": "scripts/asset-manifest.mjs",
+  "supportedExtensions": [
+    ".svg",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".webp"
+  ],
+  "count": 18,
+  "files": [
+    "photo-01.jpg",
+    "photo-02.jpg",
+    "photo-03.jpg",
+    "photo-04.jpg",
+    "photo-05.jpg",
+    "photo-06.jpg",
+    "photo-07.jpg",
+    "photo-08.jpg",
+    "photo-09.jpg",
+    "work-01.svg",
+    "work-02.svg",
+    "work-03.svg",
+    "work-04.svg",
+    "work-05.svg",
+    "work-06.svg",
+    "work-07.svg",
+    "work-08.svg",
+    "work-09.svg"
+  ]
+}

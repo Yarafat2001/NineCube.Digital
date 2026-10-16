@@ -1,0 +1,276 @@
+/* ===========================================================================
+   Design tokens. Everything visual in the app reads from here - no component
+   hard-codes a colour, radius or duration. Light theme follows the LIGHT
+   THEME TOKENS spec (tinted page, glass panels, solid cards); dark keeps its
+   existing surfaces with matching spec aliases.
+   =========================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* ---- required LIGHT THEME TOKENS (spec §1) -------------------------- */
+  --bg-page: #E9EDF5;
+  --bg-page-glow:
+    radial-gradient(900px 500px at 8% 0%, rgba(245, 158, 11, .16), transparent 60%),
+    radial-gradient(800px 500px at 100% 10%, rgba(59, 130, 246, .12), transparent 60%);
+  --surface: #FFFFFF;
+  --surface-sunken: #F1F4F9;
+  --surface-glass: rgba(255, 255, 255, .62);
+  --border: #CBD3E1;
+  --border-strong: #9AA6BA;
+  --text: #0F172A;
+  --text-muted: #475569;
+  --accent: #F59E0B;
+  --accent-text: #9A3F00;
+  --on-accent: #1A1100;
+  --selected-bg: #FFF1D6;
+  --selected-bar: #D97706;
+  --ok-bg: #DCFCE7; --ok-text: #14532D; --ok-border: #86EFAC;
+  --warn-bg: #FEF3C7; --warn-text: #78350F; --warn-border: #FCD34D;
+  --bad-bg: #FEE2E2; --bad-text: #7F1D1D; --bad-border: #FCA5A5;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .08), 0 1px 1px rgba(15, 23, 42, .05);
+  --shadow-md: 0 6px 16px rgba(15, 23, 42, .10), 0 2px 4px rgba(15, 23, 42, .06);
+  --shadow-lg: 0 18px 40px rgba(15, 23, 42, .16), 0 4px 10px rgba(15, 23, 42, .08);
+
+  /* ---- brand (kept for compat; accent is the spec token) --------------- */
+  --brand: #F59E0B;
+  --brand-strong: #D97706;
+  --brand-ink: #1A1100;
+  --brand-grey: #9AA6BA;
+
+  /* ---- status: spec tokens are source of truth; legacy aliases follow -- */
+  --ok: #14532D;
+  --ok-tint: #DCFCE7;
+  --warn: #78350F;
+  --warn-tint: #FEF3C7;
+  --danger: #7F1D1D;
+  --danger-tint: #FEE2E2;
+  --info: #1D4ED8;
+  --info-tint: #DBEAFE;
+  --neutral: #475569;
+  --neutral-tint: #F1F4F9;
+
+  /* ---- text, lines, surfaces ------------------------------------------ */
+  --surface-raised: #FFFFFF;
+  --logo-face: #0F172A;
+  --brand-wordmark: #9A3F00;
+
+  /* ---- glass: Level 1 panels (aliases; --surface-glass is canonical) ----- */
+  --glass-tint: var(--surface-glass);
+  --glass-tint-strong: var(--surface-glass);
+  --glass-border: var(--border);
+  --glass-blur: 16px;
+  --glass-saturate: 140%;
+
+  /* ---- shadows: spec elevation (aliases keep old class names working) --- */
+  --neu-light: rgba(255, 255, 255, 0.8);
+  --neu-dark: rgba(15, 23, 42, 0.10);
+  --shadow-raised: var(--shadow-md);
+  --shadow-raised-sm: var(--shadow-sm);
+  --shadow-inset: inset 2px 2px 6px rgba(15, 23, 42, .10), inset -2px -2px 6px rgba(255, 255, 255, .8);
+  --shadow-flat: var(--shadow-sm);
+
+  /* ---- page background: tinted, clearly NOT white ---------------------- */
+  --page-gradient: var(--bg-page-glow), var(--bg-page);
+
+  /* ---- spacing ---------------------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  /* ---- layer scale (sticky bars + notification system share this) ---------
+     One sticky layer besides the navbar per page. Popovers sit above sticky
+     bars, dialogs/drawers/sheets above the mobile bottom bar, toasts above all. */
+  --z-sticky: 40;
+  --z-nav: 50;
+  --z-bulkbar: 45;
+  --z-menu: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+
+  /* Measured at runtime (Navbar publishes --nav-h; bottom bar --bottombar-h,
+     0 when absent). Fallbacks are before-first-paint only. */
+  --nav-h: 64px;
+  --bottombar-h: 0px;
+
+  /* ---- layout ------------------------------------------------------------
+     The header is a floating pill: it sticks 8px under the safe area and its
+     height is measured, so anything sticky below it clears both plus a gap.
+     Nothing may hard-code these numbers, or a taller header silently covers
+     the sidebar. */
+  --header-top: calc(env(safe-area-inset-top, 0px) + 8px);
+  --header-height: var(--nav-h);
+  --sticky-top: calc(var(--nav-h) + 16px);
+  --sidebar-width: clamp(280px, 22vw, 340px);
+  --cart-width: 320px;
+
+  /* ---- radii ------------------------------------------------------------ */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* ---- fluid type ------------------------------------------------------- */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  --text-xs: 0.875rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1rem;
+  --text-lg: clamp(1.125rem, 1.05rem + 0.3vw, 1.375rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 0.8vw, 2rem);
+  --text-2xl: clamp(1.875rem, 1.4rem + 1.5vw, 2.75rem);
+
+  /* ---- motion ----------------------------------------------------------- */
+  --transition-fast: 150ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  --transition: 200ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  --transition-slow: 300ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  --focus-ring: 2px solid var(--accent);
+  --focus-offset: 2px;
+}
+
+/* Dark theme keeps its surfaces; spec aliases mirror them so components
+   that read --bg-page / --surface-glass / --ok-bg etc. keep working. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --brand: #ffab4d;
+    --brand-strong: #f59726;
+    --accent: #ffab4d;
+    --accent-text: #ffc36b;
+    --on-accent: #1A1100;
+
+    --ok: #57d3a0;
+    --ok-tint: rgba(87, 211, 160, 0.16);
+    --warn: #ffc36b;
+    --warn-tint: rgba(255, 195, 107, 0.16);
+    --danger: #ff8d84;
+    --danger-tint: rgba(255, 141, 132, 0.16);
+    --info: #8ab8ff;
+    --info-tint: rgba(138, 184, 255, 0.16);
+    --neutral: #c9c4c6;
+    --neutral-tint: rgba(255, 255, 255, 0.1);
+
+    --text: #f5f2f3;
+    --logo-face: #f5f2f3;
+    --brand-wordmark: #ffab4d;
+    --text-muted: #b9b3b5;
+    --border: rgba(255, 255, 255, 0.16);
+    --border-strong: rgba(255, 255, 255, 0.3);
+
+    --surface: #1b181a;
+    --surface-raised: #232022;
+    --surface-sunken: #131113;
+
+    /* ---- spec aliases for dark ---------------------------------------- */
+    --bg-page: #141113;
+    --bg-page-glow:
+      radial-gradient(1100px 620px at 8% -6%, rgba(245, 151, 38, 0.28), transparent 62%),
+      radial-gradient(900px 600px at 96% 4%, rgba(120, 86, 255, 0.3), transparent 60%);
+    --surface-glass: rgba(28, 25, 27, 0.62);
+    --selected-bg: rgba(245, 151, 38, 0.16);
+    --selected-bar: #f59726;
+    --ok-bg: rgba(87, 211, 160, 0.16); --ok-text: #57d3a0; --ok-border: rgba(87, 211, 160, 0.45);
+    --warn-bg: rgba(255, 195, 107, 0.16); --warn-text: #ffc36b; --warn-border: rgba(255, 195, 107, 0.45);
+    --bad-bg: rgba(255, 141, 132, 0.16); --bad-text: #ff8d84; --bad-border: rgba(255, 141, 132, 0.45);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.45);
+    --shadow-raised: var(--shadow-md);
+    --shadow-raised-sm: var(--shadow-sm);
+
+    --neu-light: rgba(255, 255, 255, 0.09);
+    --neu-dark: rgba(0, 0, 0, 0.6);
+    --shadow-flat: 0 1px 2px rgba(0, 0, 0, 0.5);
+
+    --page-gradient: var(--bg-page-glow), var(--bg-page);
+
+    --focus-ring: 2px solid var(--accent);
+  }
+
+/* Customer UI depth tokens. Stronger input borders and focus rings meet 3:1
+   against the adjacent light surfaces; translucent decoration stays separate. */
+:root,
+:root[data-theme="light"] {
+  --bg-glow: var(--bg-page-glow);
+  --border-strong: #77859A;
+  --surface-highlight: rgba(255, 255, 255, .85);
+  --surface-navbar: rgba(255, 255, 255, .94);
+  --surface-menu: rgba(255, 255, 255, .98);
+  --accent-gradient: linear-gradient(150deg, #FFBA42, #F59E0B);
+  --card-shadow: 0 1px 2px rgba(15, 23, 42, .08), 0 8px 24px rgba(15, 23, 42, .07), 0 24px 48px rgba(15, 23, 42, .04);
+  --card-shadow-hover: 0 12px 24px rgba(15, 23, 42, .10), 0 24px 48px rgba(15, 23, 42, .12);
+  --floor-shadow: rgba(15, 23, 42, .18);
+  --product-spotlight: radial-gradient(ellipse at 50% 15%, #353D49, #151A23 85%);
+  --product-stage-ink: #F1F5F9;
+  --product-floor-shadow: rgba(0,0,0,.32);
+  --placeholder-gradient: linear-gradient(145deg, #FFF1D6, #F1F4F9);
+  --focus-ring: 2px solid var(--accent-text);
+}
+:root[data-theme="dark"] {
+  --border-strong: #807B84;
+  --surface-highlight: rgba(255, 255, 255, .12);
+  --surface-navbar: rgba(28, 25, 27, .96);
+  --surface-menu: rgba(35, 32, 34, .99);
+  --accent-gradient: linear-gradient(150deg, #FFC36B, #FFAB4D);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, .30), 0 8px 24px rgba(0, 0, 0, .22), 0 24px 48px rgba(0, 0, 0, .15);
+  --card-shadow-hover: 0 12px 24px rgba(0, 0, 0, .35), 0 24px 48px rgba(0, 0, 0, .30);
+  --floor-shadow: rgba(0, 0, 0, .50);
+  --product-spotlight: radial-gradient(ellipse at 50% 15%, #FFFFFF, #EDF1F6 85%);
+  --product-stage-ink: #243044;
+  --product-floor-shadow: rgba(15,23,42,.18);
+  --placeholder-gradient: linear-gradient(145deg, #3D3022, #232022);
+  --focus-ring: 2px solid var(--accent-text);
+}
+
+
+/* One glass material for every navigation group. */
+:root, :root[data-theme="light"] {
+  --nav-glass: linear-gradient(135deg, rgba(255,255,255,.88), rgba(218,228,243,.66));
+  --nav-glass-edge: rgba(119,133,154,.64);
+  --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.95), inset 0 -1px 1px rgba(89,108,139,.2), 0 5px 12px rgba(31,49,79,.22), 0 1px 3px rgba(31,49,79,.15);
+  --nav-hover: rgba(119,133,154,.2);
+}
+:root[data-theme="dark"], .navbar--showcase {
+  --nav-glass: linear-gradient(135deg, rgba(179,194,219,.42), rgba(101,117,145,.27) 55%, rgba(66,78,101,.38));
+  --nav-glass-edge: rgba(216,229,250,.46);
+  --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.45), inset 0 -1px 1px rgba(9,14,24,.4), 0 7px 16px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.28);
+  --nav-hover: rgba(224,233,249,.16);
+}
+
+/* Readable initials and translucent customer surfaces. */
+:root {
+  --avatar-ink: #542900;
+  --avatar-surface: #FFE2AE;
+  --avatar-edge: #A45A12;
+  --product-card-glass: linear-gradient(145deg, rgba(255,255,255,.94), rgba(231,238,249,.82));
+  --navbar-glass: linear-gradient(125deg, rgba(255,255,255,.88), rgba(220,230,245,.76));
+}
+:root[data-theme='dark'] {
+  --product-card-glass: linear-gradient(145deg, rgba(81,88,105,.62), rgba(46,49,62,.78));
+  --navbar-glass: linear-gradient(125deg, rgba(87,94,113,.62), rgba(46,49,63,.78));
+}
+
+/* Navbar shells and page cards share the same glass material. */
+:root, :root[data-theme='light'], :root[data-theme='dark'] {
+  --product-card-glass: var(--nav-glass);
+  --navbar-glass: var(--nav-glass);
+}
+
+/* Opaque semantic fills keep status text legible on translucent cards. */
+:root[data-theme='dark'] {
+  --text-muted: #D0D4DE;
+  --ok-bg: #173D32; --ok-text: #9AF0C8; --ok-border: #60B991;
+  --warn-bg: #49351B; --warn-text: #FFE0A0; --warn-border: #D5A554;
+  --bad-bg: #4C252C; --bad-text: #FFB9B5; --bad-border: #D78082;
+  --info-tint: #213653; --info: #B8D5FF;
+  --neutral-tint: #343B49; --neutral: #E0E6F0;
+  --ok: var(--ok-text); --ok-tint: var(--ok-bg);
+  --warn: var(--warn-text); --warn-tint: var(--warn-bg);
+  --danger: var(--bad-text); --danger-tint: var(--bad-bg);
+}
+
+:root { --product-photo-surface: #F4F5F7; --product-photo-ink: #334155; }

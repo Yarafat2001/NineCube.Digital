@@ -1,0 +1,29 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  NineCube.Domain -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Domain\bin\Debug\net10.0\NineCube.Domain.dll
+  NineCube.Application -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Application\bin\Debug\net10.0\NineCube.Application.dll
+  NineCube.Infrastructure -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Infrastructure\bin\Debug\net10.0\NineCube.Infrastructure.dll
+  NineCube.Api -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Api\bin\Debug\net10.0\NineCube.Api.dll
+  NineCube.Tests -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Tests\bin\Debug\net10.0\NineCube.Tests.dll
+Test run for C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Tests\bin\Debug\net10.0\NineCube.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:21:03.05]     NineCube.Tests.ConcurrencyTests.Test08b_Concurrent_multi_line_orders_keep_every_ledger_and_stock_consistent [FAIL]
+  Failed NineCube.Tests.ConcurrencyTests.Test08b_Concurrent_multi_line_orders_keep_every_ledger_and_stock_consistent [38 s]
+  Error Message:
+   Expected responses to contain only items matching (Convert(r.StatusCode, Int32) == 201), but {StatusCode: 500, ReasonPhrase: 'Internal Server Error', Version: 1.1, Content: System.Net.Http.StreamContent, Headers:
+{
+  X-Correlation-Id: 3b3da78cbbb84782846fc2549cd8741f
+  Content-Type: application/problem+json
+}} do(es) not match.
+  Stack Trace:
+     at FluentAssertions.Execution.XUnit2TestFramework.Throw(String message)
+   at FluentAssertions.Execution.TestFrameworkProvider.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.FailWith(String message, Object[] args)
+   at FluentAssertions.Execution.GivenSelector`1.FailWith(String message, Object[] args)
+   at FluentAssertions.Execution.GivenSelector`1.FailWith(String message, Func`2[] args)
+   at FluentAssertions.Collections.GenericCollectionAssertions`3.OnlyContain(Expression`1 predicate, String because, Object[] becauseArgs)
+   at NineCube.Tests.ConcurrencyTests.Test08b_Concurrent_multi_line_orders_keep_every_ledger_and_stock_consistent() in C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Tests\ConcurrencyTests.cs:line 114
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     1, Passed:   106, Skipped:     0, Total:   107, Duration: 8 m 8 s - NineCube.Tests.dll (net10.0)

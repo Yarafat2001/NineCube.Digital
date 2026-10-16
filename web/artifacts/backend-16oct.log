@@ -1,0 +1,11 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  NineCube.Domain -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Domain\bin\Debug\net10.0\NineCube.Domain.dll
+  NineCube.Application -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Application\bin\Debug\net10.0\NineCube.Application.dll
+  NineCube.Infrastructure -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Infrastructure\bin\Debug\net10.0\NineCube.Infrastructure.dll
+  NineCube.Api -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Api\bin\Debug\net10.0\NineCube.Api.dll
+  NineCube.Tests -> C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Tests\bin\Debug\net10.0\NineCube.Tests.dll
+Test run for C:\Users\yeasi\source\repos\NineCube.Digital\src\NineCube.Tests\bin\Debug\net10.0\NineCube.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:   107, Skipped:     0, Total:   107, Duration: 10 m 57 s - NineCube.Tests.dll (net10.0)

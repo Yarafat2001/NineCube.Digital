@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+STUCK  {"documentOverflow":0,"panelClientWidth":315,"panelOverflow":0,"panelPosition":"sticky","panelTop":103,"panelBottom":884,"navbarBottom":87,"panelScrollAreas":[],"selectsInsidePanel":0,"bodyIsScroller":true,"navbarHeight":75,"headerVar":75,"innerHeight":900} {"offset":103,"panelHeight":781,"stuckFrom":328,"stuckUntil":1255}
+INSIDE {"headerBefore":{"x":33,"y":104,"width":314.796875,"height":66.6875},"headerAfter":{"x":33,"y":104,"width":314.796875,"height":66.6875},"bodyScroll":400}
+  ok 1 [chromium] › sidebar-layout.spec.ts:89:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body (12.3s)
+
+  1 passed (15.9s)

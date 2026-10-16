@@ -1,0 +1,78 @@
+
+Running 2 tests using 1 worker
+
+  x  1 [chromium] › sidebar-layout.spec.ts:87:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body (36.0s)
+  ok 2 [chromium] › sidebar-layout.spec.ts:137:3 › catalogue sidebar layout › photographs the fixed sidebar at 1280 and 1440 (18.9s)
+
+
+  1) [chromium] › sidebar-layout.spec.ts:87:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body 
+
+    Error: [31mTimed out 15000ms waiting for [39m[2mexpect([22m[31mlocator[39m[2m).[22mtoBeInViewport[2m()[22m
+
+    Locator: getByRole('heading', { name: /browse & filter/i })
+    Expected: in viewport
+    Received: outside viewport
+    Call log:
+      [2m- expect.toBeInViewport with timeout 15000ms[22m
+    [2m  - waiting for getByRole('heading', { name: /browse & filter/i })[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+    [2m  -   locator resolved to <h2 class="filter-panel__title">Browse & filter</h2>[22m
+    [2m  -   unexpected value "viewport ratio 0"[22m
+
+
+      109 |     expect(scrolled.panelTop).toBeGreaterThanOrEqual(scrolled.navbarBottom);
+      110 |     expect(scrolled.panelBottom).toBeLessThanOrEqual(scrolled.innerHeight + 1);
+    > 111 |     await expect(page.getByRole('heading', { name: /browse & filter/i })).toBeInViewport();
+          |                                                                           ^
+      112 |   });
+      113 |
+      114 |   test('keeps the header popovers inside the viewport', async ({ page }) => {
+
+        at C:\Users\yeasi\source\repos\NineCube.Digital\web\e2e\sidebar-layout.spec.ts:111:75
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-layout-catalogue-s-f9d45-r-and-scrolls-only-its-body-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › sidebar-layout.spec.ts:87:3 › catalogue sidebar layout › sticks the whole card below the header and scrolls only its body 
+  1 passed (1.2m)

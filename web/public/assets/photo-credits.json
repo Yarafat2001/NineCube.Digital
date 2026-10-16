@@ -1,0 +1,74 @@
+[
+  {
+    "filename": "photo-01.jpg",
+    "alt": "Coffee and handcrafted ceramic cups",
+    "photographer": "KOUS9 STUDIO",
+    "source": "https://unsplash.com/photos/fouOokGBWto",
+    "image": "https://images.unsplash.com/photo-1645539817051-7d827b020c33?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "filename": "photo-02.jpg",
+    "alt": "Wireless headphones on a yellow background",
+    "photographer": "C D-X",
+    "source": "https://unsplash.com/photos/PDX_a_82obo",
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "filename": "photo-03.jpg",
+    "alt": "White sneakers with peach detailing",
+    "photographer": null,
+    "source": "https://unsplash.com/s/photos/sneakers-photography",
+    "image": "https://images.unsplash.com/photo-1622760808027-095ea611f657?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "filename": "photo-04.jpg",
+    "alt": "Skincare bottles on a marble tray",
+    "photographer": "Aleksandrs Karevs",
+    "source": "https://unsplash.com/photos/uyhrXEUdL8s",
+    "image": "https://images.unsplash.com/photo-1739950839930-ef45c078f316?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "filename": "photo-05.jpg",
+    "alt": "A wristwatch and backpack ready for travel",
+    "photographer": "Andreas Bentele",
+    "source": "https://unsplash.com/photos/nclxfUKUHjo",
+    "image": "https://images.unsplash.com/photo-1704782453615-aca6e455bfb6?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "filename": "photo-06.jpg",
+    "alt": "A jade houseplant in a terracotta pot",
+    "photographer": "Hannah Busing",
+    "source": "https://unsplash.com/photos/RsE_Jx8P-hE",
+    "image": "https://images.unsplash.com/photo-1736385388786-37a375bb6b2a?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "filename": "photo-07.jpg",
+    "alt": "A woven lounge chair with indoor greenery",
+    "photographer": "tommao wang",
+    "source": "https://unsplash.com/photos/RQxEV9l8pAE",
+    "image": "https://images.unsplash.com/photo-1616422271514-d7d86db67852?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "filename": "photo-08.jpg",
+    "alt": "A notebook and writing supplies on a wooden desk",
+    "photographer": null,
+    "source": "https://unsplash.com/photos/cGGCg7quYn0",
+    "image": "https://images.unsplash.com/photo-1743385779392-cab22721fac6?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  },
+  {
+    "filename": "photo-09.jpg",
+    "alt": "A ceramic bowl of fresh seasonal fruit",
+    "photographer": "Qurratul Ayin Sadia",
+    "source": "https://unsplash.com/photos/aGpQZKnZCFU",
+    "image": "https://images.unsplash.com/photo-1663422229883-9478ceb4363c?auto=format&fit=max&w=1600&q=82&fm=jpg",
+    "license": "https://unsplash.com/license"
+  }
+]

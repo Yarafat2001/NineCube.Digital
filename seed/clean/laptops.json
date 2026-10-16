@@ -1,0 +1,506 @@
+[
+  {
+    "name": "Apple MacBook Air M5 13 (16GB/512GB)",
+    "slug": "apple-macbook-air-m5-13-16gb-512gb",
+    "sku": "BD-APPL-MACB-AIR-FDAAD1",
+    "brand": "Apple",
+    "brandSlug": "apple",
+    "line": "MacBook Air",
+    "lineSlug": "macbook-air",
+    "price": 161500.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Apple M5 processor; 16GB RAM; 512GB SSD; 13.6-inch Liquid Retina display.",
+    "specsJson": "{\"processor\": \"Apple M5\", \"ram\": \"16GB\", \"storage\": \"512GB\", \"display\": \"13.6-inch Liquid Retina\"}",
+    "sourceUrl": "https://www.startech.com.bd/apple-macbook-air-m5-13-inch",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/apple-macbook-air-m5-13-16gb-512gb-0-eaab17b7ac.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/apple/macbook-air-13-m4/sky-blue/macbook-air-13-m4-sky-blue-01-500x500.webp",
+        "sha256": "eaab17b7ac36de672737e58cd3c2a304464fae6bdf7f3f3ee91e4c0bc1058897",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/apple-macbook-air-m5-13-16gb-512gb-1-2767e9e68a.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/apple/macbook-air-13-m4/silver/macbook-air-13-m4-silver-01-500x500.webp",
+        "sha256": "2767e9e68ae387269ea6f1838f6f98a6efdab25cd307b2abf00d21110a545d79",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: Apple",
+      "16GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Premium"
+    ],
+    "imageUrl": "/products/laptops/apple-macbook-air-m5-13-16gb-512gb-0-eaab17b7ac.webp"
+  },
+  {
+    "name": "MSI Raider 18 HX AI (32GB/2TB)",
+    "slug": "msi-raider-18-hx-ai-32gb-2tb",
+    "sku": "BD-MSI-RAID-18-HX-C8E76A",
+    "brand": "MSI",
+    "brandSlug": "msi",
+    "line": "Raider",
+    "lineSlug": "raider",
+    "price": 630000.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Core Ultra 9 285HX processor; 32GB RAM; 2TB SSD; 18-inch UHD+ MiniLED 120Hz display. NVIDIA RTX 5090 24GB graphics.",
+    "specsJson": "{\"processor\": \"Core Ultra 9 285HX\", \"ram\": \"32GB\", \"storage\": \"2TB\", \"display\": \"18-inch UHD+ MiniLED 120Hz\", \"graphics\": \"NVIDIA RTX 5090 24GB\"}",
+    "sourceUrl": "https://www.startech.com.bd/msi-raider-18-hx-ai-a2xwjg-gaming-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/msi-raider-18-hx-ai-32gb-2tb-0-9f29b44270.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/msi/raider-18-hx-ai-a2xwig/raider-18-hx-ai-a2xwig-08-500x500.webp",
+        "sha256": "9f29b44270b1aee1a954c96c5f4c799f8976f8202067e95f9eb179dbb6a1f308",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/msi-raider-18-hx-ai-32gb-2tb-1-4fe32c74e7.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/msi/raider-18-hx-ai-a2xwig/raider-18-hx-ai-a2xwig-01-500x500.webp",
+        "sha256": "4fe32c74e70b40b64f06a1e62b866a1bf00b881fd29fa4fbfa4cc95768b20dfb",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: MSI",
+      "32GB RAM",
+      "2TB SSD",
+      "Gaming",
+      "Premium"
+    ],
+    "imageUrl": "/products/laptops/msi-raider-18-hx-ai-32gb-2tb-0-9f29b44270.webp"
+  },
+  {
+    "name": "Walton Prelude N41 Pro (8GB/256GB)",
+    "slug": "walton-prelude-n41-pro-8gb-256gb",
+    "sku": "BD-WALT-PREL-N41-F03720",
+    "brand": "Walton",
+    "brandSlug": "walton",
+    "line": "Prelude",
+    "lineSlug": "prelude",
+    "price": 28500.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Celeron N4120 processor; 8GB RAM; 256GB SSD; 14-inch FHD display.",
+    "specsJson": "{\"processor\": \"Celeron N4120\", \"ram\": \"8GB\", \"storage\": \"256GB\", \"display\": \"14-inch FHD\"}",
+    "sourceUrl": "https://www.startech.com.bd/walton-prelude-n41-pro-celeron-n4120-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/walton-prelude-n41-pro-8gb-256gb-0-2528a250f3.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/walton/prelude-n41-pro/prelude-n41-pro-01-500x500.webp",
+        "sha256": "2528a250f3bcf2c2cda638840b78b30763e0e3a99315fdc2a37eb993f7e82fbe",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/walton-prelude-n41-pro-8gb-256gb-1-85227e1549.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/walton/prelude-n41-pro/prelude-n41-pro-02-500x500.webp",
+        "sha256": "85227e1549c07466b27adc952ef7de9f892079058cbb9450a6a5c5881d315b01",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: Walton",
+      "8GB RAM",
+      "256GB SSD",
+      "Everyday Computing",
+      "Budget"
+    ],
+    "imageUrl": "/products/laptops/walton-prelude-n41-pro-8gb-256gb-0-2528a250f3.webp"
+  },
+  {
+    "name": "Acer Aspire 3 A325-42-V2 (8GB/256GB)",
+    "slug": "acer-aspire-3-a325-42-v2-8gb-256gb",
+    "sku": "BD-ACER-ASPI-3-A3-11D6DD",
+    "brand": "Acer",
+    "brandSlug": "acer",
+    "line": "Aspire 3",
+    "lineSlug": "aspire-3",
+    "price": 57000.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Ryzen 3 5300U processor; 8GB RAM; 256GB SSD; 15.6-inch FHD IPS display.",
+    "specsJson": "{\"processor\": \"Ryzen 3 5300U\", \"ram\": \"8GB\", \"storage\": \"256GB\", \"display\": \"15.6-inch FHD IPS\"}",
+    "sourceUrl": "https://www.startech.com.bd/acer-aspire-3-a325-42-v2-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/acer-aspire-3-a325-42-v2-8gb-256gb-0-0183dc6817.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/acer/a325-42-v2/a325-42-v2-01-500x500.webp",
+        "sha256": "0183dc6817ff6617b951746d8d9a8c9895a7d228b9a4ee3976d44550e67cf7bf",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/acer-aspire-3-a325-42-v2-8gb-256gb-1-15cb1f4e53.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/acer/a325-42-v2/a325-42-v2-02-500x500.webp",
+        "sha256": "15cb1f4e538eaf218dc1980ac6fa7f6685a872063d31ea3a82be73b8a1e9039d",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: Acer",
+      "8GB RAM",
+      "256GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/acer-aspire-3-a325-42-v2-8gb-256gb-0-0183dc6817.webp"
+  },
+  {
+    "name": "Lenovo IdeaPad 1 15AMN7 (16GB/512GB)",
+    "slug": "lenovo-ideapad-1-15amn7-16gb-512gb",
+    "sku": "BD-LENO-IDEA-1-15-DD9BFE",
+    "brand": "Lenovo",
+    "brandSlug": "lenovo",
+    "line": "IdeaPad",
+    "lineSlug": "ideapad",
+    "price": 72500.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Ryzen 3 7320U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
+    "specsJson": "{\"processor\": \"Ryzen 3 7320U\", \"ram\": \"16GB\", \"storage\": \"512GB\", \"display\": \"15.6-inch FHD IPS\"}",
+    "sourceUrl": "https://www.startech.com.bd/lenovo-ideapad-1-15amn7-ryzen-3-7320u-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/lenovo-ideapad-1-15amn7-16gb-512gb-0-eecf12971c.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/lenovo/ideapad-1-15amn7/ideapad-1-15amn7-001-500x500.webp",
+        "sha256": "eecf12971cb8b80a509d3ee6f7a5d16bce2beda90e82d4aa3d03d04aaba126c6",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/lenovo-ideapad-1-15amn7-16gb-512gb-1-ebbae23fa2.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/lenovo/ideapad-1-15amn7/ideapad-1-15amn7-002-500x500.webp",
+        "sha256": "ebbae23fa28d742fce1b23dd95c574a45688327ab7e18b533315e4982407e6d1",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: Lenovo",
+      "16GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/lenovo-ideapad-1-15amn7-16gb-512gb-0-eecf12971c.webp"
+  },
+  {
+    "name": "Dell Pro 15 PV15250 (8GB/512GB)",
+    "slug": "dell-pro-15-pv15250-8gb-512gb",
+    "sku": "BD-DELL-PRO-15-PV-871A89",
+    "brand": "Dell",
+    "brandSlug": "dell",
+    "line": "Pro",
+    "lineSlug": "pro",
+    "price": 72900.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Core 3 100U processor; 8GB RAM; 512GB SSD; 15.6-inch FHD 120Hz display.",
+    "specsJson": "{\"processor\": \"Core 3 100U\", \"ram\": \"8GB\", \"storage\": \"512GB\", \"display\": \"15.6-inch FHD 120Hz\"}",
+    "sourceUrl": "https://www.startech.com.bd/dell-pro-15-essential-pv15250-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/dell-pro-15-pv15250-8gb-512gb-0-a7e9d2f72b.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/dell/pro-15-essential-pv15250/pro-15-essential-pv15250-01-500x500.webp",
+        "sha256": "a7e9d2f72b731c66b0a8301be6222611fef0907ef118dd99bd7c0af41130c849",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/dell-pro-15-pv15250-8gb-512gb-1-ce91c98508.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/dell/pro-15-essential-pv15250/pro-15-essential-pv15250-02-500x500.webp",
+        "sha256": "ce91c985088c8bf8c997adc7f5f9d0fc9f7f2084cabb0925b18f4cb63dfb1f0a",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: Dell",
+      "8GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/dell-pro-15-pv15250-8gb-512gb-0-a7e9d2f72b.webp"
+  },
+  {
+    "name": "Acer Aspire Lite AL15-41 (16GB/512GB)",
+    "slug": "acer-aspire-lite-al15-41-16gb-512gb",
+    "sku": "BD-ACER-ASPI-LITE-1A3A43",
+    "brand": "Acer",
+    "brandSlug": "acer",
+    "line": "Aspire Lite",
+    "lineSlug": "aspire-lite",
+    "price": 72900.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Ryzen 5 5625U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD display.",
+    "specsJson": "{\"processor\": \"Ryzen 5 5625U\", \"ram\": \"16GB\", \"storage\": \"512GB\", \"display\": \"15.6-inch FHD\"}",
+    "sourceUrl": "https://www.startech.com.bd/acer-aspire-lite-al15-41-ryzen-5-5625u-16gb-fhd-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/acer-aspire-lite-al15-41-16gb-512gb-0-9259d53635.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/acer/aspire-lite-al15-41-0/aspire-lite-al15-41-1-500x500.webp",
+        "sha256": "9259d536358a3ab3be57252794c40732c3487e794f0ffd78ff2fb3373ed3eee0",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/acer-aspire-lite-al15-41-16gb-512gb-1-b75f08eb4a.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/acer/aspire-lite-al15-41/aspire-lite-al15-41-02-500x500.webp",
+        "sha256": "b75f08eb4afad7c70e7c485d33a3ef6fa8ed1803dd810a66b0bfd8ae0ea35fc0",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: Acer",
+      "16GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/acer-aspire-lite-al15-41-16gb-512gb-0-9259d53635.webp"
+  },
+  {
+    "name": "HP 15-fc0634AU (8GB/512GB)",
+    "slug": "hp-15-fc0634au-8gb-512gb",
+    "sku": "BD-HP-15-FC06-8GB-B7CF5C",
+    "brand": "HP",
+    "brandSlug": "hp",
+    "line": "15",
+    "lineSlug": "15",
+    "price": 95000.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Ryzen 5 7520U processor; 8GB RAM; 512GB SSD; 15.6-inch FHD display.",
+    "specsJson": "{\"processor\": \"Ryzen 5 7520U\", \"ram\": \"8GB\", \"storage\": \"512GB\", \"display\": \"15.6-inch FHD\"}",
+    "sourceUrl": "https://www.startech.com.bd/hp-15-fc0634au-ryzen-5-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/hp-15-fc0634au-8gb-512gb-0-82ebf8ac23.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/hp-laptop/15-fc0634au/15-fc0634au-01-500x500.webp",
+        "sha256": "82ebf8ac230bbc8966cb71267d82d0cc0d4d073f081d643eb48fcbce139edcbd",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/hp-15-fc0634au-8gb-512gb-1-1e42ae0ad1.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/hp-laptop/15-fc0634au/15-fc0634au-02-500x500.webp",
+        "sha256": "1e42ae0ad17dcd662002eea6fc32226e35b284372b2da6b898564ff637d0c353",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: HP",
+      "8GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/hp-15-fc0634au-8gb-512gb-0-82ebf8ac23.webp"
+  },
+  {
+    "name": "ASUS Vivobook 14 A1404VA (16GB/512GB)",
+    "slug": "asus-vivobook-14-a1404va-16gb-512gb",
+    "sku": "BD-ASUS-VIVO-14-A-D2833A",
+    "brand": "ASUS",
+    "brandSlug": "asus",
+    "line": "Vivobook",
+    "lineSlug": "vivobook",
+    "price": 93000.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Core 5 120U processor; 16GB RAM; 512GB SSD; 14-inch FHD IPS display.",
+    "specsJson": "{\"processor\": \"Core 5 120U\", \"ram\": \"16GB\", \"storage\": \"512GB\", \"display\": \"14-inch FHD IPS\"}",
+    "sourceUrl": "https://www.startech.com.bd/asus-vivobook-14-a1404va-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/asus-vivobook-14-a1404va-16gb-512gb-0-a200c97fcf.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/asus/vivobook-14-a1404va/vivobook-14-a1404va-quiet-blue-01-500x500.webp",
+        "sha256": "a200c97fcf89af1cfd8f5c5e4635452c6c55af75a05139293c96c16692de8a67",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/asus-vivobook-14-a1404va-16gb-512gb-1-701a02caf7.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/asus/vivobook-14-a1404va/vivobook-14-a1404va-quiet-blue-02-500x500.webp",
+        "sha256": "701a02caf79b85a22ac6f3b281983791c0a9f41ee7e41b22b1da780493651320",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: ASUS",
+      "16GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/asus-vivobook-14-a1404va-16gb-512gb-0-a200c97fcf.webp"
+  },
+  {
+    "name": "MSI Modern 15 F1MG (16GB/512GB)",
+    "slug": "msi-modern-15-f1mg-16gb-512gb",
+    "sku": "BD-MSI-MODE-15-F1-45BA5B",
+    "brand": "MSI",
+    "brandSlug": "msi",
+    "line": "Modern",
+    "lineSlug": "modern",
+    "price": 94500.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Core 5 120U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
+    "specsJson": "{\"processor\": \"Core 5 120U\", \"ram\": \"16GB\", \"storage\": \"512GB\", \"display\": \"15.6-inch FHD IPS\"}",
+    "sourceUrl": "https://www.startech.com.bd/msi-modern-15-f1mg-core-5-120u-16gb-ram-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/msi-modern-15-f1mg-16gb-512gb-0-256cafea60.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/msi/modern-15-f1mg/modern-15-f1mg-platinum-gray-01-500x500.webp",
+        "sha256": "256cafea60471a58f2c8b34c6602e08c0f13aa4ed332347f2ac05725af20f3e6",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/msi-modern-15-f1mg-16gb-512gb-1-2071d78e0e.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/msi/modern-15-f1mg/modern-15-f1mg-platinum-gray-02-500x500.webp",
+        "sha256": "2071d78e0ec84416ca81693bd4af8b7e82490ba4974af21ea338a1b7fe168ec4",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: MSI",
+      "16GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/msi-modern-15-f1mg-16gb-512gb-0-256cafea60.webp"
+  },
+  {
+    "name": "Dell Inspiron 3530 i7 (16GB/512GB)",
+    "slug": "dell-inspiron-3530-i7-16gb-512gb",
+    "sku": "BD-DELL-INSP-3530-D39C5D",
+    "brand": "Dell",
+    "brandSlug": "dell",
+    "line": "Inspiron",
+    "lineSlug": "inspiron",
+    "price": 94000.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Core i7-1355U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD display.",
+    "specsJson": "{\"processor\": \"Core i7-1355U\", \"ram\": \"16GB\", \"storage\": \"512GB\", \"display\": \"15.6-inch FHD\"}",
+    "sourceUrl": "https://www.startech.com.bd/dell-inspiron-3530-core-i7-15-inch-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/dell-inspiron-3530-i7-16gb-512gb-0-392868c092.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/dell/inspiron-3530/inspiron-3530-black-01-500x500.webp",
+        "sha256": "392868c0921f4f8b0c4260b7890bbb8e828469c6e2be48747d8657ee6aa7091b",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/dell-inspiron-3530-i7-16gb-512gb-1-e12d5fe19c.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/dell/inspiron-3530/inspiron-3530-black-05-500x500.webp",
+        "sha256": "e12d5fe19c02de5be44e1421d4b58f8ebca0cdd90af0871b094bb9cf11c7eb03",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: Dell",
+      "16GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/dell-inspiron-3530-i7-16gb-512gb-0-392868c092.webp"
+  },
+  {
+    "name": "Lenovo IdeaPad Slim 3 15AMN8 (16GB/512GB)",
+    "slug": "lenovo-ideapad-slim-3-15amn8-16gb-512gb",
+    "sku": "BD-LENO-IDEA-SLIM-00FF31",
+    "brand": "Lenovo",
+    "brandSlug": "lenovo",
+    "line": "IdeaPad Slim",
+    "lineSlug": "ideapad-slim",
+    "price": 99000.0,
+    "currency": "BDT",
+    "stockQuantity": 0,
+    "description": "Ryzen 5 40 processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
+    "specsJson": "{\"processor\": \"Ryzen 5 40\", \"ram\": \"16GB\", \"storage\": \"512GB\", \"display\": \"15.6-inch FHD IPS\"}",
+    "sourceUrl": "https://www.startech.com.bd/lenovo-ideapad-slim-3-15amn8-ryzen-5-40-laptop",
+    "sourceName": "Star Tech Bangladesh",
+    "sourceLicense": "Retailer/manufacturer photograph copyright retained; sourced factual specifications and listed price",
+    "priceBasis": "Star Tech listed cash/online BDT price at collection; not a live supplier quote.",
+    "images": [
+      {
+        "url": "/products/laptops/lenovo-ideapad-slim-3-15amn8-16gb-512gb-0-e691bdaf52.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/lenovo/ideapad-slim-3-15abr8/ideapad-slim-3-15abr8-arctic-grey-01-500x500.webp",
+        "sha256": "e691bdaf522b76a1edf49021f0e9f9d74a73d793eefde27ff412c105e003deab",
+        "width": 500,
+        "height": 500
+      },
+      {
+        "url": "/products/laptops/lenovo-ideapad-slim-3-15amn8-16gb-512gb-1-18fb96833c.webp",
+        "sourceUrl": "https://www.startech.com.bd/image/cache/catalog/laptop/lenovo/ideapad-slim-3-15abr8/ideapad-slim-3-15abr8-arctic-grey-02-500x500.webp",
+        "sha256": "18fb96833ca4b38a2c17c9061aab02d78ae58abbebbc43f515900709f504ef70",
+        "width": 500,
+        "height": 500
+      }
+    ],
+    "tags": [
+      "Brand: Lenovo",
+      "16GB RAM",
+      "512GB SSD",
+      "Everyday Computing",
+      "Mid-range"
+    ],
+    "imageUrl": "/products/laptops/lenovo-ideapad-slim-3-15amn8-16gb-512gb-0-e691bdaf52.webp"
+  }
+]

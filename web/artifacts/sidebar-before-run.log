@@ -1,0 +1,108 @@
+
+Running 1 test using 1 worker
+
+WIDTH 1280: {
+ "pageOverflow": 0,
+ "panelOverflow": 0,
+ "panelClientWidth": 228,
+ "panelRect": {
+  "x": 24,
+  "y": 427.6875,
+  "width": 230,
+  "height": 772,
+  "top": 427.6875,
+  "right": 254,
+  "bottom": 1199.6875,
+  "left": 24
+ },
+ "panelPosition": "sticky",
+ "panelTop": "104px",
+ "panelMaxHeight": "772px",
+ "navbarRect": {
+  "x": 51.203125,
+  "y": 16,
+  "width": 1177.59375,
+  "height": 75.25,
+  "top": 16,
+  "right": 1228.796875,
+  "bottom": 91.25,
+  "left": 51.203125
+ },
+ "layoutColumns": "230px 978px",
+ "overflowingInsidePanel": [
+  "stack|207>188|Browse & filterCounts include subcategor",
+  "filter-group|202>188|Categoryhome-appliances ▾All products+Ho",
+  "filter-group__toggle|202>188|Categoryhome-appliances ▾",
+  "filter-group|207>188|Brand▾Search brandsWalton14",
+  "filter-group__body|207>188|Search brandsWalton14"
+ ],
+ "groupSummaries": [
+  "Categoryhome-appliances ▾",
+  "Brand▾",
+  "Tag▾",
+  "Availability▾",
+  "Price▾",
+  "Sort by▾"
+ ],
+ "treeRows": [
+  "+Home26",
+  "−Electronics46+Phones30−✓ Home Appliances15Refrigerators15Laptops1",
+  "+Phones30",
+  "−✓ Home Appliances15Refrigerators15"
+ ]
+}
+WIDTH 1440: {
+ "pageOverflow": 0,
+ "panelOverflow": 0,
+ "panelClientWidth": 228,
+ "panelRect": {
+  "x": 32,
+  "y": 430.578125,
+  "width": 230,
+  "height": 772,
+  "top": 430.578125,
+  "right": 262,
+  "bottom": 1202.578125,
+  "left": 32
+ },
+ "panelPosition": "sticky",
+ "panelTop": "104px",
+ "panelMaxHeight": "772px",
+ "navbarRect": {
+  "x": 100,
+  "y": 16,
+  "width": 1240,
+  "height": 75.25,
+  "top": 16,
+  "right": 1340,
+  "bottom": 91.25,
+  "left": 100
+ },
+ "layoutColumns": "230px 1122px",
+ "overflowingInsidePanel": [
+  "stack|207>188|Browse & filterCounts include subcategor",
+  "filter-group|202>188|Categoryhome-appliances ▾All products+Ho",
+  "filter-group__toggle|202>188|Categoryhome-appliances ▾",
+  "filter-group|207>188|Brand▾Search brandsWalton14",
+  "filter-group__body|207>188|Search brandsWalton14"
+ ],
+ "groupSummaries": [
+  "Categoryhome-appliances ▾",
+  "Brand▾",
+  "Tag▾",
+  "Availability▾",
+  "Price▾",
+  "Sort by▾"
+ ],
+ "treeRows": [
+  "+Home26",
+  "−Electronics46+Phones30−✓ Home Appliances15Refrigerators15Laptops1",
+  "+Phones30",
+  "−✓ Home Appliances15Refrigerators15"
+ ]
+}
+  ok 1 [chromium] › _sidebar-before.spec.ts:7:1 › sidebar before state (1.1m)
+
+  Slow test file: [chromium] › _sidebar-before.spec.ts (1.1m)
+  Consider splitting slow test files to speed up parallel execution
+  1 passed (1.6m)

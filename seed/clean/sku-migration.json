@@ -1,0 +1,872 @@
+[
+  {
+    "id": 57,
+    "slug": "legacy-product-57",
+    "oldSku": "BD-0d14805b5afd6b0a0c815bf81ffc47d40111403f227b8942cdea3cfd7779",
+    "newSku": "BD-LEGA-PROD-57-CF8F21"
+  },
+  {
+    "id": 58,
+    "slug": "legacy-product-58",
+    "oldSku": "BD-10f62293ff7ac0eb03a26afe9dcb01795b5cb31c397d8406cdf2eb252c51",
+    "newSku": "BD-LEGA-PROD-58-4683A6"
+  },
+  {
+    "id": 59,
+    "slug": "legacy-product-59",
+    "oldSku": "BD-4acd76589f1a339d8211b9d4061424be3c5f6b8443fcb4a9c0524e469dce",
+    "newSku": "BD-LEGA-PROD-59-EEBE2D"
+  },
+  {
+    "id": 60,
+    "slug": "legacy-product-60",
+    "oldSku": "BD-d9c1cc8ca0d856156ac23d51ad244066f2cac551a8a61eed484f7362320a",
+    "newSku": "BD-LEGA-PROD-60-F12D5D"
+  },
+  {
+    "id": 61,
+    "slug": "legacy-product-61",
+    "oldSku": "BD-8f272bc46fc68600f61ca5e277fb4d1a480e76be3abc4bc6cc433ea22e13",
+    "newSku": "BD-LEGA-PROD-61-66F585"
+  },
+  {
+    "id": 62,
+    "slug": "legacy-product-62",
+    "oldSku": "BD-49f51e3140deeac2c26d9aa6eeba34f6fa651bdf1cd6089a83eb7fc3be7c",
+    "newSku": "BD-LEGA-PROD-62-4BE14D"
+  },
+  {
+    "id": 63,
+    "slug": "legacy-product-63",
+    "oldSku": "BD-3fc0cdddf94ee6b0da8db85b25260fc260e74529f69d4725ca06e711cdc0",
+    "newSku": "BD-LEGA-PROD-63-516F55"
+  },
+  {
+    "id": 64,
+    "slug": "legacy-product-64",
+    "oldSku": "BD-a40954f78a9d41d0392387147899f77034049b938af5335e6c9d2912967f",
+    "newSku": "BD-LEGA-PROD-64-EB70A6"
+  },
+  {
+    "id": 65,
+    "slug": "legacy-product-65",
+    "oldSku": "BD-dde1f45fac715d1a3074a5eba7654d5fc046d3277d613ef07ccf8b5d5df1",
+    "newSku": "BD-LEGA-PROD-65-4D27F7"
+  },
+  {
+    "id": 66,
+    "slug": "legacy-product-66",
+    "oldSku": "BD-89c52cd75476076860b3995992c4f5e39ff598921f563123234efac33ec4",
+    "newSku": "BD-LEGA-PROD-66-F261F1"
+  },
+  {
+    "id": 67,
+    "slug": "legacy-product-67",
+    "oldSku": "BD-02f7b32e24b496466dc533b79e75503c56fa686a707ec57d95188c34f526",
+    "newSku": "BD-LEGA-PROD-67-1A7876"
+  },
+  {
+    "id": 68,
+    "slug": "legacy-product-68",
+    "oldSku": "BD-b5c056a93f13a189a6747aee4fbf0a6904ac261b5702fa44bf05b54faa02",
+    "newSku": "BD-LEGA-PROD-68-C19D5F"
+  },
+  {
+    "id": 69,
+    "slug": "legacy-product-69",
+    "oldSku": "BD-78792e7a7cd6407b354ed1376575995945f7db692b972c8b2661a990de09",
+    "newSku": "BD-LEGA-PROD-69-2788C3"
+  },
+  {
+    "id": 70,
+    "slug": "legacy-product-70",
+    "oldSku": "BD-3c9675d875543d016448a6ec3288f9be8b2bb2e3877e904f362dc70bcc9b",
+    "newSku": "BD-LEGA-PROD-70-2AC6E3"
+  },
+  {
+    "id": 71,
+    "slug": "legacy-product-71",
+    "oldSku": "BD-fe1a7de4cb79000b674856dbf1276f5bfa3f8c66b4ecf2006f13bb603c99",
+    "newSku": "BD-LEGA-PROD-71-56571D"
+  },
+  {
+    "id": 72,
+    "slug": "legacy-product-72",
+    "oldSku": "BD-e83e6ec4e8fb0bd5badd87a64f8859504c613f3e97ce07ab523daef9b7b2",
+    "newSku": "BD-LEGA-PROD-72-911506"
+  },
+  {
+    "id": 73,
+    "slug": "legacy-product-73",
+    "oldSku": "BD-26a58395a974afd01d151c75ec69cc60808347c3b14971b7a5b14eefe285",
+    "newSku": "BD-LEGA-PROD-73-C1A96C"
+  },
+  {
+    "id": 74,
+    "slug": "legacy-product-74",
+    "oldSku": "BD-4ff35bacd32e91d2675cbb1c03cbe214cfbb5571fcd9e72eaafecf5ac758",
+    "newSku": "BD-LEGA-PROD-74-9DC0B0"
+  },
+  {
+    "id": 75,
+    "slug": "legacy-product-75",
+    "oldSku": "BD-6e8e73146ec5ea185737ee40d58850cc48509cf9ddb0be5c21646829ef4c",
+    "newSku": "BD-LEGA-PROD-75-A47327"
+  },
+  {
+    "id": 76,
+    "slug": "legacy-product-76",
+    "oldSku": "BD-45a9b67339cbf7b28930efbe182efb3977f29fda8fe3975766275f113f31",
+    "newSku": "BD-LEGA-PROD-76-1CDAAC"
+  },
+  {
+    "id": 77,
+    "slug": "legacy-product-77",
+    "oldSku": "BD-31649b003954ba98478532abcfd5e46c99f6ab676c805337cb8571983842",
+    "newSku": "BD-LEGA-PROD-77-44588B"
+  },
+  {
+    "id": 78,
+    "slug": "legacy-product-78",
+    "oldSku": "BD-fa805172d90af52e364b0339b6f5379a000eb171ca97a8811c4df99a5764",
+    "newSku": "BD-LEGA-PROD-78-296012"
+  },
+  {
+    "id": 79,
+    "slug": "legacy-product-79",
+    "oldSku": "BD-40d924c229085b4edc9c45dc1b1c69483511070dc93afa1a55661cafd2d0",
+    "newSku": "BD-LEGA-PROD-79-E5AB11"
+  },
+  {
+    "id": 80,
+    "slug": "legacy-product-80",
+    "oldSku": "BD-3c54f826438b5ce6c0fca8f1235937e1ab64773ab68458d47f687e824fdd",
+    "newSku": "BD-LEGA-PROD-80-9ED7DB"
+  },
+  {
+    "id": 81,
+    "slug": "legacy-product-81",
+    "oldSku": "BD-37a8986d7c8bc40102d2389ebec60c24f983ddb4e7b8f0e7b39ccadc7b7c",
+    "newSku": "BD-LEGA-PROD-81-E93C67"
+  },
+  {
+    "id": 89,
+    "slug": "generic-motorcycle-helmet-size-m",
+    "oldSku": "BD-5e648680244767295f1497ac2263077d45ceeed8bd8752f8c62a77ef038c",
+    "newSku": "BD-MOTO-HELM-SIZE-5E6486"
+  },
+  {
+    "id": 90,
+    "slug": "generic-car-cleaning-kit",
+    "oldSku": "BD-76ecd6b362b629b147d23b0e6d09b442e9507fa774aea10c31ed7fe476df",
+    "newSku": "BD-CAR-CLEA-KIT-76ECD6"
+  },
+  {
+    "id": 91,
+    "slug": "apex-cross-men-s-wallet-09110a72",
+    "oldSku": "BD-8bce88a471a8cce901128e9e87293e8ab45e23ae9942e810ae335aaf7747",
+    "newSku": "BD-APEX-CROS-MEN-8BCE88"
+  },
+  {
+    "id": 92,
+    "slug": "bata-power-fanny-pack-bags-9112201",
+    "oldSku": "BD-6262dc655ac9eeb78e3effe1de324a02788a85ba1a7ce0225dbc8c6d2e16",
+    "newSku": "BD-BATA-POWE-FANN-6262DC"
+  },
+  {
+    "id": 93,
+    "slug": "apex-nino-rossi-women-s-bag-2",
+    "oldSku": "BD-aa8144d2441001a0ccbe97e676b1e4a72b368b53d0a0e2eef342cb1496b7",
+    "newSku": "BD-APEX-NINO-ROSS-AA8144"
+  },
+  {
+    "id": 94,
+    "slug": "bata-power-fanny-pack-bags-9116201",
+    "oldSku": "BD-304fef14b298d8e0c91c09dbd696c5e034877f9369448b8cf742aff4a163",
+    "newSku": "BD-BATA-POWE-FANN-304FEF"
+  },
+  {
+    "id": 95,
+    "slug": "apex-nino-rossi-women-s-tote-bag-2",
+    "oldSku": "BD-8fdca6d79cacc1d59e5a1d2f653ad88161c192ab11ca0eb7100a3c59728b",
+    "newSku": "BD-APEX-NINO-ROSS-8FDCA6"
+  },
+  {
+    "id": 96,
+    "slug": "apex-nino-rossi-womens-tote-bag-3",
+    "oldSku": "BD-6c4cd9f90e0a96163fcad62eae0c8b25fd7fa8b5c23105d4b85055e38102",
+    "newSku": "BD-APEX-NINO-ROSS-6C4CD9"
+  },
+  {
+    "id": 97,
+    "slug": "apex-police-men-s-crossbody-bag-09015a01",
+    "oldSku": "BD-3ea445d7211aa43893a1a969f891671ac5268d62cc3f22da8772917488c3",
+    "newSku": "BD-APEX-POLI-MEN-3EA445"
+  },
+  {
+    "id": 98,
+    "slug": "apex-police-men-s-crossbody-bag-09015a02",
+    "oldSku": "BD-1eb4a7d9d5e17a13ebd8e42529fa398477a0c673a756567712cac2509587",
+    "newSku": "BD-APEX-POLI-MEN-1EB4A7"
+  },
+  {
+    "id": 99,
+    "slug": "apex-police-men-s-gym-bag-09095a05",
+    "oldSku": "BD-13f029cc3ef8b0ee6c87596a2180accb3caa7a6c0b5e24cf13f314251f21",
+    "newSku": "BD-APEX-POLI-MEN-13F029"
+  },
+  {
+    "id": 100,
+    "slug": "apex-venturini-mens-leather-wallet-0931la28",
+    "oldSku": "BD-71e1f5ca790bd5280da78d38741966324abc4772dd105cd0c6c7e516ae57",
+    "newSku": "BD-APEX-VENT-MENS-71E1F5"
+  },
+  {
+    "id": 101,
+    "slug": "apex-venturini-mens-long-wallet-0931la32",
+    "oldSku": "BD-95ed63444a2a0d60fcb1cde70d5d97ff8c716fc5688c4286e5e9a2e72563",
+    "newSku": "BD-APEX-VENT-MENS-95ED63"
+  },
+  {
+    "id": 102,
+    "slug": "hatil-dazzler-101",
+    "oldSku": "BD-12b63c4c182a250f8ed8f374f0211b938c8705deba5b4f3750cf0bff6b56",
+    "newSku": "BD-HATI-DAZZ-101-12B63C"
+  },
+  {
+    "id": 103,
+    "slug": "hatil-desire-154",
+    "oldSku": "BD-52b219b8240a93eedb610b43b0db6adb4fb9053bb32e19f71db9165bafb1",
+    "newSku": "BD-HATI-DESI-154-52B219"
+  },
+  {
+    "id": 104,
+    "slug": "hatil-elegant-189",
+    "oldSku": "BD-93f10c72a1d60f4f832d9f34a536a1e1c7c9c9b7906f8cc8a75b4cc784ba",
+    "newSku": "BD-HATI-ELEG-189-93F10C"
+  },
+  {
+    "id": 105,
+    "slug": "hatil-epiphany-115",
+    "oldSku": "BD-0201b6a658bc4a14687318834ddd9c308ce56d5e27aa5cb25ca9a449fcb8",
+    "newSku": "BD-HATI-EPIP-115-0201B6"
+  },
+  {
+    "id": 106,
+    "slug": "hatil-getafe-207",
+    "oldSku": "BD-646c352aeae09678818aeb23ae2b11a8cd92726ba412ddeeba2b092c6957",
+    "newSku": "BD-HATI-GETA-207-646C35"
+  },
+  {
+    "id": 107,
+    "slug": "hatil-kent-187",
+    "oldSku": "BD-300228df49193cf95ab3065e1ce48978d42f1226a8fb9df0e3deee68333e",
+    "newSku": "BD-HATI-KENT-187-300228"
+  },
+  {
+    "id": 108,
+    "slug": "hatil-mirage-175",
+    "oldSku": "BD-7a9d440e84a26e6126f00f2ea51e7006f16b42b05a3e240a56e3113fdc51",
+    "newSku": "BD-HATI-MIRA-175-7A9D44"
+  },
+  {
+    "id": 109,
+    "slug": "hatil-myth-184",
+    "oldSku": "BD-d92cd634052f3c83c27ae03d96820ddf969d9fb3ecbf7a2c6d874d6f5e6c",
+    "newSku": "BD-HATI-MYTH-184-D92CD6"
+  },
+  {
+    "id": 110,
+    "slug": "hatil-nemesis-197-5-feet-complete-bed-2a",
+    "oldSku": "BD-605ba8b90f82af1022abb82a462a066c0096e2cae448f8af154b7c30eec8",
+    "newSku": "BD-HATI-NEME-197-605BA8"
+  },
+  {
+    "id": 111,
+    "slug": "hatil-thrill-162",
+    "oldSku": "BD-525004ee7d9d748c9c8a5fbf32d25c0a2ec3513a00dd423a5779add736aa",
+    "newSku": "BD-HATI-THRI-162-525004"
+  },
+  {
+    "id": 112,
+    "slug": "hatil-tiara-190",
+    "oldSku": "BD-48c63bf794a3164e29572b8976fc58764f5bd5e62c5d45402ab678d60ff3",
+    "newSku": "BD-HATI-TIAR-190-48C63B"
+  },
+  {
+    "id": 113,
+    "slug": "hatil-vega-128",
+    "oldSku": "BD-cdb0c9e06345ee0aba42d4d824edce7aee3f742c932eeef1ad612f7244ad",
+    "newSku": "BD-HATI-VEGA-128-CDB0C9"
+  },
+  {
+    "id": 114,
+    "slug": "hatil-alessandro-204",
+    "oldSku": "BD-0c4dd499a6735261b3b350c3357d6512dfed905c0cdd807b6e336b98b62d",
+    "newSku": "BD-HATI-ALES-204-0C4DD4"
+  },
+  {
+    "id": 115,
+    "slug": "hatil-aria-132",
+    "oldSku": "BD-348dc7d8643eb01fc33373a312dd4e9c3fb3aab546fbccfe8ddaee017253",
+    "newSku": "BD-HATI-ARIA-132-348DC7"
+  },
+  {
+    "id": 116,
+    "slug": "hatil-bagpipes-133",
+    "oldSku": "BD-558d01e05b3deec9a69065934b89a87fb0ec44b5c31e2e900994b1cc243b",
+    "newSku": "BD-HATI-BAGP-133-558D01"
+  },
+  {
+    "id": 117,
+    "slug": "hatil-belinda-138",
+    "oldSku": "BD-026f89950f5805e770ce564b1cdf03320df1b78d8f3a523b6426fdf6ae07",
+    "newSku": "BD-HATI-BELI-138-026F89"
+  },
+  {
+    "id": 118,
+    "slug": "hatil-benchley-333",
+    "oldSku": "BD-361f86ef6aac8d4198e9f7ef68bd28f42ee97cbfa02b61834618f80fb48c",
+    "newSku": "BD-HATI-BENC-333-361F86"
+  },
+  {
+    "id": 119,
+    "slug": "hatil-borges-208",
+    "oldSku": "BD-917388378da748263a5d0bf4a28d9d9bb66076b091d374972465f76511c3",
+    "newSku": "BD-HATI-BORG-208-917388"
+  },
+  {
+    "id": 120,
+    "slug": "hatil-brooker-325",
+    "oldSku": "BD-d8528d1db1186adc8c52dfd4568561546f1aa9e370bb4bdf089ae4e1ebeb",
+    "newSku": "BD-HATI-BROO-325-D8528D"
+  },
+  {
+    "id": 121,
+    "slug": "hatil-burgess-327",
+    "oldSku": "BD-b9b6872f36a5d565901a44328e23d06220d2560aabb95fcc69527e163530",
+    "newSku": "BD-HATI-BURG-327-B9B687"
+  },
+  {
+    "id": 122,
+    "slug": "hatil-cezanne-112-gl",
+    "oldSku": "BD-71b9b83904c728e8eb94909a7746ff5490a94fc811f1c515dd36a426beaa",
+    "newSku": "BD-HATI-CEZA-112-71B9B8"
+  },
+  {
+    "id": 123,
+    "slug": "hatil-cezanne-112-sp",
+    "oldSku": "BD-d1db4e0c079a9079873328e1998108742874b29f12bcf05a1f418c989ae8",
+    "newSku": "BD-HATI-CEZA-112-D1DB4E"
+  },
+  {
+    "id": 124,
+    "slug": "hatil-clive-332",
+    "oldSku": "BD-fbe52ceed0c50f41aaf66c76feeaf1a0f61e6c2c7eec0af1c85b8b1bafa2",
+    "newSku": "BD-HATI-CLIV-332-FBE52C"
+  },
+  {
+    "id": 125,
+    "slug": "hatil-cornel-330",
+    "oldSku": "BD-06fb9f1ba90bb56031abea1c0039a02acd222e587ecdcc82ca3e14cd5546",
+    "newSku": "BD-HATI-CORN-330-06FB9F"
+  },
+  {
+    "id": 126,
+    "slug": "hatil-cosy-101",
+    "oldSku": "BD-67749fade0dd9ddb008f28b6bb481646dbdbad14288542dd805744b31928",
+    "newSku": "BD-HATI-COSY-101-67749F"
+  },
+  {
+    "id": 127,
+    "slug": "hatil-couplet-134",
+    "oldSku": "BD-725fdbfdadb47155571fec5d45abb42dbee625d88ce1d886af8c55be686e",
+    "newSku": "BD-HATI-COUP-134-725FDB"
+  },
+  {
+    "id": 128,
+    "slug": "hatil-degas-103",
+    "oldSku": "BD-391a31143bc2820f450d7f1a6a2dc35e516471184f42b60dd4070070c8fd",
+    "newSku": "BD-HATI-DEGA-103-391A31"
+  },
+  {
+    "id": 129,
+    "slug": "generic-soybean-cooking-oil-5-l",
+    "oldSku": "BD-ca6651d373d9a8df1a6d15dcb8610e485ac1bc3952aec1f29d9f5a880f6c",
+    "newSku": "BD-SOYB-COOK-OIL-CA6651"
+  },
+  {
+    "id": 130,
+    "slug": "generic-coconut-oil-1-l",
+    "oldSku": "BD-6b3e2785ef57c8edaeaf13202c2c1ffdfb5400f6106055113b018d100503",
+    "newSku": "BD-COCO-OIL-1-L-6B3E27"
+  },
+  {
+    "id": 131,
+    "slug": "generic-moisturising-face-cream-50-g",
+    "oldSku": "BD-6eeeb711f8082a612dde7e1b67643804bc2a537df5d68c8686216609f4db",
+    "newSku": "BD-MOIS-FACE-CREA-6EEEB7"
+  },
+  {
+    "id": 132,
+    "slug": "generic-lipstick",
+    "oldSku": "BD-846750da9cdb27fd0890186837cfd9961719e60a9d62e29caa56c7cc4f44",
+    "newSku": "BD-LIPS-846750"
+  },
+  {
+    "id": 133,
+    "slug": "generic-rose-attar-10-ml",
+    "oldSku": "BD-fc70f216d5d7eee773753280b5cb2f35f3c0c471d3a119f487904d29a5f8",
+    "newSku": "BD-ROSE-ATTA-10-M-FC70F2"
+  },
+  {
+    "id": 134,
+    "slug": "generic-body-spray-200-ml",
+    "oldSku": "BD-0f4edfbc497c92e2aae1c4db3b838006e086edc3762dfdc18d3c055863e9",
+    "newSku": "BD-BODY-SPRA-200-0F4EDF"
+  },
+  {
+    "id": 135,
+    "slug": "generic-tall-tubular-battery-150-ah",
+    "oldSku": "BD-a3d4d3fd484f21ec462717749019c3e816b673e8a417da70b79e0c200e08",
+    "newSku": "BD-TALL-TUBU-BATT-A3D4D3"
+  },
+  {
+    "id": 136,
+    "slug": "generic-laptop-8-gb-ram-256-gb-ssd",
+    "oldSku": "BD-bcf03a1a62f427104bf48c8b530e7bedc1541311c7ec96e0971e6d402b37",
+    "newSku": "BD-LAPT-8-GB-RAM-BCF03A"
+  },
+  {
+    "id": 137,
+    "slug": "walton-crystal-series-led-bulb",
+    "oldSku": "BD-e79b335b216eb0410c4c2237caccae48f2d1671cc814e04aa489e5042210",
+    "newSku": "BD-WALT-CRYS-SERI-E79B33"
+  },
+  {
+    "id": 138,
+    "slug": "walton-moon-light",
+    "oldSku": "BD-e270e2e5cdf21256b35142f4134e4f73ce3fa104b73b8ea0f0414ff362fd",
+    "newSku": "BD-WALT-MOON-LIGH-E270E2"
+  },
+  {
+    "id": 139,
+    "slug": "walton-public-series-a-shape-led-bulb",
+    "oldSku": "BD-682e024a47c51579a9e6bf78e9350115ab1b2131e9fbed0d7b9cb2bbc4c5",
+    "newSku": "BD-WALT-PUBL-SERI-682E02"
+  },
+  {
+    "id": 140,
+    "slug": "walton-public-series-t-shape-led-bulb",
+    "oldSku": "BD-5cd73ecad490f152baef00a32f80086161fb956762664e82f3fd886f6e16",
+    "newSku": "BD-WALT-PUBL-SERI-5CD73E"
+  },
+  {
+    "id": 141,
+    "slug": "walton-rainbow-bulb",
+    "oldSku": "BD-8f63d2d3c7c8639fef67bb16f1a4c4a0456bebfc3456306dfee07ad23246",
+    "newSku": "BD-WALT-RAIN-BULB-8F63D2"
+  },
+  {
+    "id": 142,
+    "slug": "walton-ultra-series-led-bulb",
+    "oldSku": "BD-cb78901e82c3536b5633b0a8c4953ec8e49b22a35c10d0385085d0b7cd41",
+    "newSku": "BD-WALT-ULTR-SERI-CB7890"
+  },
+  {
+    "id": 143,
+    "slug": "generic-oral-rehydration-salt-sachet",
+    "oldSku": "BD-7ae4cfa8f1dad7562a91ed92daad10c006dbde4d819ec44627511d7f34e1",
+    "newSku": "BD-ORAL-REHY-SALT-7AE4CF"
+  },
+  {
+    "id": 144,
+    "slug": "generic-paracetamol-500-mg-tablet-strip",
+    "oldSku": "BD-ede70104be226569ab8b7384475be99c2c1472147531bacad0d1ca6cc829",
+    "newSku": "BD-PARA-500-MG-TA-EDE701"
+  },
+  {
+    "id": 145,
+    "slug": "generic-125cc-commuter-motorcycle",
+    "oldSku": "BD-5b286398e066631538d6cb1ac4a13cebfb945319fcc2bcdcc88965931747",
+    "newSku": "BD-125C-COMM-MOTO-5B2863"
+  },
+  {
+    "id": 146,
+    "slug": "generic-cotton-panjabi",
+    "oldSku": "BD-61ca0743a35e0f02a6df690cf8681a1e5c5c69a88e23b2fb0587cd8e0e2f",
+    "newSku": "BD-COTT-PANJ-61CA07"
+  },
+  {
+    "id": 147,
+    "slug": "generic-embroidered-eid-panjabi",
+    "oldSku": "BD-dbf2b06c92f0c5dab7a5f629e5d5400c91ad71833df2937bf488a12b938a",
+    "newSku": "BD-EMBR-EID-PANJ-DBF2B0"
+  },
+  {
+    "id": 148,
+    "slug": "walton-wfc-3d8-gjxb-fd-inverter",
+    "oldSku": "BD-4061715423020803eb232612ae68175e4fcfadf3b1d897e712ff789d2f2b",
+    "newSku": "BD-WALT-WFC-3D8-G-406171"
+  },
+  {
+    "id": 149,
+    "slug": "walton-wfc-3d8-grhe-fd-inverter",
+    "oldSku": "BD-4fe6b173647e1c095882c59d8a08792c665777e18cc3fb7abb85a7395285",
+    "newSku": "BD-WALT-WFC-3D8-G-4FE6B1"
+  },
+  {
+    "id": 150,
+    "slug": "walton-wfc-3f5-i5-gede-fd-inverter",
+    "oldSku": "BD-4137eec30b6ef65d4a82e16cc024cb9d2370f73b496596effbb26dc12c26",
+    "newSku": "BD-WALT-WFC-3F5-I-4137EE"
+  },
+  {
+    "id": 151,
+    "slug": "walton-wfe-3a2-gdel-xx-inverter",
+    "oldSku": "BD-052e6d405f703b5cb786124134035281cece8db123660c0b1e235e6b8915",
+    "newSku": "BD-WALT-WFE-3A2-G-052E6D"
+  },
+  {
+    "id": 152,
+    "slug": "walton-wfe-3a2-gden-dd",
+    "oldSku": "BD-e0a7a50cf2b531b2e1ac2f301fc804532c23b5dfb0fa8f842b1fadda1358",
+    "newSku": "BD-WALT-WFE-3A2-G-E0A7A5"
+  },
+  {
+    "id": 153,
+    "slug": "walton-wfe-3b0-gdel-xx-inverter",
+    "oldSku": "BD-4c2ab43597fafcc2e41302b6dec3e42e6729c2d2ca970f33c5e1376e8b2c",
+    "newSku": "BD-WALT-WFE-3B0-G-4C2AB4"
+  },
+  {
+    "id": 154,
+    "slug": "walton-wfe-3b0-gden-dd-inverter",
+    "oldSku": "BD-713b3f368ae10699bbcd3b5bc2920085335d9b07e50a485bae1784f1d58f",
+    "newSku": "BD-WALT-WFE-3B0-G-713B3F"
+  },
+  {
+    "id": 155,
+    "slug": "walton-wfe-3b0-gden-xx-inverter",
+    "oldSku": "BD-2e23aaa79bd6f4105227091afd8a3d40b6dce5f1ac5f38fc537c6901b04b",
+    "newSku": "BD-WALT-WFE-3B0-G-2E23AA"
+  },
+  {
+    "id": 156,
+    "slug": "walton-wfe-3b0-gdev-xx-inverter",
+    "oldSku": "BD-c7b8975dc8e16ac45a57764c0cb885c2e2494ffc27882f8116e519923f06",
+    "newSku": "BD-WALT-WFE-3B0-G-C7B897"
+  },
+  {
+    "id": 157,
+    "slug": "walton-wfe-3c3-gden-dd-inverter",
+    "oldSku": "BD-802c28cce5339470c4975b452153108f5b3565042398340c3f441ea6dfde",
+    "newSku": "BD-WALT-WFE-3C3-G-802C28"
+  },
+  {
+    "id": 158,
+    "slug": "walton-wfe-3c3-gden-xx",
+    "oldSku": "BD-ed3dabe772e971b19a2c609185ed28d043851363352028f76c37a4c34041",
+    "newSku": "BD-WALT-WFE-3C3-G-ED3DAB"
+  },
+  {
+    "id": 159,
+    "slug": "walton-wfe-3c3-gdxx-xx",
+    "oldSku": "BD-38b36b0a7e519e62f74bfa8fcbd3054f03a105176d0de846b6ab72c0befa",
+    "newSku": "BD-WALT-WFE-3C3-G-38B36B"
+  },
+  {
+    "id": 160,
+    "slug": "walton-wfe-3e8-gdel-xx",
+    "oldSku": "BD-5b837ac1aad1deabb8a4a996002e3ede7a398efca75e1eed9b15c786f553",
+    "newSku": "BD-WALT-WFE-3E8-G-5B837A"
+  },
+  {
+    "id": 161,
+    "slug": "walton-wfe-3e8-gden-dd-inverter",
+    "oldSku": "BD-5e4c952a646fd6141e8553d013125fa4a227d4191cf931b15e68ac2c71b1",
+    "newSku": "BD-WALT-WFE-3E8-G-5E4C95"
+  },
+  {
+    "id": 162,
+    "slug": "walton-wfe-3e8-gden-xx",
+    "oldSku": "BD-906761e3fa001a9a65a3febdbb389b8443e1d9f4e70e7ae772a61aa86718",
+    "newSku": "BD-WALT-WFE-3E8-G-906761"
+  },
+  {
+    "id": 163,
+    "slug": "generic-miniket-rice-5-kg",
+    "oldSku": "BD-34aec55344d086a4be1d481d319ce139d689af221e6d41d79b1881dd1d8f",
+    "newSku": "BD-MINI-RICE-5-KG-34AEC5"
+  },
+  {
+    "id": 164,
+    "slug": "generic-basmati-rice-1-kg",
+    "oldSku": "BD-75bdc1c83bc10907faea7529eb5d4cc6da46be95d5933abda6eed3f22bc4",
+    "newSku": "BD-BASM-RICE-1-KG-75BDC1"
+  },
+  {
+    "id": 165,
+    "slug": "generic-cotton-saree",
+    "oldSku": "BD-a6d9ebca9edda1df7c5c242db72c032032782f9be5f10c950f32d5bf9293",
+    "newSku": "BD-COTT-SARE-A6D9EB"
+  },
+  {
+    "id": 166,
+    "slug": "generic-jamdani-style-saree",
+    "oldSku": "BD-bf4f580b4a58b602fdb75b8de4f078cad2a7270800db3e93a45360cbfc4a",
+    "newSku": "BD-JAMD-STYL-SARE-BF4F58"
+  },
+  {
+    "id": 167,
+    "slug": "generic-men-cotton-casual-shirt",
+    "oldSku": "BD-055a81c3da4a48c242370be87013489bb9270b136543991bbb5732a9bc14",
+    "newSku": "BD-MEN-COTT-CASU-055A81"
+  },
+  {
+    "id": 168,
+    "slug": "generic-men-formal-dress-shirt",
+    "oldSku": "BD-8083768bf7481aafa09155f408ff883b3b297f09234e6a3947fc2ec72594",
+    "newSku": "BD-MEN-FORM-DRES-808376"
+  },
+  {
+    "id": 169,
+    "slug": "apex-adidas-duramo-sl-shoe-women-64010a13",
+    "oldSku": "BD-2e013bf9aea2d0be724ea192fe30cb0364d7a870084be1fae10a3ef5114b",
+    "newSku": "BD-APEX-ADID-DURA-2E013B"
+  },
+  {
+    "id": 170,
+    "slug": "bata-bata-men-bogota-mens-casual-8545729",
+    "oldSku": "BD-db549604174b44c8115fee434c5ce2a57d5ba070dae0e4add92ce07c8c17",
+    "newSku": "BD-BATA-BATA-MEN-DB5496"
+  },
+  {
+    "id": 171,
+    "slug": "apex-adidas-ford-up-men-94090a06",
+    "oldSku": "BD-e61385fdbdd293f0e4d6e319a21edeab807cc5d2f02afb4cd3bb501940c6",
+    "newSku": "BD-APEX-ADID-FORD-E61385"
+  },
+  {
+    "id": 172,
+    "slug": "bata-bata-men-bogota-mens-casual-8546729",
+    "oldSku": "BD-26b606192d0e215b8cbbffe0977dc8cf256e1677f57d922e1914931d99b9",
+    "newSku": "BD-BATA-BATA-MEN-26B606"
+  },
+  {
+    "id": 173,
+    "slug": "apex-adidas-questar-shoes-men-94090a22",
+    "oldSku": "BD-ea65181e586741c1d0a39847c638259b8ed47c7aa8632be7e64e24a20be6",
+    "newSku": "BD-APEX-ADID-QUES-EA6518"
+  },
+  {
+    "id": 174,
+    "slug": "bata-bata-men-iquitos-mens-dress-8316245",
+    "oldSku": "BD-a83d0476b070dbcc558b6ae05b0fe4a74aec2f7bef3c674ca79db2c9e8bf",
+    "newSku": "BD-BATA-BATA-MEN-A83D04"
+  },
+  {
+    "id": 175,
+    "slug": "apex-adidas-qusteron-shoes-women-64090a01",
+    "oldSku": "BD-443f296d1c7659f1781dba91cbf4d1bbecc3cd42b4870017a0bc75504697",
+    "newSku": "BD-APEX-ADID-QUST-443F29"
+  },
+  {
+    "id": 176,
+    "slug": "bata-bata-men-leeds-mens-sandals-8714853",
+    "oldSku": "BD-1ab91fc8ce0946137fc3e49267f379bbbd8cf67cfbac2d10b0a11382997b",
+    "newSku": "BD-BATA-BATA-MEN-1AB91F"
+  },
+  {
+    "id": 177,
+    "slug": "apex-adidas-ultrabounce-shoes-women-64020a21",
+    "oldSku": "BD-bc334476d854d9b51ddb4c42ab7f39decdb4915ea6fbfcb7b56f6df36c47",
+    "newSku": "BD-APEX-ADID-ULTR-BC3344"
+  },
+  {
+    "id": 178,
+    "slug": "bata-bata-men-matte-mens-sandals-8313004",
+    "oldSku": "BD-396a47d2fdbeff3710cefdf1f2302b50ab8a06f76ca80bf0f9970649352d",
+    "newSku": "BD-BATA-BATA-MEN-396A47"
+  },
+  {
+    "id": 179,
+    "slug": "apex-apex-men-s-mule-sandal-9211ba98",
+    "oldSku": "BD-35c3b0afbfac6377009ee95c6fc31a357e30847c4933ab4fe00a943a8bca",
+    "newSku": "BD-APEX-APEX-MEN-35C3B0"
+  },
+  {
+    "id": 180,
+    "slug": "bata-bata-men-matte-mens-sandals-8313005",
+    "oldSku": "BD-ab0a4dae9ca488e756f12121210b0ddb02c8ee1e349e4c563b45a1171e90",
+    "newSku": "BD-BATA-BATA-MEN-AB0A4D"
+  },
+  {
+    "id": 181,
+    "slug": "apex-apex-mens-backbelt-sandal-9251fl62",
+    "oldSku": "BD-74de95ea7a6f00ed6d8995583da41d3ffdec3ed212b42a6b119a8b6ec2fc",
+    "newSku": "BD-APEX-APEX-MENS-74DE95"
+  },
+  {
+    "id": 182,
+    "slug": "bata-bata-men-matte-mens-sandals-8317004",
+    "oldSku": "BD-dcaf131be41f44afb005678788148345ade3db471e4d28b7fa59f501f057",
+    "newSku": "BD-BATA-BATA-MEN-DCAF13"
+  },
+  {
+    "id": 183,
+    "slug": "apex-apex-mens-dress-shoe-91314a67",
+    "oldSku": "BD-e0fb23ecdfcaab980b16370048500b564dbfc1bf66bad3fca12a8fc30125",
+    "newSku": "BD-APEX-APEX-MENS-E0FB23"
+  },
+  {
+    "id": 184,
+    "slug": "walton-nexg-n10-ultra",
+    "oldSku": "BD-ac4de525eb171af7d42b397554ce688dddfdf7a7d01e7445b5a30e1d15cf",
+    "newSku": "BD-WALT-NEXG-N10-AC4DE5"
+  },
+  {
+    "id": 185,
+    "slug": "walton-nexg-n26",
+    "oldSku": "BD-7418394e7ae259720a0a81d8804e2486a1b0cd7b7f5e4d9dfeb2f75913e9",
+    "newSku": "BD-WALT-NEXG-N26-741839"
+  },
+  {
+    "id": 186,
+    "slug": "walton-nexg-n27",
+    "oldSku": "BD-eb7257c0b692356c9ba7cc53e09f9466ebd1b19df083230fa55fc62a2ca7",
+    "newSku": "BD-WALT-NEXG-N27-EB7257"
+  },
+  {
+    "id": 187,
+    "slug": "walton-nexg-n28",
+    "oldSku": "BD-74ba9e7a4e0fe04100376586186ac43d3174b1f2321b4a8aee41c4ed6c13",
+    "newSku": "BD-WALT-NEXG-N28-74BA9E"
+  },
+  {
+    "id": 188,
+    "slug": "walton-nexg-n28-pro",
+    "oldSku": "BD-50901a926a4d0a6d20548612f3b9a550c61741e7e28e42f7ade6a0bbdc6a",
+    "newSku": "BD-WALT-NEXG-N28-50901A"
+  },
+  {
+    "id": 189,
+    "slug": "walton-nexg-n74",
+    "oldSku": "BD-0d4615c27b23df72025c89f0a3216b026af2b302504b80966a16280d60af",
+    "newSku": "BD-WALT-NEXG-N74-0D4615"
+  },
+  {
+    "id": 190,
+    "slug": "walton-nexg-n75",
+    "oldSku": "BD-934916c80c20dac41d02293ff034769489c67a57390afcf2624cf8ed5dc9",
+    "newSku": "BD-WALT-NEXG-N75-934916"
+  },
+  {
+    "id": 191,
+    "slug": "walton-nexg-n76",
+    "oldSku": "BD-fc6ef6dd962755a1c18663935cfbafa841dc1b96d16b9f4640c34912ecd0",
+    "newSku": "BD-WALT-NEXG-N76-FC6EF6"
+  },
+  {
+    "id": 192,
+    "slug": "walton-nexg-n77",
+    "oldSku": "BD-afa92e5beab00007f104a63a53916a767225c69f2912c7228d9d4f5b71aa",
+    "newSku": "BD-WALT-NEXG-N77-AFA92E"
+  },
+  {
+    "id": 193,
+    "slug": "walton-orbit-y13",
+    "oldSku": "BD-3e0f8687088ef7fcf107b49a19fc22cd566814dbd1db3fe963a0c7b65b16",
+    "newSku": "BD-WALT-ORBI-Y13-3E0F86"
+  },
+  {
+    "id": 194,
+    "slug": "walton-orbit-y70c",
+    "oldSku": "BD-7893b6e701fa680b147cbfe0f6764598997d128ea39810443d4716bd2620",
+    "newSku": "BD-WALT-ORBI-Y70C-7893B6"
+  },
+  {
+    "id": 195,
+    "slug": "walton-orbit-y71",
+    "oldSku": "BD-25d1baf89ee5213d9dc878583da6be9b91f455025d6c26e26f2868874a95",
+    "newSku": "BD-WALT-ORBI-Y71-25D1BA"
+  },
+  {
+    "id": 196,
+    "slug": "walton-orbit-y72",
+    "oldSku": "BD-20659eda39ed8862e79a842d3f36cab37f4c7aac0ed897d2f30216a4b491",
+    "newSku": "BD-WALT-ORBI-Y72-20659E"
+  },
+  {
+    "id": 197,
+    "slug": "walton-xanon-x1-ultra",
+    "oldSku": "BD-d9736a382c48d9e727971bf54093924b39a6b21be2d47de97f55b22a448e",
+    "newSku": "BD-WALT-XANO-X1-U-D9736A"
+  },
+  {
+    "id": 198,
+    "slug": "walton-xanon-x21",
+    "oldSku": "BD-7d1efd49ff2a93f995f8ddd6d23c24fcaa79b7748fe6b46a0b1d821a150f",
+    "newSku": "BD-WALT-XANO-X21-7D1EFD"
+  },
+  {
+    "id": 199,
+    "slug": "walton-xanon-x22-5g",
+    "oldSku": "BD-8835dc82a46804c03c49ad45871cc86db876a1c0c758c991907036c00f03",
+    "newSku": "BD-WALT-XANO-X22-8835DC"
+  },
+  {
+    "id": 200,
+    "slug": "walton-xanon-x50",
+    "oldSku": "BD-5d87ff14c154d6e757b592a000b29e26b7bac3207d978440faa8886ac380",
+    "newSku": "BD-WALT-XANO-X50-5D87FF"
+  },
+  {
+    "id": 201,
+    "slug": "walton-xanon-x91",
+    "oldSku": "BD-2aec111e8a87b476afd11ffbc91cdbc4ec712304a62f451643f72cc2dca8",
+    "newSku": "BD-WALT-XANO-X91-2AEC11"
+  },
+  {
+    "id": 202,
+    "slug": "walton-zenx-2",
+    "oldSku": "BD-67ce99926d48dfe32a04296344438479fde767fea2d33c5d8f2bf244cf9f",
+    "newSku": "BD-WALT-ZENX-2-67CE99"
+  },
+  {
+    "id": 203,
+    "slug": "walton-zenx-z3",
+    "oldSku": "BD-8861afc6d34abe905b148cbeac740dec31025148ff2d1a5504e7c35eca0e",
+    "newSku": "BD-WALT-ZENX-Z3-8861AF"
+  },
+  {
+    "id": 204,
+    "slug": "generic-cricket-bat",
+    "oldSku": "BD-ef390a7c8a84b89bff0b3525db7c378032cc20ee1329f9bfb47afeaf28ec",
+    "newSku": "BD-CRIC-BAT-EF390A"
+  },
+  {
+    "id": 205,
+    "slug": "generic-badminton-racket-set",
+    "oldSku": "BD-8fcf36f4225a617aa8cdfc5790e646a8bb8c693fe21e4bc3b8ee2d1c99c9",
+    "newSku": "BD-BADM-RACK-SET-8FCF36"
+  },
+  {
+    "id": 206,
+    "slug": "generic-interior-plastic-paint-10-kg",
+    "oldSku": "BD-132395dab6f93128ed538916522f20457ca0820654fc9e7ad5bbb1a7ce10",
+    "newSku": "BD-INTE-PLAS-PAIN-132395"
+  },
+  {
+    "id": 207,
+    "slug": "generic-exterior-emulsion-paint-20-kg",
+    "oldSku": "BD-4d626f00594b245ea71140ca2209340bfbc0944c9f9e8f51675ce8a17abd",
+    "newSku": "BD-EXTE-EMUL-PAIN-4D626F"
+  },
+  {
+    "id": 208,
+    "slug": "generic-analog-wrist-watch",
+    "oldSku": "BD-b57a76f9f6bf16e8375c70d48d94562e03ed8c2782d5ce6eeddc98753a42",
+    "newSku": "BD-ANAL-WRIS-WATC-B57A76"
+  }
+]

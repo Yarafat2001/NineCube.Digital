@@ -1,0 +1,292 @@
+{
+  "batchcomplete": "",
+  "continue": {
+    "gsroffset": 3,
+    "continue": "gsroffset||"
+  },
+  "query": {
+    "pages": {
+      "97514974": {
+        "pageid": 97514974,
+        "ns": 6,
+        "title": "File:Morison suspension furnaces; furnace fronts and doors for internal furnace tubular boilers (IA cu31924004626192).pdf",
+        "index": 1,
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Morison_suspension_furnaces%3B_furnace_fronts_and_doors_for_internal_furnace_tubular_boilers_%28IA_cu31924004626192%29.pdf/page1-960px-Morison_suspension_furnaces%3B_furnace_fronts_and_doors_for_internal_furnace_tubular_boilers_%28IA_cu31924004626192%29.pdf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "thumbwidth": 960,
+            "thumbheight": 1240,
+            "thumbattribs": {
+              "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Morison_suspension_furnaces%3B_furnace_fronts_and_doors_for_internal_furnace_tubular_boilers_%28IA_cu31924004626192%29.pdf/page1-960px-Morison_suspension_furnaces%3B_furnace_fronts_and_doors_for_internal_furnace_tubular_boilers_%28IA_cu31924004626192%29.pdf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+              "decoding": "async",
+              "loading": "lazy",
+              "width": 960,
+              "height": 1240
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Morison_suspension_furnaces%3B_furnace_fronts_and_doors_for_internal_furnace_tubular_boilers_%28IA_cu31924004626192%29.pdf?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Morison_suspension_furnaces;_furnace_fronts_and_doors_for_internal_furnace_tubular_boilers_(IA_cu31924004626192).pdf",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=97514974",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2020-12-13 05:38:46",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "<div class=\"fn\">\nMorison suspension furnaces; furnace fronts and doors for internal furnace tubular boilers</div>",
+                "source": "commons-desc-page"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Books from New York (state)|PD-old-100-expired|Scans from the Internet Archive/unverified|CC-PD-Mark|Scans from the Internet Archive|Books uploaded by F\u00e6|Books without Wikidata item|Scans from Cornell University Library|PD-old missing SDC copyright status",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Artist": {
+                "value": "<div class=\"fn value\">\nContinental Iron Works, Brooklyn, N.Y</div>",
+                "source": "commons-desc-page"
+              },
+              "ImageDescription": {
+                "value": "<div class=\"description\">\n<p>The metadata below describe the original scanning. Follow the \"All Files: HTTP\" link in the \"View the book\" box to the left to find XML files that contain more metadata about the original images and the derived formats (OCR results, PDF etc.). See also the <a rel=\"nofollow\" class=\"external text\" href=\"https://archive.org/about/faqs.php#140\">What is the directory structure for the texts?</a> FAQ for information about file content and naming conventions.\n</p>\n<br>Subjects: Furnaces; Steam-boilers</div>",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<dl><dd><a href=\"//archive.org/details/cu31924004626192\" class=\"extiw\" title=\"iarchive:cu31924004626192\"><bdi class=\"description en\" lang=\"en\" dir=\"ltr\">Internet Archive identifier</bdi>: cu31924004626192</a></dd>\n<dd><a rel=\"nofollow\" class=\"external free\" href=\"https://archive.org/download/cu31924004626192/cu31924004626192.pdf\">https://archive.org/download/cu31924004626192/cu31924004626192.pdf</a></dd></dl>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "Public domain",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Public domain",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "false",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Copyrighted": {
+                "value": "False",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "pd",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            }
+          }
+        ]
+      },
+      "101168861": {
+        "pageid": 101168861,
+        "ns": 6,
+        "title": "File:On the Gas Voltaic Battery. Voltaic Action of Phosphorus, Sulphur and Hydrocarbons (IA jstor-108278).pdf",
+        "index": 2,
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/On_the_Gas_Voltaic_Battery._Voltaic_Action_of_Phosphorus%2C_Sulphur_and_Hydrocarbons_%28IA_jstor-108278%29.pdf/page1-960px-On_the_Gas_Voltaic_Battery._Voltaic_Action_of_Phosphorus%2C_Sulphur_and_Hydrocarbons_%28IA_jstor-108278%29.pdf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "thumbwidth": 960,
+            "thumbheight": 1318,
+            "thumbattribs": {
+              "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/On_the_Gas_Voltaic_Battery._Voltaic_Action_of_Phosphorus%2C_Sulphur_and_Hydrocarbons_%28IA_jstor-108278%29.pdf/page1-960px-On_the_Gas_Voltaic_Battery._Voltaic_Action_of_Phosphorus%2C_Sulphur_and_Hydrocarbons_%28IA_jstor-108278%29.pdf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+              "decoding": "async",
+              "loading": "lazy",
+              "width": 960,
+              "height": 1318
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/On_the_Gas_Voltaic_Battery._Voltaic_Action_of_Phosphorus%2C_Sulphur_and_Hydrocarbons_%28IA_jstor-108278%29.pdf?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:On_the_Gas_Voltaic_Battery._Voltaic_Action_of_Phosphorus,_Sulphur_and_Hydrocarbons_(IA_jstor-108278).pdf",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=101168861",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2021-03-08 12:31:34",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "<div class=\"fn\">\nOn the Gas Voltaic Battery. Voltaic Action of Phosphorus, Sulphur and Hydrocarbons</div>",
+                "source": "commons-desc-page"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Royal Society of London|PD-old-100-expired|Scans from the Internet Archive/unverified|CC-PD-Mark|Scans from the Internet Archive|Books uploaded by F\u00e6|Books without Wikidata item|Internet Archive (JSTOR cover page removed)|Old books in Internet Archive additional collections|PD-old missing SDC copyright status",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Artist": {
+                "value": "<div class=\"fn value\">\nGrove, W. R.</div>",
+                "source": "commons-desc-page"
+              },
+              "ImageDescription": {
+                "value": "<div class=\"description\">\n<p>\"On the Gas Voltaic Battery. Voltaic Action of Phosphorus, Sulphur and Hydrocarbons\" is an article from &lt;a href='/search.php?query=collection%3Ajstor_philtranroyasoc3%20AND%20volume%3A135' data-x-rel='nofollow'&gt;Philosophical Transactions of the Royal Society of London, Volume 135&lt;/a&gt;.</p> <p>View more articles from &lt;a href='/search.php?query=collection%3Ajstor_philtranroyasoc3' data-x-rel='nofollow'&gt;Philosophical Transactions of the Royal Society of London&lt;/a&gt;.<br>View &lt;a href='http://www.jstor.org/stable/10.2307/108278' data-x-rel='nofollow'&gt;this article on JSTOR&lt;/a&gt;.<br>View &lt;a href='/download/jstor-108278/10.2307_108278.xml' data-x-rel='nofollow'&gt;this article's JSTOR metadata&lt;/a&gt;.<br></p><p>You may also retrieve all of this items metadata in JSON at the following URL: &lt;a href='https://archive.org/metadata/jstor-108278' data-x-rel='nofollow'&gt;<a rel=\"mw:ExtLink nofollow\" href=\"https://archive.org/metadata/jstor-108278\" class=\"external free\">https://archive.org/metadata/jstor-108278</a>&lt;/a&gt;</p>\n<br>Subjects:</div>",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<dl><dd><a rel=\"mw:WikiLink/Interwiki\" href=\"//archive.org/details/jstor-108278\" title=\"iarchive:jstor-108278\" class=\"extiw\"><bdi class=\"description en\" lang=\"en\" dir=\"ltr\">Internet Archive identifier</bdi>: jstor-108278</a><link rel=\"mw:PageProp/Category\" href=\"./Category:Scans_from_the_Internet_Archive#On%20the%20Gas%20Voltaic%20Battery.%20Voltaic%20Action%20of%20Phosphorus,%20Sulphur%20and%20Hydrocarbons%20(IA%20jstor-108278).pdf\"><link rel=\"mw:PageProp/Category\" href=\"./Category:Scans_from_the_Internet_Archive\"><link rel=\"mw:PageProp/Category\" href=\"./Category:Scans_from_the_Internet_Archive/unverified#On%20the%20Gas%20Voltaic%20Battery.%20Voltaic%20Action%20of%20Phosphorus,%20Sulphur%20and%20Hydrocarbons%20(IA%20jstor-108278).pdf\"></dd>\n<dd><a rel=\"mw:ExtLink nofollow\" href=\"https://archive.org/download/jstor-108278/108278.pdf\" class=\"external free\">https://archive.org/download/jstor-108278/108278.pdf</a></dd></dl>\n<ul><li>IA contributor: JSTOR</li></ul>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "Public domain",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Public domain",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "false",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Copyrighted": {
+                "value": "False",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "pd",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            }
+          }
+        ]
+      },
+      "149443887": {
+        "pageid": 149443887,
+        "ns": 6,
+        "title": "File:Waterborne polyurethane as a carbon coating for micrometre-sized silicon-based lithium-ion battery anode material.pdf",
+        "index": 3,
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Waterborne_polyurethane_as_a_carbon_coating_for_micrometre-sized_silicon-based_lithium-ion_battery_anode_material.pdf/page1-960px-Waterborne_polyurethane_as_a_carbon_coating_for_micrometre-sized_silicon-based_lithium-ion_battery_anode_material.pdf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+            "thumbwidth": 960,
+            "thumbheight": 1394,
+            "thumbattribs": {
+              "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Waterborne_polyurethane_as_a_carbon_coating_for_micrometre-sized_silicon-based_lithium-ion_battery_anode_material.pdf/page1-960px-Waterborne_polyurethane_as_a_carbon_coating_for_micrometre-sized_silicon-based_lithium-ion_battery_anode_material.pdf.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+              "decoding": "async",
+              "loading": "lazy",
+              "width": 960,
+              "height": 1394
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Waterborne_polyurethane_as_a_carbon_coating_for_micrometre-sized_silicon-based_lithium-ion_battery_anode_material.pdf?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Waterborne_polyurethane_as_a_carbon_coating_for_micrometre-sized_silicon-based_lithium-ion_battery_anode_material.pdf",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=149443887",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2024-06-16 14:00:49",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Waterborne polyurethane as a carbon coating for micrometre-sized silicon-based lithium-ion battery anode material",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Files from PubMed Central uploaded by DaxBot|Files from Royal Society Open Science uploaded by DaxBot|Uploaded by DaxBot needing category review|Research articles|PDF files from the United Kingdom|Royal Society Open Science Journal Volume 5 Issue 8|English-language PDF files",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Yan, Chunfeng; Huang, Tao; Zheng, Xiangzhen; Gong, Cuiran; Wu, Maoxiang (2018). <a rel=\"nofollow\" class=\"external text\" href=\"https://royalsocietypublishing.org/doi/10.1098/rsos.180311\">\"Waterborne polyurethane as a carbon coating for micrometre-sized silicon-based lithium-ion battery anode material\"</a>. <i>Royal Society Open Science</i>. <b>5</b> (8): 180311. <a href=\"https://en.wikipedia.org/wiki/Doi_(identifier)\" class=\"extiw\" title=\"en:Doi (identifier)\">doi</a>:<a href=\"//doi.org/10.1098/rsos.180311\" class=\"extiw\" title=\"doi:10.1098/rsos.180311\">10.1098/rsos.180311</a>. <a href=\"https://en.wikipedia.org/wiki/ISSN_(identifier)\" class=\"extiw\" title=\"en:ISSN (identifier)\">ISSN</a>\u00a0<a href=\"https://www.worldcat.org/issn/2054-5703\" class=\"extiw\" title=\"issn:2054-5703\">2054-5703</a>. <a href=\"https://en.wikipedia.org/wiki/PMC_(identifier)\" class=\"extiw\" title=\"en:PMC (identifier)\">PMC</a>\u00a0<a rel=\"nofollow\" class=\"external text\" href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6124086\">6124086</a>. <a href=\"https://en.wikipedia.org/wiki/PMID_(identifier)\" class=\"extiw\" title=\"en:PMID (identifier)\">PMID</a>\u00a0<a rel=\"nofollow\" class=\"external text\" href=\"https://pubmed.ncbi.nlm.nih.gov/30225018\">30225018</a>. (<a rel=\"nofollow\" class=\"external text\" href=\"https://crossmark.crossref.org/dialog/?doi=10.1098/rsos.180311&amp;domain=pdf\">Check for updates</a>)",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2018-08-22",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://doi.org/10.1098/rsos.180311\">https://doi.org/10.1098/rsos.180311</a> via PubMed Central FTP",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "Yan, Chunfeng; Huang, Tao; Zheng, Xiangzhen; Gong, Cuiran; Wu, Maoxiang",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY 4.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution 4.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/4.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-4.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
