@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { resolveAssetUrl } from '../api/client';
 import { useLowStockThreshold, useProduct } from '../api/hooks';
 import { EmptyState, ErrorState, LoadingBlock, QuantityStepper, StockBadge } from '../components/ui';
-import { ProductImage, primaryImage } from '../components/ProductImage';
+import { ProductViewer } from '../components/ProductViewer';
 import { cardPresentation } from '../lib/catalog';
 import { formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -21,12 +20,10 @@ export function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [copied, setCopied] = useState(false);
   const [added, setAdded] = useState(false);
-  const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
 
   const productQuery = useProduct(Number.isFinite(productId) ? productId : null);
   const thresholdQuery = useLowStockThreshold();
   const product = productQuery.data;
-  const gallery = product?.images ?? [];
   const threshold = thresholdQuery.data?.lowStockThreshold ?? 5;
 
   if (productQuery.isLoading) return <div className="page container"><LoadingBlock label="Loading product" variant="tile" count={2} /></div>;
@@ -44,7 +41,6 @@ export function ProductDetailPage() {
     return <div className="page container"><EmptyState title="Product not found" description="It may have been removed from the catalogue." action={<Link className="btn" to="/products">Back to catalogue</Link>} /></div>;
   }
 
-  const selected = gallery.find(image => image.id === selectedImageId) ?? gallery.find(image => image.url === primaryImage(product)) ?? null;
   const { brand, fullName, variant } = cardPresentation(product);
   const outOfStock = !product.isActive || product.stockQuantity <= 0;
 
@@ -69,18 +65,7 @@ export function ProductDetailPage() {
 
       <div className="product-detail">
         <div className="product-detail__gallery">
-          {/* Passing the picked frame alone keeps the resolution and error fallback in one place. */}
-          <ProductImage product={product} images={selected ? [selected] : null} frame="detail" />
-          {gallery.length > 1 ? (
-            <div className="product-detail__thumbs" aria-label="Product images">
-              {gallery.map(image => (
-                <button type="button" key={image.id} data-selected={selected?.id === image.id} aria-pressed={selected?.id === image.id}
-                  aria-label={`Show ${image.altText ?? fullName}`} onClick={() => setSelectedImageId(image.id)}>
-                  <img src={resolveAssetUrl(image.url) ?? ''} alt="" loading="lazy" />
-                </button>
-              ))}
-            </div>
-          ) : null}
+          <ProductViewer key={product.id} product={product} />
         </div>
 
         <section className="product-detail__summary card-glass stack" aria-label="Product details">

@@ -152,7 +152,7 @@ export function Navbar() {
 
   return (
     <nav ref={navRef}
-      className={`navbar${location.pathname === '/' && !user ? ' navbar--showcase' : ''}${compact ? ' navbar--compact' : ''}${hidden ? ' navbar--hidden' : ''}`}
+      className={`navbar${user ? ' navbar--authenticated' : ''}${location.pathname === '/' && !user ? ' navbar--showcase' : ''}${compact ? ' navbar--compact' : ''}${hidden ? ' navbar--hidden' : ''}`}
       aria-label="Main" data-compact={compact} data-hidden={hidden}>
       <Link className="navbar__brand" to={user ? '/products' : '/'}>
         <Brand />

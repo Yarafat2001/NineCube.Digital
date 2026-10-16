@@ -14,6 +14,7 @@ import './styles/base.css';
 import './styles/app.css';
 import './components/Navbar.css';
 import './styles/modern.css';
+import './styles/responsive.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

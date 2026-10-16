@@ -81,7 +81,7 @@ export function NotificationBell() {
   const openItem = (item: Notification) => {
     if (!item.isRead) markRead.mutate(item.id);
     pop.setOpen(false);
-    if (item.link) navigate(item.link);
+    navigate(item.link || '/notifications');
   };
 
   const bell = (
@@ -138,7 +138,7 @@ export function NotificationBell() {
       <div className="nav-pop" data-overlay-open="true">
         {bell}
         {createPortal(
-          <div className="sheet-backdrop" onClick={() => pop.setOpen(false)} role="presentation">
+          <div ref={pop.panel} className="sheet-backdrop" onClick={() => pop.setOpen(false)} role="presentation">
             <SheetPanel onClose={() => pop.setOpen(false)} label="Notifications">
               <div className="row-between"><strong>Notifications</strong><span className="muted">{count} unread</span></div>
               {listBody}
@@ -242,13 +242,17 @@ export function groupNotifications(items: Notification[]): { key: string; title:
 function SheetPanel({ children, onClose, label }: { children: React.ReactNode; onClose: () => void; label: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const touchY = useRef<number | null>(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
 
   useEffect(() => {
     const node = ref.current;
     const previous = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     node?.querySelector<HTMLElement>('button, [href], input, [tabindex]')?.focus();
     const onKey = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'Escape') { event.preventDefault(); onClose(); return; }
+      if (event.key === 'Escape') { event.preventDefault(); closeRef.current(); return; }
       if (event.key !== 'Tab' || !node) return;
       const items = Array.from(node.querySelectorAll<HTMLElement>('button, [href], input, [tabindex]')).filter((el) => !el.hasAttribute('disabled'));
       const first = items[0]; const last = items[items.length - 1];
@@ -256,18 +260,19 @@ function SheetPanel({ children, onClose, label }: { children: React.ReactNode; o
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
     };
     document.addEventListener('keydown', onKey);
-    return () => { document.removeEventListener('keydown', onKey); previous?.focus?.(); };
-  }, [onClose]);
+    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = previousOverflow; previous?.focus?.(); };
+  }, []);
 
   return (
     <div ref={ref} className="sheet" role="dialog" aria-modal="true" aria-label={label} data-overlay-open="true"
       onClick={(e) => e.stopPropagation()}
-      onTouchStart={(e) => { touchY.current = e.touches[0]?.clientY ?? null; }}
+      onTouchStart={(e) => { touchY.current = (e.target as HTMLElement).closest('.sheet__handle') ? e.touches[0]?.clientY ?? null : null; }}
       onTouchEnd={(e) => {
         const start = touchY.current; const end = e.changedTouches[0]?.clientY ?? null;
         if (start !== null && end !== null && end - start > 80) onClose();
       }}>
       <div className="sheet__handle" aria-hidden="true" />
+      <button type="button" className="btn btn--sm sheet__close" aria-label={`Close ${label}`} onClick={onClose}>Close</button>
       {children}
     </div>
   );
@@ -281,7 +286,7 @@ export function AccountMenu() {
     ...(user.role === 'Customer' ? [{ to: '/orders', label: 'My Orders', icon: 'box' as const }] : []),
     { to: '/notifications', label: 'Notifications', icon: 'bell' }
   ];
-  return <div className="nav-pop">
+  return <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}>
     <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label="Account" aria-expanded={pop.open} aria-haspopup="menu"
       onClick={() => pop.setOpen(!pop.open)} onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pop.setOpen(true); } }}>
       <span className="avatar avatar--small" aria-hidden="true">{user.email[0].toUpperCase()}</span><span className="account-name" title={user.email}>{user.email.split('@')[0]}</span><Icon name="chevron" className="account-chevron" data-open={pop.open} />
