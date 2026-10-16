@@ -33,8 +33,14 @@ const base = `http://127.0.0.1:${server.address().port}${prefix}`;
 const browser = await chromium.launch({ headless: true });
 const results = [], failures = [];
 try {
-  for (const width of [320, 390, 768]) {
-    const context = await browser.newContext({ viewport: { width, height: 900 }, isMobile: true, hasTouch: true });
+  for (const width of [320, 390, 768, 1280, 1440]) {
+    const context = await browser.newContext({ viewport: { width, height: 900 }, isMobile: width <= 768, hasTouch: width <= 768 });
+    await context.addInitScript(accounts => {
+      const role = new URL(window.location.href).searchParams.get('auditRole') || 'Customer';
+      sessionStorage.setItem('ninecube.auth.session', JSON.stringify({
+        accessToken: 'isolated-mobile-audit', expiresAtUtc: new Date(Date.now() + 3600000).toISOString(), user: accounts[role]
+      }));
+    }, { Customer: customerUser, Staff: staffUser, InventoryManager: inventoryUser, Administrator: adminUser });
     await context.route('http://localhost:5080/api/**', async route => {
       const response = await fetch(route.request().url());
       await route.fulfill({ status: response.status, contentType: 'application/json', body: await response.text(), headers: { 'Access-Control-Allow-Origin': '*' } });
@@ -47,11 +53,9 @@ try {
       [staffUser, ['/staff', '/staff/sales']], [inventoryUser, ['/inventory']], [adminUser, ['/admin']]
     ]) {
       user = account;
-      await context.addInitScript(session => sessionStorage.setItem('ninecube.auth.session', JSON.stringify(session)), {
-        accessToken: 'isolated-mobile-audit', expiresAtUtc: new Date(Date.now() + 3600000).toISOString(), user
-      });
       for (const route of routes) {
-        await page.goto(base + '#' + route, { waitUntil: 'networkidle' });
+        if (width > 768 && (account.role !== 'Customer' || !['/products', '/products/1'].includes(route))) continue;
+        await page.goto(base + '?auditRole=' + user.role + '#' + route, { waitUntil: 'networkidle' });
         await page.reload({ waitUntil: 'networkidle' });
         await page.getByRole('heading', { level: 1 }).first().waitFor();
         const result = await page.evaluate(() => ({
@@ -69,10 +73,26 @@ try {
         if (result.overflow || result.offscreen) failures.push(entry);
         if (route === '/products') {
           const motion = await page.locator('.product-card').first().evaluate(element => ({ revealed: element.dataset.revealed, animation: getComputedStyle(element).animationName }));
-          if (motion.revealed !== 'true' || motion.animation !== 'touch-card-reveal') throw Error(`Touch card motion missing: ${JSON.stringify(motion)}`);
+          if (width <= 768 && (motion.revealed !== 'true' || motion.animation !== 'touch-card-reveal')) throw Error(`Touch card motion missing: ${JSON.stringify(motion)}`);
+          if (width <= 768) {
+            await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+            await page.waitForTimeout(250);
+            const bottom = await page.evaluate(() => {
+              const bar = document.querySelector('.bottombar').getBoundingClientRect();
+              const footer = document.querySelector('.site-footer').getBoundingClientRect();
+              return { height: bar.height, footerBottom: footer.bottom, barTop: bar.top };
+            });
+            if (bottom.height > 80 || bottom.footerBottom > bottom.barTop + 2) throw Error(`Bottom controls obscure footer: ${JSON.stringify(bottom)}`);
+            await page.evaluate(() => window.scrollTo(0, 0));
+            await page.waitForTimeout(250);
+          }
           await page.getByRole('button', { name: /Notifications, \d+ unread/ }).click();
           await page.getByRole('dialog', { name: 'Notifications' }).getByRole('link', { name: 'View all' }).click();
           if (!page.url().endsWith('/notifications')) throw Error('Notification View all did not navigate');
+        }
+        if (width > 768 && route === '/products/1') {
+          const alignment = await page.evaluate(() => ({ image: document.querySelector('.product-viewer__stage').getBoundingClientRect().top, summary: document.querySelector('.product-detail__summary').getBoundingClientRect().top }));
+          if (Math.abs(alignment.image - alignment.summary) > 6) throw Error(`Desktop panels misaligned: ${JSON.stringify(alignment)}`);
         }
       }
     }

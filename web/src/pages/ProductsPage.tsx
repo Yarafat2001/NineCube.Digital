@@ -288,7 +288,7 @@ export function ProductsPage() {
 }
 
 /** Mobile (<=768px) bottom bar: Filters (N), current sort, cart total in BDT, Checkout. */
-function MobileBottomBar({ filterCount, sort, onFilters }: { filterCount: number; sort: string; onFilters: () => void }) {
+function MobileBottomBar({ filterCount, onFilters }: { filterCount: number; sort: string; onFilters: () => void }) {
   const cart = useCart();
   const barRef = useRef<HTMLElement>(null);
 
@@ -319,11 +319,10 @@ function MobileBottomBar({ filterCount, sort, onFilters }: { filterCount: number
       <button type="button" className="btn btn--sm" onClick={onFilters}>
         Filters ({filterCount})
       </button>
-      <span className="muted" aria-label={`Current sort: ${sort || 'name'}`}>{sort || 'Name'}</span>
-      <button type="button" className="btn btn--sm" onClick={openCart} aria-label={`Cart, ${cart.itemCount} items`}>
-        Cart · {cart.itemCount}
+      <button type="button" className="bottombar__cart" onClick={openCart} aria-label={`Cart, ${cart.itemCount} items`}>
+        <span>Cart · {cart.itemCount}</span>
+        <strong>{formatMoney(cart.total, cart.currency)}</strong>
       </button>
-      <span className="bottombar__total">{formatMoney(cart.total, cart.currency)}</span>
       <button type="button" className="btn btn--sm btn--primary" onClick={openCart} disabled={cart.lines.length === 0}>
         Checkout
       </button>
