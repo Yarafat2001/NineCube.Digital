@@ -7,6 +7,7 @@ import { ApiError } from './api/client';
 import { ToastProvider } from './components/ui';
 import { AuthProvider } from './state/AuthContext';
 import { CartProvider } from './state/CartContext';
+import { watchSiteUpdates } from './lib/siteUpdates';
 
 import './styles/tokens.css';
 import './styles/base.css';
@@ -31,6 +32,7 @@ const queryClient = new QueryClient({
 });
 
 const container = document.getElementById('root');
+watchSiteUpdates();
 if (!container) throw new Error('Root element #root was not found in index.html');
 
 createRoot(container).render(

@@ -1,4 +1,28 @@
 /* Shared depth, controls and customer pages. Colours come only from tokens.css. */
+/* Keep the public mobile header anchored inside the viewport, with navigation visible. */
+@media (max-width: 600px) {
+  .navbar.navbar--showcase {
+    left: 12px;
+    right: 12px;
+    top: max(10px, env(safe-area-inset-top));
+    width: auto;
+    margin: 0;
+    transform: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px 6px;
+    padding: 10px;
+    border-radius: 22px;
+  }
+  .navbar.navbar--showcase .navbar__brand { grid-area: 1 / 1; margin: 0; }
+  .navbar.navbar--showcase .navbar__cta { grid-area: 1 / 2; justify-self: end; min-height: 40px; padding: 8px 16px; }
+  .navbar.navbar--showcase .navbar__tray { grid-area: 2 / 1; display: flex; width: max-content; max-width: 100%; min-width: 0; justify-content: flex-start; padding: 3px; }
+  .navbar.navbar--showcase .navbar__link { min-height: 36px; padding: 7px 10px; font-size: 13px; }
+  .navbar.navbar--showcase .theme-controls { grid-area: 2 / 2; justify-self: end; padding: 3px; }
+  .navbar.navbar--showcase .theme-control { width: 30px; height: 36px; }
+  .navbar.navbar--showcase.navbar--hidden { transform: translateY(calc(-100% - 24px)); }
+}
 a { color: var(--accent-text); text-decoration: none; }
 a:hover { text-decoration: none; }
 .link-button { color: var(--accent-text); text-decoration: none; cursor: pointer; }

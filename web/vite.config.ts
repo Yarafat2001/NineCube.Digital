@@ -1,10 +1,18 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
+const buildVersion = process.env.GITHUB_SHA ?? `${Date.now()}`;
+
 // GitHub Pages serves the site from a /<repo>/ subpath, so production assets
 // must be relative (import.meta.env.BASE_URL); local dev keeps root paths.
 export default defineConfig(({ mode }) => ({
-  plugins: [react()],
+  plugins: [react(), {
+    name: 'site-version',
+    generateBundle() {
+      this.emitFile({ type: 'asset', fileName: 'version.json', source: JSON.stringify({ version: buildVersion }) });
+    }
+  }],
+  define: { __APP_VERSION__: JSON.stringify(buildVersion) },
   base: mode === 'production' ? './' : '/',
   server: {
     port: 5173,
