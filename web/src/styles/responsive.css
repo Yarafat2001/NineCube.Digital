@@ -87,14 +87,17 @@ main .link-button:is(:hover, :focus-visible, :active),
   .navbar--authenticated .navbar__brand { grid-area: 1 / 1; margin: 0; }
   .navbar--authenticated .theme-controls { grid-area: 1 / 2; justify-self: end; }
   .navbar--authenticated .navbar__user { display: none; }
-  .navbar.navbar--authenticated .navbar__tray { grid-area: 2 / 1; width: 100%; min-width: 0; max-width: 100%; justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding: 0; scroll-padding-inline: 4px; }
+  .navbar.navbar--authenticated .navbar__tray { grid-area: 2 / 1; width: max-content; min-width: 0; max-width: 100%; justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; padding: 3px; scroll-padding-inline: 4px; justify-self: start; }
   .navbar--authenticated .navbar__link { flex-shrink: 0; min-height: 44px; padding: 8px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
   .navbar--authenticated .navbar__actions { grid-area: 2 / 2; gap: 2px; padding: 0; }
   :root .navbar--authenticated .navbar__actions .nav-pop__trigger { min-width: 44px; width: 44px; min-height: 44px; padding: 6px; justify-content: center; gap: 0; position: relative; }
   .navbar--authenticated .account-name, .navbar--authenticated .account-chevron { display: none; }
   .navbar--authenticated .nav-pop__badge { position: absolute; right: -2px; top: -4px; }
-  .navbar--authenticated .theme-control { width: 38px; height: 44px; }
-  .navbar--authenticated .theme-controls { padding: 0; gap: 0; }
+  :root .navbar.navbar--authenticated .theme-controls { grid-area: 1 / 1 / 2 / 3; justify-self: end; padding: 4px; gap: 4px; width: max-content; max-width: none; border-radius: 999px; overflow: visible; }
+  :root .navbar.navbar--authenticated .theme-control { width: 44px; height: 44px; min-width: 44px; min-height: 44px; flex: 0 0 44px; padding: 0; border-radius: 50%; display: grid; place-items: center; }
+  :root .navbar.navbar--authenticated .theme-control svg { width: 20px; height: 20px; flex-shrink: 0; }
+  :root .navbar.navbar--authenticated .navbar__actions { gap: 4px; align-self: center; }
+  :root .navbar.navbar--authenticated .navbar__link { min-height: 38px; height: 38px; padding: 8px; line-height: 20px; flex: 0 0 auto; border-radius: 999px; }
   .dashboard-stats, .sales-stats { grid-template-columns: minmax(0, 1fr); }
   .product-detail__thumbs { flex-wrap: nowrap; overflow-x: auto; padding: 4px; }
 }
@@ -103,6 +106,10 @@ main .link-button:is(:hover, :focus-visible, :active),
   .product-card:active { transform: scale(.985); box-shadow: var(--shadow-sm); }
   .product-card__media-link:active img { transform: scale(1.04); transition: transform 160ms ease; }
   @keyframes touch-card-reveal { from { opacity: .35; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+}
+@media (max-width: 360px) {
+  .navbar.navbar--authenticated .navbar__tray { padding: 2px; gap: 0; }
+  :root .navbar.navbar--authenticated .navbar__link { padding-inline: 4px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .product-viewer__photo { transition: none; }
