@@ -61,6 +61,11 @@ public static class DatabaseSeeder
         {
             logger.LogInformation("Skipping demo user seeding (only seeded in Development).");
         }
+
+        // Production administrator bootstrap: creates the first admin from environment
+        // variables so the system is never locked out when no admin exists. Idempotent —
+        // an existing admin is never overwritten. The password is never committed.
+        await SeedProductionAdminAsync(db, hasher, logger, ct);
     }
 
     private static async Task SeedSettingsAsync(AppDbContext db, IConfiguration configuration, CancellationToken ct)
@@ -203,5 +208,43 @@ public static class DatabaseSeeder
                 "Set NINECUBE_SEED_PASSWORD or the per-role variables to create them.",
                 string.Join(", ", missing));
         }
+    }
+
+    private static async Task SeedProductionAdminAsync(
+        AppDbContext db,
+        IPasswordHasherService hasher,
+        ILogger logger,
+        CancellationToken ct)
+    {
+        var email = Environment.GetEnvironmentVariable("NINECUBE_ADMIN_EMAIL");
+        var password = Environment.GetEnvironmentVariable("NINECUBE_ADMIN_PASSWORD");
+
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            logger.LogInformation(
+                "Production administrator not seeded. Set NINECUBE_ADMIN_EMAIL and " +
+                "NINECUBE_ADMIN_PASSWORD to create the first administrator.");
+            return;
+        }
+
+        if (await db.Users.AnyAsync(u => u.Email == email, ct))
+        {
+            logger.LogInformation("Production administrator {Email} already exists; skipping seed.", email);
+            return;
+        }
+
+        var now = DateTime.UtcNow;
+        db.Users.Add(new User
+        {
+            Email = email,
+            PasswordHash = hasher.Hash(password),
+            Role = UserRole.Administrator,
+            IsActive = true,
+            CustomerId = null,
+            CreatedAt = now
+        });
+
+        await db.SaveChangesAsync(ct);
+        logger.LogInformation("Seeded production administrator {Email}", email);
     }
 }
