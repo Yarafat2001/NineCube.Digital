@@ -25,10 +25,14 @@ export function watchSiteUpdates() {
       const next = new URL(window.location.href);
       next.searchParams.set('v', version);
       window.location.replace(next.href);
-    } catch { /* Offline or temporarily unavailable deployment: leave the working page intact. */ }
+    } catch (error) {
+      // Offline or temporarily unavailable deployment: leave the working page intact.
+      if (import.meta.env.DEV) console.warn('[siteUpdates] version check failed:', error);
+    }
     finally { checking = false; }
   };
-  window.setTimeout(() => void check(), 15_000);
+  // First check sooner so a fresh deployment is picked up quickly.
+  window.setTimeout(() => void check(), 5_000);
   window.setInterval(() => void check(), 60_000);
   document.addEventListener('visibilitychange', () => void check());
 }

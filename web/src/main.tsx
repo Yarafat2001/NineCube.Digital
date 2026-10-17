@@ -8,6 +8,7 @@ import { ToastProvider } from './components/ui';
 import { AuthProvider } from './state/AuthContext';
 import { CartProvider } from './state/CartContext';
 import { watchSiteUpdates } from './lib/siteUpdates';
+import { startBackgroundRefresh } from './lib/backgroundRefresh';
 
 import './styles/tokens.css';
 import './styles/base.css';
@@ -34,6 +35,7 @@ const queryClient = new QueryClient({
 
 const container = document.getElementById('root');
 watchSiteUpdates();
+startBackgroundRefresh(queryClient);
 if (!container) throw new Error('Root element #root was not found in index.html');
 
 createRoot(container).render(
