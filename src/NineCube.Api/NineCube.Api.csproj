@@ -29,4 +29,7 @@
     <ProjectReference Include="..\NineCube.Infrastructure\NineCube.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="../../web/public/products/**/*" Link="wwwroot/products/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

@@ -1,6 +1,9 @@
 .git
 **/node_modules
-web/
+web/*
+!web/public/
+web/public/*
+!web/public/products/
 tools/
 seed/
 .env

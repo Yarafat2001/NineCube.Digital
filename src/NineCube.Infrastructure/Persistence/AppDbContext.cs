@@ -69,7 +69,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
         {
             e.ToTable("ProductCategories");
             e.HasKey(c => new { c.ProductId, c.CategoryId });
-            e.HasIndex(c => c.ProductId).IsUnique();
+            e.HasIndex(c => c.ProductId).IsUnique().HasFilter("\"IsPrimary\" = TRUE");
             e.HasIndex(c => c.CategoryId);
             e.HasOne(c => c.Product).WithMany(p => p.Categories).HasForeignKey(c => c.ProductId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(c => c.Category).WithMany().HasForeignKey(c => c.CategoryId).OnDelete(DeleteBehavior.Restrict);
@@ -114,7 +114,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(i => i.AltText).HasMaxLength(200);
             e.Property(i => i.CreatedAt);
             // The database, not only the service, refuses a second primary image for one product.
-            e.HasIndex(i => i.ProductId).IsUnique();
+            e.HasIndex(i => i.ProductId).IsUnique().HasFilter("\"IsPrimary\" = TRUE");
             e.HasIndex(i => new { i.ProductId, i.SortOrder });
             e.HasOne(i => i.Product).WithMany(p => p.Images).HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Cascade);
         });

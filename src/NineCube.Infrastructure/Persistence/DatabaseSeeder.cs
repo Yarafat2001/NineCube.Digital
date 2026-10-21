@@ -37,6 +37,7 @@ public static class DatabaseSeeder
 
         await SeedSettingsAsync(db, configuration, ct);
         await SeedProductsAsync(db, ct);
+        await ProductionCatalogImporter.ImportAsync(db, logger, ct);
 
         // The brand/series facet is derived from rows that already exist (see BrandCatalogImporter), so it
         // runs everywhere and is idempotent; reruns only fill in products added since the last start-up.

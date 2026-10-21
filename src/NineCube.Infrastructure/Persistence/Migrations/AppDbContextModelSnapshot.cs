@@ -600,7 +600,8 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("ProductId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("\"IsPrimary\" = TRUE");
 
                     b.ToTable("ProductCategories", (string)null);
                 });
@@ -641,7 +642,8 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("\"IsPrimary\" = TRUE");
 
                     b.HasIndex("ProductId", "SortOrder");
 
