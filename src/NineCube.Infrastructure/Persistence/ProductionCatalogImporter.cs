@@ -1,13 +1,16 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NineCube.Application.Abstractions;
 using NineCube.Domain;
 
 namespace NineCube.Infrastructure.Persistence;
 
-/// <summary>Offline, additive catalogue import. Never resets stock, prices, orders or merchant edits.</summary>
+/// <summary>Offline, additive catalogue import with a one-time repair of uninitialized seed stock.</summary>
 public static class ProductionCatalogImporter
 {
+    private const string StockRepairKey = "ProductionCatalogue.StockInitialization.v1";
+
     public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default)
     {
         using var stream = typeof(ProductionCatalogImporter).Assembly.GetManifestResourceStream(
@@ -15,9 +18,12 @@ public static class ProductionCatalogImporter
             ?? throw new InvalidOperationException("Bundled production catalogue is missing.");
         var feed = await JsonSerializer.DeserializeAsync<Feed>(stream, new JsonSerializerOptions(JsonSerializerDefaults.Web), ct)
             ?? throw new InvalidOperationException("Bundled production catalogue is invalid.");
+        if (feed.Products.Any(p => p.StockQuantity < 0))
+            throw new InvalidOperationException("Bundled production catalogue contains negative stock.");
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
         // Serialize rolling-deployment importers against the same PostgreSQL database.
         await db.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(846239105)", ct);
+        var repairStock = !await db.Settings.AnyAsync(s => s.Key == StockRepairKey, ct);
         var categories = (await db.Categories.ToListAsync(ct)).ToDictionary(c => c.Slug);
         var createdCategories = 0;
         foreach (var item in feed.Categories.OrderBy(c => c.Depth))
@@ -38,6 +44,7 @@ public static class ProductionCatalogImporter
         var tags = (await db.Tags.ToListAsync(ct)).GroupBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
         var createdProducts = 0;
+        var restoredProducts = 0;
         foreach (var item in feed.Products)
         {
             bySku.TryGetValue(item.Sku, out var product);
@@ -50,10 +57,42 @@ public static class ProductionCatalogImporter
             if (product is null)
             {
                 product = new Product { Sku = item.Sku, Slug = item.Slug, Name = item.Name,
-                    Price = item.Price, Currency = item.Currency, StockQuantity = 0, IsActive = true,
+                    Price = item.Price, Currency = item.Currency, StockQuantity = item.StockQuantity, IsActive = true,
                     CreatedAt = now, UpdatedAt = now, NeedsReview = item.NeedsReview };
                 db.Products.Add(product); createdProducts++;
                 bySku.Add(product.Sku, product); bySlug.Add(product.Slug, product);
+                if (item.StockQuantity > 0)
+                    db.InventoryMovements.Add(new InventoryMovement { Product = product, Delta = item.StockQuantity,
+                        Reason = "Opening stock from bundled production catalogue", CreatedAt = now });
+            }
+            else if (repairStock && item.StockQuantity > 0)
+            {
+                // The old importer initialized everything to zero. Repair only untouched rows.
+                // The conditional UPDATE locks the product against concurrent reservations/adjustments.
+                // A movement or order proves that zero may be legitimate and must be preserved.
+                var id = product.Id;
+                var entityId = id.ToString();
+                var restored = await db.Products.Where(p => p.Id == id && p.StockQuantity == 0
+                        && !db.InventoryMovements.Any(m => m.ProductId == p.Id)
+                        && !db.OrderItems.Any(o => o.ProductId == p.Id)
+                        && !db.AuditLogs.Any(a => a.EntityType == nameof(Product) && a.EntityId == entityId))
+                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, item.StockQuantity)
+                        .SetProperty(p => p.UpdatedAt, now), ct);
+                if (restored > 0)
+                {
+                    // Keep EF's snapshot in sync without issuing a second stock write at SaveChanges.
+                    var entry = db.Entry(product);
+                    entry.Property(p => p.StockQuantity).CurrentValue = item.StockQuantity;
+                    entry.Property(p => p.StockQuantity).OriginalValue = item.StockQuantity;
+                    entry.Property(p => p.UpdatedAt).CurrentValue = now;
+                    entry.Property(p => p.UpdatedAt).OriginalValue = now;
+                    db.InventoryMovements.Add(new InventoryMovement { ProductId = id, Delta = item.StockQuantity,
+                        Reason = "Restore seed stock omitted by production catalogue import v1", CreatedAt = now });
+                    db.AuditLogs.Add(new AuditLog { Action = AuditActions.StockAdjusted,
+                        EntityType = nameof(Product), EntityId = entityId, CreatedAt = now,
+                        Details = $"delta={item.StockQuantity}; reason=production catalogue stock initialization v1" });
+                    restoredProducts++;
+                }
             }
             if (string.IsNullOrWhiteSpace(product.Description)) product.Description = item.Description;
             if (string.IsNullOrWhiteSpace(product.SpecsJson)) product.SpecsJson = item.SpecsJson;
@@ -83,14 +122,16 @@ public static class ProductionCatalogImporter
                     product.Tags.Add(new ProductTag { Tag = tag });
                 }
         }
+        if (repairStock)
+            db.Settings.Add(new Setting { Key = StockRepairKey, Value = DateTime.UtcNow.ToString("O") });
         await db.SaveChangesAsync(ct);
         await transaction.CommitAsync(ct);
-        logger.LogInformation("Production catalogue imported: {Categories} categories and {Products} products added; new stock is zero; existing prices and quantities preserved.", createdCategories, createdProducts);
+        logger.LogInformation("Production catalogue imported: {Categories} categories and {Products} products added; {Restored} uninitialized stock quantities restored; merchant stock changes preserved.", createdCategories, createdProducts, restoredProducts);
     }
     private sealed record Feed(List<CategoryRow> Categories, List<ProductRow> Products);
     private sealed record CategoryRow(string Name, string Slug, string? ParentSlug, int Depth);
     private sealed record Photo(string Url, string AltText);
-    private sealed record ProductRow(string Sku, string Slug, string Name, decimal Price, string Currency,
+    private sealed record ProductRow(string Sku, string Slug, string Name, decimal Price, string Currency, int StockQuantity,
         string Description, string Category, List<string> Tags, string? SpecsJson, string? SourceName,
         string? SourceUrl, string? SourceLicense, string? PriceBasis, bool NeedsReview, List<Photo> Images);
 }

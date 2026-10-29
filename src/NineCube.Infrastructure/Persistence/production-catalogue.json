@@ -266,6 +266,7 @@
       "name": "Schezwan Chutney 30 g",
       "price": 25,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Schezwan Chutney 30 g. Check the sourced pack or model details before purchase. pack quantity: 30 g.",
       "category": "packaged-food",
       "tags": [
@@ -292,6 +293,7 @@
       "name": "Cadbury Dairy Milk Chocolate 24 g",
       "price": 20,
       "currency": "BDT",
+      "stockQuantity": 26,
       "description": "Cadbury Dairy Milk Chocolate 24 g. Check the sourced pack or model details before purchase. pack quantity: 24 g.",
       "category": "packaged-food",
       "tags": [
@@ -318,6 +320,7 @@
       "name": "Coca cola 1.75 litre",
       "price": 230,
       "currency": "BDT",
+      "stockQuantity": 142,
       "description": "Coca cola 1.75 litre. Check the sourced pack or model details before purchase. pack quantity: 1.75 L.",
       "category": "packaged-food",
       "tags": [
@@ -344,6 +347,7 @@
       "name": "Pran Drinko 250 ml",
       "price": 30,
       "currency": "BDT",
+      "stockQuantity": 100,
       "description": "Pran Drinko 250 ml. Check the sourced pack or model details before purchase. pack quantity: 250 ml.",
       "category": "packaged-food",
       "tags": [
@@ -370,6 +374,7 @@
       "name": "Cowhead milk 1 l",
       "price": 130,
       "currency": "BDT",
+      "stockQuantity": 40,
       "description": "Cowhead milk 1 l. Check the sourced pack or model details before purchase. pack quantity: 1 l.",
       "category": "packaged-food",
       "tags": [
@@ -396,6 +401,7 @@
       "name": "samyang carbo sauce 200 g",
       "price": 160,
       "currency": "BDT",
+      "stockQuantity": 64,
       "description": "samyang carbo sauce 200 g. Check the sourced pack or model details before purchase. pack quantity: 200 g.",
       "category": "packaged-food",
       "tags": [
@@ -422,6 +428,7 @@
       "name": "Coca-Cola original test 400ml",
       "price": 50,
       "currency": "BDT",
+      "stockQuantity": 26,
       "description": "Coca-Cola original test 400ml. Check the sourced pack or model details before purchase. pack quantity: 400 ml.",
       "category": "packaged-food",
       "tags": [
@@ -448,6 +455,7 @@
       "name": "quiker oats 450 450 g",
       "price": 630,
       "currency": "BDT",
+      "stockQuantity": 75,
       "description": "quiker oats 450 450 g. Check the sourced pack or model details before purchase. pack quantity: 450 g.",
       "category": "packaged-food",
       "tags": [
@@ -474,6 +482,7 @@
       "name": "Haribo Kingdom Tour Maxi Size 450 g",
       "price": 360,
       "currency": "BDT",
+      "stockQuantity": 198,
       "description": "Haribo Kingdom Tour Maxi Size 450 g. Check the sourced pack or model details before purchase. pack quantity: 450 g.",
       "category": "packaged-food",
       "tags": [
@@ -500,6 +509,7 @@
       "name": "Sun chips mix masala 20 g",
       "price": 15,
       "currency": "BDT",
+      "stockQuantity": 87,
       "description": "Sun chips mix masala 20 g. Check the sourced pack or model details before purchase. pack quantity: 20 g.",
       "category": "packaged-food",
       "tags": [
@@ -526,6 +536,7 @@
       "name": "goldmark special chocolate cookies 250 g",
       "price": 200,
       "currency": "BDT",
+      "stockQuantity": 35,
       "description": "goldmark special chocolate cookies 250 g. Check the sourced pack or model details before purchase. pack quantity: 250 g.",
       "category": "packaged-food",
       "tags": [
@@ -552,6 +563,7 @@
       "name": "crispy crunch tea special biscuits 250 g",
       "price": 200,
       "currency": "BDT",
+      "stockQuantity": 169,
       "description": "crispy crunch tea special biscuits 250 g. Check the sourced pack or model details before purchase. pack quantity: 250 g.",
       "category": "packaged-food",
       "tags": [
@@ -578,6 +590,7 @@
       "name": "Bombay sweets alooz chips 20 g",
       "price": 15,
       "currency": "BDT",
+      "stockQuantity": 32,
       "description": "Bombay sweets alooz chips 20 g. Check the sourced pack or model details before purchase. pack quantity: 20 g.",
       "category": "packaged-food",
       "tags": [
@@ -604,6 +617,7 @@
       "name": "Pran mishti jolpai 45g",
       "price": 35,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Pran mishti jolpai 45g. Check the sourced pack or model details before purchase. pack quantity: 45 g.",
       "category": "packaged-food",
       "tags": [
@@ -630,6 +644,7 @@
       "name": "quekar oat 900g",
       "price": 720,
       "currency": "BDT",
+      "stockQuantity": 148,
       "description": "quekar oat 900g. Check the sourced pack or model details before purchase. pack quantity: 900 g.",
       "category": "packaged-food",
       "tags": [
@@ -656,6 +671,7 @@
       "name": "Apple iPhone 12",
       "price": 45000,
       "currency": "BDT",
+      "stockQuantity": 20,
       "description": "Apple iPhone 12. Check the sourced pack or model details before purchase. release year: 2020; os: iOS; ram gb: 4; storage gb: 64; battery mah: 2815.",
       "category": "smartphones",
       "tags": [
@@ -682,6 +698,7 @@
       "name": "Samsung Galaxy S21",
       "price": 40000,
       "currency": "BDT",
+      "stockQuantity": 85,
       "description": "Samsung Galaxy S21. Check the sourced pack or model details before purchase. release year: 2021; os: Android; ram gb: 8; storage gb: 128; battery mah: 4000.",
       "category": "smartphones",
       "tags": [
@@ -708,6 +725,7 @@
       "name": "Xiaomi Redmi Note 10",
       "price": 14000,
       "currency": "BDT",
+      "stockQuantity": 78,
       "description": "Xiaomi Redmi Note 10. Check the sourced pack or model details before purchase. release year: 2021; os: Android; ram gb: 4; storage gb: 64; battery mah: 5000.",
       "category": "smartphones",
       "tags": [
@@ -734,6 +752,7 @@
       "name": "OnePlus 9 Pro",
       "price": 40000,
       "currency": "BDT",
+      "stockQuantity": 180,
       "description": "OnePlus 9 Pro. Check the sourced pack or model details before purchase. release year: 2021; os: Android; ram gb: 12; storage gb: 256; battery mah: 4500.",
       "category": "smartphones",
       "tags": [
@@ -760,6 +779,7 @@
       "name": "Google Pixel 6",
       "price": 35000,
       "currency": "BDT",
+      "stockQuantity": 103,
       "description": "Google Pixel 6. Check the sourced pack or model details before purchase. release year: 2021; os: Android; ram gb: 8; storage gb: 128; battery mah: 4614.",
       "category": "smartphones",
       "tags": [
@@ -786,6 +806,7 @@
       "name": "Apple iPhone 13",
       "price": 55000,
       "currency": "BDT",
+      "stockQuantity": 80,
       "description": "Apple iPhone 13. Check the sourced pack or model details before purchase. release year: 2021; os: iOS; ram gb: 4; storage gb: 128; battery mah: 3240.",
       "category": "smartphones",
       "tags": [
@@ -812,6 +833,7 @@
       "name": "Samsung Galaxy A52",
       "price": 24000,
       "currency": "BDT",
+      "stockQuantity": 122,
       "description": "Samsung Galaxy A52. Check the sourced pack or model details before purchase. release year: 2021; os: Android; ram gb: 8; storage gb: 128; battery mah: 4500.",
       "category": "smartphones",
       "tags": [
@@ -838,6 +860,7 @@
       "name": "Xiaomi Mi 11",
       "price": 30000,
       "currency": "BDT",
+      "stockQuantity": 179,
       "description": "Xiaomi Mi 11. Check the sourced pack or model details before purchase. release year: 2021; os: Android; ram gb: 8; storage gb: 256; battery mah: 4600.",
       "category": "smartphones",
       "tags": [
@@ -864,6 +887,7 @@
       "name": "Realme GT Master Edition",
       "price": 22000,
       "currency": "BDT",
+      "stockQuantity": 142,
       "description": "Realme GT Master Edition. Check the sourced pack or model details before purchase. release year: 2021; os: Android; ram gb: 8; storage gb: 128; battery mah: 4300.",
       "category": "smartphones",
       "tags": [
@@ -890,6 +914,7 @@
       "name": "Oppo Reno 8",
       "price": 28000,
       "currency": "BDT",
+      "stockQuantity": 105,
       "description": "Oppo Reno 8. Check the sourced pack or model details before purchase. release year: 2022; os: Android; ram gb: 8; storage gb: 256; battery mah: 4500.",
       "category": "smartphones",
       "tags": [
@@ -916,6 +941,7 @@
       "name": "Apex Cross Men's Wallet (09110a72)",
       "price": 2990.0,
       "currency": "BDT",
+      "stockQuantity": 40,
       "description": "Apex Cross Men's Wallet (09110a72). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: cross-mens-wallet-09110a72.",
       "category": "bags",
       "tags": [
@@ -942,6 +968,7 @@
       "name": "Bata POWER FANNY PACK BAGS (9112201)",
       "price": 799.0,
       "currency": "BDT",
+      "stockQuantity": 37,
       "description": "Bata POWER FANNY PACK BAGS (9112201). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: 9112201.",
       "category": "bags",
       "tags": [
@@ -968,6 +995,7 @@
       "name": "Apex Nino Rossi Women's Bag (2)",
       "price": 1690.0,
       "currency": "BDT",
+      "stockQuantity": 102,
       "description": "Apex Nino Rossi Women's Bag (2). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: nino-rossi-ladys-bag-0935ga82-2.",
       "category": "bags",
       "tags": [
@@ -994,6 +1022,7 @@
       "name": "Bata POWER FANNY PACK BAGS (9116201)",
       "price": 799.0,
       "currency": "BDT",
+      "stockQuantity": 36,
       "description": "Bata POWER FANNY PACK BAGS (9116201). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: 9116201.",
       "category": "bags",
       "tags": [
@@ -1020,6 +1049,7 @@
       "name": "Apex Nino Rossi Women's Tote Bag (2)",
       "price": 2690.0,
       "currency": "BDT",
+      "stockQuantity": 39,
       "description": "Apex Nino Rossi Women's Tote Bag (2). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: nino-rossi-ladys-tote-bag-0931ga91-2.",
       "category": "bags",
       "tags": [
@@ -1046,6 +1076,7 @@
       "name": "Apex Nino Rossi Women’s Tote Bag (3)",
       "price": 2490.0,
       "currency": "BDT",
+      "stockQuantity": 85,
       "description": "Apex Nino Rossi Women’s Tote Bag (3). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: nino-rossi-womens-tote-bag-0932ja09-3.",
       "category": "bags",
       "tags": [
@@ -1072,6 +1103,7 @@
       "name": "Apex Police Men's Crossbody Bag (09015a01)",
       "price": 2990.0,
       "currency": "BDT",
+      "stockQuantity": 95,
       "description": "Apex Police Men's Crossbody Bag (09015a01). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: police-mens-crossbody-bag-09015a01.",
       "category": "bags",
       "tags": [
@@ -1098,6 +1130,7 @@
       "name": "Apex Police Men's Crossbody Bag (09015a02)",
       "price": 3490.0,
       "currency": "BDT",
+      "stockQuantity": 49,
       "description": "Apex Police Men's Crossbody Bag (09015a02). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: police-mens-crossbody-bag-09015a02.",
       "category": "bags",
       "tags": [
@@ -1124,6 +1157,7 @@
       "name": "Apex Police Men's Gym Bag (09095a05)",
       "price": 2490.0,
       "currency": "BDT",
+      "stockQuantity": 64,
       "description": "Apex Police Men's Gym Bag (09095a05). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: police-mens-gym-bag-09095a05.",
       "category": "bags",
       "tags": [
@@ -1150,6 +1184,7 @@
       "name": "Apex Venturini Men’s Leather Wallet (0931la28)",
       "price": 1290.0,
       "currency": "BDT",
+      "stockQuantity": 50,
       "description": "Apex Venturini Men’s Leather Wallet (0931la28). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before order source identifier: venturini-mens-leather-wallet-0931la28.",
       "category": "bags",
       "tags": [
@@ -1176,6 +1211,7 @@
       "name": "Apex Venturini Men’s Long Wallet (0931la32)",
       "price": 1990.0,
       "currency": "BDT",
+      "stockQuantity": 48,
       "description": "Apex Venturini Men’s Long Wallet (0931la32). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering source identifier: venturini-mens-long-wallet-0931la32.",
       "category": "bags",
       "tags": [
@@ -1202,6 +1238,7 @@
       "name": "Hatil Dazzler-101",
       "price": 77150.0,
       "currency": "BDT",
+      "stockQuantity": 96,
       "description": "Hatil Dazzler-101. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: 405-101-10-2-88.",
       "category": "beds",
       "tags": [
@@ -1228,6 +1265,7 @@
       "name": "Hatil Desire-154",
       "price": 80200.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Hatil Desire-154. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: 205-154-10-1-A-88.",
       "category": "beds",
       "tags": [
@@ -1254,6 +1292,7 @@
       "name": "Hatil Elegant-189",
       "price": 58900.0,
       "currency": "BDT",
+      "stockQuantity": 34,
       "description": "Hatil Elegant-189. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HCL-205-189-10-1K-88.",
       "category": "beds",
       "tags": [
@@ -1280,6 +1319,7 @@
       "name": "Hatil Epiphany-115",
       "price": 54600.0,
       "currency": "BDT",
+      "stockQuantity": 46,
       "description": "Hatil Epiphany-115. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: 205-115-10-1-A-88.",
       "category": "beds",
       "tags": [
@@ -1306,6 +1346,7 @@
       "name": "Hatil Getafe-207",
       "price": 70000.0,
       "currency": "BDT",
+      "stockQuantity": 118,
       "description": "Hatil Getafe-207. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HIF-205-207-10-2-88.",
       "category": "beds",
       "tags": [
@@ -1332,6 +1373,7 @@
       "name": "Hatil Kent-187",
       "price": 52800.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Hatil Kent-187. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HCL-205-187-10-1K-88.",
       "category": "beds",
       "tags": [
@@ -1358,6 +1400,7 @@
       "name": "Hatil Mirage-175",
       "price": 42400.0,
       "currency": "BDT",
+      "stockQuantity": 46,
       "description": "Hatil Mirage-175. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: 205-175-10-1-A-88.",
       "category": "beds",
       "tags": [
@@ -1384,6 +1427,7 @@
       "name": "Hatil Myth-184",
       "price": 49400.0,
       "currency": "BDT",
+      "stockQuantity": 112,
       "description": "Hatil Myth-184. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HCL-205-184-10-1-A-88.",
       "category": "beds",
       "tags": [
@@ -1410,6 +1454,7 @@
       "name": "Hatil Nemesis-197 (5 Feet-Complete Bed)-2A",
       "price": 82200.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Hatil Nemesis-197 (5 Feet-Complete Bed)-2A. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering source sku: 205-197.",
       "category": "beds",
       "tags": [
@@ -1436,6 +1481,7 @@
       "name": "Hatil Thrill-162",
       "price": 52200.0,
       "currency": "BDT",
+      "stockQuantity": 74,
       "description": "Hatil Thrill-162. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HCL-205-162-10-1A-RB-88.",
       "category": "beds",
       "tags": [
@@ -1462,6 +1508,7 @@
       "name": "Hatil Tiara-190",
       "price": 61900.0,
       "currency": "BDT",
+      "stockQuantity": 51,
       "description": "Hatil Tiara-190. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HCL-205-190-10-1K-88.",
       "category": "beds",
       "tags": [
@@ -1488,6 +1535,7 @@
       "name": "Hatil Vega-128",
       "price": 68000.0,
       "currency": "BDT",
+      "stockQuantity": 116,
       "description": "Hatil Vega-128. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: 205-128-10-1-A-88.",
       "category": "beds",
       "tags": [
@@ -1514,6 +1562,7 @@
       "name": "Hatil Alessandro-204",
       "price": 27950.0,
       "currency": "BDT",
+      "stockQuantity": 109,
       "description": "Hatil Alessandro-204. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HPL-507-204-9-1-00.",
       "category": "chairs",
       "tags": [
@@ -1540,6 +1589,7 @@
       "name": "Hatil Aria-132",
       "price": 24600.0,
       "currency": "BDT",
+      "stockQuantity": 88,
       "description": "Hatil Aria-132. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HIF-507-132-10NB-1-8844.",
       "category": "chairs",
       "tags": [
@@ -1566,6 +1616,7 @@
       "name": "Hatil Bagpipes-133",
       "price": 35900.0,
       "currency": "BDT",
+      "stockQuantity": 36,
       "description": "Hatil Bagpipes-133. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HIF-507-133-10SCB-1-8809.",
       "category": "chairs",
       "tags": [
@@ -1592,6 +1643,7 @@
       "name": "Hatil Belinda-138",
       "price": 37112.0,
       "currency": "BDT",
+      "stockQuantity": 69,
       "description": "Hatil Belinda-138. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HIF-507-138-10SCB-1-8809.",
       "category": "chairs",
       "tags": [
@@ -1618,6 +1670,7 @@
       "name": "Hatil Benchley-333",
       "price": 16800.0,
       "currency": "BDT",
+      "stockQuantity": 43,
       "description": "Hatil Benchley-333. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: Hpl-507-333-NB-1-44.",
       "category": "chairs",
       "tags": [
@@ -1644,6 +1697,7 @@
       "name": "Hatil Borges-208",
       "price": 30075.0,
       "currency": "BDT",
+      "stockQuantity": 51,
       "description": "Hatil Borges-208. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HPL-507-208-9-1-00.",
       "category": "chairs",
       "tags": [
@@ -1670,6 +1724,7 @@
       "name": "Hatil Brooker-325",
       "price": 21700.0,
       "currency": "BDT",
+      "stockQuantity": 53,
       "description": "Hatil Brooker-325. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: Hpl-507-325-NB-1-44.",
       "category": "chairs",
       "tags": [
@@ -1696,6 +1751,7 @@
       "name": "Hatil Burgess-327",
       "price": 21700.0,
       "currency": "BDT",
+      "stockQuantity": 39,
       "description": "Hatil Burgess-327. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: Hpl-507-327-NB-1-44.",
       "category": "chairs",
       "tags": [
@@ -1722,6 +1778,7 @@
       "name": "Hatil Cezanne-112 GL",
       "price": 11000.0,
       "currency": "BDT",
+      "stockQuantity": 49,
       "description": "Hatil Cezanne-112 GL. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HPL-507-112-NBGL-1-44.",
       "category": "chairs",
       "tags": [
@@ -1748,6 +1805,7 @@
       "name": "Hatil Cezanne-112 SP",
       "price": 11000.0,
       "currency": "BDT",
+      "stockQuantity": 4,
       "description": "Hatil Cezanne-112 SP. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HPL-507-112-SCBSP-1-09.",
       "category": "chairs",
       "tags": [
@@ -1774,6 +1832,7 @@
       "name": "Hatil Clive-332",
       "price": 18100.0,
       "currency": "BDT",
+      "stockQuantity": 82,
       "description": "Hatil Clive-332. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: Hpl-507-332-NB-1-44.",
       "category": "chairs",
       "tags": [
@@ -1800,6 +1859,7 @@
       "name": "Hatil Cornel-330",
       "price": 23600.0,
       "currency": "BDT",
+      "stockQuantity": 83,
       "description": "Hatil Cornel-330. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: Hpl-507-330-NB-1-44.",
       "category": "chairs",
       "tags": [
@@ -1826,6 +1886,7 @@
       "name": "Hatil Cosy-101",
       "price": 18100.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Hatil Cosy-101. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HPL-507-101-NB-1-44.",
       "category": "chairs",
       "tags": [
@@ -1852,6 +1913,7 @@
       "name": "Hatil Couplet-134",
       "price": 28625.0,
       "currency": "BDT",
+      "stockQuantity": 81,
       "description": "Hatil Couplet-134. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HIF-507-134-10NB-1-8844.",
       "category": "chairs",
       "tags": [
@@ -1878,6 +1940,7 @@
       "name": "Hatil Degas-103",
       "price": 21000.0,
       "currency": "BDT",
+      "stockQuantity": 3,
       "description": "Hatil Degas-103. Listed on the Hatil Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source sku: HIF-414-103-2-1-66,77,88.",
       "category": "chairs",
       "tags": [
@@ -1904,6 +1967,7 @@
       "name": "Walton Crystal Series LED Bulb",
       "price": 650.0,
       "currency": "BDT",
+      "stockQuantity": 43,
       "description": "Walton Crystal Series LED Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. series page: True; listed variant prices bdt: [650.0, 900.0].",
       "category": "led-lighting",
       "tags": [
@@ -1930,6 +1994,7 @@
       "name": "Walton Moon Light",
       "price": 70.0,
       "currency": "BDT",
+      "stockQuantity": 53,
       "description": "Walton Moon Light. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. series page: True; listed variant prices bdt: [70.0].",
       "category": "led-lighting",
       "tags": [
@@ -1956,6 +2021,7 @@
       "name": "Walton Public Series A Shape LED Bulb",
       "price": 150.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Walton Public Series A Shape LED Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. series page: True; listed variant prices bdt: [150.0, 170.0, 200.0, 230.0, 260.0, 300.0, 380.0, 420.0, 545.0, 700.0].",
       "category": "led-lighting",
       "tags": [
@@ -1982,6 +2048,7 @@
       "name": "Walton Public Series T Shape LED Bulb",
       "price": 755.0,
       "currency": "BDT",
+      "stockQuantity": 106,
       "description": "Walton Public Series T Shape LED Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. series page: True; listed variant prices bdt: [755.0, 1035.0, 1400.0, 1620.0].",
       "category": "led-lighting",
       "tags": [
@@ -2008,6 +2075,7 @@
       "name": "Walton Rainbow Bulb",
       "price": 260.0,
       "currency": "BDT",
+      "stockQuantity": 43,
       "description": "Walton Rainbow Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. series page: True; listed variant prices bdt: [260.0].",
       "category": "led-lighting",
       "tags": [
@@ -2034,6 +2102,7 @@
       "name": "Walton Ultra series LED Bulb",
       "price": 240.0,
       "currency": "BDT",
+      "stockQuantity": 82,
       "description": "Walton Ultra series LED Bulb. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. series page: True; listed variant prices bdt: [240.0, 270.0, 320.0].",
       "category": "led-lighting",
       "tags": [
@@ -2060,6 +2129,7 @@
       "name": "Walton WFC-3D8-GJXB-FD (INVERTER)",
       "price": 59390.0,
       "currency": "BDT",
+      "stockQuantity": 48,
       "description": "Walton WFC-3D8-GJXB-FD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2086,6 +2156,7 @@
       "name": "Walton WFC-3D8-GRHE-FD (INVERTER)",
       "price": 59590.0,
       "currency": "BDT",
+      "stockQuantity": 91,
       "description": "Walton WFC-3D8-GRHE-FD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2112,6 +2183,7 @@
       "name": "Walton WFC-3F5-I5-GEDE-FD (INVERTER)",
       "price": 61290.0,
       "currency": "BDT",
+      "stockQuantity": 63,
       "description": "Walton WFC-3F5-I5-GEDE-FD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2138,6 +2210,7 @@
       "name": "Walton WFE-3A2-GDEL-XX (INVERTER)",
       "price": 50190.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Walton WFE-3A2-GDEL-XX (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2164,6 +2237,7 @@
       "name": "Walton WFE-3A2-GDEN-DD",
       "price": 50490.0,
       "currency": "BDT",
+      "stockQuantity": 68,
       "description": "Walton WFE-3A2-GDEN-DD. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2190,6 +2264,7 @@
       "name": "Walton WFE-3B0-GDEL-XX (INVERTER)",
       "price": 51690.0,
       "currency": "BDT",
+      "stockQuantity": 81,
       "description": "Walton WFE-3B0-GDEL-XX (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2216,6 +2291,7 @@
       "name": "Walton WFE-3B0-GDEN-DD (INVERTER)",
       "price": 55190.0,
       "currency": "BDT",
+      "stockQuantity": 34,
       "description": "Walton WFE-3B0-GDEN-DD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2242,6 +2318,7 @@
       "name": "Walton WFE-3B0-GDEN-XX (INVERTER)",
       "price": 51990.0,
       "currency": "BDT",
+      "stockQuantity": 103,
       "description": "Walton WFE-3B0-GDEN-XX (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2268,6 +2345,7 @@
       "name": "Walton WFE-3B0-GDEV-XX (INVERTER)",
       "price": 50690.0,
       "currency": "BDT",
+      "stockQuantity": 77,
       "description": "Walton WFE-3B0-GDEV-XX (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2294,6 +2372,7 @@
       "name": "Walton WFE-3C3-GDEN-DD (INVERTER)",
       "price": 53690.0,
       "currency": "BDT",
+      "stockQuantity": 96,
       "description": "Walton WFE-3C3-GDEN-DD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2320,6 +2399,7 @@
       "name": "Walton WFE-3C3-GDEN-XX",
       "price": 51790.0,
       "currency": "BDT",
+      "stockQuantity": 115,
       "description": "Walton WFE-3C3-GDEN-XX. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2346,6 +2426,7 @@
       "name": "Walton WFE-3C3-GDXX-XX",
       "price": 50990.0,
       "currency": "BDT",
+      "stockQuantity": 62,
       "description": "Walton WFE-3C3-GDXX-XX. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2372,6 +2453,7 @@
       "name": "Walton WFE-3E8-GDEL-XX",
       "price": 53790.0,
       "currency": "BDT",
+      "stockQuantity": 117,
       "description": "Walton WFE-3E8-GDEL-XX. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2398,6 +2480,7 @@
       "name": "Walton WFE-3E8-GDEN-DD (INVERTER)",
       "price": 58690.0,
       "currency": "BDT",
+      "stockQuantity": 46,
       "description": "Walton WFE-3E8-GDEN-DD (INVERTER). Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2424,6 +2507,7 @@
       "name": "Walton WFE-3E8-GDEN-XX",
       "price": 54290.0,
       "currency": "BDT",
+      "stockQuantity": 91,
       "description": "Walton WFE-3E8-GDEN-XX. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "refrigerators",
       "tags": [
@@ -2450,6 +2534,7 @@
       "name": "Apex Adidas Duramo SL Shoe - Women (64010a13)",
       "price": 12000.0,
       "currency": "BDT",
+      "stockQuantity": 45,
       "description": "Apex Adidas Duramo SL Shoe - Women (64010a13). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before orderi source identifier: adidas-duramo-sl-shoe-women-64010a13.",
       "category": "shoes",
       "tags": [
@@ -2476,6 +2561,7 @@
       "name": "Bata BATA (MEN) BOGOTA MENS CASUAL (8545729)",
       "price": 4999.0,
       "currency": "BDT",
+      "stockQuantity": 52,
       "description": "Bata BATA (MEN) BOGOTA MENS CASUAL (8545729). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin source sku: 8545729.",
       "category": "shoes",
       "tags": [
@@ -2502,6 +2588,7 @@
       "name": "Apex Adidas Ford Up - Men (94090a06)",
       "price": 14000.0,
       "currency": "BDT",
+      "stockQuantity": 85,
       "description": "Apex Adidas Ford Up - Men (94090a06). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: adidas-ford-up-men-94090a06.",
       "category": "shoes",
       "tags": [
@@ -2528,6 +2615,7 @@
       "name": "Bata BATA (MEN) BOGOTA MENS CASUAL (8546729)",
       "price": 4999.0,
       "currency": "BDT",
+      "stockQuantity": 41,
       "description": "Bata BATA (MEN) BOGOTA MENS CASUAL (8546729). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin source sku: 8546729.",
       "category": "shoes",
       "tags": [
@@ -2554,6 +2642,7 @@
       "name": "Apex Adidas Questar Shoes - Men (94090a22)",
       "price": 13000.0,
       "currency": "BDT",
+      "stockQuantity": 74,
       "description": "Apex Adidas Questar Shoes - Men (94090a22). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: adidas-questar-shoes-men-94090a22.",
       "category": "shoes",
       "tags": [
@@ -2580,6 +2669,7 @@
       "name": "Bata BATA (MEN) IQUITOS MENS DRESS (8316245)",
       "price": 5999.0,
       "currency": "BDT",
+      "stockQuantity": 46,
       "description": "Bata BATA (MEN) IQUITOS MENS DRESS (8316245). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin source sku: 8316245.",
       "category": "shoes",
       "tags": [
@@ -2606,6 +2696,7 @@
       "name": "Apex Adidas Qusteron Shoes - Women (64090a01)",
       "price": 9990.0,
       "currency": "BDT",
+      "stockQuantity": 81,
       "description": "Apex Adidas Qusteron Shoes - Women (64090a01). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before orderi source identifier: qusteron-shoes-women-64090a01.",
       "category": "shoes",
       "tags": [
@@ -2632,6 +2723,7 @@
       "name": "Bata BATA (MEN) LEEDS MENS SANDALS (8714853)",
       "price": 2699.0,
       "currency": "BDT",
+      "stockQuantity": 3,
       "description": "Bata BATA (MEN) LEEDS MENS SANDALS (8714853). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin source sku: 8714853.",
       "category": "shoes",
       "tags": [
@@ -2658,6 +2750,7 @@
       "name": "Apex Adidas Ultrabounce Shoes - Women (64020a21)",
       "price": 14000.0,
       "currency": "BDT",
+      "stockQuantity": 90,
       "description": "Apex Adidas Ultrabounce Shoes - Women (64020a21). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ord source identifier: adidas-ultrabounce-shoes-women-64020a21.",
       "category": "shoes",
       "tags": [
@@ -2684,6 +2777,7 @@
       "name": "Bata BATA (MEN) MATTE MENS SANDALS (8313004)",
       "price": 1999.0,
       "currency": "BDT",
+      "stockQuantity": 34,
       "description": "Bata BATA (MEN) MATTE MENS SANDALS (8313004). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin source sku: 8313004.",
       "category": "shoes",
       "tags": [
@@ -2710,6 +2804,7 @@
       "name": "Apex Apex Men's Mule Sandal (9211ba98)",
       "price": 1990.0,
       "currency": "BDT",
+      "stockQuantity": 119,
       "description": "Apex Apex Men's Mule Sandal (9211ba98). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: apex-mens-mule-sandal-9211ba98.",
       "category": "shoes",
       "tags": [
@@ -2736,6 +2831,7 @@
       "name": "Bata BATA (MEN) MATTE MENS SANDALS (8313005)",
       "price": 1999.0,
       "currency": "BDT",
+      "stockQuantity": 102,
       "description": "Bata BATA (MEN) MATTE MENS SANDALS (8313005). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin source sku: 8313005.",
       "category": "shoes",
       "tags": [
@@ -2762,6 +2858,7 @@
       "name": "Apex Apex Men’s Backbelt Sandal (9251fl62)",
       "price": 1290.0,
       "currency": "BDT",
+      "stockQuantity": 46,
       "description": "Apex Apex Men’s Backbelt Sandal (9251fl62). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: apex-mens-backbelt-sandal-9251fl62.",
       "category": "shoes",
       "tags": [
@@ -2788,6 +2885,7 @@
       "name": "Bata BATA (MEN) MATTE MENS SANDALS (8317004)",
       "price": 1999.0,
       "currency": "BDT",
+      "stockQuantity": 2,
       "description": "Bata BATA (MEN) MATTE MENS SANDALS (8317004). Listed on the Bata Bangladesh catalogue; confirm current BDT price, variants and warranty before orderin source sku: 8317004.",
       "category": "shoes",
       "tags": [
@@ -2814,6 +2912,7 @@
       "name": "Apex Apex Men’s Dress Shoe (91314a67)",
       "price": 3490.0,
       "currency": "BDT",
+      "stockQuantity": 36,
       "description": "Apex Apex Men’s Dress Shoe (91314a67). Listed on the Apex Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering. source identifier: apex-mens-dress-shoe-91314a67.",
       "category": "shoes",
       "tags": [
@@ -2840,6 +2939,7 @@
       "name": "Walton NEXG N10 ULTRA",
       "price": 18499.0,
       "currency": "BDT",
+      "stockQuantity": 105,
       "description": "Walton NEXG N10 ULTRA. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -2866,6 +2966,7 @@
       "name": "Walton NEXG N26",
       "price": 16499.0,
       "currency": "BDT",
+      "stockQuantity": 110,
       "description": "Walton NEXG N26. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -2892,6 +2993,7 @@
       "name": "Walton NEXG N27",
       "price": 15999.0,
       "currency": "BDT",
+      "stockQuantity": 48,
       "description": "Walton NEXG N27. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -2918,6 +3020,7 @@
       "name": "Walton NEXG N28",
       "price": 20499.0,
       "currency": "BDT",
+      "stockQuantity": 42,
       "description": "Walton NEXG N28. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -2944,6 +3047,7 @@
       "name": "Walton NEXG N28 PRO",
       "price": 22999.0,
       "currency": "BDT",
+      "stockQuantity": 86,
       "description": "Walton NEXG N28 PRO. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -2970,6 +3074,7 @@
       "name": "Walton NEXG N74",
       "price": 14999.0,
       "currency": "BDT",
+      "stockQuantity": 118,
       "description": "Walton NEXG N74. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -2996,6 +3101,7 @@
       "name": "Walton NEXG N75",
       "price": 14738.0,
       "currency": "BDT",
+      "stockQuantity": 3,
       "description": "Walton NEXG N75. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3022,6 +3128,7 @@
       "name": "Walton NEXG N76",
       "price": 16999.0,
       "currency": "BDT",
+      "stockQuantity": 109,
       "description": "Walton NEXG N76. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3048,6 +3155,7 @@
       "name": "Walton NEXG N77",
       "price": 18999.0,
       "currency": "BDT",
+      "stockQuantity": 71,
       "description": "Walton NEXG N77. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3074,6 +3182,7 @@
       "name": "Walton ORBIT Y13",
       "price": 7999.0,
       "currency": "BDT",
+      "stockQuantity": 91,
       "description": "Walton ORBIT Y13. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3100,6 +3209,7 @@
       "name": "Walton ORBIT Y70C",
       "price": 9049.0,
       "currency": "BDT",
+      "stockQuantity": 55,
       "description": "Walton ORBIT Y70C. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3126,6 +3236,7 @@
       "name": "Walton ORBIT Y71",
       "price": 13499.0,
       "currency": "BDT",
+      "stockQuantity": 100,
       "description": "Walton ORBIT Y71. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3152,6 +3263,7 @@
       "name": "Walton ORBIT Y72",
       "price": 16499.0,
       "currency": "BDT",
+      "stockQuantity": 34,
       "description": "Walton ORBIT Y72. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3178,6 +3290,7 @@
       "name": "Walton XANON X1 ULTRA",
       "price": 19693.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Walton XANON X1 ULTRA. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3204,6 +3317,7 @@
       "name": "Walton XANON X21",
       "price": 23006.0,
       "currency": "BDT",
+      "stockQuantity": 41,
       "description": "Walton XANON X21. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3230,6 +3344,7 @@
       "name": "Walton XANON X22 5G",
       "price": 25999.0,
       "currency": "BDT",
+      "stockQuantity": 54,
       "description": "Walton XANON X22 5G. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3256,6 +3371,7 @@
       "name": "Walton XANON X50",
       "price": 30999.0,
       "currency": "BDT",
+      "stockQuantity": 68,
       "description": "Walton XANON X50. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3282,6 +3398,7 @@
       "name": "Walton XANON X91",
       "price": 31369.0,
       "currency": "BDT",
+      "stockQuantity": 70,
       "description": "Walton XANON X91. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3308,6 +3425,7 @@
       "name": "Walton ZENX 2",
       "price": 15999.0,
       "currency": "BDT",
+      "stockQuantity": 98,
       "description": "Walton ZENX 2. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3334,6 +3452,7 @@
       "name": "Walton ZENX Z3",
       "price": 16499.0,
       "currency": "BDT",
+      "stockQuantity": 86,
       "description": "Walton ZENX Z3. Listed on the Walton Bangladesh catalogue; confirm current BDT price, variants and warranty before ordering.",
       "category": "smartphones",
       "tags": [
@@ -3360,6 +3479,7 @@
       "name": "Generic Miniket Rice 5 kg",
       "price": 650,
       "currency": "BDT",
+      "stockQuantity": 58,
       "description": "Generic Miniket Rice 5 kg. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Rice.",
       "category": "rice",
       "tags": [
@@ -3386,6 +3506,7 @@
       "name": "Generic Basmati Rice 1 kg",
       "price": 380,
       "currency": "BDT",
+      "stockQuantity": 98,
       "description": "Generic Basmati Rice 1 kg. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Basmati.",
       "category": "rice",
       "tags": [
@@ -3412,6 +3533,7 @@
       "name": "Generic Soybean Cooking Oil 5 L",
       "price": 850,
       "currency": "BDT",
+      "stockQuantity": 81,
       "description": "Generic Soybean Cooking Oil 5 L. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Soybean oil.",
       "category": "cooking-oil",
       "tags": [
@@ -3438,6 +3560,7 @@
       "name": "Generic Coconut Oil 1 L",
       "price": 420,
       "currency": "BDT",
+      "stockQuantity": 53,
       "description": "Generic Coconut Oil 1 L. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Coconut oil.",
       "category": "cooking-oil",
       "tags": [
@@ -3464,6 +3587,7 @@
       "name": "Generic Men Cotton Casual Shirt",
       "price": 1100,
       "currency": "BDT",
+      "stockQuantity": 91,
       "description": "Generic Men Cotton Casual Shirt. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Shirt.",
       "category": "shirts",
       "tags": [
@@ -3490,6 +3614,7 @@
       "name": "Generic Men Formal Dress Shirt",
       "price": 1800,
       "currency": "BDT",
+      "stockQuantity": 171,
       "description": "Generic Men Formal Dress Shirt. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Dress shirt.",
       "category": "shirts",
       "tags": [
@@ -3516,6 +3641,7 @@
       "name": "Generic Cotton Panjabi",
       "price": 1800,
       "currency": "BDT",
+      "stockQuantity": 64,
       "description": "Generic Cotton Panjabi. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Kurta.",
       "category": "panjabi",
       "tags": [
@@ -3543,6 +3669,7 @@
       "name": "Generic Embroidered Eid Panjabi",
       "price": 3500,
       "currency": "BDT",
+      "stockQuantity": 54,
       "description": "Generic Embroidered Eid Panjabi. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Kurta.",
       "category": "panjabi",
       "tags": [
@@ -3570,6 +3697,7 @@
       "name": "Generic Cotton Saree",
       "price": 3000,
       "currency": "BDT",
+      "stockQuantity": 30,
       "description": "Generic Cotton Saree. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Saree.",
       "category": "sarees",
       "tags": [
@@ -3597,6 +3725,7 @@
       "name": "Generic Jamdani-Style Saree",
       "price": 8000,
       "currency": "BDT",
+      "stockQuantity": 200,
       "description": "Generic Jamdani-Style Saree. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Jamdani.",
       "category": "sarees",
       "tags": [
@@ -3624,6 +3753,7 @@
       "name": "Generic Moisturising Face Cream 50 g",
       "price": 250,
       "currency": "BDT",
+      "stockQuantity": 45,
       "description": "Generic Moisturising Face Cream 50 g. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Cosmetics.",
       "category": "cosmetics",
       "tags": [
@@ -3650,6 +3780,7 @@
       "name": "Generic Lipstick",
       "price": 450,
       "currency": "BDT",
+      "stockQuantity": 80,
       "description": "Generic Lipstick. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Lipstick.",
       "category": "cosmetics",
       "tags": [
@@ -3676,6 +3807,7 @@
       "name": "Generic Rose Attar 10 ml",
       "price": 600,
       "currency": "BDT",
+      "stockQuantity": 63,
       "description": "Generic Rose Attar 10 ml. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Perfume.",
       "category": "fragrances",
       "tags": [
@@ -3702,6 +3834,7 @@
       "name": "Generic Body Spray 200 ml",
       "price": 350,
       "currency": "BDT",
+      "stockQuantity": 149,
       "description": "Generic Body Spray 200 ml. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Deodorant.",
       "category": "fragrances",
       "tags": [
@@ -3728,6 +3861,7 @@
       "name": "Generic Oral Rehydration Salt Sachet",
       "price": 25,
       "currency": "BDT",
+      "stockQuantity": 30,
       "description": "Generic Oral Rehydration Salt Sachet. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Oral rehydration therapy.",
       "category": "medicines",
       "tags": [
@@ -3755,6 +3889,7 @@
       "name": "Generic Paracetamol 500 mg Tablet Strip",
       "price": 15,
       "currency": "BDT",
+      "stockQuantity": 30,
       "description": "Generic Paracetamol 500 mg Tablet Strip. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Paracetamol.",
       "category": "medicines",
       "tags": [
@@ -3782,6 +3917,7 @@
       "name": "Generic Cricket Bat",
       "price": 2500,
       "currency": "BDT",
+      "stockQuantity": 49,
       "description": "Generic Cricket Bat. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Cricket bat.",
       "category": "sports-accessories",
       "tags": [
@@ -3808,6 +3944,7 @@
       "name": "Generic Badminton Racket Set",
       "price": 1200,
       "currency": "BDT",
+      "stockQuantity": 44,
       "description": "Generic Badminton Racket Set. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Badminton.",
       "category": "sports-accessories",
       "tags": [
@@ -3834,6 +3971,7 @@
       "name": "Generic Analog Wrist Watch",
       "price": 1400,
       "currency": "BDT",
+      "stockQuantity": 57,
       "description": "Generic Analog Wrist Watch. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Watch.",
       "category": "watches",
       "tags": [
@@ -3860,6 +3998,7 @@
       "name": "Generic Motorcycle Helmet Size M",
       "price": 1300,
       "currency": "BDT",
+      "stockQuantity": 101,
       "description": "Generic Motorcycle Helmet Size M. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Helmet.",
       "category": "auto-accessories",
       "tags": [
@@ -3886,6 +4025,7 @@
       "name": "Generic Car Cleaning Kit",
       "price": 500,
       "currency": "BDT",
+      "stockQuantity": 38,
       "description": "Generic Car Cleaning Kit. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Car wash.",
       "category": "auto-accessories",
       "tags": [
@@ -3912,6 +4052,7 @@
       "name": "Generic 125cc Commuter Motorcycle",
       "price": 185000,
       "currency": "BDT",
+      "stockQuantity": 49,
       "description": "Generic 125cc Commuter Motorcycle. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Motorcycle.",
       "category": "motorbikes",
       "tags": [
@@ -3938,6 +4079,7 @@
       "name": "Generic Interior Plastic Paint 10 kg",
       "price": 1100,
       "currency": "BDT",
+      "stockQuantity": 164,
       "description": "Generic Interior Plastic Paint 10 kg. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Paint.",
       "category": "wall-paint",
       "tags": [
@@ -3964,6 +4106,7 @@
       "name": "Generic Exterior Emulsion Paint 20 kg",
       "price": 2600,
       "currency": "BDT",
+      "stockQuantity": 52,
       "description": "Generic Exterior Emulsion Paint 20 kg. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Interior decoration.",
       "category": "wall-paint",
       "tags": [
@@ -3990,6 +4133,7 @@
       "name": "Generic Tall Tubular Battery 150 Ah",
       "price": 7800,
       "currency": "BDT",
+      "stockQuantity": 132,
       "description": "Generic Tall Tubular Battery 150 Ah. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Deep cycle battery.",
       "category": "ips-batteries",
       "tags": [
@@ -4016,6 +4160,7 @@
       "name": "Generic Laptop 8 GB RAM 256 GB SSD",
       "price": 58000,
       "currency": "BDT",
+      "stockQuantity": 76,
       "description": "Generic Laptop 8 GB RAM 256 GB SSD. Unbranded placeholder describing the product type; verify an actual sourced item before selling. reference topic: Laptop.",
       "category": "laptops",
       "tags": [
@@ -4042,6 +4187,7 @@
       "name": "Apple MacBook Air M5 13 (16GB/512GB)",
       "price": 161500.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Apple M5 processor; 16GB RAM; 512GB SSD; 13.6-inch Liquid Retina display.",
       "category": "laptops",
       "tags": [
@@ -4074,6 +4220,7 @@
       "name": "MSI Raider 18 HX AI (32GB/2TB)",
       "price": 630000.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Core Ultra 9 285HX processor; 32GB RAM; 2TB SSD; 18-inch UHD+ MiniLED 120Hz display. NVIDIA RTX 5090 24GB graphics.",
       "category": "laptops",
       "tags": [
@@ -4106,6 +4253,7 @@
       "name": "Walton Prelude N41 Pro (8GB/256GB)",
       "price": 28500.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Celeron N4120 processor; 8GB RAM; 256GB SSD; 14-inch FHD display.",
       "category": "laptops",
       "tags": [
@@ -4138,6 +4286,7 @@
       "name": "Acer Aspire 3 A325-42-V2 (8GB/256GB)",
       "price": 57000.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Ryzen 3 5300U processor; 8GB RAM; 256GB SSD; 15.6-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4170,6 +4319,7 @@
       "name": "Lenovo IdeaPad 1 15AMN7 (16GB/512GB)",
       "price": 72500.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Ryzen 3 7320U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4202,6 +4352,7 @@
       "name": "Dell Pro 15 PV15250 (8GB/512GB)",
       "price": 72900.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Core 3 100U processor; 8GB RAM; 512GB SSD; 15.6-inch FHD 120Hz display.",
       "category": "laptops",
       "tags": [
@@ -4234,6 +4385,7 @@
       "name": "Acer Aspire Lite AL15-41 (16GB/512GB)",
       "price": 72900.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Ryzen 5 5625U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD display.",
       "category": "laptops",
       "tags": [
@@ -4266,6 +4418,7 @@
       "name": "HP 15-fc0634AU (8GB/512GB)",
       "price": 95000.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Ryzen 5 7520U processor; 8GB RAM; 512GB SSD; 15.6-inch FHD display.",
       "category": "laptops",
       "tags": [
@@ -4298,6 +4451,7 @@
       "name": "ASUS Vivobook 14 A1404VA (16GB/512GB)",
       "price": 93000.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Core 5 120U processor; 16GB RAM; 512GB SSD; 14-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4330,6 +4484,7 @@
       "name": "MSI Modern 15 F1MG (16GB/512GB)",
       "price": 94500.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Core 5 120U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4362,6 +4517,7 @@
       "name": "Dell Inspiron 3530 i7 (16GB/512GB)",
       "price": 94000.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Core i7-1355U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD display.",
       "category": "laptops",
       "tags": [
@@ -4394,6 +4550,7 @@
       "name": "Lenovo IdeaPad Slim 3 15AMN8 (16GB/512GB)",
       "price": 99000.0,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Ryzen 5 40 processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4426,6 +4583,7 @@
       "name": "Bamboo Spatula",
       "price": 7.99,
       "currency": "BDT",
+      "stockQuantity": 37,
       "description": "The Bamboo Spatula is a versatile kitchen tool made from eco-friendly bamboo. Ideal for flipping, stirring, and serving various dishes.",
       "category": "kitchen",
       "tags": [],
@@ -4446,6 +4604,7 @@
       "name": "Black Aluminium Cup",
       "price": 5.99,
       "currency": "BDT",
+      "stockQuantity": 75,
       "description": "The Black Aluminium Cup is a stylish and durable cup suitable for both hot and cold beverages. Its sleek black design adds a modern touch to your drinkware collection.",
       "category": "kitchen",
       "tags": [],
@@ -4466,6 +4625,7 @@
       "name": "Black Whisk",
       "price": 9.99,
       "currency": "BDT",
+      "stockQuantity": 73,
       "description": "The Black Whisk is a kitchen essential for whisking and beating ingredients. Its ergonomic handle and sleek design make it a practical and stylish tool.",
       "category": "kitchen",
       "tags": [],
@@ -4486,6 +4646,7 @@
       "name": "Boxed Blender",
       "price": 39.99,
       "currency": "BDT",
+      "stockQuantity": 9,
       "description": "The Boxed Blender is a powerful and compact blender perfect for smoothies, shakes, and more. Its convenient design and multiple functions make it a versatile kitchen appliance.",
       "category": "kitchen",
       "tags": [],
@@ -4506,6 +4667,7 @@
       "name": "Carbon Steel Wok",
       "price": 29.99,
       "currency": "BDT",
+      "stockQuantity": 40,
       "description": "The Carbon Steel Wok is a versatile cooking pan suitable for stir-frying, sautéing, and deep frying. Its sturdy construction ensures even heat distribution for delicious meals.",
       "category": "kitchen",
       "tags": [],
@@ -4526,6 +4688,7 @@
       "name": "Chopping Board",
       "price": 12.99,
       "currency": "BDT",
+      "stockQuantity": 14,
       "description": "The Chopping Board is an essential kitchen accessory for food preparation. Made from durable material, it provides a safe and hygienic surface for cutting and chopping.",
       "category": "kitchen",
       "tags": [],
@@ -4546,6 +4709,7 @@
       "name": "Citrus Squeezer Yellow",
       "price": 8.99,
       "currency": "BDT",
+      "stockQuantity": 22,
       "description": "The Citrus Squeezer in Yellow is a handy tool for extracting juice from citrus fruits. Its vibrant color adds a cheerful touch to your kitchen gadgets.",
       "category": "kitchen",
       "tags": [],
@@ -4566,6 +4730,7 @@
       "name": "Egg Slicer",
       "price": 6.99,
       "currency": "BDT",
+      "stockQuantity": 40,
       "description": "The Egg Slicer is a convenient tool for slicing boiled eggs evenly. It's perfect for salads, sandwiches, and other dishes where sliced eggs are desired.",
       "category": "kitchen",
       "tags": [],
@@ -4586,6 +4751,7 @@
       "name": "Electric Stove",
       "price": 49.99,
       "currency": "BDT",
+      "stockQuantity": 21,
       "description": "The Electric Stove provides a portable and efficient cooking solution. Ideal for small kitchens or as an additional cooking surface for various culinary needs.",
       "category": "kitchen",
       "tags": [],
@@ -4606,6 +4772,7 @@
       "name": "Fine Mesh Strainer",
       "price": 9.99,
       "currency": "BDT",
+      "stockQuantity": 85,
       "description": "The Fine Mesh Strainer is a versatile tool for straining liquids and sifting dry ingredients. Its fine mesh ensures efficient filtering for smooth cooking and baking.",
       "category": "kitchen",
       "tags": [],
@@ -4626,6 +4793,7 @@
       "name": "Fork",
       "price": 3.99,
       "currency": "BDT",
+      "stockQuantity": 7,
       "description": "The Fork is a classic utensil for various dining and serving purposes. Its durable and ergonomic design makes it a reliable choice for everyday use.",
       "category": "kitchen",
       "tags": [],
@@ -4646,6 +4814,7 @@
       "name": "Glass",
       "price": 4.99,
       "currency": "BDT",
+      "stockQuantity": 46,
       "description": "The Glass is a versatile and elegant drinking vessel suitable for a variety of beverages. Its clear design allows you to enjoy the colors and textures of your drinks.",
       "category": "kitchen",
       "tags": [],
@@ -4666,6 +4835,7 @@
       "name": "Grater Black",
       "price": 10.99,
       "currency": "BDT",
+      "stockQuantity": 84,
       "description": "The Grater in Black is a handy kitchen tool for grating cheese, vegetables, and more. Its sleek design and sharp blades make food preparation efficient and easy.",
       "category": "kitchen",
       "tags": [],
@@ -4686,6 +4856,7 @@
       "name": "Hand Blender",
       "price": 34.99,
       "currency": "BDT",
+      "stockQuantity": 84,
       "description": "The Hand Blender is a versatile kitchen appliance for blending, pureeing, and mixing. Its compact design and powerful motor make it a convenient tool for various recipes.",
       "category": "kitchen",
       "tags": [],
@@ -4706,6 +4877,7 @@
       "name": "Ice Cube Tray",
       "price": 5.99,
       "currency": "BDT",
+      "stockQuantity": 13,
       "description": "The Ice Cube Tray is a practical accessory for making ice cubes in various shapes. Perfect for keeping your drinks cool and adding a fun element to your beverages.",
       "category": "kitchen",
       "tags": [],
@@ -4726,6 +4898,7 @@
       "name": "Kitchen Sieve",
       "price": 7.99,
       "currency": "BDT",
+      "stockQuantity": 68,
       "description": "The Kitchen Sieve is a versatile tool for sifting and straining dry and wet ingredients. Its fine mesh design ensures smooth results in your cooking and baking.",
       "category": "kitchen",
       "tags": [],
@@ -4746,6 +4919,7 @@
       "name": "Espresso Machine Pro",
       "price": 249,
       "currency": "BDT",
+      "stockQuantity": 12,
       "description": "Espresso coffee machine for preparing espresso drinks. Confirm the model, included accessories and warranty with the merchant.",
       "category": "coffee-tea",
       "tags": [],
@@ -4765,6 +4939,7 @@
       "name": "Milk Frother",
       "price": 39.9,
       "currency": "BDT",
+      "stockQuantity": 4,
       "description": "Milk frother for adding a foamed milk finish to coffee and other drinks. Confirm capacity and power requirements before purchase.",
       "category": "coffee-tea",
       "tags": [],
@@ -4784,6 +4959,7 @@
       "name": "Burr Coffee Grinder",
       "price": 89.5,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Burr grinder for grinding coffee beans before brewing. Confirm grind settings and bean capacity with the merchant.",
       "category": "coffee-tea",
       "tags": [],
@@ -4803,6 +4979,7 @@
       "name": "Pour Over Kettle",
       "price": 64,
       "currency": "BDT",
+      "stockQuantity": 18,
       "description": "Kettle for controlled pouring during manual coffee preparation. Confirm capacity and heat-source compatibility before purchase.",
       "category": "coffee-tea",
       "tags": [],
@@ -4822,6 +4999,7 @@
       "name": "Paper Filters (100 pack)",
       "price": 6.75,
       "currency": "BDT",
+      "stockQuantity": 240,
       "description": "Pack of 100 paper coffee filters. Check filter shape and size against your brewer before ordering.",
       "category": "coffee-tea",
       "tags": [],
@@ -4841,6 +5019,7 @@
       "name": "Ceramic Mug Set",
       "price": 24,
       "currency": "BDT",
+      "stockQuantity": 7,
       "description": "Ceramic mugs for serving hot or cold drinks. Confirm the number of mugs, capacity and care instructions with the merchant.",
       "category": "coffee-tea",
       "tags": [],
@@ -4860,6 +5039,7 @@
       "name": "Single Origin Beans 1kg",
       "price": 32.4,
       "currency": "BDT",
+      "stockQuantity": 60,
       "description": "One-kilogram pack of single-origin coffee beans. Confirm origin, roast date and roast level with the merchant.",
       "category": "coffee-tea",
       "tags": [],
@@ -4879,6 +5059,7 @@
       "name": "Cold Brew Carafe",
       "price": 45,
       "currency": "BDT",
+      "stockQuantity": 3,
       "description": "Carafe for preparing or serving cold-brew coffee. Confirm capacity, filter inclusion and care instructions before ordering.",
       "category": "coffee-tea",
       "tags": [],
@@ -4898,6 +5079,7 @@
       "name": "Tamper & Mat Bundle",
       "price": 29.99,
       "currency": "BDT",
+      "stockQuantity": 0,
       "description": "Coffee tamper and mat bundle for espresso preparation. Confirm tamper diameter against your portafilter before ordering.",
       "category": "coffee-tea",
       "tags": [],
@@ -4917,6 +5099,7 @@
       "name": "Reusable Cup",
       "price": 14.5,
       "currency": "BDT",
+      "stockQuantity": 96,
       "description": "Reusable drinks cup for everyday use. Confirm capacity, lid inclusion and cleaning instructions with the merchant.",
       "category": "coffee-tea",
       "tags": [],

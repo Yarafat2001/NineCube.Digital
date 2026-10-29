@@ -20,6 +20,18 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: catalogue_checks
+          POSTGRES_DB: ninecube_catalogue_checks
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
@@ -42,4 +54,6 @@ jobs:
           docker build -f src/NineCube.Api/Dockerfile -t ninecube-api:ci .
 
       - name: Deployment configuration regression checks
+        env:
+          CATALOGUE_CHECK_CONNECTION: Host=localhost;Database=ninecube_catalogue_checks;Username=postgres;Password=catalogue_checks
         run: dotnet run --project tools/deployment-checks/DeploymentChecks.csproj --configuration Release

@@ -31,3 +31,6 @@ catch (InvalidOperationException ex)
 {
     Check(!ex.ToString().Contains("DO_NOT_LEAK") && ex.InnerException is null, "Malformed URI rejected without leaking credentials");
 }
+
+if (Environment.GetEnvironmentVariable("CATALOGUE_CHECK_CONNECTION") is { Length: > 0 } connection)
+    await CatalogueStockChecks.RunAsync(connection, Check);
