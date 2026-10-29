@@ -45,6 +45,7 @@ export function App() {
 
   // The showcase ends on its own dark footer blend, so the shell footer would break that section.
   const isShowcase = pathname === '/' && !user && !initialising;
+  const isAuth = pathname === '/login' || pathname === '/register';
 
   return (
     <div className="app-shell">
@@ -172,7 +173,7 @@ export function App() {
         </Suspense>
       </main>
 
-      {isShowcase ? null : <Footer />}
+      {isShowcase || isAuth ? null : <Footer />}
     </div>
   );
 }
