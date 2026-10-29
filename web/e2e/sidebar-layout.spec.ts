@@ -14,7 +14,7 @@ async function signIn(page: Page) {
   await page.goto('/login');
   await page.getByRole('textbox', { name: 'Email' }).fill('customer@ninecube.demo');
   await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Account' }), 'sign-in established no session')
     .toBeVisible(LOADED);
 }

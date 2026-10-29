@@ -194,7 +194,7 @@ test.describe('showcase', () => {
     // SPA navigation away: the canvas and the scroll takeover must both go.
     // Scoped to the header, because the showcase page carries its own "Sign in" link further down.
     await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Sign in' }).click();
-    await expect(page.getByRole('heading', { name: /^sign in$/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^welcome$/i })).toBeVisible();
     await expect(page.locator('body')).not.toHaveClass(/showcase-active/);
     expect(await page.locator('#scene').count()).toBe(0);
     expect(await page.evaluate(() => window.history.scrollRestoration)).toBe('auto');

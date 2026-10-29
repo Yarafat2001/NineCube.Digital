@@ -52,7 +52,7 @@ for (const role of ['customer', 'staff', 'inventory', 'admin']) {
     await page.goto('/login');
     await page.getByRole('textbox', { name: 'Email' }).fill(`${role}@ninecube.demo`);
     await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
     await expect(page).toHaveURL(/\/products$/);
     await expect(page.getByRole('heading', { name: 'Catalogue' })).toBeVisible();
     await expect(page.locator('#scene')).toHaveCount(0);

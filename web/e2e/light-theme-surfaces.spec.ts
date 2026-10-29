@@ -11,7 +11,7 @@ test('products page surfaces differ in light and dark, drawer at mobile', async 
   await page.goto('/login');
   await page.getByRole('textbox', { name: 'Email' }).fill('customer@ninecube.demo');
   await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Catalogue' })).toBeVisible();
   // The surfaces are only comparable once the grid has its cards; the catalogue query is slow enough
   // that measuring straight after the redirect used to read an empty page.

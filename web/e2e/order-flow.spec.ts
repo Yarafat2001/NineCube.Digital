@@ -23,7 +23,7 @@ test.describe('order flow', () => {
     await page.goto('/login');
     await page.getByRole('textbox', { name: 'Email' }).fill(email);
     await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
 
     // Waiting for the navigation alone is not enough: the shell renders it for anonymous visitors
     // too, so a later goto() could race the session write and be bounced back to /login. The account
@@ -34,7 +34,7 @@ test.describe('order flow', () => {
   async function signOut(page: Page) {
     await page.getByRole('button', { name: 'Account' }).click();
     await page.getByRole('menuitem', { name: 'Log out' }).click();
-    await expect(page.getByRole('heading', { name: /sign in/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /^welcome$/i })).toBeVisible();
   }
 
   function productCard(page: Page, name: string): Locator {

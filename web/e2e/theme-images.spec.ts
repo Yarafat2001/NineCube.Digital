@@ -28,7 +28,7 @@ test('API catalogue photographs load and broken images have a fallback', async (
   await page.goto('/login');
   await page.getByRole('textbox', { name: 'Email' }).fill('customer@ninecube.demo');
   await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Catalogue' })).toBeVisible();
   await page.getByRole('searchbox', { name: 'Search products' }).fill('Bamboo Spatula');
   const card = page.locator('.product-card').filter({ has: page.getByRole('link', { name: /^Open Bamboo Spatula/ }) });

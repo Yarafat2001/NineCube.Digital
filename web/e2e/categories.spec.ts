@@ -8,7 +8,7 @@ for (const width of [390, 768, 1024, 1440]) {
     await page.goto('/login');
     await page.getByRole('textbox', { name: 'Email' }).fill('customer@ninecube.demo');
     await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Catalogue' })).toBeVisible();
     await page.goto('/products?category=coffee-tea&sort=price');
     await expect(page.locator('.pager')).toContainText('of 10');
@@ -59,7 +59,7 @@ test('staff category editor shows cycle conflicts and protects stock', async ({ 
   await page.goto('/login');
   await page.getByRole('textbox', { name: 'Email' }).fill('staff@ninecube.demo');
   await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Catalogue' })).toBeVisible();
   await page.goto('/staff');
   await page.getByRole('button', { name: 'Manage categories' }).click();
@@ -79,7 +79,7 @@ test('staff can create, rename, move, deactivate and delete a category', async (
   await page.goto('/login');
   await page.getByRole('textbox', { name: 'Email' }).fill('staff@ninecube.demo');
   await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Catalogue' })).toBeVisible();
   await page.goto('/staff');
   await page.getByRole('button', { name: 'Manage categories' }).click();

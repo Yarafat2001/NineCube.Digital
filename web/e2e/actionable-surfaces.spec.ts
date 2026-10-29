@@ -24,7 +24,7 @@ async function signIn(page: Page, email: string) {
   await page.goto('/login');
   await page.getByRole('textbox', { name: 'Email' }).fill(email);
   await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Account' }), 'sign-in established no session')
     .toBeVisible(LOADED);
 }

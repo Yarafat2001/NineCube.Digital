@@ -247,7 +247,7 @@ describe('Checkout', () => {
 
     await user.click(screen.getByTestId('place-order'));
 
-    expect(await screen.findByRole('heading', { name: /^sign in$/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /^welcome$/i })).toBeInTheDocument();
     expect(sessionStorage.getItem('ninecube.auth.session')).toBeNull();
   });
 

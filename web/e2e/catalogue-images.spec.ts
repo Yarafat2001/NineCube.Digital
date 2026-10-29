@@ -25,7 +25,7 @@ async function signIn(page: Page, email: string) {
   await page.goto('/login');
   await page.getByRole('textbox', { name: 'Email' }).fill(email);
   await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
   // The account menu only renders once the session is really written; waiting for the redirect alone
   // lets a later goto() race it and be bounced back to the login page.
   await expect(page.getByRole('button', { name: 'Account' }), 'sign-in established no session')

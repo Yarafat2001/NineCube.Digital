@@ -103,7 +103,7 @@ describe('Navbar', () => {
     await user.click(screen.getByRole('button', { name: /^account$/i }));
     await user.click(await screen.findByRole('menuitem', { name: /^log out$/i }));
 
-    expect(await screen.findByRole('heading', { name: /^sign in$/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /^welcome$/i })).toBeInTheDocument();
     expect(sessionStorage.getItem('ninecube.auth.session')).toBeNull();
   });
 

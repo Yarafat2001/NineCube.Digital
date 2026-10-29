@@ -8,7 +8,7 @@ for (const width of [390, 768, 1024, 1440]) {
     await page.goto('/login');
     await page.getByRole('textbox', { name: 'Email' }).fill('customer@ninecube.demo');
     await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
     await expect(page.locator('.navbar__user')).toBeVisible();
     await page.goto('/orders');
     const invoiceLink = page.locator('a[href$="/invoice"]').first();

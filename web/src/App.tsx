@@ -5,7 +5,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { RequireAuth, RequireRole } from './components/guards';
 import { LoadingBlock } from './components/ui';
-import { LoginPage, RegisterPage } from './pages/AuthPages';
+import { AuthPage } from './pages/AuthPages';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 // Routes are code-split: the admin console is never downloaded by a customer, and the showcase -
@@ -53,8 +53,8 @@ export function App() {
       <main id="main">
         <Suspense fallback={<RouteFallback />}>
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/register" element={<AuthPage />} />
 
             {/* The showcase is the public landing page; the catalogue is one click behind it. */}
             <Route path="/" element={<PublicHome />} />

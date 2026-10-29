@@ -14,7 +14,7 @@ for (const width of [390, 768, 1440]) {
       await page.goto('/login');
       await page.getByRole('textbox', { name: 'Email' }).fill('customer@ninecube.demo');
       await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-      await page.getByRole('button', { name: 'Sign in' }).click();
+      await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
       await expect(page.getByRole('heading', { name: 'Catalogue' })).toBeVisible();
       await page.getByRole('button', { name: `${theme === 'light' ? 'Light' : 'Dark'} theme` }).click();
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);

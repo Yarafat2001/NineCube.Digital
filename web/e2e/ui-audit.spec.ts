@@ -31,7 +31,7 @@ test.describe('ui-audit', () => {
     await page.goto('/login');
     await page.getByRole('textbox', { name: 'Email' }).fill(email);
     await page.getByRole('textbox', { name: 'Password' }).fill(seedPassword);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.getByRole('button', { name: 'LOGIN', exact: true }).click();
 
     // Wait for the signed-in email in the navbar. The "Log out" CTA is hidden by design at
     // <= 600px (replaced by the "Sign out" link), so it cannot be the success signal here.

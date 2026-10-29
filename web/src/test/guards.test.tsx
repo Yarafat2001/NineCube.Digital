@@ -22,7 +22,7 @@ describe('Route guards', () => {
   it('sends an anonymous visitor to the login page', async () => {
     renderApp('/products');
 
-    expect(await screen.findByRole('heading', { name: /^sign in$/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /^welcome$/i })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: /catalogue/i })).not.toBeInTheDocument();
   });
 
@@ -30,7 +30,7 @@ describe('Route guards', () => {
     renderApp('/');
 
     expect(await screen.findByTestId('showcase')).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: /^sign in$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^welcome$/i })).not.toBeInTheDocument();
   });
 
   it('redirects a customer away from the staff console', async () => {

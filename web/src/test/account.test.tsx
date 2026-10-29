@@ -53,7 +53,7 @@ describe('Header bell and account menu', () => {
     expect(within(menu).getByRole('menuitem', { name: 'My Orders' })).toBeInTheDocument();
 
     await user.click(within(menu).getByRole('menuitem', { name: 'Log out' }));
-    expect(await screen.findByRole('heading', { name: /^sign in$/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /^welcome$/i })).toBeInTheDocument();
   });
 
   it('leaves My Orders out of the menu for a staff account', async () => {
