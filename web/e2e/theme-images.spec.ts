@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { seedPassword, seedPasswordMissing } from './seed-password';
 
-test('logo is visible and selected themes persist across reloads', async ({ page }) => {
+test('logo is visible and light theme persists across reloads', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/login');
   const logo = page.locator('.navbar__brand [role="img"]');
@@ -9,18 +9,8 @@ test('logo is visible and selected themes persist across reloads', async ({ page
   await expect(logo.locator('svg')).toBeVisible();
   expect((await logo.boundingBox())!.width).toBeGreaterThanOrEqual(80);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.getByRole('button', { name: 'Light theme' })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByRole('button', { name: 'Choose language' })).toBeVisible();
-  await page.getByRole('button', { name: 'Light theme' }).click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await page.getByRole('button', { name: 'Dark theme' }).click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await page.reload();
-  await expect(page.getByRole('button', { name: 'Dark theme' })).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('button', { name: 'Light theme' }).click();
-  await page.emulateMedia({ colorScheme: 'light' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 });
 
@@ -46,7 +36,7 @@ test('API catalogue photographs load and broken images have a fallback', async (
   await page.getByRole('searchbox', { name: 'Search products' }).fill('');
   await expect(page.locator('.product-card')).toHaveCount(8);
   for (const theme of ['light', 'dark']) {
-    await page.getByRole('button', { name: `${theme === 'light' ? 'Light' : 'Dark'} theme` }).click();
+    await page.evaluate((t) => { document.documentElement.dataset.theme = t; }, theme);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await page.locator('.product-card__image').evaluateAll((images) => {
       images.forEach((image) => { (image as HTMLImageElement).loading = 'eager'; });

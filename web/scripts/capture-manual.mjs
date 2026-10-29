@@ -134,12 +134,12 @@ async function signIn(page, email) {
 }
 
 async function light(page) {
-  await page.getByRole('button', { name: 'Light theme' }).click();
+  await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
   await page.waitForTimeout(250);
 }
 
 async function dark(page) {
-  await page.getByRole('button', { name: 'Dark theme' }).click();
+  await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
   await page.waitForTimeout(250);
 }
 
@@ -159,7 +159,7 @@ await shot(page, '01-showcase-hero', 'The public showcase, at the top of the pag
   [
     { label: 'The brand mark. It links to the catalogue once you are signed in, and to this page while you are not', selector: '.navbar__brand' },
     { label: 'The navigation tray. While signed out it holds Home and Collection only', selector: '.navbar__tray' },
-    { label: 'Theme control: System follows your device, Light and Dark are remembered between visits', selector: '.theme-controls' },
+    { label: 'Language selector', selector: '.theme-controls' },
     { label: 'Sign in opens the login page', selector: '.navbar a.btn--primary' },
     { label: 'The opening line of the showcase', selector: '.kicker', text: true },
     { label: 'Explore the collection goes straight to the catalogue, where you still have to sign in', selector: '.showcase__hero-cta', fit: 'right' }

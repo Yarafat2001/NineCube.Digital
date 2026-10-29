@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -109,16 +109,13 @@ describe('Light theme tokens', () => {
     expect(valueOf(lightBlock, '--surface-glass')).not.toBe(valueOf(lightBlock, '--surface'));
   });
 
-  it('defaults to Light and toggles explicit Light/Dark theme choices', () => {
+  it('defaults to Light with no theme toggle buttons', () => {
     localStorage.clear();
     render(<ThemeControls />);
-    fireEvent.click(screen.getByRole('button', { name: 'Light theme' }));
     expect(document.documentElement.dataset.theme).toBe('light');
-    fireEvent.click(screen.getByRole('button', { name: 'Dark theme' }));
-    expect(document.documentElement.dataset.theme).toBe('dark');
     expect(screen.queryByRole('button', { name: 'System theme' })).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Light theme' }));
-    expect(document.documentElement.dataset.theme).toBe('light');
+    expect(screen.queryByRole('button', { name: 'Light theme' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Dark theme' })).not.toBeInTheDocument();
     delete document.documentElement.dataset.theme;
   });
 

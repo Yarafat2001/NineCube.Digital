@@ -68,7 +68,7 @@ data appears here.
 
 1. The brand mark. It links to the catalogue once you are signed in, and to this page while you are not
 2. The navigation tray. While signed out it holds Home and Collection only
-3. Theme control: System follows your device, Light and Dark are remembered between visits
+3. Language selector
 4. Sign in opens the login page
 5. The opening line of the showcase
 6. Explore the collection goes straight to the catalogue, where you still have to sign in

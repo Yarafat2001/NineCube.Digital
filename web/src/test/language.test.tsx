@@ -15,18 +15,16 @@ beforeEach(() => {
 afterEach(() => { act(() => setLanguage('en')); localStorage.clear(); });
 
 describe('Language and theme preferences', () => {
-  it('starts in light mode even on a dark device, while respecting a saved dark choice', () => {
+  it('starts in light mode with no theme toggle buttons', () => {
     vi.spyOn(window, 'matchMedia').mockImplementation(query => ({ matches: true, media: query,
       onchange: null, addListener: vi.fn(), removeListener: vi.fn(), addEventListener: vi.fn(),
       removeEventListener: vi.fn(), dispatchEvent: vi.fn() }));
     const first = render(<ThemeControls />);
     expect(document.documentElement.dataset.theme).toBe('light');
     expect(screen.queryByRole('button', { name: 'System theme' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Light theme' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Dark theme' })).not.toBeInTheDocument();
     first.unmount();
-    localStorage.setItem('ninecube-theme', 'dark');
-    render(<ThemeControls />);
-    expect(document.documentElement.dataset.theme).toBe('dark');
-    expect(screen.getByRole('button', { name: 'Dark theme' })).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('opens on hover, supports arrow keys and Escape, and remembers the selected language', async () => {
@@ -50,18 +48,16 @@ describe('Language and theme preferences', () => {
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
   });
 
-  it('updates auth labels and validation in place without losing typed values or theme', async () => {
+  it('updates auth labels and validation in place without losing typed values', async () => {
     const user = userEvent.setup();
     renderApp('/login');
     const email = within(screen.getByRole('form', { name: 'Welcome' })).getByLabelText('Email Address');
     await user.type(email, 'customer@example.com');
-    await user.click(screen.getByRole('button', { name: 'Dark theme' }));
     await user.click(screen.getByRole('button', { name: 'Choose language' }));
     await user.click(screen.getByRole('menuitemradio', { name: 'বাংলা' }));
     const login = within(screen.getByRole('form', { name: 'স্বাগতম' }));
     expect(login.getByLabelText('ইমেইল ঠিকানা')).toBe(email);
     expect(email).toHaveValue('customer@example.com');
-    expect(document.documentElement.dataset.theme).toBe('dark');
     await user.click(login.getByRole('button', { name: 'লগইন করুন' }));
     expect(login.getAllByText('এই ঘরটি পূরণ করুন।').length).toBeGreaterThan(0);
     await user.click(screen.getByRole('button', { name: 'ভাষা নির্বাচন করুন' }));
