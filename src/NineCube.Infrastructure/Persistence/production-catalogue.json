@@ -5113,5 +5113,19 @@
         }
       ]
     }
+  ],
+  "laptopStockInitializationSkus": [
+    "BD-APPL-MACB-AIR-FDAAD1",
+    "BD-MSI-RAID-18-HX-C8E76A",
+    "BD-WALT-PREL-N41-F03720",
+    "BD-ACER-ASPI-3-A3-11D6DD",
+    "BD-LENO-IDEA-1-15-DD9BFE",
+    "BD-DELL-PRO-15-PV-871A89",
+    "BD-ACER-ASPI-LITE-1A3A43",
+    "BD-HP-15-FC06-8GB-B7CF5C",
+    "BD-ASUS-VIVO-14-A-D2833A",
+    "BD-MSI-MODE-15-F1-45BA5B",
+    "BD-DELL-INSP-3530-D39C5D",
+    "BD-LENO-IDEA-SLIM-00FF31"
   ]
 }

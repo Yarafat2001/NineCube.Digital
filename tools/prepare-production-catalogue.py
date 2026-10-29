@@ -67,6 +67,7 @@ for record in records:
     for image in record["images"]:
         assert (ROOT / "web/public" / image["url"].lstrip("/")).is_file(), image
 bundle = dict(categories=[dict(name=c["Name"], slug=c["Slug"], parentSlug=category_slugs.get(c.get("ParentId")), depth=c["Depth"]) for c in categories], products=records)
+bundle["laptopStockInitializationSkus"] = [item["sku"] for item in read("seed/clean/laptops.json")]
 target = ROOT / "src/NineCube.Infrastructure/Persistence/production-catalogue.json"
 target.write_text(json.dumps(bundle, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(f"Validated bundle: {len(categories)} categories, {len(records)} additional products, {sum(len(r['images']) for r in records)} images")

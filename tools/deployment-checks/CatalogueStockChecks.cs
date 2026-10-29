@@ -68,8 +68,8 @@ internal static class CatalogueStockChecks
         check(await db.Products.Where(p => p.Id == restored.Id).Select(p => p.StockQuantity).SingleAsync() == 0,
             "Completion marker prevents later replenishment");
 
-        var laptopSkus = rows.Where(p => p.GetProperty("category").GetString() == "laptops")
-            .Select(p => p.GetProperty("sku").GetString()!).ToArray();
+        var laptopSkus = feed.RootElement.GetProperty("laptopStockInitializationSkus").EnumerateArray()
+            .Select(p => p.GetString()!).ToArray();
         var laptops = await db.Products.AsNoTracking().Where(p => laptopSkus.Contains(p.Sku)).ToListAsync();
         check(laptops.Count == 12 && laptops.All(p => p.StockQuantity == 10), "All twelve new laptops open with ten units");
         var laptopIds = laptops.Select(p => p.Id).ToArray();
@@ -77,6 +77,8 @@ internal static class CatalogueStockChecks
         await db.Settings.Where(s => s.Key == "ProductionCatalogue.LaptopStockInitialization.v1").ExecuteDeleteAsync();
         await db.InventoryMovements.Where(m => laptopIds.Contains(m.ProductId)).ExecuteDeleteAsync();
         await db.Products.Where(p => laptopIds.Contains(p.Id)).ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, 0));
+        const string genericLaptopSku = "BD-LAPT-8-GB-RAM-BCF03A";
+        await db.Products.Where(p => p.Sku == genericLaptopSku).ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, 0));
         var preservedId = laptops[0].Id;
         await db.Products.Where(p => p.Id == preservedId).ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, 4));
         db.ChangeTracker.Clear();
@@ -85,6 +87,8 @@ internal static class CatalogueStockChecks
             "Laptop update applies after original production stock repair already completed");
         check(await db.Products.Where(p => p.Id == preservedId).Select(p => p.StockQuantity).SingleAsync() == 4,
             "Laptop update preserves existing positive stock");
+        check(await db.Products.Where(p => p.Sku == genericLaptopSku).Select(p => p.StockQuantity).SingleAsync() == 0,
+            "Laptop update is restricted to the twelve named models");
         var restockedId = laptops[1].Id;
         check(await db.InventoryMovements.Where(m => m.ProductId == restockedId).SumAsync(m => m.Delta) == 10
             && await db.AuditLogs.AnyAsync(a => a.EntityType == nameof(Product) && a.EntityId == restockedId.ToString()

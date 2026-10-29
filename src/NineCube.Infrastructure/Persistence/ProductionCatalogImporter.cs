@@ -125,12 +125,12 @@ public static class ProductionCatalogImporter
         if (repairStock)
             db.Settings.Add(new Setting { Key = StockRepairKey, Value = DateTime.UtcNow.ToString("O") });
         await db.SaveChangesAsync(ct);
-        await InitializeLaptopStockAsync(db, feed.Products, logger, ct);
+        await InitializeLaptopStockAsync(db, feed, logger, ct);
         await transaction.CommitAsync(ct);
         logger.LogInformation("Production catalogue imported: {Categories} categories and {Products} products added; {Restored} uninitialized stock quantities restored; merchant stock changes preserved.", createdCategories, createdProducts, restoredProducts);
     }
 
-    private static async Task InitializeLaptopStockAsync(AppDbContext db, List<ProductRow> products, ILogger logger, CancellationToken ct)
+    private static async Task InitializeLaptopStockAsync(AppDbContext db, Feed feed, ILogger logger, CancellationToken ct)
     {
         const string key = "ProductionCatalogue.LaptopStockInitialization.v1";
         if (await db.Settings.AnyAsync(s => s.Key == key, ct)) return;
@@ -139,7 +139,7 @@ public static class ProductionCatalogImporter
         // Runs under the importer's transaction/advisory lock. Never overwrites positive stock
         // and never replenishes a later sell-out on subsequent deployments.
         var initialized = 0;
-        foreach (var item in products.Where(p => p.Category == "laptops" && p.StockQuantity > 0))
+        foreach (var item in feed.Products.Where(p => feed.LaptopStockInitializationSkus.Contains(p.Sku) && p.StockQuantity > 0))
         {
             var product = await db.Products.AsNoTracking().Where(p => p.Sku == item.Sku)
                 .Select(p => new { p.Id }).SingleAsync(ct);
@@ -166,7 +166,7 @@ public static class ProductionCatalogImporter
         logger.LogInformation("Initialized opening stock for {Count} laptop models; existing positive stock preserved.", initialized);
     }
 
-    private sealed record Feed(List<CategoryRow> Categories, List<ProductRow> Products);
+    private sealed record Feed(List<CategoryRow> Categories, List<ProductRow> Products, List<string> LaptopStockInitializationSkus);
     private sealed record CategoryRow(string Name, string Slug, string? ParentSlug, int Depth);
     private sealed record Photo(string Url, string AltText);
     private sealed record ProductRow(string Sku, string Slug, string Name, decimal Price, string Currency, int StockQuantity,
