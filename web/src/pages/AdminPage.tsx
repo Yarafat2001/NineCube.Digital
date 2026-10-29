@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useState, type FormEvent } from 'react';
 import {
   useAdminUsers,
@@ -18,6 +19,7 @@ const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrat
 type Tab = 'users' | 'audit' | 'settings';
 
 export function AdminPage() {
+  useLanguage();
   const toast = useToast();
   const { user } = useAuth();
   const [tab, setTab] = useState<Tab>('users');
@@ -81,15 +83,13 @@ export function AdminPage() {
     <div className="page container">
       <header className="page-header">
         <div>
-          <h1>Administration</h1>
+          <h1>{t("Administration")}</h1>
           <p>
-            Users, roles and the audit trail. Administrators are read-only on orders and inventory,
-            so nobody can both sell and silently restock.
-          </p>
+            {t("Users, roles and the audit trail. Administrators are read-only on orders and inventory, so nobody can both sell and silently restock.")}</p>
         </div>
       </header>
 
-      <div className="row" role="tablist" aria-label="Administration sections">
+      <div className="row" role="tablist" aria-label={t("Administration sections")}>
         {(['users', 'audit', 'settings'] as Tab[]).map((value) => (
           <button
             key={value}
@@ -101,7 +101,7 @@ export function AdminPage() {
             className={`btn ${tab === value ? 'btn--primary' : ''}`}
             onClick={() => setTab(value)}
           >
-            {value === 'users' ? 'Users' : value === 'audit' ? 'Audit log' : 'Settings'}
+            {t(value === 'users' ? 'Users' : value === 'audit' ? 'Audit log' : 'Settings')}
           </button>
         ))}
       </div>
@@ -110,7 +110,7 @@ export function AdminPage() {
         <section role="tabpanel" id="panel-users" aria-labelledby="tab-users" className="stack">
           <form className="card-glass grid-form" onSubmit={submitUser}>
             <div className="field">
-              <label htmlFor="new-user-email">Email</label>
+              <label htmlFor="new-user-email">{t("Email")}</label>
               <input
                 id="new-user-email"
                 type="email"
@@ -120,7 +120,7 @@ export function AdminPage() {
               />
             </div>
             <div className="field">
-              <label htmlFor="new-user-password">Password</label>
+              <label htmlFor="new-user-password">{t("Password")}</label>
               <input
                 id="new-user-password"
                 type="password"
@@ -131,28 +131,27 @@ export function AdminPage() {
               />
             </div>
             <div className="field">
-              <label htmlFor="new-user-role">Role</label>
+              <label htmlFor="new-user-role">{t("Role")}</label>
               <select id="new-user-role" value={newRole} onChange={(event) => setNewRole(event.target.value as UserRole)}>
                 {ROLES.map((role) => (
                   <option key={role} value={role}>
-                    {roleLabels[role]}
+                    {t(roleLabels[role])}
                   </option>
                 ))}
               </select>
             </div>
             <div className="field">
-              <label htmlFor="new-user-name">Name (customers only)</label>
+              <label htmlFor="new-user-name">{t("Name (customers only)")}</label>
               <input id="new-user-name" value={newName} onChange={(event) => setNewName(event.target.value)} />
             </div>
             <div className="field" style={{ justifyContent: 'flex-end' }}>
               <button type="submit" className="btn btn--primary" disabled={createUser.isPending}>
-                Create user
-              </button>
+                {t("Create user")}</button>
             </div>
           </form>
 
           <div className="field" style={{ maxWidth: 320 }}>
-            <label htmlFor="user-search">Search users</label>
+            <label htmlFor="user-search">{t("Search users")}</label>
             <input
               id="user-search"
               type="search"
@@ -161,34 +160,34 @@ export function AdminPage() {
             />
           </div>
 
-          {usersQuery.isLoading ? <LoadingBlock label="Loading users" variant="line" count={5} /> : null}
+          {usersQuery.isLoading ? <LoadingBlock label={t("Loading users")} variant="line" count={5} /> : null}
           {usersQuery.isError ? <ErrorState error={usersQuery.error} onRetry={() => usersQuery.refetch()} /> : null}
-          {usersQuery.data && usersQuery.data.items.length === 0 ? <EmptyState title="No users found" /> : null}
+          {usersQuery.data && usersQuery.data.items.length === 0 ? <EmptyState title={t("No users found")} /> : null}
 
           {usersQuery.data && usersQuery.data.items.length > 0 ? (
             <div className="table-surface">
               <div className="table-scroll">
                 <table>
-                  <caption className="visually-hidden">Users</caption>
+                  <caption className="visually-hidden">{t("Users")}</caption>
                   <thead>
                     <tr>
-                      <th scope="col">Email</th>
-                      <th scope="col">Role</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Created</th>
-                      <th scope="col">Actions</th>
+                      <th scope="col">{t("Email")}</th>
+                      <th scope="col">{t("Role")}</th>
+                      <th scope="col">{t("Status")}</th>
+                      <th scope="col">{t("Created")}</th>
+                      <th scope="col">{t("Actions")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {usersQuery.data.items.map((row) => (
                       <tr key={row.id}>
                         <td>
-                          {row.email}
-                          {row.id === user?.id ? <span className="badge badge--info" style={{ marginLeft: 8 }}>you</span> : null}
+                          {t(row.email)}
+                          {row.id === user?.id ? <span className="badge badge--info" style={{ marginLeft: 8 }}>{t("you")}</span> : null}
                         </td>
                         <td>
                           <label className="visually-hidden" htmlFor={`role-${row.id}`}>
-                            Role for {row.email}
+                            {t("Role for ")}{t(row.email)}
                           </label>
                           <select
                             id={`role-${row.id}`}
@@ -205,7 +204,7 @@ export function AdminPage() {
                           >
                             {ROLES.map((role) => (
                               <option key={role} value={role}>
-                                {roleLabels[role]}
+                                {t(roleLabels[role])}
                               </option>
                             ))}
                           </select>
@@ -213,12 +212,12 @@ export function AdminPage() {
                         <td>
                           <span className={`badge badge--${row.isActive ? 'ok' : 'neutral'}`}>
                             <span className="badge__glyph" aria-hidden="true">
-                              {row.isActive ? '●' : '○'}
+                              {t(row.isActive ? '●' : '○')}
                             </span>
-                            {row.isActive ? 'Active' : 'Deactivated'}
+                            {t(row.isActive ? 'Active' : 'Deactivated')}
                           </span>
                         </td>
-                        <td className="nowrap">{formatDateTime(row.createdAt)}</td>
+                        <td className="nowrap">{t(formatDateTime(row.createdAt))}</td>
                         <td className="actions">
                           <button
                             type="button"
@@ -233,7 +232,7 @@ export function AdminPage() {
                               }
                             }}
                           >
-                            {row.isActive ? 'Deactivate' : 'Reactivate'}
+                            {t(row.isActive ? 'Deactivate' : 'Reactivate')}
                           </button>
                         </td>
                       </tr>
@@ -249,45 +248,45 @@ export function AdminPage() {
       {tab === 'audit' ? (
         <section role="tabpanel" id="panel-audit" aria-labelledby="tab-audit" className="stack">
           <div className="field" style={{ maxWidth: 320 }}>
-            <label htmlFor="audit-filter">Filter by action prefix</label>
+            <label htmlFor="audit-filter">{t("Filter by action prefix")}</label>
             <input
               id="audit-filter"
               type="search"
-              placeholder="e.g. order. or user."
+              placeholder={t("e.g. order. or user.")}
               value={actionFilter}
               onChange={(event) => setActionFilter(event.target.value)}
             />
           </div>
 
-          {auditQuery.isLoading ? <LoadingBlock label="Loading the audit log" variant="line" count={6} /> : null}
+          {auditQuery.isLoading ? <LoadingBlock label={t("Loading the audit log")} variant="line" count={6} /> : null}
           {auditQuery.isError ? <ErrorState error={auditQuery.error} onRetry={() => auditQuery.refetch()} /> : null}
-          {auditQuery.data && auditQuery.data.items.length === 0 ? <EmptyState title="No audit entries" /> : null}
+          {auditQuery.data && auditQuery.data.items.length === 0 ? <EmptyState title={t("No audit entries")} /> : null}
 
           {auditQuery.data && auditQuery.data.items.length > 0 ? (
             <div className="table-surface">
               <div className="table-scroll">
                 <table>
-                  <caption className="visually-hidden">Audit log</caption>
+                  <caption className="visually-hidden">{t("Audit log")}</caption>
                   <thead>
                     <tr>
-                      <th scope="col">When</th>
-                      <th scope="col">Actor</th>
-                      <th scope="col">Action</th>
-                      <th scope="col">Entity</th>
-                      <th scope="col">Details</th>
+                      <th scope="col">{t("When")}</th>
+                      <th scope="col">{t("Actor")}</th>
+                      <th scope="col">{t("Action")}</th>
+                      <th scope="col">{t("Entity")}</th>
+                      <th scope="col">{t("Details")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {auditQuery.data.items.map((entry) => (
                       <tr key={entry.id}>
-                        <td className="nowrap">{formatDateTime(entry.createdAt)}</td>
-                        <td>{entry.userEmail ?? 'system'}</td>
-                        <td className="mono">{entry.action}</td>
+                        <td className="nowrap">{t(formatDateTime(entry.createdAt))}</td>
+                        <td>{t(entry.userEmail ?? 'system')}</td>
+                        <td className="mono">{t(entry.action)}</td>
                         <td>
-                          {entry.entityType}
-                          {entry.entityId ? ` #${entry.entityId}` : ''}
+                          {t(entry.entityType)}
+                          {t(entry.entityId ? ` #${entry.entityId}` : '')}
                         </td>
-                        <td className="muted">{entry.details ?? '—'}</td>
+                        <td className="muted">{t(entry.details ?? '—')}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -300,13 +299,13 @@ export function AdminPage() {
 
       {tab === 'settings' ? (
         <section role="tabpanel" id="panel-settings" aria-labelledby="tab-settings" className="stack">
-          {settingsQuery.isLoading ? <LoadingBlock label="Loading settings" variant="line" count={2} /> : null}
+          {settingsQuery.isLoading ? <LoadingBlock label={t("Loading settings")} variant="line" count={2} /> : null}
           {settingsQuery.isError ? <ErrorState error={settingsQuery.error} onRetry={() => settingsQuery.refetch()} /> : null}
 
           {settingsQuery.data ? (
             <form className="card-glass stack" style={{ maxWidth: 480 }} onSubmit={submitSettings}>
               <div className="field">
-                <label htmlFor="low-stock-threshold">Low stock threshold</label>
+                <label htmlFor="low-stock-threshold">{t("Low stock threshold")}</label>
                 <input
                   id="low-stock-threshold"
                   type="number"
@@ -317,20 +316,17 @@ export function AdminPage() {
                   onChange={(event) => setThreshold(event.target.value)}
                 />
                 <span className="hint">
-                  Products at or below this quantity are flagged as low stock everywhere in the app.
-                  It is stored in the database, not in code.
-                </span>
+                  {t("Products at or below this quantity are flagged as low stock everywhere in the app. It is stored in the database, not in code.")}</span>
               </div>
 
               <button type="submit" className="btn btn--primary" disabled={updateSettings.isPending}>
-                Save settings
-              </button>
+                {t("Save settings")}</button>
             </form>
           ) : null}
         </section>
       ) : null}
 
-      <LiveRegion message="" />
+      <LiveRegion message={t("")} />
     </div>
   );
 }

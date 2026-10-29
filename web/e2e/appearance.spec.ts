@@ -8,7 +8,7 @@ for (const width of [390, 768, 1024, 1440]) {
       for (const theme of ['Light', 'Dark']) {
         await page.getByRole('button', { name: `${theme} theme` }).click();
         await expect(page.locator('.brand--auth')).toBeVisible();
-        await expect(page.getByRole('group', { name: 'Colour theme' })).toBeVisible();
+        await expect(page.getByRole('group', { name: 'Language and colour theme' })).toBeVisible();
         await expect(page.locator('.site-footer')).toBeVisible();
         const layout = await page.evaluate(() => {
           const footer = document.querySelector('.site-footer')!.getBoundingClientRect();

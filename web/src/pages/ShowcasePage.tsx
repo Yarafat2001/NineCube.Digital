@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { loadCardAssets } from '../helix/cardAssets';
@@ -17,17 +18,18 @@ const HelixCanvas = lazy(() => import('../helix/HelixCanvas'));
  * jumping to a dark full-viewport scene.
  */
 function ShowcaseLoading() {
+  useLanguage();
   return (
     <div className="showcase showcase--loading" data-testid="showcase-loading">
       <div className="showcase__hero-content" role="status" aria-busy="true">
-        <p className="kicker">{showcaseCopy.kicker}</p>
+        <p className="kicker">{t(showcaseCopy.kicker)}</p>
         <h1>
-          {showcaseCopy.brand.line1}
+          {t(showcaseCopy.brand.line1)}
           <br />
-          {showcaseCopy.brand.line2}
+          {t(showcaseCopy.brand.line2)}
         </h1>
-        <p className="showcase__hero-copy">{showcaseCopy.intro}</p>
-        <span className="visually-hidden">Preparing the showcase</span>
+        <p className="showcase__hero-copy">{t(showcaseCopy.intro)}</p>
+        <span className="visually-hidden">{t("Preparing the showcase")}</span>
       </div>
     </div>
   );
@@ -41,6 +43,7 @@ function ShowcaseLoading() {
  * scene failure). Ordering never depends on this route - the catalogue is a separate screen.
  */
 export function ShowcasePage() {
+  useLanguage();
   // Resolved once per mount, because the answers are properties of the browser, not the render.
   const [fallback] = useState<ShowcaseFallbackReason | null>(() => detectShowcaseFallback());
   const [sceneFailed, setSceneFailed] = useState(false);

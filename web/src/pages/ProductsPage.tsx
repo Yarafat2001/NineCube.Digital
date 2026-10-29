@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLowStockThreshold, useProducts, useCategories, useTags, useBrands } from '../api/hooks';
@@ -41,6 +42,7 @@ function ProductCard({
   canOrder: boolean;
   queryString: string;
 }) {
+  useLanguage();
   const [quantity, setQuantity] = useState(1);
   const tilt = useCardTilt();
   const outOfStock = !product.isActive || product.stockQuantity <= 0;
@@ -55,46 +57,46 @@ function ProductCard({
 
   return (
     <article {...tilt} className="product-card" data-inactive={!product.isActive} data-testid={`product-${product.id}`}>
-      <Link className="product-card__media-link" to={detail} aria-label={`Open ${fullName}`}>
+      <Link className="product-card__media-link" to={detail} aria-label={t(`Open ${fullName}`)}>
         <ProductImage product={product} />
       </Link>
 
       <div className="product-card__body">
-        {brand ? <p className="product-card__brand">{brand}</p> : null}
-        <h3 className="product-card__name" title={fullName}>
-          <Link to={detail}>{displayName}</Link>
+        {brand ? <p className="product-card__brand">{t(brand)}</p> : null}
+        <h3 className="product-card__name" title={t(fullName)}>
+          <Link to={detail}>{t(displayName)}</Link>
         </h3>
-        {variant ? <p className="product-card__variant">{variant}</p> : null}
+        {variant ? <p className="product-card__variant">{t(variant)}</p> : null}
 
         <div className="product-category-chips">
-          {primary ? <Link className="filter-chip" to={`/products${mergeSearchParams(new URLSearchParams(queryString), { category: primary.slug, includeDescendants: null })}`} title={primary.name}>{primary.name}</Link> : null}
-          {shownTags.map(tag => <Link className="filter-chip" key={tag} to={`/products${mergeSearchParams(new URLSearchParams(queryString), { tag })}`} title={tag}>{tag}</Link>)}
-          {hiddenTags.length > 0 ? <span className="filter-chip filter-chip--extra" title={hiddenTags.join(', ')}>+{hiddenTags.length}</span> : null}
+          {primary ? <Link className="filter-chip" to={`/products${mergeSearchParams(new URLSearchParams(queryString), { category: primary.slug, includeDescendants: null })}`} title={t(primary.name)}>{t(primary.name)}</Link> : null}
+          {shownTags.map(tag => <Link className="filter-chip" key={tag} to={`/products${mergeSearchParams(new URLSearchParams(queryString), { tag })}`} title={t(tag)}>{t(tag)}</Link>)}
+          {hiddenTags.length > 0 ? <span className="filter-chip filter-chip--extra" title={t(hiddenTags.join(', '))}>{t("+")}{t(hiddenTags.length)}</span> : null}
         </div>
       </div>
 
       <div className="product-card__footer">
-        <p className="product-card__price">{formatMoney(product.price, product.currency)}</p>
+        <p className="product-card__price">{t(formatMoney(product.price, product.currency))}</p>
         <StockBadge product={product} threshold={threshold} />
       </div>
 
       {outOfStock ? (
-        <p className="muted">Not currently orderable.</p>
+        <p className="muted">{t("Not currently orderable.")}</p>
       ) : canOrder ? (
         <div className="row-between">
-          <QuantityStepper value={quantity} max={product.stockQuantity} onChange={setQuantity} label={fullName} />
+          <QuantityStepper value={quantity} max={product.stockQuantity} onChange={setQuantity} label={t(fullName)} />
           <button type="button" className="btn btn--primary btn--sm" onClick={() => { onAdded(product, quantity); setQuantity(1); }}>
-            Add to cart
-          </button>
+            {t("Add to cart")}</button>
         </div>
       ) : null}
 
-      {canEdit ? <Link className="link-button" to="/inventory" state={{ editProductId: product.id }}>Edit in Inventory</Link> : null}
+      {canEdit ? <Link className="link-button" to="/inventory" state={{ editProductId: product.id }}>{t("Edit in Inventory")}</Link> : null}
     </article>
   );
 }
 
 export function ProductsPage() {
+  useLanguage();
   const { user, hasRole } = useAuth();
   const cart = useCart();
   const navigate = useNavigate();
@@ -198,33 +200,32 @@ export function ProductsPage() {
     <div className="page container">
       <header className="page-header">
         <div>
-          <h1>Catalogue</h1>
-          <p>Live availability straight from stock. The server is the source of truth for every quantity.</p>
+          <h1>{t("Catalogue")}</h1>
+          <p>{t("Live availability straight from stock. The server is the source of truth for every quantity.")}</p>
         </div>
 
         <div className="field" style={{ minWidth: 'min(320px, 100%)' }}>
-          <label htmlFor="product-search">Search products</label>
-          <input id="product-search" type="search" placeholder="Name or SKU" value={search}
+          <label htmlFor="product-search">{t("Search products")}</label>
+          <input id="product-search" type="search" placeholder={t("Name or SKU")} value={search}
             onChange={event => setSearch(event.target.value)} />
         </div>
       </header>
 
       {deniedNotice ? (
         <p className="badge badge--warn" role="status">
-          <span className="badge__glyph" aria-hidden="true">⚠</span>
-          You do not have access to {deniedNotice}.
-        </p>
+          <span className="badge__glyph" aria-hidden="true">{t("⚠")}</span>
+          {t("You do not have access to ")}{t(deniedNotice)}{t(".")}</p>
       ) : null}
 
-      <LiveRegion message={resultMessage} />
+      <LiveRegion message={t(resultMessage)} />
 
       <CategoryBreadcrumb category={category} select={slug => changeFilters({ category: slug })} />
-      {categoryNotice || brandNotice ? <p role="status">{[categoryNotice, brandNotice].filter(Boolean).join(' ')}</p> : null}
+      {categoryNotice || brandNotice ? <p role="status">{t([categoryNotice, brandNotice].filter(Boolean).join(' '))}</p> : null}
 
-      <div className="filter-chips filter-chips--active" aria-label="Active filters" hidden={chips.length === 0}>
+      <div className="filter-chips filter-chips--active" aria-label={t("Active filters")} hidden={chips.length === 0}>
         {chips.map(chip => (
           <button className="filter-chip" type="button" key={chip.key} onClick={() => changeFilters(chip.clear)}
-            aria-label={`Remove ${chip.label} filter`}>{chip.label} <span aria-hidden="true">×</span></button>
+            aria-label={t(`Remove ${chip.label} filter`)}>{t(chip.label)} <span aria-hidden="true">{t("×")}</span></button>
         ))}
       </div>
 
@@ -232,7 +233,7 @@ export function ProductsPage() {
         <CategoryFilters tree={tree} tags={tagsQuery.data ?? []} loading={categoriesQuery.isLoading} params={params} change={changeFilters} />
 
         <div className="catalogue-main">
-          {gridPending ? <LoadingBlock label="Loading products" variant="card" count={6} /> : null}
+          {gridPending ? <LoadingBlock label={t("Loading products")} variant="card" count={6} /> : null}
 
           {productsQuery.isError && !gridPending ? (
             <ErrorState error={productsQuery.error} onRetry={() => void productsQuery.refetch()} />
@@ -240,9 +241,9 @@ export function ProductsPage() {
 
           {!gridPending && productsQuery.data && productsQuery.data.items.length === 0 ? (
             <EmptyState
-              title={params.get('category') && !search && !['tag', 'inStock', 'minPrice', 'maxPrice'].some(k => params.has(k)) ? 'No products in this category' : 'No results for these filters'}
-              description="Try another category or reset the filters."
-              action={<button type="button" className="btn" onClick={() => changeFilters(Object.fromEntries(CATALOG_FILTER_KEYS.map(key => [key, null])))}>Reset all filters</button>}
+              title={t(params.get('category') && !search && !['tag', 'inStock', 'minPrice', 'maxPrice'].some(k => params.has(k)) ? 'No products in this category' : 'No results for these filters')}
+              description={t("Try another category or reset the filters.")}
+              action={<button type="button" className="btn" onClick={() => changeFilters(Object.fromEntries(CATALOG_FILTER_KEYS.map(key => [key, null])))}>{t("Reset all filters")}</button>}
             />
           ) : null}
 
@@ -273,11 +274,11 @@ export function ProductsPage() {
         {!canOrder && <aside className="catalogue-aside">
 
             <section className="card-glass" aria-labelledby="no-order-heading">
-              <h2 id="no-order-heading" style={{ fontSize: 'var(--text-lg)' }}>Read-only view</h2>
+              <h2 id="no-order-heading" style={{ fontSize: 'var(--text-lg)' }}>{t("Read-only view")}</h2>
               <p className="muted">
-                {user?.role === 'Administrator'
+                {t(user?.role === 'Administrator'
                   ? 'Administrators can read everything but do not place orders.'
-                  : 'Your role does not place orders. Order handling and stock control are separate duties.'}
+                  : 'Your role does not place orders. Order handling and stock control are separate duties.')}
               </p>
             </section>
         </aside>}
@@ -289,6 +290,7 @@ export function ProductsPage() {
 
 /** Mobile (<=768px) bottom bar: Filters (N), current sort, cart total in BDT, Checkout. */
 function MobileBottomBar({ filterCount, onFilters }: { filterCount: number; sort: string; onFilters: () => void }) {
+  useLanguage();
   const cart = useCart();
   const barRef = useRef<HTMLElement>(null);
 
@@ -315,17 +317,15 @@ function MobileBottomBar({ filterCount, onFilters }: { filterCount: number; sort
   const openCart = () => document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet'));
 
   return (
-    <nav ref={barRef} className="bottombar" aria-label="Quick actions" data-testid="mobile-bottombar">
+    <nav ref={barRef} className="bottombar" aria-label={t("Quick actions")} data-testid="mobile-bottombar">
       <button type="button" className="btn btn--sm" onClick={onFilters}>
-        Filters ({filterCount})
-      </button>
-      <button type="button" className="bottombar__cart" onClick={openCart} aria-label={`Cart, ${cart.itemCount} items`}>
-        <span>Cart · {cart.itemCount}</span>
-        <strong>{formatMoney(cart.total, cart.currency)}</strong>
+        {t("Filters (")}{t(filterCount)}{t(")")}</button>
+      <button type="button" className="bottombar__cart" onClick={openCart} aria-label={t(`Cart, ${cart.itemCount} items`)}>
+        <span>{t("Cart · ")}{t(cart.itemCount)}</span>
+        <strong>{t(formatMoney(cart.total, cart.currency))}</strong>
       </button>
       <button type="button" className="btn btn--sm btn--primary" onClick={openCart} disabled={cart.lines.length === 0}>
-        Checkout
-      </button>
+        {t("Checkout")}</button>
     </nav>
   );
 }

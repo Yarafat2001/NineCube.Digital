@@ -11,6 +11,7 @@
     "build": "tsc --noEmit -p tsconfig.json && vite build",
     "preview": "vite preview --port 4173",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "i18n:check": "node scripts/check-translations.mjs",
     "test": "vitest",
     "test:run": "vitest run",
     "e2e": "playwright test"

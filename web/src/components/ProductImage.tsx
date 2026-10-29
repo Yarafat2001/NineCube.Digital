@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useEffect, useState } from 'react';
 import { resolveAssetUrl } from '../api/client';
 import type { Product, ProductImage as ProductImageType } from '../api/types';
@@ -11,11 +12,12 @@ export function primaryImage(product: Product, images?: ProductImageType[] | nul
 }
 
 function Placeholder({ name, tall, category }: { name: string; tall: boolean; category: string }) {
+  useLanguage();
   return (
-    <div className="image-placeholder" role="img" aria-label={`No image for ${name}`} data-testid="image-placeholder">
+    <div className="image-placeholder" role="img" aria-label={t(`No image for ${name}`)} data-testid="image-placeholder">
       <Icon name={/phone|tablet/.test(category) ? 'phone' : /coffee|tea|beverage/.test(category) ? 'coffee' : /bag|wallet/.test(category) ? 'wallet' : /shoe|footwear/.test(category) ? 'shoe' : /chair|bed|furniture/.test(category) ? 'chair' : /refriger/.test(category) ? 'fridge' : /lighting|led/.test(category) ? 'spark' : 'box'} className="image-placeholder__icon" />
-      <span className="image-placeholder__label">No image</span>
-      {tall ? <span className="muted">{name}</span> : null}
+      <span className="image-placeholder__label">{t("No image")}</span>
+      {tall ? <span className="muted">{t(name)}</span> : null}
     </div>
   );
 }
@@ -36,6 +38,7 @@ export function ProductImage({
   frame?: 'card' | 'detail';
   alt?: string;
 }) {
+  useLanguage();
   const stored = primaryImage(product, images);
   const gallery = images ?? product.images ?? [];
   const primary = gallery.find(image => image.isPrimary) ?? gallery[0];
@@ -57,13 +60,13 @@ export function ProductImage({
         <img
           className={`product-card__image${isPhoto ? ' product-card__image--photo' : ''}`}
           src={src}
-          alt={alt ?? imageDescription}
+          alt={t(alt ?? imageDescription)}
           loading="lazy"
           decoding="async"
           onError={() => setBroken(true)}
         />
       )}
-      {src && !broken && representative ? <span className="product-image-caption">Representative image</span> : null}
+      {src && !broken && representative ? <span className="product-image-caption">{t("Representative image")}</span> : null}
     </span>
   );
 }

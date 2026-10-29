@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import type { UserRole } from '../api/types';
@@ -59,6 +60,7 @@ export function navItemsFor(role: UserRole): NavItem[] {
 }
 
 export function Navbar() {
+  useLanguage();
   const { user } = useAuth();
   const location = useLocation();
 
@@ -153,7 +155,7 @@ export function Navbar() {
   return (
     <nav ref={navRef}
       className={`navbar${user ? ' navbar--authenticated' : ''}${location.pathname === '/' && !user ? ' navbar--showcase' : ''}${compact ? ' navbar--compact' : ''}${hidden ? ' navbar--hidden' : ''}`}
-      aria-label="Main" data-compact={compact} data-hidden={hidden}>
+      aria-label={t("Main")} data-compact={compact} data-hidden={hidden}>
       <Link className="navbar__brand" to={user ? '/products' : '/'}>
         <Brand />
       </Link>
@@ -168,7 +170,7 @@ export function Navbar() {
             to={item.to}
             aria-current={activeTo === item.to ? 'page' : undefined}
           >
-            {item.label}
+            {t(item.label)}
           </Link>
         ))}
       </div>
@@ -176,13 +178,13 @@ export function Navbar() {
       <ThemeControls />
       {user ? (
         <>
-          <span className="navbar__user nav-control" title={user.email}>
-            <span className="navbar__role">{roleShortLabels[user.role]}</span>
-            <span>{user.email}</span>
+          <span className="navbar__user nav-control" title={t(user.email)}>
+            <span className="navbar__role">{t(roleShortLabels[user.role])}</span>
+            <span>{t(user.email)}</span>
           </span>
           {/* Right cluster order: theme, user chip, then one pill holding
               cart + bell + account — same container effect as Products/My Orders. */}
-          <span className="navbar__actions" role="group" aria-label="Cart, notifications and account">
+          <span className="navbar__actions" role="group" aria-label={t("Cart, notifications and account")}>
             {user.role === 'Customer' ? <CartButton /> : null}
             <NotificationBell />
             <AccountMenu />
@@ -190,8 +192,7 @@ export function Navbar() {
         </>
       ) : (
         <Link className="btn btn--primary navbar__cta" to="/login">
-          Sign in
-        </Link>
+          {t("Sign in")}</Link>
       )}
     </nav>
   );
@@ -199,6 +200,7 @@ export function Navbar() {
 
 /** Cart stays available from every customer page. */
 function CartButton() {
+  useLanguage();
   const { itemCount } = useCart();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -211,9 +213,9 @@ function CartButton() {
   return <>
     <button type="button" className="nav-control nav-pop__trigger" aria-haspopup="dialog" aria-expanded={open}
       onClick={event => document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet', {detail: {trigger: event.currentTarget}}))}
-      aria-label={`Cart, ${itemCount} item${itemCount === 1 ? '' : 's'}`} title="Your cart">
+      aria-label={t(`Cart, ${itemCount} item${itemCount === 1 ? '' : 's'}`)} title={t("Your cart")}>
       <Icon name="cart" />
-      {itemCount > 0 ? <span className="nav-pop__badge" data-testid="cart-count">{itemCount > 9 ? '9+' : itemCount}</span> : null}
+      {itemCount > 0 ? <span className="nav-pop__badge" data-testid="cart-count">{t(itemCount > 9 ? '9+' : itemCount)}</span> : null}
     </button>
     <CartSheet onOpenChange={setOpen} onPlaced={order => navigate(`/orders/${order.id}`)} />
   </>;

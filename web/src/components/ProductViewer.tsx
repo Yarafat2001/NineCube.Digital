@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useEffect, useRef, useState } from 'react';
 import type { Product } from '../api/types';
 import { resolveAssetUrl } from '../api/client';
@@ -12,6 +13,7 @@ const backdrops = [
 
 /** A photo viewer, not a fabricated 3D model: original image colours are preserved. */
 export function ProductViewer({ product }: { product: Product }) {
+  useLanguage();
   const gallery = product.images ?? [];
   const [index, setIndex] = useState(() => Math.max(0, gallery.findIndex(image => image.isPrimary)));
   const [depth, setDepth] = useState(false);
@@ -28,14 +30,14 @@ export function ProductViewer({ product }: { product: Product }) {
     setIndex(value => (value + delta + gallery.length) % gallery.length);
     setTilt({ x: 0, y: 0 }); setZoom(1);
   };
-  return <section className="product-viewer" aria-label="Interactive product gallery">
-    <div className="viewer-modes" role="group" aria-label="Product view mode">
-      <button type="button" className="btn btn--sm" aria-pressed={!depth} onClick={() => { setDepth(false); setTilt({ x: 0, y: 0 }); }}>Photo</button>
-      <button type="button" className="btn btn--sm" aria-pressed={depth} onClick={() => { setDepth(true); setTilt({ x: -6, y: 12 }); }}>3D photo</button>
-      <span className="muted">{gallery.length > 1 ? `${index + 1} / ${gallery.length} angles` : 'Original photo'}</span>
+  return <section className="product-viewer" aria-label={t("Interactive product gallery")}>
+    <div className="viewer-modes" role="group" aria-label={t("Product view mode")}>
+      <button type="button" className="btn btn--sm" aria-pressed={!depth} onClick={() => { setDepth(false); setTilt({ x: 0, y: 0 }); }}>{t("Photo")}</button>
+      <button type="button" className="btn btn--sm" aria-pressed={depth} onClick={() => { setDepth(true); setTilt({ x: -6, y: 12 }); }}>{t("3D photo")}</button>
+      <span className="muted">{t(gallery.length > 1 ? `${index + 1} / ${gallery.length} angles` : 'Original photo')}</span>
     </div>
     <div className="product-viewer__stage" data-depth={depth} style={{ background: backdrop.color }}
-      tabIndex={depth ? 0 : undefined} role="group" aria-label="Product photo. In 3D photo mode use arrow keys to tilt, or Home to reset."
+      tabIndex={depth ? 0 : undefined} role="group" aria-label={t("Product photo. In 3D photo mode use arrow keys to tilt, or Home to reset.")}
       onKeyDown={event => {
         if (!depth || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home'].includes(event.key)) return;
         event.preventDefault();
@@ -62,23 +64,23 @@ export function ProductViewer({ product }: { product: Product }) {
         <ProductImage product={product} images={selected ? [selected] : null} frame="detail" />
       </div>
     </div>
-    <p className="muted viewer-hint">{depth ? 'Drag to tilt the photo. Select an angle below.' : gallery.length > 1 ? 'Swipe or select a photo to explore available angles.' : 'Zoom in to explore the original product photo.'}</p>
-    <div className="viewer-controls" role="group" aria-label="Gallery controls">
-      {gallery.length > 1 ? <><button type="button" className="btn btn--sm" onClick={() => changeAngle(-1)} aria-label="Previous product angle">Previous</button><button type="button" className="btn btn--sm" onClick={() => changeAngle(1)} aria-label="Next product angle">Next</button></> : null}
-      <button type="button" className="btn btn--sm" disabled={zoom <= 1} aria-label="Zoom out" onClick={() => setZoom(value => Math.max(1, value - .2))}>−</button>
-      <output aria-label="Zoom level">{Math.round(zoom * 100)}%</output>
-      <button type="button" className="btn btn--sm" disabled={zoom >= 1.8} aria-label="Zoom in" onClick={() => setZoom(value => Math.min(1.8, value + .2))}>+</button>
-      <button type="button" className="btn btn--sm" onClick={() => { setZoom(1); setTilt({ x: 0, y: 0 }); }}>Reset view</button>
+    <p className="muted viewer-hint">{t(depth ? 'Drag to tilt the photo. Select an angle below.' : gallery.length > 1 ? 'Swipe or select a photo to explore available angles.' : 'Zoom in to explore the original product photo.')}</p>
+    <div className="viewer-controls" role="group" aria-label={t("Gallery controls")}>
+      {gallery.length > 1 ? <><button type="button" className="btn btn--sm" onClick={() => changeAngle(-1)} aria-label={t("Previous product angle")}>{t("Previous")}</button><button type="button" className="btn btn--sm" onClick={() => changeAngle(1)} aria-label={t("Next product angle")}>{t("Next")}</button></> : null}
+      <button type="button" className="btn btn--sm" disabled={zoom <= 1} aria-label={t("Zoom out")} onClick={() => setZoom(value => Math.max(1, value - .2))}>{t("−")}</button>
+      <output aria-label={t("Zoom level")}>{t(Math.round(zoom * 100))}{t("%")}</output>
+      <button type="button" className="btn btn--sm" disabled={zoom >= 1.8} aria-label={t("Zoom in")} onClick={() => setZoom(value => Math.min(1.8, value + .2))}>{t("+")}</button>
+      <button type="button" className="btn btn--sm" onClick={() => { setZoom(1); setTilt({ x: 0, y: 0 }); }}>{t("Reset view")}</button>
     </div>
-    <div className="viewer-backdrops" role="group" aria-label="Photo backdrop colour">
-      <span>Backdrop</span>
-      {backdrops.map(option => <button type="button" key={option.name} aria-label={`${option.name} backdrop`} aria-pressed={backdrop.name === option.name}
-        style={{ '--swatch': option.color } as React.CSSProperties} onClick={() => setBackdrop(option)}><span aria-hidden="true" />{option.name}{backdrop.name === option.name ? ' ✓' : ''}</button>)}
+    <div className="viewer-backdrops" role="group" aria-label={t("Photo backdrop colour")}>
+      <span>{t("Backdrop")}</span>
+      {backdrops.map(option => <button type="button" key={option.name} aria-label={t(`${option.name} backdrop`)} aria-pressed={backdrop.name === option.name}
+        style={{ '--swatch': option.color } as React.CSSProperties} onClick={() => setBackdrop(option)}><span aria-hidden="true" />{t(option.name)}{t(backdrop.name === option.name ? ' ✓' : '')}</button>)}
     </div>
-    {gallery.length > 1 ? <div className="product-detail__thumbs" aria-label="Product images">
+    {gallery.length > 1 ? <div className="product-detail__thumbs" aria-label={t("Product images")}>
       {gallery.map((image, imageIndex) => <button type="button" key={image.id} aria-pressed={index === imageIndex}
-        aria-label={`Show ${image.altText ?? `${product.name} angle ${imageIndex + 1}`}`} onClick={() => { setIndex(imageIndex); setZoom(1); setTilt({ x: 0, y: 0 }); }}>
-        <img src={resolveAssetUrl(image.url)} alt="" loading="lazy" />
+        aria-label={t(`Show ${image.altText ?? `${product.name} angle ${imageIndex + 1}`}`)} onClick={() => { setIndex(imageIndex); setZoom(1); setTilt({ x: 0, y: 0 }); }}>
+        <img src={resolveAssetUrl(image.url)} alt={t("")} loading="lazy" />
       </button>)}
     </div> : null}
   </section>;

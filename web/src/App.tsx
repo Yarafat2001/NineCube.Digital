@@ -1,3 +1,4 @@
+import { t, useLanguage } from './i18n/language';
 import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './state/AuthContext';
@@ -25,14 +26,16 @@ const ProfilePage = lazy(() => import('./pages/AccountPages').then((module) => (
 const NotificationsPage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.NotificationsPage })));
 
 function RouteFallback() {
+  useLanguage();
   return (
     <div className="page container">
-      <LoadingBlock label="Loading this section" variant="tile" count={3} />
+      <LoadingBlock label={t("Loading this section")} variant="tile" count={3} />
     </div>
   );
 }
 
 function PublicHome() {
+  useLanguage();
   const { user, initialising } = useAuth();
   if (initialising) return <RouteFallback />;
   if (user) return <Navigate to="/products" replace />;
@@ -40,6 +43,7 @@ function PublicHome() {
 }
 
 export function App() {
+  useLanguage();
   const { pathname } = useLocation();
   const { user, initialising } = useAuth();
 

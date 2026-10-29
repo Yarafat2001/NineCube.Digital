@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { Category, FacetFilters, Tag } from '../api/types';
@@ -26,6 +27,7 @@ export function CategoryTree({ tree, selected, onSelect, directOnly = false, inS
   directOnly?: boolean;
   inStockOnly?: boolean;
 }) {
+  useLanguage();
   const [expanded, setExpanded] = useState<Map<number, boolean>>(new Map());
   const toggle = (id: number, open?: boolean) => setExpanded(previous => {
     const next = new Map(previous); const branch = flattenCategories(tree).find(c => c.id === id); const initiallyOpen = branch ? branch.slug === selected || flattenCategories(branch.children).some(c => c.slug === selected) : false; next.set(id, open ?? !(next.get(id) ?? initiallyOpen)); return next;
@@ -45,20 +47,20 @@ export function CategoryTree({ tree, selected, onSelect, directOnly = false, inS
     const open = expanded.get(c.id) ?? (activeBranch || selected === c.slug);
     const count = categoryCount(c, directOnly, inStockOnly);
     return <li key={c.id} role="treeitem" tabIndex={0} aria-selected={selected === c.slug} aria-expanded={c.children.length ? open : undefined}
-      aria-label={`${c.name}, ${count.label}`} onKeyDown={event => key(event, c)}>
+      aria-label={t(`${c.name}, ${count.label}`)} onKeyDown={event => key(event, c)}>
       <div className="category-tree__row" data-selected={selected === c.slug} data-branch={activeBranch}>
-        {c.children.length ? <button type="button" className="category-tree__toggle" aria-label={`${open ? 'Collapse' : 'Expand'} ${c.name}`} onClick={() => toggle(c.id)}>{open ? '−' : '+'}</button> : <span className="category-tree__spacer" aria-hidden="true" />}
+        {c.children.length ? <button type="button" className="category-tree__toggle" aria-label={t(`${open ? 'Collapse' : 'Expand'} ${c.name}`)} onClick={() => toggle(c.id)}>{t(open ? '−' : '+')}</button> : <span className="category-tree__spacer" aria-hidden="true" />}
         <button type="button" onClick={() => onSelect(c.slug)} className="category-tree__select">
-          <span className="category-tree__label">{selected === c.slug && <span aria-hidden="true">✓ </span>}{c.name}</span>
-          <span className="category-tree__count">{count.value}{count.hint ? <span className="category-tree__hint">{count.hint}</span> : null}</span>
+          <span className="category-tree__label">{selected === c.slug && <span aria-hidden="true">{t("✓ ")}</span>}{t(c.name)}</span>
+          <span className="category-tree__count">{t(count.value)}{count.hint ? <span className="category-tree__hint">{t(count.hint)}</span> : null}</span>
         </button>
       </div>
-      {c.children.length > 0 && open && <ul role="group">{nodes(c.children)}</ul>}
+      {c.children.length > 0 && open && <ul role="group">{t(nodes(c.children))}</ul>}
     </li>;
   });
   return <div>
-    <button type="button" className="category-tree__all" aria-pressed={!selected} onClick={() => onSelect('')}>{!selected && <span aria-hidden="true">✓ </span>}<span>All products</span></button>
-    <ul className="category-tree" role="tree" aria-label="Product categories">{nodes(tree)}</ul>
+    <button type="button" className="category-tree__all" aria-pressed={!selected} onClick={() => onSelect('')}>{!selected && <span aria-hidden="true">{t("✓ ")}</span>}<span>{t("All products")}</span></button>
+    <ul className="category-tree" role="tree" aria-label={t("Product categories")}>{t(nodes(tree))}</ul>
   </div>;
 }
 
@@ -147,19 +149,20 @@ function FilterGroup({ id, title, count, summary, open, onToggle, children }: {
   onToggle: () => void;
   children: ReactNode;
 }) {
+  useLanguage();
   return (
     <section className="filter-group" data-testid={`group-${id}`}>
       <button type="button" className="filter-group__toggle" aria-expanded={open} aria-controls={`filter-group-${id}`} onClick={onToggle}>
         <span className="filter-group__heading">
           <span className="filter-group__name">
-            {title}
-            {count ? <span className="filter-group__tally"> · {count}</span> : null}
+            {t(title)}
+            {count ? <span className="filter-group__tally">{t(" · ")}{t(count)}</span> : null}
           </span>
-          {summary ? <span className="filter-group__summary">{summary}</span> : null}
+          {summary ? <span className="filter-group__summary">{t(summary)}</span> : null}
         </span>
-        <span className="filter-group__chevron" aria-hidden="true">{open ? '▾' : '▸'}</span>
+        <span className="filter-group__chevron" aria-hidden="true">{t(open ? '▾' : '▸')}</span>
       </button>
-      {open ? <div className="filter-group__body" id={`filter-group-${id}`}>{children}</div> : null}
+      {open ? <div className="filter-group__body" id={`filter-group-${id}`}>{t(children)}</div> : null}
     </section>
   );
 }
@@ -178,6 +181,7 @@ const APPLY_DEBOUNCE_MS = 400;
  * `minPrice=0` used to survive into the group header as a phantom "0 –".
  */
 function PriceFilter({ values, update, idPrefix }: { values: URLSearchParams; update: ChangeFilters; idPrefix: string }) {
+  useLanguage();
   const urlMin = values.get('minPrice') ?? '';
   const urlMax = values.get('maxPrice') ?? '';
   const [minText, setMinText] = useState(urlMin);
@@ -216,19 +220,19 @@ function PriceFilter({ values, update, idPrefix }: { values: URLSearchParams; up
         <span className="price-slider__track" aria-hidden="true" />
         <span className="price-slider__fill" aria-hidden="true"
           style={{ left: `${(minHandle / PRICE_CEILING) * 100}%`, right: `${100 - (maxHandle / PRICE_CEILING) * 100}%` }} />
-        <input type="range" aria-label="Minimum price slider" min={0} max={PRICE_CEILING} step={PRICE_STEP}
+        <input type="range" aria-label={t("Minimum price slider")} min={0} max={PRICE_CEILING} step={PRICE_STEP}
           value={minHandle} onChange={event => propose(event.target.value, maxText)}
           onPointerUp={release} onKeyUp={release} />
-        <input type="range" aria-label="Maximum price slider" min={0} max={PRICE_CEILING} step={PRICE_STEP}
+        <input type="range" aria-label={t("Maximum price slider")} min={0} max={PRICE_CEILING} step={PRICE_STEP}
           value={maxHandle} onChange={event => propose(minText, event.target.value)}
           onPointerUp={release} onKeyUp={release} />
       </div>
       <div className="filter-prices">
-        <PriceField id={`${idPrefix}-min-price`} label="Min price" value={minText} placeholder="0" onChange={next => propose(next, maxText)} />
-        <PriceField id={`${idPrefix}-max-price`} label="Max price" value={maxText} placeholder={String(PRICE_CEILING)} onChange={next => propose(minText, next)} />
+        <PriceField id={`${idPrefix}-min-price`} label={t("Min price")} value={minText} placeholder={t("0")} onChange={next => propose(next, maxText)} />
+        <PriceField id={`${idPrefix}-max-price`} label={t("Max price")} value={maxText} placeholder={t(String(PRICE_CEILING))} onChange={next => propose(minText, next)} />
       </div>
-      {error ? <p className="filter-error" role="status">{error}</p> : null}
-      {bounded ? <button type="button" className="link-button" onClick={() => update({ minPrice: null, maxPrice: null })}>Clear price range</button> : null}
+      {error ? <p className="filter-error" role="status">{t(error)}</p> : null}
+      {bounded ? <button type="button" className="link-button" onClick={() => update({ minPrice: null, maxPrice: null })}>{t("Clear price range")}</button> : null}
     </div>
   );
 
@@ -241,13 +245,14 @@ function PriceFilter({ values, update, idPrefix }: { values: URLSearchParams; up
 
 /** The label sits above the field and BDT sits inside it, so the amount is never a bare number. */
 function PriceField({ id, label, value, placeholder, onChange }: { id: string; label: string; value: string; placeholder: string; onChange: (value: string) => void }) {
+  useLanguage();
   return (
     <div className="field">
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{t(label)}</label>
       <span className="price-field">
-        <span className="price-field__prefix" aria-hidden="true">BDT</span>
+        <span className="price-field__prefix" aria-hidden="true">{t("BDT")}</span>
         <input className="price-field__input" id={id} type="number" min={0} step="0.01" inputMode="decimal"
-          value={value} placeholder={placeholder} onChange={event => onChange(event.target.value)} />
+          value={value} placeholder={t(placeholder)} onChange={event => onChange(event.target.value)} />
       </span>
     </div>
   );
@@ -294,16 +299,18 @@ function OptionRow({ kind, name, count, hint, checked, onChange }: {
   checked: boolean;
   onChange: (checked: boolean) => void;
 }) {
+  useLanguage();
   return (
     <label className="brand-option" data-checked={checked} data-option-kind={kind}>
       <input type="checkbox" checked={checked} onChange={event => onChange(event.target.checked)} />
-      <span>{checked ? <span aria-hidden="true">✓ </span> : null}{name}</span>
-      <span className="brand-option__count" title={hint ?? undefined}>{count}</span>
+      <span>{checked ? <span aria-hidden="true">{t("✓ ")}</span> : null}{t(name)}</span>
+      <span className="brand-option__count" title={t(hint ?? undefined)}>{t(count)}</span>
     </label>
   );
 }
 
 function BrandFilter({ values, update, facet, idPrefix }: { values: URLSearchParams; update: ChangeFilters; facet: FacetFilters; idPrefix: string }) {
+  useLanguage();
   const [term, setTerm] = useState('');
   const [showAll, setShowAll] = useState(false);
   const brandsQuery = useBrands(facet);
@@ -321,40 +328,41 @@ function BrandFilter({ values, update, facet, idPrefix }: { values: URLSearchPar
     update({ brand: nextBrands, line: nextLines });
   };
 
-  if (brandsQuery.isLoading) return <LoadingBlock label="Loading brands" variant="line" count={4} />;
-  if (brandsQuery.isError) return <p className="filter-error" role="status">Brands could not be loaded. <button type="button" className="link-button" onClick={() => void brandsQuery.refetch()}>Try again</button></p>;
-  if (brands.length === 0) return <p className="muted">None of these products carry a brand.</p>;
+  if (brandsQuery.isLoading) return <LoadingBlock label={t("Loading brands")} variant="line" count={4} />;
+  if (brandsQuery.isError) return <p className="filter-error" role="status">{t("Brands could not be loaded. ")}<button type="button" className="link-button" onClick={() => void brandsQuery.refetch()}>{t("Try again")}</button></p>;
+  if (brands.length === 0) return <p className="muted">{t("None of these products carry a brand.")}</p>;
 
   return (
     <div className="stack" style={{ gap: 6 }}>
       <div className="field">
-        <label htmlFor={`${idPrefix}-brand-search`}>Search brands</label>
-        <input id={`${idPrefix}-brand-search`} type="search" value={term} autoComplete="off" placeholder="Apple, Walton…"
+        <label htmlFor={`${idPrefix}-brand-search`}>{t("Search brands")}</label>
+        <input id={`${idPrefix}-brand-search`} type="search" value={term} autoComplete="off" placeholder={t("Apple, Walton…")}
           onChange={event => setTerm(event.target.value)} />
       </div>
-      <div className="brand-list" role="group" aria-label="Brands">
+      <div className="brand-list" role="group" aria-label={t("Brands")}>
         {(showAll || term ? visible : visible.slice(0, 8)).map(brand => (
           <OptionRow key={brand.id} kind="brand" name={brand.name} count={brand.productCount}
             checked={selected.includes(brand.slug)} onChange={show => setShow(brand.slug, show)} />
         ))}
-        {visible.length > 8 && !term ? <button type="button" className="btn btn--ghost btn--sm" aria-expanded={showAll} onClick={() => setShowAll(v => !v)}>{showAll ? 'Show fewer brands' : `Show more (${visible.length - 8})`}</button> : null}
-        {visible.length === 0 ? <p className="muted">No brand matches “{term}”.</p> : null}
+        {visible.length > 8 && !term ? <button type="button" className="btn btn--ghost btn--sm" aria-expanded={showAll} onClick={() => setShowAll(v => !v)}>{t(showAll ? 'Show fewer brands' : `Show more (${visible.length - 8})`)}</button> : null}
+        {visible.length === 0 ? <p className="muted">{t("No brand matches “")}{t(term)}{t("”.")}</p> : null}
       </div>
     </div>
   );
 }
 
 function SeriesFilter({ brandSlug, values, update, facet }: { brandSlug: string; values: URLSearchParams; update: ChangeFilters; facet: FacetFilters }) {
+  useLanguage();
   const linesQuery = useBrandLines(brandSlug, facet);
   const brand = linesQuery.data;
   const selected = list(values, 'line');
 
   useEffect(() => { if (brand) seriesByBrand.set(brandSlug, brand.lines.map(line => ({ slug: line.slug, name: line.name }))); }, [brandSlug, brand]);
 
-  if (linesQuery.isLoading) return <LoadingBlock label="Loading series" variant="line" count={2} />;
-  if (linesQuery.isError) return <p className="filter-error" role="status">Series could not be loaded. <button type="button" className="link-button" onClick={() => void linesQuery.refetch()}>Try again</button></p>;
+  if (linesQuery.isLoading) return <LoadingBlock label={t("Loading series")} variant="line" count={2} />;
+  if (linesQuery.isError) return <p className="filter-error" role="status">{t("Series could not be loaded. ")}<button type="button" className="link-button" onClick={() => void linesQuery.refetch()}>{t("Try again")}</button></p>;
   if (!brand) return null;
-  if (brand.lines.length === 0) return <p className="muted">{brand.name} has no series in these results.</p>;
+  if (brand.lines.length === 0) return <p className="muted">{t(brand.name)} {t(" has no series in these results.")}</p>;
 
   const setShow = (slug: string, show: boolean) => update({ line: show ? [...selected, slug] : selected.filter(entry => entry !== slug) });
 
@@ -383,6 +391,7 @@ function TagFilter({ values, update, tags, loading, idPrefix }: {
   loading: boolean;
   idPrefix: string;
 }) {
+  useLanguage();
   const [term, setTerm] = useState('');
   const [showAll, setShowAll] = useState(false);
   const selected = parseTags(values.get('tag'));
@@ -402,27 +411,27 @@ function TagFilter({ values, update, tags, loading, idPrefix }: {
     update({ tag: next.join(',') });
   };
 
-  if (loading) return <LoadingBlock label="Loading tags" variant="line" count={3} />;
-  if (pool.length === 0) return <p className="muted">These products carry no tags.</p>;
+  if (loading) return <LoadingBlock label={t("Loading tags")} variant="line" count={3} />;
+  if (pool.length === 0) return <p className="muted">{t("These products carry no tags.")}</p>;
 
   return (
     <div className="stack" style={{ gap: 6 }}>
       <div className="field">
-        <label htmlFor={`${idPrefix}-tag-search`}>Search tags</label>
-        <input id={`${idPrefix}-tag-search`} type="search" value={term} autoComplete="off" placeholder="Featured, Offer…"
+        <label htmlFor={`${idPrefix}-tag-search`}>{t("Search tags")}</label>
+        <input id={`${idPrefix}-tag-search`} type="search" value={term} autoComplete="off" placeholder={t("Featured, Offer…")}
           onChange={event => { setTerm(event.target.value); setShowAll(false); }} />
       </div>
-      <div className="brand-list" role="group" aria-label="Tags" aria-busy={scoped.pending}>
+      <div className="brand-list" role="group" aria-label={t("Tags")} aria-busy={scoped.pending}>
         {shown.map(tag => (
           <OptionRow key={tag.id} kind="tag" name={tag.name}
             count={inStockOnly ? tag.inStockCount : tag.productCount}
             hint={`${tag.inStockCount} of ${tag.productCount} in stock`}
             checked={selected.includes(tag.name)} onChange={on => setShow(tag.name, on)} />
         ))}
-        {visible.length === 0 ? <p className="muted">No tag matches “{term}”.</p> : null}
+        {visible.length === 0 ? <p className="muted">{t("No tag matches “")}{t(term)}{t("”.")}</p> : null}
       </div>
-      {hidden > 0 ? <button type="button" className="filter-show-more" onClick={() => setShowAll(true)}>Show {hidden} more</button> : null}
-      {showAll && visible.length > TAG_PREVIEW ? <button type="button" className="filter-show-more" onClick={() => setShowAll(false)}>Show fewer</button> : null}
+      {hidden > 0 ? <button type="button" className="filter-show-more" onClick={() => setShowAll(true)}>{t("Show ")}{t(hidden)} {t(" more")}</button> : null}
+      {showAll && visible.length > TAG_PREVIEW ? <button type="button" className="filter-show-more" onClick={() => setShowAll(false)}>{t("Show fewer")}</button> : null}
     </div>
   );
 }
@@ -438,15 +447,16 @@ const SORT_OPTIONS = [
 
 /** Radios rather than a select, for the same reason as the tag list: nothing may pop over the panel. */
 function SortFilter({ values, update, idPrefix }: { values: URLSearchParams; update: ChangeFilters; idPrefix: string }) {
+  useLanguage();
   const current = values.get('sort') ?? '';
   return (
     <div className="filter-radios" role="radiogroup" aria-labelledby={`${idPrefix}-sort-heading`}>
-      <span className="visually-hidden" id={`${idPrefix}-sort-heading`}>Sort results by</span>
+      <span className="visually-hidden" id={`${idPrefix}-sort-heading`}>{t("Sort results by")}</span>
       {SORT_OPTIONS.map(option => (
         <label className="filter-radio" key={option.value || 'name'} data-checked={current === option.value}>
           <input type="radio" name={`${idPrefix}-sort`} value={option.value} checked={current === option.value}
             onChange={() => update({ sort: option.value })} />
-          <span>{current === option.value ? <span aria-hidden="true">✓ </span> : null}{option.label}</span>
+          <span>{current === option.value ? <span aria-hidden="true">{t("✓ ")}</span> : null}{t(option.label)}</span>
         </label>
       ))}
     </div>
@@ -467,6 +477,7 @@ export function FilterForm({ values, update, tree, tags, loading, idPrefix }: {
   loading: boolean;
   idPrefix: string;
 }) {
+  useLanguage();
   const { isOpen, toggleGroup } = useOpenGroups();
   const facet = useMemo(() => facetFromParams(values), [values.toString()]); // eslint-disable-line react-hooks/exhaustive-deps
   const categoryFacets = useCategoryFacets(tree, { ...facet, brands: values.getAll('brand'), lines: values.getAll('line') });
@@ -480,46 +491,46 @@ export function FilterForm({ values, update, tree, tags, loading, idPrefix }: {
 
   return <>
     <div className="filter-panel__header">
-      <h2 className="filter-panel__title">Browse &amp; filter</h2>
+      <h2 className="filter-panel__title">{t("Browse & filter")}</h2>
       <button type="button" className="filter-panel__reset btn btn--ghost btn--sm" disabled={activeFilterCount(values) === 0}
-        onClick={() => update(Object.fromEntries(CATALOG_FILTER_KEYS.map(key => [key, null])))}>Reset all</button>
+        onClick={() => update(Object.fromEntries(CATALOG_FILTER_KEYS.map(key => [key, null])))}>{t("Reset all")}</button>
     </div>
 
     <div className="filter-panel__body">
       <div className="stack">
-        <FilterGroup id="category" title="Category" count={(categorySlug ? 1 : 0) + (directOnly ? 1 : 0)}
+        <FilterGroup id="category" title={t("Category")} count={(categorySlug ? 1 : 0) + (directOnly ? 1 : 0)}
           summary={selectedCategory?.name} open={isOpen('category')} onToggle={() => toggleGroup('category')}>
-          {loading || categoryFacets.pending ? <LoadingBlock label="Loading categories" variant="line" count={4} /> : categoryFacets.error ? <p role="status">Category counts could not be loaded.</p> : <CategoryTree tree={categoryFacets.tree} selected={categorySlug} directOnly={directOnly} inStockOnly={inStockOnly} onSelect={slug => update({ category: slug })} />}
-          <label className="checkbox"><input type="checkbox" checked={!directOnly} onChange={event => update({ includeDescendants: event.target.checked ? '' : 'false' })} />Include subcategories</label>
+          {loading || categoryFacets.pending ? <LoadingBlock label={t("Loading categories")} variant="line" count={4} /> : categoryFacets.error ? <p role="status">{t("Category counts could not be loaded.")}</p> : <CategoryTree tree={categoryFacets.tree} selected={categorySlug} directOnly={directOnly} inStockOnly={inStockOnly} onSelect={slug => update({ category: slug })} />}
+          <label className="checkbox"><input type="checkbox" checked={!directOnly} onChange={event => update({ includeDescendants: event.target.checked ? '' : 'false' })} />{t("Include subcategories")}</label>
         </FilterGroup>
 
-        <FilterGroup id="brand" title="Brand" count={selectedBrands.length} open={isOpen('brand')} onToggle={() => toggleGroup('brand')}>
+        <FilterGroup id="brand" title={t("Brand")} count={selectedBrands.length} open={isOpen('brand')} onToggle={() => toggleGroup('brand')}>
           <BrandFilter values={values} update={update} facet={facet} idPrefix={idPrefix} />
         </FilterGroup>
 
         {selectedBrands.length > 0 ? (
-          <FilterGroup id="series" title="Series" count={selectedLines.length} summary="of the selected brand" open={isOpen('series')} onToggle={() => toggleGroup('series')}>
+          <FilterGroup id="series" title={t("Series")} count={selectedLines.length} summary="of the selected brand" open={isOpen('series')} onToggle={() => toggleGroup('series')}>
             {selectedBrands.map(slug => <SeriesFilter key={slug} brandSlug={slug} values={values} update={update} facet={facet} />)}
           </FilterGroup>
         ) : null}
 
-        <FilterGroup id="tag" title="Tag" count={selectedTags.length}
+        <FilterGroup id="tag" title={t("Tag")} count={selectedTags.length}
           summary={selectedTags.length === 1 ? selectedTags[0] : undefined}
           open={isOpen('tag')} onToggle={() => toggleGroup('tag')}>
           <TagFilter values={values} update={update} tags={tags} loading={loading} idPrefix={idPrefix} />
         </FilterGroup>
 
-        <FilterGroup id="availability" title="Availability" count={inStockOnly ? 1 : 0}
+        <FilterGroup id="availability" title={t("Availability")} count={inStockOnly ? 1 : 0}
           summary={inStockOnly ? 'In-stock only' : undefined} open={isOpen('availability')} onToggle={() => toggleGroup('availability')}>
-          <label className="checkbox"><input type="checkbox" checked={inStockOnly} onChange={event => update({ inStock: event.target.checked ? 'true' : '' })} />In-stock only</label>
+          <label className="checkbox"><input type="checkbox" checked={inStockOnly} onChange={event => update({ inStock: event.target.checked ? 'true' : '' })} />{t("In-stock only")}</label>
         </FilterGroup>
 
-        <FilterGroup id="price" title="Price" count={[values.get('minPrice'), values.get('maxPrice')].filter(Boolean).length}
+        <FilterGroup id="price" title={t("Price")} count={[values.get('minPrice'), values.get('maxPrice')].filter(Boolean).length}
           summary={priceSummary(values)} open={isOpen('price')} onToggle={() => toggleGroup('price')}>
           <PriceFilter values={values} update={update} idPrefix={idPrefix} />
         </FilterGroup>
 
-        <FilterGroup id="sort" title="Sort by" count={values.get('sort') ? 1 : 0} open={isOpen('sort')} onToggle={() => toggleGroup('sort')}>
+        <FilterGroup id="sort" title={t("Sort by")} count={values.get('sort') ? 1 : 0} open={isOpen('sort')} onToggle={() => toggleGroup('sort')}>
           <SortFilter values={values} update={update} idPrefix={idPrefix} />
         </FilterGroup>
       </div>
@@ -528,6 +539,7 @@ export function FilterForm({ values, update, tree, tags, loading, idPrefix }: {
 }
 
 export function CategoryFilters({ tree, tags, loading, params, change }: { tree: Category[]; tags: Tag[]; loading: boolean; params: URLSearchParams; change: ChangeFilters }) {
+  useLanguage();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<URLSearchParams>(() => new URLSearchParams());
   const count = activeFilterCount(params);
@@ -558,17 +570,17 @@ export function CategoryFilters({ tree, tags, loading, params, change }: { tree:
   };
 
   return <>
-    <button type="button" className="btn category-filter-trigger" onClick={openDrawer}>Filters ({count})</button>
-    <aside className="category-filter-panel card-glass" aria-label="Catalogue filters">
+    <button type="button" className="btn category-filter-trigger" onClick={openDrawer}>{t("Filters (")}{t(count)}{t(")")}</button>
+    <aside className="category-filter-panel card-glass" aria-label={t("Catalogue filters")}>
       <FilterForm values={params} update={change} tree={tree} tags={tags} loading={loading} idPrefix="panel" />
     </aside>
-    <Modal open={open} title="Filter products" onClose={() => setOpen(false)}>
+    <Modal open={open} title={t("Filter products")} onClose={() => setOpen(false)}>
       {/* The draft is thrown away on close, so leaving without applying keeps the previous state. */}
       <div className="filter-drawer">
         <FilterForm values={draft} update={values => setDraft(previous => writeParams(previous, values, false))} tree={tree} tags={tags} loading={loading} idPrefix="drawer" />
         <div className="filter-drawer__actions">
-          <button className="btn btn--primary" type="button" onClick={applyDraft}>Apply filters</button>
-          <button className="btn btn--ghost" type="button" onClick={() => setOpen(false)}>Cancel</button>
+          <button className="btn btn--primary" type="button" onClick={applyDraft}>{t("Apply filters")}</button>
+          <button className="btn btn--ghost" type="button" onClick={() => setOpen(false)}>{t("Cancel")}</button>
         </div>
       </div>
     </Modal>
@@ -576,7 +588,8 @@ export function CategoryFilters({ tree, tags, loading, params, change }: { tree:
 }
 
 export function CategoryBreadcrumb({ category, select }: { category?: Category; select: (slug: string) => void }) {
-  return <nav aria-label="Category breadcrumb" className="category-breadcrumb"><Link to="/">Home</Link>{!category && <><span aria-hidden="true">›</span><button type="button" className="link-button" onClick={() => select('')}>All products</button></>}
-    {category?.breadcrumb.map(c => <span key={c.id}><span aria-hidden="true"> › </span><button type="button" className="link-button" aria-current={c.id === category.id ? 'page' : undefined} onClick={() => select(c.slug)}>{c.name}</button></span>)}
+  useLanguage();
+  return <nav aria-label={t("Category breadcrumb")} className="category-breadcrumb"><Link to="/">{t("Home")}</Link>{!category && <><span aria-hidden="true">{t("›")}</span><button type="button" className="link-button" onClick={() => select('')}>{t("All products")}</button></>}
+    {category?.breadcrumb.map(c => <span key={c.id}><span aria-hidden="true"> {t(" › ")}</span><button type="button" className="link-button" aria-current={c.id === category.id ? 'page' : undefined} onClick={() => select(c.slug)}>{t(c.name)}</button></span>)}
   </nav>;
 }

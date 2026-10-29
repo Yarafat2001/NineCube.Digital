@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useOrder, useOrderAction, useOrders } from '../api/hooks';
@@ -21,16 +22,16 @@ const STATUS_FILTERS: (OrderStatus | '')[] = ['', 'Pending', 'Confirmed', 'Shipp
  * pretending it passed through Confirmed/Shipped.
  */
 export function OrderTimeline({ order }: { order: Order }) {
+  useLanguage();
   const happyPath: OrderStatus[] = ['Pending', 'Confirmed', 'Shipped'];
 
   if (order.status === 'Rejected' || order.status === 'Cancelled') {
     return (
-      <ul className="timeline" aria-label="Order status timeline">
+      <ul className="timeline" aria-label={t("Order status timeline")}>
         <li data-done={true}>
-          <span aria-hidden="true">◔</span> Pending
-        </li>
+          <span aria-hidden="true">{t("◔")}</span> {t(" Pending")}</li>
         <li data-failed={true}>
-          <span aria-hidden="true">{orderStatusMeta[order.status].glyph}</span> {orderStatusMeta[order.status].label}
+          <span aria-hidden="true">{t(orderStatusMeta[order.status].glyph)}</span> {t(orderStatusMeta[order.status].label)}
         </li>
       </ul>
     );
@@ -39,10 +40,10 @@ export function OrderTimeline({ order }: { order: Order }) {
   const reachedIndex = happyPath.indexOf(order.status);
 
   return (
-    <ul className="timeline" aria-label="Order status timeline">
+    <ul className="timeline" aria-label={t("Order status timeline")}>
       {happyPath.map((status, index) => (
         <li key={status} data-done={index <= reachedIndex} aria-current={index === reachedIndex ? 'step' : undefined}>
-          <span aria-hidden="true">{orderStatusMeta[status].glyph}</span> {status}
+          <span aria-hidden="true">{t(orderStatusMeta[status].glyph)}</span> {t(status)}
         </li>
       ))}
     </ul>
@@ -61,6 +62,7 @@ export function canCustomerCancel(order: Order, role: string | undefined, custom
 }
 
 export function MyOrdersPage() {
+  useLanguage();
   const navigate = useNavigate();
   const [status, setStatus] = useState<OrderStatus | ''>('');
   const [page, setPage] = useState(1);
@@ -71,12 +73,12 @@ export function MyOrdersPage() {
     <div className="page container">
       <header className="page-header">
         <div>
-          <h1>My orders</h1>
-          <p>Every order you have placed, with its current status and the printable invoice.</p>
+          <h1>{t("My orders")}</h1>
+          <p>{t("Every order you have placed, with its current status and the printable invoice.")}</p>
         </div>
 
         <div className="field">
-          <label htmlFor="order-status-filter">Filter by status</label>
+          <label htmlFor="order-status-filter">{t("Filter by status")}</label>
           <select
             id="order-status-filter"
             value={status}
@@ -87,7 +89,7 @@ export function MyOrdersPage() {
           >
             {STATUS_FILTERS.map((value) => (
               <option key={value || 'all'} value={value}>
-                {value === '' ? 'All statuses' : value}
+                {t(value === '' ? 'All statuses' : value)}
               </option>
             ))}
           </select>
@@ -96,24 +98,23 @@ export function MyOrdersPage() {
 
       <LiveRegion
         message={
-          ordersQuery.data
+          t(ordersQuery.data
             ? `${ordersQuery.data.totalCount} order${ordersQuery.data.totalCount === 1 ? '' : 's'} found.`
-            : 'Loading orders'
+            : 'Loading orders')
         }
       />
 
-      {ordersQuery.isLoading ? <LoadingBlock label="Loading your orders" variant="tile" count={4} /> : null}
+      {ordersQuery.isLoading ? <LoadingBlock label={t("Loading your orders")} variant="tile" count={4} /> : null}
 
       {ordersQuery.isError ? <ErrorState error={ordersQuery.error} onRetry={() => ordersQuery.refetch()} /> : null}
 
       {ordersQuery.data && ordersQuery.data.items.length === 0 ? (
         <EmptyState
-          title="No orders yet"
-          description="Orders you place will appear here with their live status."
+          title={t("No orders yet")}
+          description={t("Orders you place will appear here with their live status.")}
           action={
             <Link className="btn btn--primary" to="/products">
-              Browse products
-            </Link>
+              {t("Browse products")}</Link>
           }
         />
       ) : null}
@@ -122,26 +123,25 @@ export function MyOrdersPage() {
         <div className="table-surface">
           <div className="table-scroll">
             <table>
-              <caption className="visually-hidden">Your orders</caption>
+              <caption className="visually-hidden">{t("Your orders")}</caption>
               <thead>
                 <tr>
-                  <th scope="col">Order</th>
-                  <th scope="col">Placed</th>
-                  <th scope="col">Items</th>
+                  <th scope="col">{t("Order")}</th>
+                  <th scope="col">{t("Placed")}</th>
+                  <th scope="col">{t("Items")}</th>
                   <th scope="col" className="num">
-                    Total
-                  </th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Actions</th>
+                    {t("Total")}</th>
+                  <th scope="col">{t("Status")}</th>
+                  <th scope="col">{t("Actions")}</th>
                 </tr>
               </thead>
               <tbody>
                 {ordersQuery.data.items.map((order) => (
                   <tr key={order.id}>
-                    <td className="mono nowrap">{`#${order.id}`}</td>
-                    <td className="nowrap">{formatDateTime(order.createdAt)}</td>
-                    <td>{order.items.reduce((sum, item) => sum + item.quantity, 0)}</td>
-                    <td className="num">{formatMoney(order.totalAmount, order.currency)}</td>
+                    <td className="mono nowrap">{t(`#${order.id}`)}</td>
+                    <td className="nowrap">{t(formatDateTime(order.createdAt))}</td>
+                    <td>{t(order.items.reduce((sum, item) => sum + item.quantity, 0))}</td>
+                    <td className="num">{t(formatMoney(order.totalAmount, order.currency))}</td>
                     <td>
                       <StatusBadge status={order.status} />
                     </td>
@@ -152,11 +152,9 @@ export function MyOrdersPage() {
                           className="btn btn--sm"
                           onClick={() => navigate(`/orders/${order.id}`)}
                         >
-                          View
-                        </button>
+                          {t("View")}</button>
                         <Link className="link-button" to={`/orders/${order.id}/invoice`}>
-                          Invoice
-                        </Link>
+                          {t("Invoice")}</Link>
                       </div>
                     </td>
                   </tr>
@@ -179,6 +177,7 @@ export function MyOrdersPage() {
 }
 
 export function OrderDetailPage() {
+  useLanguage();
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
@@ -196,14 +195,14 @@ export function OrderDetailPage() {
     }
   };
 
-  if (orderQuery.isLoading) return <div className="page container"><LoadingBlock label="Loading the order" variant="tile" count={3} /></div>;
+  if (orderQuery.isLoading) return <div className="page container"><LoadingBlock label={t("Loading the order")} variant="tile" count={3} /></div>;
 
   if (orderQuery.isError) {
     return (
       <div className="page container">
         <ErrorState error={orderQuery.error} onRetry={() => orderQuery.refetch()} />
         <p>
-          <Link to={hasRole('Customer') ? '/orders' : '/staff'}>Back to orders</Link>
+          <Link to={hasRole('Customer') ? '/orders' : '/staff'}>{t("Back to orders")}</Link>
         </p>
       </div>
     );
@@ -218,59 +217,54 @@ export function OrderDetailPage() {
     <div className="page container">
       <header className="page-header">
         <div>
-          <h1>Order #{order.id}</h1>
+          <h1>{t("Order #")}{t(order.id)}</h1>
           <p>
-            Placed {formatDateTime(order.createdAt)} · last updated {formatDateTime(order.updatedAt)}
+            {t("Placed ")}{t(formatDateTime(order.createdAt))} {t(" · last updated ")}{t(formatDateTime(order.updatedAt))}
           </p>
         </div>
         <div className="row">
           <StatusBadge status={order.status} />
           <Link className="btn btn--sm" to={`/orders/${order.id}/invoice`}>
-            Printable invoice
-          </Link>
+            {t("Printable invoice")}</Link>
         </div>
       </header>
 
       <OrderTimeline order={order} />
-      <p className="muted">{orderStatusMeta[order.status].description}</p>
+      <p className="muted">{t(orderStatusMeta[order.status].description)}</p>
 
       <section className="table-surface" aria-labelledby="order-lines-heading">
         <div className="table-scroll">
           <table>
-            <caption id="order-lines-heading">Order lines</caption>
+            <caption id="order-lines-heading">{t("Order lines")}</caption>
             <thead>
               <tr>
-                <th scope="col">Product</th>
+                <th scope="col">{t("Product")}</th>
                 <th scope="col" className="num">
-                  Quantity
-                </th>
+                  {t("Quantity")}</th>
                 <th scope="col" className="num">
-                  Unit price
-                </th>
+                  {t("Unit price")}</th>
                 <th scope="col" className="num">
-                  Line total
-                </th>
+                  {t("Line total")}</th>
               </tr>
             </thead>
             <tbody>
               {order.items.map((item) => (
                 <tr key={item.id}>
                   <td>
-                    {item.name} <span className="mono muted">{item.sku}</span>
+                    {t(item.name)} <span className="mono muted">{t(item.sku)}</span>
                   </td>
-                  <td className="num">{item.quantity}</td>
-                  <td className="num">{formatMoney(item.unitPrice, order.currency)}</td>
-                  <td className="num">{formatMoney(item.lineTotal, order.currency)}</td>
+                  <td className="num">{t(item.quantity)}</td>
+                  <td className="num">{t(formatMoney(item.unitPrice, order.currency))}</td>
+                  <td className="num">{t(formatMoney(item.lineTotal, order.currency))}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
               <tr>
                 <th scope="row" colSpan={3}>
-                  Total
-                </th>
+                  {t("Total")}</th>
                 <td className="num">
-                  <strong>{formatMoney(order.totalAmount, order.currency)}</strong>
+                  <strong>{t(formatMoney(order.totalAmount, order.currency))}</strong>
                 </td>
               </tr>
             </tfoot>
@@ -280,18 +274,17 @@ export function OrderDetailPage() {
 
       <div className="row">
         <button type="button" className="btn btn--ghost" onClick={() => navigate(-1)}>
-          Back
-        </button>
+          {t("Back")}</button>
 
         {cancellable ? (
           <button type="button" className="btn btn--danger" onClick={cancel} disabled={action.isPending}>
-            {action.isPending ? 'Cancelling…' : 'Cancel order'}
+            {t(action.isPending ? 'Cancelling…' : 'Cancel order')}
           </button>
         ) : (
           <span className="muted">
-            {order.status === 'Shipped'
+            {t(order.status === 'Shipped'
               ? 'Shipped orders cannot be cancelled.'
-              : 'This order cannot be cancelled by you.'}
+              : 'This order cannot be cancelled by you.')}
           </span>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ApiError, describeError, resolveAssetUrl } from '../api/client';
@@ -73,6 +74,7 @@ const parseTagList = (text: string) => text.split(',').map(entry => entry.trim()
  * server mirrors that url onto Product.ImageUrl, so deleting the primary here promotes the next one.
  */
 function ImageGallery({ productId }: { productId: number }) {
+  useLanguage();
   const imagesQuery = useProductImages(productId);
   const setPrimary = useSetPrimaryImage();
   const removeImage = useDeleteProductImage();
@@ -90,27 +92,25 @@ function ImageGallery({ productId }: { productId: number }) {
   };
 
   return (
-    <section className="stack" aria-label="Product images" style={{ marginTop: 'var(--space-5)' }}>
-      <h4>Images</h4>
-      {imagesQuery.isLoading ? <LoadingBlock label="Loading images" variant="line" count={2} /> : null}
+    <section className="stack" aria-label={t("Product images")} style={{ marginTop: 'var(--space-5)' }}>
+      <h4>{t("Images")}</h4>
+      {imagesQuery.isLoading ? <LoadingBlock label={t("Loading images")} variant="line" count={2} /> : null}
       {imagesQuery.isError ? <ErrorState error={imagesQuery.error} onRetry={() => void imagesQuery.refetch()} /> : null}
-      {!imagesQuery.isLoading && images.length === 0 ? <p className="muted">No images yet. Products from the seed have none by design.</p> : null}
+      {!imagesQuery.isLoading && images.length === 0 ? <p className="muted">{t("No images yet. Products from the seed have none by design.")}</p> : null}
       {images.length > 0 ? (
         <ul className="inventory-gallery">
           {images.map(image => (
             <li key={image.id}>
-              <img src={resolveAssetUrl(image.url) ?? ''} alt={image.altText ?? ''} loading="lazy" />
+              <img src={resolveAssetUrl(image.url) ?? ''} alt={t(image.altText ?? '')} loading="lazy" />
               <div className="row" style={{ gap: 'var(--space-2)' }}>
-                {image.isPrimary ? <span className="badge badge--info">Primary</span> : (
+                {image.isPrimary ? <span className="badge badge--info">{t("Primary")}</span> : (
                   <button type="button" className="btn btn--sm" disabled={setPrimary.isPending}
                     onClick={() => act(() => setPrimary.mutateAsync({ productId, imageId: image.id }), 'Primary image updated.')}>
-                    Make primary
-                  </button>
+                    {t("Make primary")}</button>
                 )}
                 <button type="button" className="btn btn--sm btn--ghost" disabled={removeImage.isPending}
                   onClick={() => act(() => removeImage.mutateAsync({ productId, imageId: image.id }), 'Image removed.')}>
-                  Remove
-                </button>
+                  {t("Remove")}</button>
               </div>
             </li>
           ))}
@@ -137,6 +137,7 @@ function BulkBar(props: {
   selectedBrand: boolean; pending: boolean; bulkError: string;
   onReview: () => void; onClear: () => void;
 }) {
+  useLanguage();
   const { count, onClear } = props;
 
   useEffect(() => {
@@ -148,30 +149,29 @@ function BulkBar(props: {
   }, [onClear]);
 
   return (
-    <div className="bulkbar" data-testid="product-bulk-bar" role="toolbar" aria-label="Bulk edit selected products">
+    <div className="bulkbar" data-testid="product-bulk-bar" role="toolbar" aria-label={t("Bulk edit selected products")}>
       <span className="bulkbar__count" role="status" aria-live="polite" data-testid="bulkbar-count">
-        {count} selected
-      </span>
+        {t(count)} {t(" selected")}</span>
       <div className="field">
-        <label htmlFor="bulk-action">Action</label>
+        <label htmlFor="bulk-action">{t("Action")}</label>
         <select id="bulk-action" value={props.action}
           onChange={event => props.setAction(event.target.value as BulkProductAction)}>
-          {BULK_ACTIONS.map(entry => <option key={entry.value} value={entry.value}>{entry.label}</option>)}
+          {BULK_ACTIONS.map(entry => <option key={entry.value} value={entry.value}>{t(entry.label)}</option>)}
         </select>
       </div>
       {props.needs === 'category' ? (
         <div className="field">
-          <label htmlFor="bulk-category">Primary category</label>
+          <label htmlFor="bulk-category">{t("Primary category")}</label>
           <select id="bulk-category" value={props.categoryId} onChange={event => props.setCategoryId(event.target.value)}>
-            <option value="">Choose a category</option>
-            {props.categoryOptions.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}
+            <option value="">{t("Choose a category")}</option>
+            {props.categoryOptions.map(option => <option key={option.id} value={option.id}>{t(option.label)}</option>)}
           </select>
         </div>
       ) : null}
       {props.needs === 'tags' ? (
         <div className="field">
-          <label htmlFor="bulk-tags">Tags</label>
-          <input id="bulk-tags" value={props.tagText} list="bulk-tag-options" placeholder="Featured, Offer"
+          <label htmlFor="bulk-tags">{t("Tags")}</label>
+          <input id="bulk-tags" value={props.tagText} list="bulk-tag-options" placeholder={t("Featured, Offer")}
             autoComplete="off" onChange={event => props.setTagText(event.target.value)} />
           <datalist id="bulk-tag-options" data-testid="bulk-tag-options">
             {props.tagOptions.map(tag => <option key={tag.id} value={tag.name} />)}
@@ -181,36 +181,35 @@ function BulkBar(props: {
       {props.needs === 'brand' ? (
         <>
           <div className="field">
-            <label htmlFor="bulk-brand">Brand</label>
+            <label htmlFor="bulk-brand">{t("Brand")}</label>
             <select id="bulk-brand" value={props.brandIdText}
               onChange={event => { props.setBrandIdText(event.target.value); props.setLineIdText(''); }}>
-              <option value="">Choose a brand</option>
-              {props.brands.map(brand => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
+              <option value="">{t("Choose a brand")}</option>
+              {props.brands.map(brand => <option key={brand.id} value={brand.id}>{t(brand.name)}</option>)}
             </select>
           </div>
           <div className="field">
-            <label htmlFor="bulk-line">Series</label>
+            <label htmlFor="bulk-line">{t("Series")}</label>
             <select id="bulk-line" value={props.lineIdText} disabled={!props.selectedBrand}
               onChange={event => props.setLineIdText(event.target.value)}>
-              <option value="">No series</option>
-              {props.lines.map(line => <option key={line.id} value={line.id}>{line.name}</option>)}
+              <option value="">{t("No series")}</option>
+              {props.lines.map(line => <option key={line.id} value={line.id}>{t(line.name)}</option>)}
             </select>
           </div>
         </>
       ) : null}
       <button type="button" className="btn btn--primary" disabled={props.pending} onClick={props.onReview}>
-        Review changes
-      </button>
+        {t("Review changes")}</button>
       <button type="button" className="btn btn--ghost" onClick={props.onClear}>
-        Clear
-      </button>
-      {props.bulkError ? <p className="filter-error" role="alert">{props.bulkError}</p> : null}
+        {t("Clear")}</button>
+      {props.bulkError ? <p className="filter-error" role="alert">{t(props.bulkError)}</p> : null}
     </div>
   );
 }
 
 
 export function InventoryPage() {
+  useLanguage();
   const location = useLocation();
   const toast = useToast();
 
@@ -438,44 +437,41 @@ export function InventoryPage() {
     <div className="page container">
       <header className="page-header">
         <div>
-          <h1>Inventory</h1>
+          <h1>{t("Inventory")}</h1>
           <p>
-            Adjust stock with a mandatory reason. Every change is appended to the ledger, and the
-            database refuses to go below zero.
-          </p>
+            {t("Adjust stock with a mandatory reason. Every change is appended to the ledger, and the database refuses to go below zero.")}</p>
         </div>
 
         <div className="row">
           <div className="field">
-            <label htmlFor="inventory-search">Search</label>
+            <label htmlFor="inventory-search">{t("Search")}</label>
             <input
               id="inventory-search"
               type="search"
-              placeholder="Name or SKU"
+              placeholder={t("Name or SKU")}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
           </div>
           <button type="button" className="btn btn--primary" onClick={() => setForm({ ...emptyForm })}>
-            New product
-          </button>
+            {t("New product")}</button>
         </div>
       </header>
 
       <LiveRegion
         message={
-          productsQuery.data
+          t(productsQuery.data
             ? `${productsQuery.data.totalCount} products. Low stock threshold is ${threshold}.`
-            : 'Loading products'
+            : 'Loading products')
         }
       />
 
-      {productsQuery.isLoading ? <LoadingBlock label="Loading inventory" variant="tile" count={5} /> : null}
+      {productsQuery.isLoading ? <LoadingBlock label={t("Loading inventory")} variant="tile" count={5} /> : null}
 
       {productsQuery.isError ? <ErrorState error={productsQuery.error} onRetry={() => productsQuery.refetch()} /> : null}
 
       {productsQuery.data && productsQuery.data.items.length === 0 ? (
-        <EmptyState title="No products" description="Create the first product to start tracking stock." />
+        <EmptyState title={t("No products")} description={t("Create the first product to start tracking stock.")} />
       ) : null}
 
       {rows.length > 0 && checked.length > 0 ? (
@@ -495,38 +491,36 @@ export function InventoryPage() {
         <div className="table-surface">
           <div className="table-scroll">
             <table>
-              <caption className="visually-hidden">Products and stock levels</caption>
+              <caption className="visually-hidden">{t("Products and stock levels")}</caption>
               <thead>
                 <tr>
                   <th scope="col" className="check">
-                    <input ref={headerCheckbox} type="checkbox" aria-label="Select all products on this page"
+                    <input ref={headerCheckbox} type="checkbox" aria-label={t("Select all products on this page")}
                       checked={allChecked}
                       onChange={event => setChecked(event.target.checked ? rows.map(row => row.id) : [])} />
                   </th>
-                  <th scope="col">SKU</th>
-                  <th scope="col">Name</th>
+                  <th scope="col">{t("SKU")}</th>
+                  <th scope="col">{t("Name")}</th>
                   <th scope="col" className="num">
-                    Price
-                  </th>
+                    {t("Price")}</th>
                   <th scope="col" className="num">
-                    Stock
-                  </th>
-                  <th scope="col">Availability</th>
-                  <th scope="col" className="actions">Actions</th>
+                    {t("Stock")}</th>
+                  <th scope="col">{t("Availability")}</th>
+                  <th scope="col" className="actions">{t("Actions")}</th>
                 </tr>
               </thead>
               <tbody>
                 {productsQuery.data.items.map((product) => (
                   <tr key={product.id} data-low-stock={product.isActive && product.stockQuantity <= threshold}>
                     <td className="check">
-                      <input type="checkbox" aria-label={`Select ${product.sku}`} checked={checked.includes(product.id)}
+                      <input type="checkbox" aria-label={t(`Select ${product.sku}`)} checked={checked.includes(product.id)}
                         onChange={event => toggleRow(product.id, event.target.checked)} />
                     </td>
-                    <td className="mono">{product.sku}</td>
-                    <td>{product.name}</td>
-                    <td className="num">{formatMoney(product.price, product.currency)}</td>
+                    <td className="mono">{t(product.sku)}</td>
+                    <td>{t(product.name)}</td>
+                    <td className="num">{t(formatMoney(product.price, product.currency))}</td>
                     <td className="num">
-                      <strong>{product.stockQuantity}</strong>
+                      <strong>{t(product.stockQuantity)}</strong>
                     </td>
                     <td>
                       <StockBadge product={product} threshold={threshold} />
@@ -548,14 +542,11 @@ export function InventoryPage() {
                             })
                           }
                         >
-                          Edit
-                        </button>
+                          {t("Edit")}</button>
                         <button type="button" className="btn btn--sm btn--primary" onClick={() => { setOpenHistory(false); setSelected(product); }}>
-                          Adjust stock
-                        </button>
+                          {t("Adjust stock")}</button>
                         <button type="button" className="link-button" onClick={() => { setOpenHistory(true); setSelected(product); }}>
-                          History
-                        </button>
+                          {t("History")}</button>
                       </div>
                     </td>
                   </tr>
@@ -568,14 +559,14 @@ export function InventoryPage() {
 
       <Modal
         open={form !== null}
-        title={form?.id === null ? 'New product' : `Edit ${form?.sku ?? ''}`}
+        title={t(form?.id === null ? 'New product' : `Edit ${form?.sku ?? ''}`)}
         onClose={closeForm}
       >
         {form ? (
           <>
           <form className="stack" onSubmit={submitProduct}>
             <div className="field">
-              <label htmlFor="product-image-file">Product image file</label>
+              <label htmlFor="product-image-file">{t("Product image file")}</label>
               <input id="product-image-file" type="file" accept="image/jpeg,image/png,image/webp"
                 onChange={(event) => {
                   const file = event.target.files?.[0] ?? null;
@@ -583,26 +574,26 @@ export function InventoryPage() {
                   setImageError(file && !isAllowedImage(file) ? 'Choose a JPG, PNG or WebP file of at most 5 MB.' : '');
                 }} />
               <span className="hint">
-                {form.id === null
+                {t(form.id === null
                   ? 'The file is uploaded when the product is saved and becomes the primary image.'
-                  : 'Saving uploads the file into the gallery; pick the primary image in the list below.'}
+                  : 'Saving uploads the file into the gallery; pick the primary image in the list below.')}
               </span>
-              {pickedFile ? <p className="muted">Selected: {pickedFile.name}</p> : null}
-              {imageError ? <p className="filter-error" role="alert">{imageError}</p> : null}
+              {pickedFile ? <p className="muted">{t("Selected: ")}{t(pickedFile.name)}</p> : null}
+              {imageError ? <p className="filter-error" role="alert">{t(imageError)}</p> : null}
             </div>
 
             <div className="field">
-              <label htmlFor="product-image">Or an existing image path or URL</label>
-              <input id="product-image" placeholder="https://… or /products/…" maxLength={2048}
+              <label htmlFor="product-image">{t("Or an existing image path or URL")}</label>
+              <input id="product-image" placeholder={t("https://… or /products/…")} maxLength={2048}
                 value={form.imageUrl} onChange={(event) => setForm({ ...form, imageUrl: event.target.value })} />
             </div>
             <div className="field">
-              <label htmlFor="product-description">Description</label>
+              <label htmlFor="product-description">{t("Description")}</label>
               <textarea id="product-description" maxLength={2000} value={form.description}
                 onChange={(event) => setForm({ ...form, description: event.target.value })} />
             </div>
             <div className="field">
-              <label htmlFor="product-sku">SKU</label>
+              <label htmlFor="product-sku">{t("SKU")}</label>
               <input
                 id="product-sku"
                 required
@@ -610,11 +601,11 @@ export function InventoryPage() {
                 value={form.sku}
                 onChange={(event) => setForm({ ...form, sku: event.target.value })}
               />
-              {form.id !== null ? <span className="hint">The SKU is immutable after creation.</span> : null}
+              {form.id !== null ? <span className="hint">{t("The SKU is immutable after creation.")}</span> : null}
             </div>
 
             <div className="field">
-              <label htmlFor="product-name">Name</label>
+              <label htmlFor="product-name">{t("Name")}</label>
               <input
                 id="product-name"
                 required
@@ -624,7 +615,7 @@ export function InventoryPage() {
             </div>
 
             <div className="field">
-              <label htmlFor="product-price">Price</label>
+              <label htmlFor="product-price">{t("Price")}</label>
               <input
                 id="product-price"
                 type="number"
@@ -634,7 +625,7 @@ export function InventoryPage() {
                 value={form.price}
                 onChange={(event) => setForm({ ...form, price: event.target.value })}
               />
-              <span className="hint">Money is stored as decimal(18,2) - never a floating point value.</span>
+              <span className="hint">{t("Money is stored as decimal(18,2) - never a floating point value.")}</span>
             </div>
 
             <label className="checkbox">
@@ -643,22 +634,18 @@ export function InventoryPage() {
                 checked={form.isActive}
                 onChange={(event) => setForm({ ...form, isActive: event.target.checked })}
               />
-              Active (inactive products cannot be ordered)
-            </label>
+              {t("Active (inactive products cannot be ordered)")}</label>
 
             {form.id === null ? (
               <p className="muted">
-                New products start at zero stock. Add stock through an adjustment so the change is audited.
-              </p>
+                {t("New products start at zero stock. Add stock through an adjustment so the change is audited.")}</p>
             ) : null}
 
             <div className="row">
               <button type="submit" className="btn btn--primary" disabled={createProduct.isPending || updateProduct.isPending || uploadImage.isPending}>
-                Save
-              </button>
+                {t("Save")}</button>
               <button type="button" className="btn" onClick={closeForm}>
-                Cancel
-              </button>
+                {t("Cancel")}</button>
             </div>
           </form>
           {form.id !== null ? <ImageGallery productId={form.id} /> : null}
@@ -668,7 +655,7 @@ export function InventoryPage() {
 
       <Modal
         open={selected !== null}
-        title={selected ? `${selected.name} · stock ${selected.stockQuantity}` : ''}
+        title={t(selected ? `${selected.name} · stock ${selected.stockQuantity}` : '')}
         onClose={() => {
           setSelected(null);
           setDelta('');
@@ -679,24 +666,24 @@ export function InventoryPage() {
           <div className="stack">
             <form className="stack" onSubmit={submitAdjustment}>
               <div className="field">
-                <label htmlFor="adjust-delta">Adjustment (signed)</label>
+                <label htmlFor="adjust-delta">{t("Adjustment (signed)")}</label>
                 <input
                   id="adjust-delta"
                   type="number"
                   required
-                  placeholder="e.g. -3 or 25"
+                  placeholder={t("e.g. -3 or 25")}
                   value={delta}
                   onChange={(event) => setDelta(event.target.value)}
                 />
-                <span className="hint">Use a negative number for shrinkage or damage.</span>
+                <span className="hint">{t("Use a negative number for shrinkage or damage.")}</span>
               </div>
 
               <div className="field">
-                <label htmlFor="adjust-reason">Reason (mandatory)</label>
+                <label htmlFor="adjust-reason">{t("Reason (mandatory)")}</label>
                 <input
                   id="adjust-reason"
                   required
-                  placeholder="e.g. Cycle count correction"
+                  placeholder={t("e.g. Cycle count correction")}
                   value={reason}
                   onChange={(event) => setReason(event.target.value)}
                 />
@@ -704,44 +691,42 @@ export function InventoryPage() {
 
               {adjustmentError ? (
                 <p role="alert" style={{ color: 'var(--danger)', fontWeight: 600 }}>
-                  {adjustmentError}
+                  {t(adjustmentError)}
                 </p>
               ) : null}
 
               <div className="row">
                 <button type="submit" className="btn btn--primary" disabled={adjustStock.isPending}>
-                  Apply adjustment
-                </button>
+                  {t("Apply adjustment")}</button>
               </div>
             </form>
 
-            <h4 id="movement-history" ref={historyHeading} tabIndex={-1}>Movement history</h4>
-            {movementsQuery.isLoading ? <LoadingBlock label="Loading movements" variant="line" count={3} /> : null}
+            <h4 id="movement-history" ref={historyHeading} tabIndex={-1}>{t("Movement history")}</h4>
+            {movementsQuery.isLoading ? <LoadingBlock label={t("Loading movements")} variant="line" count={3} /> : null}
             {movementsQuery.data && movementsQuery.data.items.length === 0 ? (
-              <p className="muted">No movements recorded yet.</p>
+              <p className="muted">{t("No movements recorded yet.")}</p>
             ) : null}
             {movementsQuery.data && movementsQuery.data.items.length > 0 ? (
               <div className="table-scroll">
                 <table>
                   <thead>
                     <tr>
-                      <th scope="col">When</th>
+                      <th scope="col">{t("When")}</th>
                       <th scope="col" className="num">
-                        Delta
-                      </th>
-                      <th scope="col">Reason</th>
-                      <th scope="col">By</th>
+                        {t("Delta")}</th>
+                      <th scope="col">{t("Reason")}</th>
+                      <th scope="col">{t("By")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {movementsQuery.data.items.map((movement) => (
                       <tr key={movement.id}>
-                        <td className="nowrap">{formatDateTime(movement.createdAt)}</td>
+                        <td className="nowrap">{t(formatDateTime(movement.createdAt))}</td>
                         <td className="num">
-                          {movement.delta > 0 ? `+${movement.delta}` : movement.delta}
+                          {t(movement.delta > 0 ? `+${movement.delta}` : movement.delta)}
                         </td>
-                        <td>{movement.reason}</td>
-                        <td>{movement.createdByEmail ?? 'system'}</td>
+                        <td>{t(movement.reason)}</td>
+                        <td>{t(movement.createdByEmail ?? 'system')}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -752,22 +737,20 @@ export function InventoryPage() {
         ) : null}
       </Modal>
 
-      <Modal open={confirming} title="Confirm bulk edit" onClose={() => setConfirming(false)}>
+      <Modal open={confirming} title={t("Confirm bulk edit")} onClose={() => setConfirming(false)}>
         <div className="stack">
           <p>
-            Apply <strong>{BULK_ACTIONS.find(entry => entry.value === action)?.label}</strong> to{' '}
-            <strong>{checked.length}</strong> product{checked.length === 1 ? '' : 's'}?
-          </p>
-          {bulkTarget() ? <p className="bulk-bar__target">Target: {bulkTarget()}</p> : null}
+            {t("Apply ")}<strong>{t(BULK_ACTIONS.find(entry => entry.value === action)?.label)}</strong> {t(" to")}{t(' ')}
+            <strong>{t(checked.length)}</strong> {t(" product")}{t(checked.length === 1 ? '' : 's')}{t("?")}</p>
+          {bulkTarget() ? <p className="bulk-bar__target">{t("Target: ")}{t(bulkTarget())}</p> : null}
           <p className="muted">
-            Products that already match are skipped, and stock is never part of a bulk edit.
-          </p>
+            {t("Products that already match are skipped, and stock is never part of a bulk edit.")}</p>
           <div className="row">
             <button type="button" className="btn btn--primary" disabled={bulkUpdate.isPending}
               onClick={() => void applyBulk()}>
-              {bulkUpdate.isPending ? 'Applying…' : 'Apply changes'}
+              {t(bulkUpdate.isPending ? 'Applying…' : 'Apply changes')}
             </button>
-            <button type="button" className="btn" onClick={() => setConfirming(false)}>Cancel</button>
+            <button type="button" className="btn" onClick={() => setConfirming(false)}>{t("Cancel")}</button>
           </div>
         </div>
       </Modal>

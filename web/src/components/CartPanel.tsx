@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -25,6 +26,7 @@ export interface CartPanelProps {
  * accepted or the request is rejected for a client reason.
  */
 export function CartPanel({ onPlaced }: CartPanelProps) {
+  useLanguage();
   const cart = useCart();
   const { token } = useAuth();
   const toast = useToast();
@@ -138,59 +140,53 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
     <section className="card-glass cart-panel" aria-labelledby="cart-heading">
       <div className="row-between">
         <h2 id="cart-heading" style={{ fontSize: 'var(--text-lg)' }}>
-          Your cart
-        </h2>
+          {t("Your cart")}</h2>
         <span className="badge badge--neutral" data-testid="cart-count">
-          {cart.itemCount} item{cart.itemCount === 1 ? '' : 's'}
+          {t(cart.itemCount)} {t(" item")}{t(cart.itemCount === 1 ? '' : 's')}
         </span>
       </div>
 
       {cart.lines.length === 0 ? (
         <p className="muted" data-testid="cart-empty">
-          Your cart is empty. Add products from the catalogue to build an order.
-        </p>
+          {t("Your cart is empty. Add products from the catalogue to build an order.")}</p>
       ) : (
         <ul className="cart-lines">
           {cart.lines.map((line) => (
             <li className="cart-line" key={line.productId} data-testid={`cart-line-${line.productId}`}>
               <div>
-                <div className="cart-line__name">{line.name}</div>
-                <div className="cart-line__meta mono">{line.sku}</div>
+                <div className="cart-line__name">{t(line.name)}</div>
+                <div className="cart-line__meta mono">{t(line.sku)}</div>
                 <div className="cart-line__meta">
-                  {formatMoney(line.unitPrice, line.currency)} each · {line.available} available
-                </div>
+                  {t(formatMoney(line.unitPrice, line.currency))} {t(" each · ")}{t(line.available)} {t(" available")}</div>
               </div>
               <div className="stack" style={{ alignItems: 'flex-end' }}>
-                <div className="stepper" role="group" aria-label={`Quantity for ${line.name}`}>
+                <div className="stepper" role="group" aria-label={t(`Quantity for ${line.name}`)}>
                   <button
                     type="button"
                     className="btn btn--sm"
-                    aria-label={`Decrease quantity for ${line.name}`}
+                    aria-label={t(`Decrease quantity for ${line.name}`)}
                     onClick={() => cart.setQuantity(line.productId, line.quantity - 1)}
                     disabled={line.quantity <= 1}
                   >
-                    −
-                  </button>
-                  <span className="stepper__value">{line.quantity}</span>
+                    {t("−")}</button>
+                  <span className="stepper__value">{t(line.quantity)}</span>
                   <button
                     type="button"
                     className="btn btn--sm"
-                    aria-label={`Increase quantity for ${line.name}`}
+                    aria-label={t(`Increase quantity for ${line.name}`)}
                     onClick={() => cart.setQuantity(line.productId, line.quantity + 1)}
                     disabled={line.quantity >= Math.min(line.available, 1000)}
                   >
-                    +
-                  </button>
+                    {t("+")}</button>
                 </div>
-                <span className="nowrap">{formatMoney(line.unitPrice * line.quantity, line.currency)}</span>
+                <span className="nowrap">{t(formatMoney(line.unitPrice * line.quantity, line.currency))}</span>
                 <button
                   type="button"
                   className="link-button"
                   onClick={() => cart.remove(line.productId)}
-                  aria-label={`Remove ${line.name} from the cart`}
+                  aria-label={t(`Remove ${line.name} from the cart`)}
                 >
-                  Remove
-                </button>
+                  {t("Remove")}</button>
               </div>
             </li>
           ))}
@@ -198,42 +194,41 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
       )}
 
       <div className="cart-total">
-        <span>Total</span>
-        <strong data-testid="cart-total">{cart.mixedCurrencies ? 'Separate currencies' : formatMoney(cart.total, cart.currency)}</strong>
+        <span>{t("Total")}</span>
+        <strong data-testid="cart-total">{t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(cart.total, cart.currency))}</strong>
       </div>
 
       {shortItems.length > 0 ? (
         <div role="alert" data-testid="short-items" className="inline-banner">
-          <span aria-hidden="true">⚠</span>
+          <span aria-hidden="true">{t("⚠")}</span>
           <span>
-            <strong>Stock changed in your cart.</strong> Not enough stock for {shortItems.length} item{shortItems.length === 1 ? '' : 's'}:
-          </span>
+            <strong>{t("Stock changed in your cart.")}</strong> {t(" Not enough stock for ")}{t(shortItems.length)} {t(" item")}{t(shortItems.length === 1 ? '' : 's')}{t(":")}</span>
           <ul className="short-items">
             {shortItems.map((item) => (
               <li key={item.productId}>
                 <span>
-                  {item.name} <span className="mono">{item.sku}</span>
+                  {t(item.name)} <span className="mono">{t(item.sku)}</span>
                 </span>
                 <span className="nowrap">
-                  requested {item.requested} · available {item.available}
+                  {t("requested ")}{t(item.requested)} {t(" · available ")}{t(item.available)}
                 </span>
               </li>
             ))}
           </ul>
-          <span>Update the quantities and try again. This banner stays until resolved.</span>
+          <span>{t("Update the quantities and try again. This banner stays until resolved.")}</span>
         </div>
       ) : null}
 
-      {cart.mixedCurrencies ? <p role="alert">Place BDT and legacy-currency products in separate orders. Remove one currency to continue.</p> : null}
+      {cart.mixedCurrencies ? <p role="alert">{t("Place BDT and legacy-currency products in separate orders. Remove one currency to continue.")}</p> : null}
       {inlineError ? (
         <p role="alert" data-testid="cart-error" style={{ color: 'var(--danger)', fontWeight: 600 }}>
-          {inlineError}
+          {t(inlineError)}
         </p>
       ) : null}
 
       {notice ? (
         <p role="status" data-testid="cart-notice" style={{ color: 'var(--ok)', fontWeight: 600 }}>
-          {notice}
+          {t(notice)}
         </p>
       ) : null}
 
@@ -246,15 +241,14 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
       >
         {busy ? (
           <>
-            <span className="spinner" aria-hidden="true" /> Placing order…
-          </>
+            <span className="spinner" aria-hidden="true" /> {t(" Placing order…")}</>
         ) : (
           'Place order'
         )}
       </button>
 
       <span className="visually-hidden" role="status" aria-live="polite">
-        {busy ? 'Placing your order' : ''}
+        {t(busy ? 'Placing your order' : '')}
       </span>
     </section>
   );
@@ -265,6 +259,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
  * Opened from the shared navbar or mobile bottom bar.
  */
 export function CartSheet({ onPlaced, onOpenChange }: CartPanelProps & { onOpenChange?: (open: boolean) => void }) {
+  useLanguage();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => { onOpenChange?.(open); }, [open, onOpenChange]);
@@ -313,7 +308,7 @@ export function CartSheet({ onPlaced, onOpenChange }: CartPanelProps & { onOpenC
 
   return createPortal(
     <div className="sheet-backdrop" onClick={() => setOpen(false)} role="presentation">
-      <div ref={ref} className="sheet" role="dialog" aria-modal="true" aria-label="Your cart" data-overlay-open="true"
+      <div ref={ref} className="sheet" role="dialog" aria-modal="true" aria-label={t("Your cart")} data-overlay-open="true"
         onClick={(e) => e.stopPropagation()}
         onTouchStart={(e) => { touchY.current = e.touches[0]?.clientY ?? null; }}
         onTouchEnd={(e) => {
@@ -321,7 +316,7 @@ export function CartSheet({ onPlaced, onOpenChange }: CartPanelProps & { onOpenC
           if (start !== null && end !== null && end - start > 80) setOpen(false);
         }}>
         <div className="sheet__handle" aria-hidden="true" />
-        <button type="button" className="btn cart-sheet__close" aria-label="Close cart" onClick={() => setOpen(false)}>Close</button>
+        <button type="button" className="btn cart-sheet__close" aria-label={t("Close cart")} onClick={() => setOpen(false)}>{t("Close")}</button>
         <CartPanel onPlaced={(order) => { setOpen(false); onPlaced(order); }} />
       </div>
     </div>,

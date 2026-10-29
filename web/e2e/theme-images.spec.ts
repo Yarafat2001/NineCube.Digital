@@ -8,8 +8,9 @@ test('logo is visible and selected themes persist across reloads', async ({ page
   await expect(logo).toBeVisible();
   await expect(logo.locator('svg')).toBeVisible();
   expect((await logo.boundingBox())!.width).toBeGreaterThanOrEqual(80);
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await expect(page.getByRole('button', { name: 'System theme' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.getByRole('button', { name: 'Light theme' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'Choose language' })).toBeVisible();
   await page.getByRole('button', { name: 'Light theme' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await page.reload();
@@ -18,7 +19,7 @@ test('logo is visible and selected themes persist across reloads', async ({ page
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.reload();
   await expect(page.getByRole('button', { name: 'Dark theme' })).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('button', { name: 'System theme' }).click();
+  await page.getByRole('button', { name: 'Light theme' }).click();
   await page.emulateMedia({ colorScheme: 'light' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 });

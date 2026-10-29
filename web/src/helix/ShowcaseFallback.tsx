@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { HeroPromotions } from './HeroPromotions';
@@ -26,6 +27,7 @@ const reasonText: Record<ShowcaseFallbackReason, string> = {
  * without WebGL sees, and it is what the showcase falls back to if the scene fails to start.
  */
 export function ShowcaseFallback({ cardAssets, reason }: ShowcaseFallbackProps) {
+  useLanguage();
   const cards = useMemo(
     () => Array.from({ length: CARD_COUNT }, (_, index) => ({ index, src: cardAssets[index] ?? '' })),
     [cardAssets]
@@ -34,22 +36,22 @@ export function ShowcaseFallback({ cardAssets, reason }: ShowcaseFallbackProps) 
   return (
     <div className="showcase showcase--static" data-testid="showcase">
       <section className="showcase__hero">
-        <p className="kicker">{showcaseCopy.kicker}</p>
+        <p className="kicker">{t(showcaseCopy.kicker)}</p>
         <h1>
-          {showcaseCopy.brand.line1} {showcaseCopy.brand.line2}
+          {t(showcaseCopy.brand.line1)} {t(showcaseCopy.brand.line2)}
         </h1>
-        <p className="showcase__hero-copy">{showcaseCopy.intro}</p>
-        <Link className="btn btn--primary showcase__hero-cta" to="/products">Explore the collection <span aria-hidden="true">↗</span></Link>
+        <p className="showcase__hero-copy">{t(showcaseCopy.intro)}</p>
+        <Link className="btn btn--primary showcase__hero-cta" to="/products">{t("Explore the collection ")}<span aria-hidden="true">{t("↗")}</span></Link>
         <HeroPromotions />
       </section>
 
       <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
         <div className="showcase__headings">
-          <h2 id="showcase-cards-heading">{showcaseCopy.transitionTitle}</h2>
+          <h2 id="showcase-cards-heading">{t(showcaseCopy.transitionTitle)}</h2>
         </div>
 
         <p className="showcase__note visually-hidden" role="note" data-testid="showcase-fallback-reason">
-          {reasonText[reason]}
+          {t(reasonText[reason])}
         </p>
 
         <ul className="showcase__grid">
@@ -57,18 +59,18 @@ export function ShowcaseFallback({ cardAssets, reason }: ShowcaseFallbackProps) 
             <li key={card.index}>
               <img
                 src={card.src}
-                alt={describeCardArtwork(card.src, card.index)}
+                alt={t(describeCardArtwork(card.src, card.index))}
                 width={1200}
                 height={800}
                 loading={card.index < 3 ? 'eager' : 'lazy'}
               />
-              <span className="showcase__category-name">{cardCategories[card.index]}</span>
+              <span className="showcase__category-name">{t(cardCategories[card.index])}</span>
             </li>
           ))}
         </ul>
       </section>
 
-      <footer className="showcase__outro" aria-label="NineCube home footer">
+      <footer className="showcase__outro" aria-label={t("NineCube home footer")}>
         <div className="showcase-footer-content"><ShowcaseFooterContent /></div>
       </footer>
     </div>

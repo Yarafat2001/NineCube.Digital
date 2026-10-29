@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
@@ -53,6 +54,7 @@ function usePopover(menu = false) {
 }
 
 export function NotificationBell() {
+  useLanguage();
   const { user } = useAuth(); const pop = usePopover();
   const unread = useUnreadCount(Boolean(user));
   const inbox = useNotifications({ unreadOnly: false, page: 1 }, pop.open);
@@ -86,34 +88,34 @@ export function NotificationBell() {
 
   const bell = (
     <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger nav-pop__trigger--icon" aria-expanded={pop.open} aria-haspopup="dialog"
-      aria-label={`Notifications, ${count} unread`} title={`Notifications, ${count} unread`} onClick={() => pop.setOpen(!pop.open)}>
+      aria-label={t(`Notifications, ${count} unread`)} title={t(`Notifications, ${count} unread`)} onClick={() => pop.setOpen(!pop.open)}>
       <Icon name="bell" />
-      {count > 0 ? <span className="nav-pop__badge" data-testid="unread-badge">{count > 9 ? '9+' : count}</span> : null}
+      {count > 0 ? <span className="nav-pop__badge" data-testid="unread-badge">{t(count > 9 ? '9+' : count)}</span> : null}
     </button>
   );
 
   const listBody = (
     <>
-      {inbox.isLoading ? <p role="status">Loading notifications…</p> : null}
-      {inbox.isError ? <p role="status">Notifications could not be loaded.</p> : null}
-      {inbox.data?.items.length === 0 ? <p className="muted">You are all caught up.</p> : null}
+      {inbox.isLoading ? <p role="status">{t("Loading notifications…")}</p> : null}
+      {inbox.isError ? <p role="status">{t("Notifications could not be loaded.")}</p> : null}
+      {inbox.data?.items.length === 0 ? <p className="muted">{t("You are all caught up.")}</p> : null}
       {groups.map((group) => (
-        <section key={group.key} aria-label={group.title}>
-          <h3 className="notif-section__title">{group.title}</h3>
+        <section key={group.key} aria-label={t(group.title)}>
+          <h3 className="notif-section__title">{t(group.title)}</h3>
           <ul className="notif-list">
             {group.items.map((n) => (
               <li key={n.id} className="notif-item" data-read={n.isRead}>
-                <span className="notif-item__type" aria-hidden="true">{notificationTypeMeta[n.type].glyph}</span>
+                <span className="notif-item__type" aria-hidden="true">{t(notificationTypeMeta[n.type].glyph)}</span>
                 <span>
                   <span className="notif-item__title">
-                    {n.title}
-                    {!n.isRead ? <span className="unread-dot" title="Unread"><span className="visually-hidden">Unread</span></span> : null}
+                    {t(n.title)}
+                    {!n.isRead ? <span className="unread-dot" title={t("Unread")}><span className="visually-hidden">{t("Unread")}</span></span> : null}
                   </span>
-                  <span className="muted">{n.body}</span>
-                  <time className="notif-item__time" dateTime={n.createdAt} title={new Date(n.createdAt).toLocaleString()}>{timeAgo(n.createdAt)}</time>
+                  <span className="muted">{t(n.body)}</span>
+                  <time className="notif-item__time" dateTime={n.createdAt} title={t(new Date(n.createdAt).toLocaleString())}>{t(timeAgo(n.createdAt))}</time>
                 </span>
                 <button type="button" className="btn btn--sm btn--ghost" onClick={() => openItem(n)}>
-                  {actionLabel(n)}
+                  {t(actionLabel(n))}
                 </button>
               </li>
             ))}
@@ -123,25 +125,24 @@ export function NotificationBell() {
       <div className="notif-popover__footer">
         <button type="button" className="btn btn--ghost btn--sm" disabled={!count || markAllRead.isPending}
           onClick={() => markAllRead.mutateAsync().then(() => toast.push('success', 'All notifications marked as read.')).catch(error => toast.pushError(error))}>
-          Mark all as read
-        </button>
-        <Link className="btn btn--ghost btn--sm" to="/notifications" onClick={() => pop.setOpen(false)}>View all</Link>
+          {t("Mark all as read")}</button>
+        <Link className="btn btn--ghost btn--sm" to="/notifications" onClick={() => pop.setOpen(false)}>{t("View all")}</Link>
       </div>
     </>
   );
 
-  if (!pop.open) return <div className="nav-pop">{bell}</div>;
+  if (!pop.open) return <div className="nav-pop">{t(bell)}</div>;
 
   // Mobile: bottom sheet with drag handle, focus trap, swipe/Escape close.
   if (isMobile) {
     return (
       <div className="nav-pop" data-overlay-open="true">
-        {bell}
+        {t(bell)}
         {createPortal(
           <div ref={pop.panel} className="sheet-backdrop" onClick={() => pop.setOpen(false)} role="presentation">
-            <SheetPanel onClose={() => pop.setOpen(false)} label="Notifications">
-              <div className="row-between"><strong>Notifications</strong><span className="muted">{count} unread</span></div>
-              {listBody}
+            <SheetPanel onClose={() => pop.setOpen(false)} label={t("Notifications")}>
+              <div className="row-between"><strong>{t("Notifications")}</strong><span className="muted">{t(count)} {t(" unread")}</span></div>
+              {t(listBody)}
             </SheetPanel>
           </div>,
           document.body
@@ -152,12 +153,12 @@ export function NotificationBell() {
 
   return (
     <div className="nav-pop" data-overlay-open="true">
-      {bell}
+      {t(bell)}
       {createPortal(
         <div ref={pop.panel} style={pop.position} className="nav-pop__panel nav-pop__portal notif-popover"
-          role="dialog" aria-label="Notifications" onKeyDown={pop.keyboard} data-overlay-open="true">
-          <div className="row-between"><strong>Notifications</strong><span className="muted">{count} unread</span></div>
-          {listBody}
+          role="dialog" aria-label={t("Notifications")} onKeyDown={pop.keyboard} data-overlay-open="true">
+          <div className="row-between"><strong>{t("Notifications")}</strong><span className="muted">{t(count)} {t(" unread")}</span></div>
+          {t(listBody)}
         </div>,
         document.body
       )}
@@ -240,6 +241,7 @@ export function groupNotifications(items: Notification[]): { key: string; title:
 
 /** Bottom-sheet panel: focus trap, Escape close, swipe-down close. */
 function SheetPanel({ children, onClose, label }: { children: React.ReactNode; onClose: () => void; label: string }) {
+  useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const touchY = useRef<number | null>(null);
   const closeRef = useRef(onClose);
@@ -264,7 +266,7 @@ function SheetPanel({ children, onClose, label }: { children: React.ReactNode; o
   }, []);
 
   return (
-    <div ref={ref} className="sheet" role="dialog" aria-modal="true" aria-label={label} data-overlay-open="true"
+    <div ref={ref} className="sheet" role="dialog" aria-modal="true" aria-label={t(label)} data-overlay-open="true"
       onClick={(e) => e.stopPropagation()}
       onTouchStart={(e) => { touchY.current = (e.target as HTMLElement).closest('.sheet__handle') ? e.touches[0]?.clientY ?? null : null; }}
       onTouchEnd={(e) => {
@@ -272,13 +274,14 @@ function SheetPanel({ children, onClose, label }: { children: React.ReactNode; o
         if (start !== null && end !== null && end - start > 80) onClose();
       }}>
       <div className="sheet__handle" aria-hidden="true" />
-      <button type="button" className="btn btn--sm sheet__close" aria-label={`Close ${label}`} onClick={onClose}>Close</button>
-      {children}
+      <button type="button" className="btn btn--sm sheet__close" aria-label={t(`Close ${label}`)} onClick={onClose}>{t("Close")}</button>
+      {t(children)}
     </div>
   );
 }
 
 export function AccountMenu() {
+  useLanguage();
   const { user, logout } = useAuth(); const pop = usePopover(true); const navigate = useNavigate();
   if (!user) return null;
   const items: { to: string; label: string; icon: IconName }[] = [
@@ -287,14 +290,14 @@ export function AccountMenu() {
     { to: '/notifications', label: 'Notifications', icon: 'bell' }
   ];
   return <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}>
-    <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label="Account" aria-expanded={pop.open} aria-haspopup="menu"
+    <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label={t("Account")} aria-expanded={pop.open} aria-haspopup="menu"
       onClick={() => pop.setOpen(!pop.open)} onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pop.setOpen(true); } }}>
-      <span className="avatar avatar--small" aria-hidden="true">{user.email[0].toUpperCase()}</span><span className="account-name" title={user.email}>{user.email.split('@')[0]}</span><Icon name="chevron" className="account-chevron" data-open={pop.open} />
+      <span className="avatar avatar--small" aria-hidden="true">{t(user.email[0].toUpperCase())}</span><span className="account-name" title={t(user.email)}>{t(user.email.split('@')[0])}</span><Icon name="chevron" className="account-chevron" data-open={pop.open} />
     </button>
-    {pop.open ? createPortal(<div ref={pop.panel} style={pop.position} className="nav-pop__panel nav-pop__portal" role="menu" aria-label="Account" onKeyDown={pop.keyboard}>
-      {items.map(item => <NavLink key={item.to} role="menuitem" className="nav-pop__item" to={item.to} end onClick={pop.close}><Icon name={item.icon} />{item.label}</NavLink>)}
+    {pop.open ? createPortal(<div ref={pop.panel} style={pop.position} className="nav-pop__panel nav-pop__portal" role="menu" aria-label={t("Account")} onKeyDown={pop.keyboard}>
+      {items.map(item => <NavLink key={item.to} role="menuitem" className="nav-pop__item" to={item.to} end onClick={pop.close}><Icon name={item.icon} />{t(item.label)}</NavLink>)}
       <div role="separator" className="menu-separator" />
-      <button type="button" role="menuitem" className="nav-pop__item nav-pop__item--danger" onClick={() => { pop.close(); logout(); navigate('/login', { replace: true }); }}><Icon name="logout" />Log out</button>
+      <button type="button" role="menuitem" className="nav-pop__item nav-pop__item--danger" onClick={() => { pop.close(); logout(); navigate('/login', { replace: true }); }}><Icon name="logout" />{t("Log out")}</button>
     </div>, document.body) : null}
   </div>;
 }

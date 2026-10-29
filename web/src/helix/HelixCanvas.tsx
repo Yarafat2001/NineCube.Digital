@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { showcaseCopy } from './showcaseCopy';
@@ -27,6 +28,7 @@ export interface HelixCanvasProps {
  * The markup order matters: the guide-line depth ordering and the sticky track depend on it.
  */
 export default function HelixCanvas({ cardAssets, onFailure }: HelixCanvasProps) {
+  useLanguage();
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLElement>(null);
   const barRef = useRef<HTMLElement>(null);
@@ -113,14 +115,14 @@ export default function HelixCanvas({ cardAssets, onFailure }: HelixCanvasProps)
         <div id="introStage" className="intro-stage" ref={introStageRef}>
           <ShowcaseHeroPhoto src={cardAssets[0] ?? DEFAULT_CARD_ASSETS[0]} />
           <div id="introBlock" className="intro-block" ref={introBlockRef}>
-            <div className="kicker">{showcaseCopy.kicker}</div>
+            <div className="kicker">{t(showcaseCopy.kicker)}</div>
             <h1>
-              {showcaseCopy.brand.line1}
+              {t(showcaseCopy.brand.line1)}
               <br />
-              {showcaseCopy.brand.line2}
+              {t(showcaseCopy.brand.line2)}
             </h1>
-            <p>{showcaseCopy.intro}</p>
-            <Link className="btn btn--primary showcase__hero-cta" to="/products">Explore the collection <span aria-hidden="true">↗</span></Link>
+            <p>{t(showcaseCopy.intro)}</p>
+            <Link className="btn btn--primary showcase__hero-cta" to="/products">{t("Explore the collection ")}<span aria-hidden="true">{t("↗")}</span></Link>
             <HeroPromotions />
           </div>
         </div>
@@ -131,21 +133,21 @@ export default function HelixCanvas({ cardAssets, onFailure }: HelixCanvasProps)
           <div id="transitionShade" className="transition-shade" ref={transitionShadeRef} />
           <CategoryPreview cardAssets={cardAssets} />
           <div id="transitionTitle" className="transition-title" ref={transitionTitleRef}>
-            <span className="showcase__section-label">Discover the collection</span>
-            <h2>{showcaseCopy.transitionTitle}</h2>
-            <p>Technology, style, self-care and the comforts of home.</p>
+            <span className="showcase__section-label">{t("Discover the collection")}</span>
+            <h2>{t(showcaseCopy.transitionTitle)}</h2>
+            <p>{t("Technology, style, self-care and the comforts of home.")}</p>
           </div>
 
           <div className="editorial">
             <h2 className="line1" ref={codexTitleRef}>
-              {showcaseCopy.title1}
-              <span className="plus-gap">+</span>
+              {t(showcaseCopy.title1)}
+              <span className="plus-gap">{t("+")}</span>
             </h2>
             <h2 className="line2" ref={threeTitleRef}>
-              {showcaseCopy.title2}
+              {t(showcaseCopy.title2)}
             </h2>
           </div>
-          <p className="showcase__stage-copy">Small details. More possibilities.<br />Explore a little of everything.</p>
+          <p className="showcase__stage-copy">{t("Small details. More possibilities.")}<br />{t("Explore a little of everything.")}</p>
 
           <div className="showcase__scene" ref={canvasContainerRef} />
 
@@ -155,7 +157,7 @@ export default function HelixCanvas({ cardAssets, onFailure }: HelixCanvasProps)
         </div>
       </section>
 
-      <footer id="outro" className="outro" ref={outroRef} aria-label="NineCube home footer">
+      <footer id="outro" className="outro" ref={outroRef} aria-label={t("NineCube home footer")}>
         <div id="outroBlock" className="outro-block" ref={outroBlockRef}>
           <ShowcaseFooterContent />
         </div>
@@ -163,9 +165,7 @@ export default function HelixCanvas({ cardAssets, onFailure }: HelixCanvasProps)
 
       {/* The canvas is decorative and carries no text, so the scene is described here instead. */}
       <p className="visually-hidden">
-        Nine product cards travel through a three-dimensional helix as the page scrolls, with two
-        guide lines following the same path in the opposite direction.
-      </p>
+        {t("Nine product cards travel through a three-dimensional helix as the page scrolls, with two guide lines following the same path in the opposite direction.")}</p>
     </div>
   );
 }

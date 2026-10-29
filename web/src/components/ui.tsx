@@ -1,3 +1,4 @@
+import { t, useLanguage } from '../i18n/language';
 import {
   createContext,
   useCallback,
@@ -20,9 +21,10 @@ import { orderStatusMeta, stockLevel, type StockLevel } from '../lib/helpers';
  * visibly rather than screen-reader-only so sighted users get the same confirmation.
  */
 export function LiveRegion({ message, className = 'muted' }: { message: string; className?: string }) {
+  useLanguage();
   return (
     <p className={className} role="status" aria-live="polite" data-testid="live-region">
-      {message}
+      {t(message)}
     </p>
   );
 }
@@ -30,27 +32,29 @@ export function LiveRegion({ message, className = 'muted' }: { message: string; 
 // ------------------------------------------------------------------ badges
 
 export function StatusBadge({ status }: { status: OrderStatus }) {
+  useLanguage();
   const meta = orderStatusMeta[status];
 
   return (
-    <span className={`badge badge--${meta.tone}`} title={meta.description} data-testid={`status-${status}`}>
+    <span className={`badge badge--${meta.tone}`} title={t(meta.description)} data-testid={`status-${status}`}>
       <span className="badge__glyph" aria-hidden="true">
-        {meta.glyph}
+        {t(meta.glyph)}
       </span>
-      {meta.label}
+      {t(meta.label)}
     </span>
   );
 }
 
 export function StockBadge({ product, threshold }: { product: Product; threshold: number }) {
+  useLanguage();
   const meta = stockLevel(product, threshold);
 
   return (
     <span className={`badge badge--${meta.tone}`} data-testid={`stock-${meta.level}`} data-level={meta.level}>
       <span className="badge__glyph" aria-hidden="true">
-        {meta.glyph}
+        {t(meta.glyph)}
       </span>
-      {meta.label}
+      {t(meta.label)}
     </span>
   );
 }
@@ -72,32 +76,31 @@ export interface QuantityStepperProps {
 
 /** Keyboard operable stepper. The maximum is enforced by disabling "+" at the cap. */
 export function QuantityStepper({ value, onChange, max, min = 1, label, disabled = false }: QuantityStepperProps) {
+  useLanguage();
   const effectiveMax = Math.max(min, Math.min(max, 1000));
   const atMax = value >= effectiveMax;
 
   return (
-    <div className="stepper" role="group" aria-label={`Quantity for ${label}`}>
+    <div className="stepper" role="group" aria-label={t(`Quantity for ${label}`)}>
       <button
         type="button"
         className="btn btn--sm"
-        aria-label={`Decrease quantity for ${label}`}
+        aria-label={t(`Decrease quantity for ${label}`)}
         onClick={() => onChange(Math.max(min, value - 1))}
         disabled={disabled || value <= min}
       >
-        −
-      </button>
+        {t("−")}</button>
       <span className="stepper__value" aria-live="polite" data-testid="stepper-value">
-        {value}
+        {t(value)}
       </span>
       <button
         type="button"
         className="btn btn--sm"
-        aria-label={`Increase quantity for ${label}`}
+        aria-label={t(`Increase quantity for ${label}`)}
         onClick={() => onChange(Math.min(effectiveMax, value + 1))}
         disabled={disabled || atMax}
       >
-        +
-      </button>
+        {t("+")}</button>
     </div>
   );
 }
@@ -105,6 +108,7 @@ export function QuantityStepper({ value, onChange, max, min = 1, label, disabled
 // ------------------------------------------------------------------ states
 
 export function Skeleton({ variant = 'line', count = 1 }: { variant?: 'line' | 'card' | 'tile'; count?: number }) {
+  useLanguage();
   const className = variant === 'card' ? 'skeleton skeleton--card' : variant === 'tile' ? 'skeleton skeleton--tile' : 'skeleton skeleton--line';
 
   return (
@@ -117,37 +121,39 @@ export function Skeleton({ variant = 'line', count = 1 }: { variant?: 'line' | '
 }
 
 export function LoadingBlock({ label, variant = 'line', count = 3 }: { label: string; variant?: 'line' | 'card' | 'tile'; count?: number }) {
+  useLanguage();
   return (
     <div className="stack" role="status" aria-busy="true">
-      <span className="visually-hidden">{label}</span>
+      <span className="visually-hidden">{t(label)}</span>
       <Skeleton variant={variant} count={count} />
     </div>
   );
 }
 
 export function EmptyState({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
+  useLanguage();
   return (
     <div className="state" data-testid="empty-state">
-      <h2 className="state__title">{title}</h2>
-      {description ? <p className="muted">{description}</p> : null}
-      {action}
+      <h2 className="state__title">{t(title)}</h2>
+      {description ? <p className="muted">{t(description)}</p> : null}
+      {t(action)}
     </div>
   );
 }
 
 export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
+  useLanguage();
   const message = describeError(error);
   const correlationId = error instanceof ApiError ? error.correlationId : undefined;
 
   return (
     <div className="state state--error" role="alert" data-testid="error-state">
-      <p className="state__title">{error instanceof ApiError && error.isNetwork ? 'Cannot reach the server' : 'Something went wrong'}</p>
-      <p>{message}</p>
-      {correlationId ? <p className="mono muted">Reference: {correlationId}</p> : null}
+      <p className="state__title">{t(error instanceof ApiError && error.isNetwork ? 'Cannot reach the server' : 'Something went wrong')}</p>
+      <p>{t(message)}</p>
+      {correlationId ? <p className="mono muted">{t("Reference: ")}{t(correlationId)}</p> : null}
       {onRetry ? (
         <button type="button" className="btn" onClick={onRetry}>
-          Try again
-        </button>
+          {t("Try again")}</button>
       ) : null}
     </div>
   );
@@ -164,24 +170,23 @@ export interface PagerProps {
 }
 
 export function Pager({ page, totalPages, totalCount, pageSize, onPageChange }: PagerProps) {
+  useLanguage();
   const first = totalCount === 0 ? 0 : (page - 1) * pageSize + 1;
   const last = Math.min(page * pageSize, totalCount);
 
   return (
     <div className="pager">
       <span>
-        Showing {first}–{last} of {totalCount}
+        {t("Showing ")}{t(first)}{t("–")}{t(last)} {t(" of ")}{t(totalCount)}
       </span>
       <div className="row">
         <button type="button" className="btn btn--sm" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
-          Previous
-        </button>
+          {t("Previous")}</button>
         <span>
-          Page {totalPages === 0 ? 0 : page} of {totalPages === 0 ? 0 : totalPages}
+          {t("Page ")}{t(totalPages === 0 ? 0 : page)} {t(" of ")}{t(totalPages === 0 ? 0 : totalPages)}
         </span>
         <button type="button" className="btn btn--sm" onClick={() => onPageChange(page + 1)} disabled={page >= totalPages}>
-          Next
-        </button>
+          {t("Next")}</button>
       </div>
     </div>
   );
@@ -197,6 +202,7 @@ export interface ModalProps {
 }
 
 export function Modal({ open, title, onClose, children }: ModalProps) {
+  useLanguage();
   const titleId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
@@ -236,13 +242,12 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
         onClick={(event) => event.stopPropagation()}
       >
         <div className="row-between">
-          <h3 id={titleId}>{title}</h3>
-          <button type="button" className="btn btn--ghost btn--sm" onClick={onClose} aria-label="Close dialog">
-            ✕
-          </button>
+          <h3 id={titleId}>{t(title)}</h3>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={onClose} aria-label={t("Close dialog")}>
+            {t("✕")}</button>
         </div>
         <div className="stack" style={{ marginTop: 'var(--space-4)' }}>
-          {children}
+          {t(children)}
         </div>
       </div>
     </div>
@@ -277,6 +282,7 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 const MAX_TOASTS = 3;
 
 function ToastItem({ toast, duration, onDismiss }: { toast: Toast; duration: number; onDismiss: (id: number) => void }) {
+  useLanguage();
   const [paused, setPaused] = useState(false);
   const remaining = useRef(duration);
   const startedAt = useRef(Date.now());
@@ -306,21 +312,20 @@ function ToastItem({ toast, duration, onDismiss }: { toast: Toast; duration: num
   return (
     <div className={`toast toast--${toast.tone}`} role={toast.tone === 'error' ? 'alert' : 'status'}
       onMouseEnter={pause} onMouseLeave={resume} onFocus={pause} onBlur={resume}>
-      <span aria-hidden="true">{toast.tone === 'error' ? '⚠' : toast.tone === 'success' ? '✓' : 'ℹ'}</span>
-      <span>{toast.message}</span>
+      <span aria-hidden="true">{t(toast.tone === 'error' ? '⚠' : toast.tone === 'success' ? '✓' : 'ℹ')}</span>
+      <span>{t(toast.message)}</span>
       {toast.undo ? (
         <button type="button" className="btn btn--sm btn--ghost" onClick={() => { toast.undo?.(); onDismiss(toast.id); }}>
-          Undo
-        </button>
+          {t("Undo")}</button>
       ) : null}
-      <button type="button" className="btn btn--sm btn--ghost" aria-label="Dismiss notification" onClick={() => onDismiss(toast.id)}>
-        ✕
-      </button>
+      <button type="button" className="btn btn--sm btn--ghost" aria-label={t("Dismiss notification")} onClick={() => onDismiss(toast.id)}>
+        {t("✕")}</button>
     </div>
   );
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
+  useLanguage();
   const [toasts, setToasts] = useState<Toast[]>([]);
   const nextId = useRef(1);
 
@@ -340,7 +345,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   return (
     <ToastContext.Provider value={value}>
-      {children}
+      {t(children)}
       <div className="toasts" data-testid="toasts">
         <div aria-live="polite" aria-atomic="false" className="toasts__polite">
           {toasts.filter((toast) => toast.tone !== 'error').map((toast) => (

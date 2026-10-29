@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>
       (() => {
-        let theme = 'system';
-        try { theme = localStorage.getItem('ninecube-theme') || 'system'; } catch {}
-        document.documentElement.dataset.theme = theme === 'light' || theme === 'dark'
-          ? theme : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        let theme = 'light';
+        let language = 'en';
+        try {
+          theme = localStorage.getItem('ninecube-theme') === 'dark' ? 'dark' : 'light';
+          language = localStorage.getItem('ninecube-language') === 'bn' ? 'bn' : 'en';
+        } catch {}
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.lang = language;
+        document.documentElement.dataset.language = language;
       })();
     </script>
     <meta name="color-scheme" content="light dark" />

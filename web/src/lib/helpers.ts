@@ -1,25 +1,29 @@
 import { useEffect, useState } from 'react';
+import { getLanguage, getLocale, t } from '../i18n/language';
 import type { NotificationType, OrderStatus, UserRole } from '../api/types';
 
 // ------------------------------------------------------------------ formatting
 
 // Display currency: BDT is the store default; the API still owns per-product
 // currency and formatMoney honours any explicit code it returns.
-const bdt = new Intl.NumberFormat('en-BD', { style: 'currency', currency: 'BDT', currencyDisplay: 'code' });
-const bdtWhole = new Intl.NumberFormat('en-BD', { style: 'currency', currency: 'BDT', currencyDisplay: 'code', maximumFractionDigits: 0 });
-const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', currencyDisplay: 'code' });
-const dateTime = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-const dateOnly = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' });
-
-export const formatMoney = (value: number, code = 'BDT'): string => code === 'BDT' ? bdt.format(value) : code === 'USD' ? currency.format(value) : new Intl.NumberFormat('en-BD', { style: 'currency', currency: code, currencyDisplay: 'code' }).format(value);
+const moneyFormats = new Map<string, Intl.NumberFormat>();
+function moneyFormat(code: string, whole = false) {
+  const locale = getLanguage() === 'en' && code === 'USD' ? 'en-US' : getLocale();
+  const key = `${locale}:${code}:${whole}`;
+  if (!moneyFormats.has(key)) moneyFormats.set(key, new Intl.NumberFormat(locale, {
+    style: 'currency', currency: code, currencyDisplay: 'code', ...(whole ? { maximumFractionDigits: 0 } : {})
+  }));
+  return moneyFormats.get(key)!;
+}
+export const formatMoney = (value: number, code = 'BDT'): string => moneyFormat(code).format(value);
 
 /** The same amount without decimals, for places where "BDT 1,000.00" would not fit - slider ranges. */
 export const formatMoneyWhole = (value: number, code = 'BDT'): string =>
-  code === 'BDT' ? bdtWhole.format(value) : new Intl.NumberFormat('en-BD', { style: 'currency', currency: code, currencyDisplay: 'code', maximumFractionDigits: 0 }).format(value);
+  moneyFormat(code, true).format(value);
 
-export const formatDateTime = (value: string | Date): string => dateTime.format(new Date(value));
+export const formatDateTime = (value: string | Date): string => new Intl.DateTimeFormat(getLanguage() === 'bn' ? 'bn-BD' : undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
 
-export const formatDate = (value: string | Date): string => dateOnly.format(new Date(value));
+export const formatDate = (value: string | Date): string => new Intl.DateTimeFormat(getLanguage() === 'bn' ? 'bn-BD' : undefined, { dateStyle: 'medium' }).format(new Date(value));
 
 // ------------------------------------------------------------------ ids
 
@@ -158,8 +162,8 @@ export function defaultReportRange(): { from: string; to: string } {
 /** Human-readable relative time; the exact timestamp remains in the time element tooltip. */
 export function timeAgo(value: string): string {
   const seconds = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 1000));
-  if (seconds < 60) return 'Just now';
-  const formatter = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  if (seconds < 60) return t('Just now');
+  const formatter = new Intl.RelativeTimeFormat(getLanguage(), { numeric: 'auto' });
   if (seconds < 3600) return formatter.format(-Math.floor(seconds / 60), 'minute');
   if (seconds < 86400) return formatter.format(-Math.floor(seconds / 3600), 'hour');
   return formatter.format(-Math.floor(seconds / 86400), 'day');

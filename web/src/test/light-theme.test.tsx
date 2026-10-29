@@ -109,15 +109,15 @@ describe('Light theme tokens', () => {
     expect(valueOf(lightBlock, '--surface-glass')).not.toBe(valueOf(lightBlock, '--surface'));
   });
 
-  it('toggling Light/Dark/System switches the data-theme token set', () => {
+  it('defaults to Light and toggles explicit Light/Dark theme choices', () => {
     localStorage.clear();
     render(<ThemeControls />);
     fireEvent.click(screen.getByRole('button', { name: 'Light theme' }));
     expect(document.documentElement.dataset.theme).toBe('light');
     fireEvent.click(screen.getByRole('button', { name: 'Dark theme' }));
     expect(document.documentElement.dataset.theme).toBe('dark');
-    // System follows the OS; jsdom reports light here.
-    fireEvent.click(screen.getByRole('button', { name: 'System theme' }));
+    expect(screen.queryByRole('button', { name: 'System theme' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Light theme' }));
     expect(document.documentElement.dataset.theme).toBe('light');
     delete document.documentElement.dataset.theme;
   });
