@@ -4187,7 +4187,7 @@
       "name": "Apple MacBook Air M5 13 (16GB/512GB)",
       "price": 161500.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Apple M5 processor; 16GB RAM; 512GB SSD; 13.6-inch Liquid Retina display.",
       "category": "laptops",
       "tags": [
@@ -4220,7 +4220,7 @@
       "name": "MSI Raider 18 HX AI (32GB/2TB)",
       "price": 630000.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Core Ultra 9 285HX processor; 32GB RAM; 2TB SSD; 18-inch UHD+ MiniLED 120Hz display. NVIDIA RTX 5090 24GB graphics.",
       "category": "laptops",
       "tags": [
@@ -4253,7 +4253,7 @@
       "name": "Walton Prelude N41 Pro (8GB/256GB)",
       "price": 28500.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Celeron N4120 processor; 8GB RAM; 256GB SSD; 14-inch FHD display.",
       "category": "laptops",
       "tags": [
@@ -4286,7 +4286,7 @@
       "name": "Acer Aspire 3 A325-42-V2 (8GB/256GB)",
       "price": 57000.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Ryzen 3 5300U processor; 8GB RAM; 256GB SSD; 15.6-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4319,7 +4319,7 @@
       "name": "Lenovo IdeaPad 1 15AMN7 (16GB/512GB)",
       "price": 72500.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Ryzen 3 7320U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4352,7 +4352,7 @@
       "name": "Dell Pro 15 PV15250 (8GB/512GB)",
       "price": 72900.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Core 3 100U processor; 8GB RAM; 512GB SSD; 15.6-inch FHD 120Hz display.",
       "category": "laptops",
       "tags": [
@@ -4385,7 +4385,7 @@
       "name": "Acer Aspire Lite AL15-41 (16GB/512GB)",
       "price": 72900.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Ryzen 5 5625U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD display.",
       "category": "laptops",
       "tags": [
@@ -4418,7 +4418,7 @@
       "name": "HP 15-fc0634AU (8GB/512GB)",
       "price": 95000.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Ryzen 5 7520U processor; 8GB RAM; 512GB SSD; 15.6-inch FHD display.",
       "category": "laptops",
       "tags": [
@@ -4451,7 +4451,7 @@
       "name": "ASUS Vivobook 14 A1404VA (16GB/512GB)",
       "price": 93000.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Core 5 120U processor; 16GB RAM; 512GB SSD; 14-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4484,7 +4484,7 @@
       "name": "MSI Modern 15 F1MG (16GB/512GB)",
       "price": 94500.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Core 5 120U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
       "category": "laptops",
       "tags": [
@@ -4517,7 +4517,7 @@
       "name": "Dell Inspiron 3530 i7 (16GB/512GB)",
       "price": 94000.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Core i7-1355U processor; 16GB RAM; 512GB SSD; 15.6-inch FHD display.",
       "category": "laptops",
       "tags": [
@@ -4550,7 +4550,7 @@
       "name": "Lenovo IdeaPad Slim 3 15AMN8 (16GB/512GB)",
       "price": 99000.0,
       "currency": "BDT",
-      "stockQuantity": 0,
+      "stockQuantity": 10,
       "description": "Ryzen 5 40 processor; 16GB RAM; 512GB SSD; 15.6-inch FHD IPS display.",
       "category": "laptops",
       "tags": [

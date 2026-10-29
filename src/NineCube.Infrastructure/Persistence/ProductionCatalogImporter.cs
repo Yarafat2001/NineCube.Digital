@@ -125,9 +125,47 @@ public static class ProductionCatalogImporter
         if (repairStock)
             db.Settings.Add(new Setting { Key = StockRepairKey, Value = DateTime.UtcNow.ToString("O") });
         await db.SaveChangesAsync(ct);
+        await InitializeLaptopStockAsync(db, feed.Products, logger, ct);
         await transaction.CommitAsync(ct);
         logger.LogInformation("Production catalogue imported: {Categories} categories and {Products} products added; {Restored} uninitialized stock quantities restored; merchant stock changes preserved.", createdCategories, createdProducts, restoredProducts);
     }
+
+    private static async Task InitializeLaptopStockAsync(AppDbContext db, List<ProductRow> products, ILogger logger, CancellationToken ct)
+    {
+        const string key = "ProductionCatalogue.LaptopStockInitialization.v1";
+        if (await db.Settings.AnyAsync(s => s.Key == key, ct)) return;
+
+        // The merchant requested opening stock of ten for the twelve laptop models.
+        // Runs under the importer's transaction/advisory lock. Never overwrites positive stock
+        // and never replenishes a later sell-out on subsequent deployments.
+        var initialized = 0;
+        foreach (var item in products.Where(p => p.Category == "laptops" && p.StockQuantity > 0))
+        {
+            var product = await db.Products.AsNoTracking().Where(p => p.Sku == item.Sku)
+                .Select(p => new { p.Id }).SingleAsync(ct);
+            var now = DateTime.UtcNow;
+            var affected = await db.Products.Where(p => p.Id == product.Id && p.StockQuantity == 0)
+                .ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, item.StockQuantity)
+                    .SetProperty(p => p.UpdatedAt, now), ct);
+            if (affected == 0) continue;
+
+            var entry = db.ChangeTracker.Entries<Product>().Single(e => e.Entity.Id == product.Id);
+            entry.Property(p => p.StockQuantity).CurrentValue = item.StockQuantity;
+            entry.Property(p => p.StockQuantity).OriginalValue = item.StockQuantity;
+            entry.Property(p => p.UpdatedAt).CurrentValue = now;
+            entry.Property(p => p.UpdatedAt).OriginalValue = now;
+            db.InventoryMovements.Add(new InventoryMovement { ProductId = product.Id, Delta = item.StockQuantity,
+                Reason = "Merchant-requested laptop opening stock: 10 units per model", CreatedAt = now });
+            db.AuditLogs.Add(new AuditLog { Action = AuditActions.StockAdjusted, EntityType = nameof(Product),
+                EntityId = product.Id.ToString(), CreatedAt = now,
+                Details = $"delta={item.StockQuantity}; reason=laptop stock initialization v1" });
+            initialized++;
+        }
+        db.Settings.Add(new Setting { Key = key, Value = DateTime.UtcNow.ToString("O") });
+        await db.SaveChangesAsync(ct);
+        logger.LogInformation("Initialized opening stock for {Count} laptop models; existing positive stock preserved.", initialized);
+    }
+
     private sealed record Feed(List<CategoryRow> Categories, List<ProductRow> Products);
     private sealed record CategoryRow(string Name, string Slug, string? ParentSlug, int Depth);
     private sealed record Photo(string Url, string AltText);

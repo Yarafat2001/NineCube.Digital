@@ -67,5 +67,36 @@ internal static class CatalogueStockChecks
         await ProductionCatalogImporter.ImportAsync(db, NullLogger.Instance);
         check(await db.Products.Where(p => p.Id == restored.Id).Select(p => p.StockQuantity).SingleAsync() == 0,
             "Completion marker prevents later replenishment");
+
+        var laptopSkus = rows.Where(p => p.GetProperty("category").GetString() == "laptops")
+            .Select(p => p.GetProperty("sku").GetString()!).ToArray();
+        var laptops = await db.Products.AsNoTracking().Where(p => laptopSkus.Contains(p.Sku)).ToListAsync();
+        check(laptops.Count == 12 && laptops.All(p => p.StockQuantity == 10), "All twelve new laptops open with ten units");
+        var laptopIds = laptops.Select(p => p.Id).ToArray();
+        // Recreate the already-deployed state: original repair complete, laptops seeded at zero.
+        await db.Settings.Where(s => s.Key == "ProductionCatalogue.LaptopStockInitialization.v1").ExecuteDeleteAsync();
+        await db.InventoryMovements.Where(m => laptopIds.Contains(m.ProductId)).ExecuteDeleteAsync();
+        await db.Products.Where(p => laptopIds.Contains(p.Id)).ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, 0));
+        var preservedId = laptops[0].Id;
+        await db.Products.Where(p => p.Id == preservedId).ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, 4));
+        db.ChangeTracker.Clear();
+        await ProductionCatalogImporter.ImportAsync(db, NullLogger.Instance);
+        check(await db.Products.Where(p => laptopIds.Contains(p.Id) && p.Id != preservedId).AllAsync(p => p.StockQuantity == 10),
+            "Laptop update applies after original production stock repair already completed");
+        check(await db.Products.Where(p => p.Id == preservedId).Select(p => p.StockQuantity).SingleAsync() == 4,
+            "Laptop update preserves existing positive stock");
+        var restockedId = laptops[1].Id;
+        check(await db.InventoryMovements.Where(m => m.ProductId == restockedId).SumAsync(m => m.Delta) == 10
+            && await db.AuditLogs.AnyAsync(a => a.EntityType == nameof(Product) && a.EntityId == restockedId.ToString()
+                && a.Action == AuditActions.StockAdjusted), "Laptop update writes inventory and audit records");
+        var laptopMovementCount = await db.InventoryMovements.Where(m => laptopIds.Contains(m.ProductId)).CountAsync();
+        await db.Products.Where(p => p.Id == restockedId).ExecuteUpdateAsync(s => s.SetProperty(p => p.StockQuantity, 0));
+        db.ChangeTracker.Clear();
+        await ProductionCatalogImporter.ImportAsync(db, NullLogger.Instance);
+        check(await db.Products.Where(p => p.Id == restockedId).Select(p => p.StockQuantity).SingleAsync() == 0
+            && await db.InventoryMovements.Where(m => laptopIds.Contains(m.ProductId)).CountAsync() == laptopMovementCount,
+            "Laptop sell-out stays zero on later imports without duplicate movements");
+        check(await db.Products.Where(p => p.Id == restored.Id).Select(p => p.StockQuantity).SingleAsync() == 0,
+            "Laptop update leaves non-laptop stock unchanged");
     }
 }
