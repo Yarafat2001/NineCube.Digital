@@ -32,6 +32,16 @@ public sealed class AuthEndpoints : IEndpoint
             .RequireAuthorization(Policies.AnyAuthenticated)
             .WithName("GetMe")
             .WithSummary("Retrieves the currently authenticated user's summary.");
+
+        group.MapPost("/forgot-password", ForgotPasswordAsync)
+            .AllowAnonymous()
+            .WithName("ForgotPassword")
+            .WithSummary("Generates a secure password reset token without leaking account existence.");
+
+        group.MapPost("/reset-password", ResetPasswordAsync)
+            .AllowAnonymous()
+            .WithName("ResetPassword")
+            .WithSummary("Verifies a reset token and updates the user's password.");
     }
 
     public static async Task<Results<Created<AuthResponse>, ProblemHttpResult>> RegisterAsync(
@@ -62,5 +72,27 @@ public sealed class AuthEndpoints : IEndpoint
     {
         var user = await auth.GetMeAsync(ct);
         return TypedResults.Ok(user);
+    }
+
+    public static async Task<Results<Ok<ForgotPasswordResponse>, ProblemHttpResult>> ForgotPasswordAsync(
+        ForgotPasswordRequest request,
+        IPasswordResetService resetService,
+        IValidator<ForgotPasswordRequest> validator,
+        CancellationToken ct)
+    {
+        await ValidationHelper.ValidateAsync(validator, request, ct);
+        var response = await resetService.ForgotPasswordAsync(request, ct);
+        return TypedResults.Ok(response);
+    }
+
+    public static async Task<Results<Ok<object>, ProblemHttpResult>> ResetPasswordAsync(
+        ResetPasswordRequest request,
+        IPasswordResetService resetService,
+        IValidator<ResetPasswordRequest> validator,
+        CancellationToken ct)
+    {
+        await ValidationHelper.ValidateAsync(validator, request, ct);
+        var success = await resetService.ResetPasswordAsync(request, ct);
+        return TypedResults.Ok<object>(new { success, message = "Password has been successfully reset. You may now log in." });
     }
 }

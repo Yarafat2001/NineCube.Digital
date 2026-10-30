@@ -65,7 +65,7 @@ public sealed record InventoryMovementDto(
 
 public sealed record OrderLineRequest(int ProductId, int Quantity);
 
-public sealed record CreateOrderRequest(IReadOnlyList<OrderLineRequest> Items);
+public sealed record CreateOrderRequest(IReadOnlyList<OrderLineRequest> Items, string? CouponCode = null, PaymentMethod PaymentMethod = PaymentMethod.CashOnDelivery);
 
 public sealed record OrderItemDto(
     int Id,
@@ -87,7 +87,15 @@ public sealed record OrderDto(
     DateTime UpdatedAt,
     string? IdempotencyKey,
     IReadOnlyList<OrderItemDto> Items,
-    string Currency = "BDT");
+    string Currency = "BDT",
+    decimal SubTotal = 0,
+    decimal DiscountAmount = 0,
+    string? CouponCode = null,
+    decimal ShippingAmount = 0,
+    PaymentStatus PaymentStatus = PaymentStatus.Unpaid,
+    PaymentMethod PaymentMethod = PaymentMethod.CashOnDelivery,
+    string? TrackingNumber = null,
+    string? Carrier = null);
 
 public sealed record InvoiceDto(
     int OrderId,

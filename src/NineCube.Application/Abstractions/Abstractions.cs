@@ -29,6 +29,11 @@ public interface IAppDbContext
     DbSet<Setting> Settings { get; }
     DbSet<Address> Addresses { get; }
     DbSet<Notification> Notifications { get; }
+    DbSet<Coupon> Coupons { get; }
+    DbSet<PaymentTransaction> PaymentTransactions { get; }
+    DbSet<PasswordResetToken> PasswordResetTokens { get; }
+    DbSet<ProductReview> ProductReviews { get; }
+    DbSet<WishlistItem> WishlistItems { get; }
 
     DatabaseFacade Database { get; }
     Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker ChangeTracker { get; }

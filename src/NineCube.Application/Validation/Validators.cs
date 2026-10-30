@@ -159,3 +159,59 @@ public sealed class AddressRequestValidator : AbstractValidator<AddressRequest>
         RuleFor(x => x.Phone).MaximumLength(20);
     }
 }
+
+
+public sealed class ForgotPasswordRequestValidator : AbstractValidator<ForgotPasswordRequest>
+{
+    public ForgotPasswordRequestValidator()
+    {
+        RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
+    }
+}
+
+public sealed class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequest>
+{
+    public ResetPasswordRequestValidator()
+    {
+        RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
+        RuleFor(x => x.Token).NotEmpty();
+        RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(8).MaximumLength(128);
+    }
+}
+
+public sealed class CreateCouponRequestValidator : AbstractValidator<CreateCouponRequest>
+{
+    public CreateCouponRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MinimumLength(3).MaximumLength(50);
+        RuleFor(x => x.DiscountValue).GreaterThan(0);
+        RuleFor(x => x.MinOrderAmount).GreaterThanOrEqualTo(0);
+    }
+}
+
+public sealed class ApplyCouponRequestValidator : AbstractValidator<ApplyCouponRequest>
+{
+    public ApplyCouponRequestValidator()
+    {
+        RuleFor(x => x.Code).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.SubTotal).GreaterThan(0);
+    }
+}
+
+public sealed class CreateReviewRequestValidator : AbstractValidator<CreateReviewRequest>
+{
+    public CreateReviewRequestValidator()
+    {
+        RuleFor(x => x.Rating).InclusiveBetween(1, 5).WithMessage("Rating must be between 1 and 5 stars.");
+        RuleFor(x => x.Comment).MaximumLength(2000);
+    }
+}
+
+public sealed class ProcessPaymentRequestValidator : AbstractValidator<ProcessPaymentRequest>
+{
+    public ProcessPaymentRequestValidator()
+    {
+        RuleFor(x => x.OrderId).GreaterThan(0);
+        RuleFor(x => x.Provider).IsInEnum();
+    }
+}

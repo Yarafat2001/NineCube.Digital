@@ -70,3 +70,25 @@ public static class OrderStatusRules
     public static OrderStatus[] FromNames(params string[] names) =>
         names.Select(n => Enum.Parse<OrderStatus>(n, ignoreCase: true)).ToArray();
 }
+
+public enum PaymentStatus
+{
+    Unpaid = 0,
+    Pending = 1,
+    Paid = 2,
+    Failed = 3,
+    Refunded = 4
+}
+
+public enum DiscountType
+{
+    Percentage = 0,
+    FixedAmount = 1
+}
+
+public enum PaymentMethod
+{
+    CashOnDelivery = 0,
+    Card = 1,
+    MobileFinancialService = 2
+}

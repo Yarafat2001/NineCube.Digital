@@ -45,18 +45,22 @@ public sealed class OrderService : IOrderService
     private readonly ITransientErrorPolicy _errors;
     private readonly INotificationWriter _notifications;
 
+    private readonly ICouponService _couponService;
+
     public OrderService(
         IAppDbContext db,
         ICurrentUser currentUser,
         IClock clock,
         ITransientErrorPolicy errors,
-        INotificationWriter notifications)
+        INotificationWriter notifications,
+        ICouponService couponService)
     {
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
         _errors = errors;
         _notifications = notifications;
+        _couponService = couponService;
     }
 
     // ------------------------------------------------------------------ place
@@ -182,7 +186,25 @@ public sealed class OrderService : IOrderService
                 });
             }
 
-            order.TotalAmount = order.Items.Sum(i => i.LineTotal);
+            var subTotal = order.Items.Sum(i => i.LineTotal);
+            order.SubTotal = subTotal;
+            order.TotalAmount = subTotal;
+            order.PaymentMethod = request.PaymentMethod;
+            order.PaymentStatus = PaymentStatus.Unpaid;
+
+            if (!string.IsNullOrWhiteSpace(request.CouponCode))
+            {
+                var couponResult = await _couponService.ValidateCouponAsync(
+                    new ApplyCouponRequest(request.CouponCode, subTotal), ct);
+
+                if (couponResult.IsValid)
+                {
+                    order.CouponCode = couponResult.Code;
+                    order.DiscountAmount = couponResult.DiscountAmount;
+                    order.TotalAmount = Math.Max(0, subTotal - couponResult.DiscountAmount);
+                }
+            }
+
             _db.Orders.Add(order);
             await _db.SaveChangesAsync(ct); // needs order.Id for the ledger rows
 
@@ -215,6 +237,10 @@ public sealed class OrderService : IOrderService
             await tx.CommitAsync(ct);
 
             // Post-commit side effects: customer and staff inbox notifications and low-stock alerts.
+            if (!string.IsNullOrWhiteSpace(order.CouponCode))
+            {
+                await _couponService.ConsumeCouponAsync(order.CouponCode, ct);
+            }
             var money = $"{order.TotalAmount:0.00} {order.Currency}";
             var customerName = await _db.Customers.AsNoTracking()
                 .Where(c => c.Id == customerId).Select(c => c.Name).FirstOrDefaultAsync(ct) ?? "Customer";

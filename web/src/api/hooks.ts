@@ -16,7 +16,15 @@ import type {
   Profile,
   SalesSummary,
   Settings,
-  UserRole
+  UserRole,
+  Coupon,
+  CouponValidationResult,
+  PaymentTransaction,
+  PaymentMethod,
+  ProductReview,
+  ProductRatingSummary,
+  WishlistItem,
+  ForgotPasswordResponse
 } from './types';
 import { useAuth } from '../state/AuthContext';
 
@@ -41,7 +49,11 @@ export const queryKeys = {
   profile: ['me-profile'] as const,
   dashboard: ['me-dashboard'] as const,
   unreadCount: ['notifications', 'unread-count'] as const,
-  notifications: (params: { unreadOnly: boolean; page: number }) => ['notifications', params] as const
+  notifications: (params: { unreadOnly: boolean; page: number }) => ['notifications', params] as const,
+  reviews: (productId: number) => ['reviews', productId] as const,
+  wishlist: ['wishlist'] as const,
+  coupons: ['coupons'] as const,
+  orderPayments: (orderId: number) => ['order-payments', orderId] as const
 };
 
 /** Thin wrapper so every hook uses the current access token without repeating itself. */
@@ -561,4 +573,116 @@ export function useDeleteAddress() {
 export function useDashboard(enabled = true) {
   const request = useAuthedRequest();
   return useQuery({ queryKey: queryKeys.dashboard, queryFn: () => request<Dashboard>('/api/me/dashboard'), enabled });
+}
+
+
+// ---------------------------------------------------------------- Enterprise E-Commerce Hooks
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) =>
+      apiRequest<ForgotPasswordResponse>('/api/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email })
+      })
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (payload: { email: string; token: string; newPassword: string }) =>
+      apiRequest<{ success: boolean; message: string }>('/api/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+  });
+}
+
+export function useValidateCoupon() {
+  return useMutation({
+    mutationFn: (payload: { code: string; subTotal: number }) =>
+      apiRequest<CouponValidationResult>('/api/coupons/validate', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+  });
+}
+
+export function useCoupons() {
+  const request = useAuthedRequest();
+  return useQuery({
+    queryKey: queryKeys.coupons,
+    queryFn: () => request<Coupon[]>('/api/coupons')
+  });
+}
+
+export function useCreateCoupon() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (payload: {
+      code: string;
+      discountType: string;
+      discountValue: number;
+      minOrderAmount: number;
+      expiresAt?: string | null;
+      usageLimit?: number | null;
+    }) => request<Coupon>('/api/coupons', { method: 'POST', body: JSON.stringify(payload) }),
+    onSuccess: () => invalidate([queryKeys.coupons])
+  });
+}
+
+export function useProcessPayment() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (payload: { orderId: number; provider: PaymentMethod }) =>
+      request<PaymentTransaction>('/api/payments/process', { method: 'POST', body: JSON.stringify(payload) }),
+    onSuccess: (_, vars) => invalidate([queryKeys.order(vars.orderId), queryKeys.orderPayments(vars.orderId)])
+  });
+}
+
+export function useOrderPayments(orderId: number) {
+  const request = useAuthedRequest();
+  return useQuery({
+    queryKey: queryKeys.orderPayments(orderId),
+    queryFn: () => request<PaymentTransaction[]>(`/api/payments/order/${orderId}`),
+    enabled: orderId > 0
+  });
+}
+
+export function useProductReviews(productId: number) {
+  return useQuery({
+    queryKey: queryKeys.reviews(productId),
+    queryFn: () => apiRequest<ProductRatingSummary>(`/api/reviews/products/${productId}`),
+    enabled: productId > 0
+  });
+}
+
+export function useAddReview(productId: number) {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (payload: { rating: number; comment?: string }) =>
+      request<ProductReview>(`/api/reviews/products/${productId}`, { method: 'POST', body: JSON.stringify(payload) }),
+    onSuccess: () => invalidate([queryKeys.reviews(productId)])
+  });
+}
+
+export function useWishlist() {
+  const request = useAuthedRequest();
+  return useQuery({
+    queryKey: queryKeys.wishlist,
+    queryFn: () => request<WishlistItem[]>('/api/wishlist')
+  });
+}
+
+export function useToggleWishlist() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (productId: number) =>
+      request<{ inWishlist: boolean }>(`/api/wishlist/${productId}/toggle`, { method: 'POST' }),
+    onSuccess: () => invalidate([queryKeys.wishlist])
+  });
 }

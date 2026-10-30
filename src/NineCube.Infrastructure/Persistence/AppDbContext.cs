@@ -40,6 +40,11 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     public DbSet<Setting> Settings => Set<Setting>();
     public DbSet<Address> Addresses => Set<Address>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<Coupon> Coupons => Set<Coupon>();
+    public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
+    public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
+    public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
+    public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -310,6 +315,71 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.HasKey(s => s.Key);
             e.Property(s => s.Key).HasMaxLength(100);
             e.Property(s => s.Value).HasMaxLength(500).IsRequired();
+        });
+        // ---------------------------------------------------------------- Enterprise E-Commerce
+        modelBuilder.Entity<Coupon>(e =>
+        {
+            e.ToTable("Coupons");
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Code).HasMaxLength(50).IsRequired();
+            e.Property(c => c.DiscountType).HasConversion<string>().HasMaxLength(32).IsRequired();
+            e.Property(c => c.DiscountValue).HasColumnType("decimal(18,2)");
+            e.Property(c => c.MinOrderAmount).HasColumnType("decimal(18,2)");
+            e.Property(c => c.CreatedAt);
+            e.HasIndex(c => c.Code).IsUnique();
+        });
+
+        modelBuilder.Entity<PaymentTransaction>(e =>
+        {
+            e.ToTable("PaymentTransactions");
+            e.HasKey(t => t.Id);
+            e.Property(t => t.Amount).HasColumnType("decimal(18,2)");
+            e.Property(t => t.Currency).HasMaxLength(3).IsRequired();
+            e.Property(t => t.Provider).HasConversion<string>().HasMaxLength(32).IsRequired();
+            e.Property(t => t.Status).HasConversion<string>().HasMaxLength(32).IsRequired();
+            e.Property(t => t.TransactionReference).HasMaxLength(128).IsRequired();
+            e.Property(t => t.ProviderPayload).HasMaxLength(4000);
+            e.Property(t => t.CreatedAt);
+            e.HasIndex(t => t.OrderId);
+            e.HasIndex(t => t.TransactionReference);
+            e.HasOne(t => t.Order).WithMany(o => o.PaymentTransactions).HasForeignKey(t => t.OrderId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PasswordResetToken>(e =>
+        {
+            e.ToTable("PasswordResetTokens");
+            e.HasKey(t => t.Id);
+            e.Property(t => t.TokenHash).HasMaxLength(128).IsRequired();
+            e.Property(t => t.ExpiresAtUtc);
+            e.Property(t => t.UsedAtUtc);
+            e.Property(t => t.CreatedAtUtc);
+            e.HasIndex(t => t.UserId);
+            e.HasIndex(t => t.TokenHash);
+            e.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ProductReview>(e =>
+        {
+            e.ToTable("ProductReviews");
+            e.HasKey(r => r.Id);
+            e.Property(r => r.Rating).IsRequired();
+            e.Property(r => r.Comment).HasMaxLength(2000);
+            e.Property(r => r.CreatedAt);
+            e.HasIndex(r => r.ProductId);
+            e.HasIndex(r => r.CustomerId);
+            e.HasIndex(r => new { r.ProductId, r.CustomerId }).IsUnique();
+            e.HasOne(r => r.Product).WithMany(p => p.Reviews).HasForeignKey(r => r.ProductId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(r => r.Customer).WithMany(c => c.Reviews).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<WishlistItem>(e =>
+        {
+            e.ToTable("WishlistItems");
+            e.HasKey(w => w.Id);
+            e.Property(w => w.CreatedAt);
+            e.HasIndex(w => new { w.CustomerId, w.ProductId }).IsUnique();
+            e.HasOne(w => w.Customer).WithMany(c => c.Wishlist).HasForeignKey(w => w.CustomerId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(w => w.Product).WithMany().HasForeignKey(w => w.ProductId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

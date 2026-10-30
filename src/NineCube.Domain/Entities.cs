@@ -14,6 +14,7 @@ public sealed class Product
     public List<ProductCategory> Categories { get; set; } = new();
     public List<ProductTag> Tags { get; set; } = new();
     public List<ProductImage> Images { get; set; } = new();
+    public List<ProductReview> Reviews { get; set; } = new();
     public int Id { get; set; }
     public string Sku { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
@@ -47,6 +48,8 @@ public sealed class Customer
     public DateTime CreatedAt { get; set; }
     public List<Order> Orders { get; set; } = new();
     public List<Address> Addresses { get; set; } = new();
+    public List<WishlistItem> Wishlist { get; set; } = new();
+    public List<ProductReview> Reviews { get; set; } = new();
 }
 
 /// <summary>
@@ -94,6 +97,15 @@ public sealed class Order
     /// <summary>Client supplied key, unique per customer. Makes POST /orders retry-safe.</summary>
     public string? IdempotencyKey { get; set; }
     public List<OrderItem> Items { get; set; } = new();
+    public decimal SubTotal { get; set; }
+    public decimal DiscountAmount { get; set; }
+    public string? CouponCode { get; set; }
+    public decimal ShippingAmount { get; set; }
+    public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Unpaid;
+    public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.CashOnDelivery;
+    public string? TrackingNumber { get; set; }
+    public string? Carrier { get; set; }
+    public List<PaymentTransaction> PaymentTransactions { get; set; } = new();
 }
 
 public sealed class OrderItem
@@ -163,4 +175,68 @@ public sealed class Notification
     public bool IsRead { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? ReadAt { get; set; }
+}
+
+
+public sealed class Coupon
+{
+    public int Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public DiscountType DiscountType { get; set; }
+    public decimal DiscountValue { get; set; }
+    public decimal MinOrderAmount { get; set; }
+    public DateTime? ExpiresAt { get; set; }
+    public int? UsageLimit { get; set; }
+    public int UsageCount { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime CreatedAt { get; set; }
+}
+
+public sealed class PaymentTransaction
+{
+    public int Id { get; set; }
+    public int OrderId { get; set; }
+    public Order? Order { get; set; }
+    public decimal Amount { get; set; }
+    public string Currency { get; set; } = "BDT";
+    public PaymentMethod Provider { get; set; }
+    public string TransactionReference { get; set; } = string.Empty;
+    public PaymentStatus Status { get; set; }
+    public string? ProviderPayload { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
+
+public sealed class PasswordResetToken
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public User? User { get; set; }
+    public string TokenHash { get; set; } = string.Empty;
+    public DateTime ExpiresAtUtc { get; set; }
+    public DateTime? UsedAtUtc { get; set; }
+    public DateTime CreatedAtUtc { get; set; }
+}
+
+public sealed class ProductReview
+{
+    public int Id { get; set; }
+    public int ProductId { get; set; }
+    public Product? Product { get; set; }
+    public int CustomerId { get; set; }
+    public Customer? Customer { get; set; }
+    public int Rating { get; set; }
+    public string? Comment { get; set; }
+    public bool IsVerifiedBuyer { get; set; }
+    public bool IsApproved { get; set; } = true;
+    public DateTime CreatedAt { get; set; }
+}
+
+public sealed class WishlistItem
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public Customer? Customer { get; set; }
+    public int ProductId { get; set; }
+    public Product? Product { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

@@ -98,6 +98,10 @@ export interface OrderItem {
   lineTotal: number;
 }
 
+export type PaymentStatus = 'Unpaid' | 'Pending' | 'Paid' | 'Failed' | 'Refunded';
+export type PaymentMethod = 'CashOnDelivery' | 'Card' | 'MobileFinancialService';
+export type DiscountType = 'Percentage' | 'FixedAmount';
+
 export interface Order {
   currency?: string;
   id: number;
@@ -109,6 +113,14 @@ export interface Order {
   updatedAt: string;
   idempotencyKey: string | null;
   items: OrderItem[];
+  subTotal?: number;
+  discountAmount?: number;
+  couponCode?: string | null;
+  shippingAmount?: number;
+  paymentStatus?: PaymentStatus;
+  paymentMethod?: PaymentMethod;
+  trackingNumber?: string | null;
+  carrier?: string | null;
 }
 
 export interface Invoice {
@@ -266,4 +278,68 @@ export interface ShortItem {
   name: string;
   requested: number;
   available: number;
+}
+
+
+export interface Coupon {
+  id: number;
+  code: string;
+  discountType: DiscountType;
+  discountValue: number;
+  minOrderAmount: number;
+  expiresAt: string | null;
+  usageLimit: number | null;
+  usageCount: number;
+  isActive: boolean;
+}
+
+export interface CouponValidationResult {
+  isValid: boolean;
+  reason: string | null;
+  discountAmount: number;
+  code: string | null;
+}
+
+export interface PaymentTransaction {
+  id: number;
+  orderId: number;
+  amount: number;
+  currency: string;
+  provider: PaymentMethod;
+  transactionReference: string;
+  status: PaymentStatus;
+  createdAt: string;
+}
+
+export interface ProductReview {
+  id: number;
+  productId: number;
+  customerId: number;
+  customerName: string;
+  rating: number;
+  comment: string | null;
+  isVerifiedBuyer: boolean;
+  createdAt: string;
+}
+
+export interface ProductRatingSummary {
+  averageRating: number;
+  totalReviews: number;
+  recentReviews: ProductReview[];
+}
+
+export interface WishlistItem {
+  id: number;
+  productId: number;
+  productName: string;
+  sku: string;
+  price: number;
+  imageUrl: string | null;
+  inStock: boolean;
+  addedAt: string;
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+  demoResetToken?: string | null;
 }
