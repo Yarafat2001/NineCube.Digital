@@ -33,7 +33,7 @@ NineCube.Digital/
 │  ├─ NineCube.Domain/          entities, enums, transition rules, domain exceptions
 │  ├─ NineCube.Application/     DTOs, validators, services (order, catalog, inventory, reports, admin, auth)
 │  ├─ NineCube.Infrastructure/  EF Core DbContext + migrations, JWT, password hashing, SQL error policy
-│  ├─ NineCube.Api/             controllers, middleware, auth policies, Program.cs
+│  ├─ NineCube.Api/             Minimal API endpoints (IEndpoint), middleware, auth policies, Program.cs
 │  └─ NineCube.Tests/           108 xUnit integration tests against a real SQL Server
 ├─ web/                         React 18 + TypeScript + Vite SPA
 │  ├─ src/api/                  typed client + TanStack Query hooks

@@ -3,10 +3,10 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using NineCube.Api.Auth;
+using NineCube.Api.Endpoints;
 using NineCube.Api.Middleware;
 using NineCube.Api.Serialization;
 using NineCube.Application;
@@ -37,44 +37,19 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
-// ---------------------------------------------------------------- error contract
+// ---------------------------------------------------------------- error contract & json
 builder.Services.AddProblemDetails();
 builder.Services.ConfigureAuthenticationProblemDetails();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        // Enums travel as readable strings ("Confirmed", "InventoryManager") so the API is
-        // self-describing for the SPA and for anyone reading requests.http.
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        // Timestamps leave the API as explicit UTC instants, so the SPA can render them in the
-        // viewer's own time zone instead of silently re-labelling UTC as local time.
-        options.JsonSerializerOptions.Converters.Add(new UtcDateTimeJsonConverter());
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    });
-
-// Model binding failures (malformed JSON, wrong types) use the same ProblemDetails shape.
-builder.Services.Configure<ApiBehaviorOptions>(options =>
+builder.Services.ConfigureHttpJsonOptions(options =>
 {
-    options.InvalidModelStateResponseFactory = context =>
-    {
-        var problem = new ValidationProblemDetails(context.ModelState)
-        {
-            Status = StatusCodes.Status400BadRequest,
-            Title = "The request is invalid.",
-            Type = ProblemDetailsFactoryExtensions.ProblemBaseUri + "invalid_request",
-            Instance = context.HttpContext.Request.Path
-        };
-
-        problem.Extensions["code"] = "invalid_request";
-        problem.Extensions["correlationId"] = CorrelationIdMiddleware.Get(context.HttpContext);
-
-        return new ObjectResult(problem)
-        {
-            StatusCode = StatusCodes.Status400BadRequest,
-            ContentTypes = { "application/problem+json" }
-        };
-    };
+    // Enums travel as readable strings ("Confirmed", "InventoryManager") so the API is
+    // self-describing for the SPA and for anyone reading requests.http.
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    // Timestamps leave the API as explicit UTC instants, so the SPA can render them in the
+    // viewer's own time zone instead of silently re-labelling UTC as local time.
+    options.SerializerOptions.Converters.Add(new UtcDateTimeJsonConverter());
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
 // ---------------------------------------------------------------- cross cutting
@@ -180,7 +155,8 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     }
 }).AllowAnonymous();
 
-app.MapControllers();
+// Map Minimal APIs via IEndpoint
+app.MapEndpoints();
 
 app.Run();
 
