@@ -27,7 +27,11 @@ public static class DependencyInjection
         // NOTE: no EnableRetryOnFailure here on purpose. The PostgreSQL execution strategy is
         // incompatible with the user-initiated transactions that PlaceOrder relies on. Retries are
         // handled by ITransientErrorPolicy, which understands which errors are actually retryable.
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseNpgsql(connectionString);
+            options.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+        });
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
         services.AddMemoryCache();
