@@ -15,15 +15,16 @@ beforeEach(() => {
 afterEach(() => { act(() => setLanguage('en')); localStorage.clear(); });
 
 describe('Language and theme preferences', () => {
-  it('starts in light mode with no theme toggle buttons', () => {
+  it('starts in light mode with theme toggle buttons visible', () => {
     vi.spyOn(window, 'matchMedia').mockImplementation(query => ({ matches: true, media: query,
       onchange: null, addListener: vi.fn(), removeListener: vi.fn(), addEventListener: vi.fn(),
       removeEventListener: vi.fn(), dispatchEvent: vi.fn() }));
     const first = render(<ThemeControls />);
     expect(document.documentElement.dataset.theme).toBe('light');
     expect(screen.queryByRole('button', { name: 'System theme' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Light theme' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Dark theme' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Light theme' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Dark theme' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Light theme' })).toHaveAttribute('aria-pressed', 'true');
     first.unmount();
   });
 

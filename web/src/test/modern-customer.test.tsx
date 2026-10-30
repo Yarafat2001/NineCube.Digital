@@ -20,7 +20,7 @@ describe('Modern customer controls', () => {
     expect(bell).toHaveClass('nav-control');
     expect(within(bell).getByTestId('unread-badge')).toHaveTextContent('9+');
     expect(screen.getByRole('button', { name: 'Account' })).toHaveClass('nav-control');
-    expect(screen.getByRole('group', { name: 'Language' })).toHaveClass('nav-control');
+    expect(screen.getByRole('group', { name: 'Language and colour theme' })).toHaveClass('nav-control');
   });
 
   it('portals the account menu and supports arrows, Home, End, Escape and outside close', async () => {
