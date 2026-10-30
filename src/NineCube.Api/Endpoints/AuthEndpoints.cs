@@ -15,7 +15,8 @@ public sealed class AuthEndpoints : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/auth")
-            .WithTags("Authentication");
+            .WithTags("Authentication")
+            .RequireRateLimiting("auth");
 
         group.MapPost("/register", RegisterAsync)
             .AllowAnonymous()

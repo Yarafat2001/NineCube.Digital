@@ -22,6 +22,7 @@ public sealed class OrderEndpoints : IEndpoint
 
         group.MapPost("/", PlaceOrderAsync)
             .RequireAuthorization(Policies.CustomerOnly)
+            .RequireRateLimiting("checkout")
             .WithName("PlaceOrder")
             .WithSummary("Places an order and reserves stock atomically. Send an Idempotency-Key header for safe retries.");
 

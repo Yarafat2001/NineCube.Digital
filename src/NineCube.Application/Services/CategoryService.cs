@@ -7,27 +7,34 @@ using NineCube.Domain;
 
 namespace NineCube.Application.Services;
 
-public sealed class CategoryService(IAppDbContext db, ISettingsService settings)
+public sealed class CategoryService(IAppDbContext db, ISettingsService settings, ICacheService cache)
 {
     public async Task<IReadOnlyList<CategoryDto>> TreeAsync(bool includeInactive, CancellationToken ct)
     {
-        var categories = await db.Categories.AsNoTracking().ToListAsync(ct);
-        var visible = Visible(categories, includeInactive);
-        var links = await db.ProductCategories.AsNoTracking().Select(x => new { x.CategoryId, x.ProductId, x.Product.StockQuantity, x.Product.IsActive }).ToListAsync(ct);
-        var threshold = await settings.GetLowStockThresholdAsync(ct);
-        CategoryDto Build(Category c)
-        {
-            var branch = visible.Where(x => x.Path.StartsWith(c.Path, StringComparison.Ordinal)).Select(x => x.Id).ToHashSet();
-            var products = links.Where(x => branch.Contains(x.CategoryId)).DistinctBy(x => x.ProductId).ToList();
-            var direct = links.Where(x => x.CategoryId == c.Id).ToList();
-            return new(c.Id, c.Name, c.Slug, c.ParentId, c.Path, c.Depth, c.SortOrder, c.IsActive,
-                products.Count, products.Count(x => x.IsActive && x.StockQuantity > 0),
-                products.Count(x => x.IsActive && x.StockQuantity <= threshold),
-                direct.Count, direct.Count(x => x.IsActive && x.StockQuantity > 0),
-                Breadcrumb(c, categories),
-                visible.Where(x => x.ParentId == c.Id).OrderBy(x => x.SortOrder).ThenBy(x => x.Name).Select(Build).ToList());
-        }
-        return visible.Where(x => x.ParentId == null).OrderBy(x => x.SortOrder).ThenBy(x => x.Name).Select(Build).ToList();
+        return await cache.GetOrCreateAsync(
+            $"categories:tree:{includeInactive}",
+            async token =>
+            {
+                var categories = await db.Categories.AsNoTracking().ToListAsync(token);
+                var visible = Visible(categories, includeInactive);
+                var links = await db.ProductCategories.AsNoTracking().Select(x => new { x.CategoryId, x.ProductId, x.Product.StockQuantity, x.Product.IsActive }).ToListAsync(token);
+                var threshold = await settings.GetLowStockThresholdAsync(token);
+                CategoryDto Build(Category c)
+                {
+                    var branch = visible.Where(x => x.Path.StartsWith(c.Path, StringComparison.Ordinal)).Select(x => x.Id).ToHashSet();
+                    var products = links.Where(x => branch.Contains(x.CategoryId)).DistinctBy(x => x.ProductId).ToList();
+                    var direct = links.Where(x => x.CategoryId == c.Id).ToList();
+                    return new(c.Id, c.Name, c.Slug, c.ParentId, c.Path, c.Depth, c.SortOrder, c.IsActive,
+                        products.Count, products.Count(x => x.IsActive && x.StockQuantity > 0),
+                        products.Count(x => x.IsActive && x.StockQuantity <= threshold),
+                        direct.Count, direct.Count(x => x.IsActive && x.StockQuantity > 0),
+                        Breadcrumb(c, categories),
+                        visible.Where(x => x.ParentId == c.Id).OrderBy(x => x.SortOrder).ThenBy(x => x.Name).Select(Build).ToList());
+                }
+                return visible.Where(x => x.ParentId == null).OrderBy(x => x.SortOrder).ThenBy(x => x.Name).Select(Build).ToList();
+            },
+            TimeSpan.FromMinutes(10),
+            ct);
     }
 
     public async Task<CategoryDto> GetAsync(int id, bool includeInactive, CancellationToken ct)
@@ -57,6 +64,7 @@ public sealed class CategoryService(IAppDbContext db, ISettingsService settings)
             if (lockResult[0] < 0) throw new ResourceConflictException("Category edits are busy. Try again.", "category_busy");
             var result = await action();
             await tx.CommitAsync(ct);
+            cache.RemoveByPrefix("categories:");
             return result;
         }
         catch
@@ -187,26 +195,33 @@ public sealed class CategoryService(IAppDbContext db, ISettingsService settings)
     /// </summary>
     public async Task<IReadOnlyList<TagDto>> TagsAsync(CancellationToken ct)
     {
-        var counts = await db.ProductTags.AsNoTracking()
-            .GroupBy(pt => pt.TagId)
-            .Select(g => new
+        return await cache.GetOrCreateAsync(
+            "categories:tags",
+            async token =>
             {
-                TagId = g.Key,
-                ProductCount = g.Count(),
-                InStockCount = g.Count(x => x.Product!.IsActive && x.Product.StockQuantity > 0)
-            })
-            .ToListAsync(ct);
+                var counts = await db.ProductTags.AsNoTracking()
+                    .GroupBy(pt => pt.TagId)
+                    .Select(g => new
+                    {
+                        TagId = g.Key,
+                        ProductCount = g.Count(),
+                        InStockCount = g.Count(x => x.Product!.IsActive && x.Product.StockQuantity > 0)
+                    })
+                    .ToListAsync(token);
 
-        var byTag = counts.ToDictionary(c => c.TagId);
+                var byTag = counts.ToDictionary(c => c.TagId);
 
-        var tags = await db.Tags.AsNoTracking().OrderBy(t => t.Name).ToListAsync(ct);
+                var tags = await db.Tags.AsNoTracking().OrderBy(t => t.Name).ToListAsync(token);
 
-        return tags
-            .Select(t =>
-            {
-                byTag.TryGetValue(t.Id, out var row);
-                return new TagDto(t.Id, t.Name, row?.ProductCount ?? 0, row?.InStockCount ?? 0);
-            })
-            .ToList();
+                return tags
+                    .Select(t =>
+                    {
+                        byTag.TryGetValue(t.Id, out var row);
+                        return new TagDto(t.Id, t.Name, row?.ProductCount ?? 0, row?.InStockCount ?? 0);
+                    })
+                    .ToList();
+            },
+            TimeSpan.FromMinutes(10),
+            ct);
     }
 }

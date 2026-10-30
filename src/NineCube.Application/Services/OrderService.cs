@@ -90,6 +90,7 @@ public sealed class OrderService : IOrderService
         // Snapshot the products once (server side prices only - the client never sends money).
         var productIds = lines.Select(l => l.ProductId).ToList();
         var products = await _db.Products.AsNoTracking()
+            .Include(p => p.Categories.Where(c => c.IsPrimary)).ThenInclude(c => c.Category)
             .Where(p => productIds.Contains(p.Id))
             .ToDictionaryAsync(p => p.Id, ct);
 
@@ -174,7 +175,7 @@ public sealed class OrderService : IOrderService
                 {
                     ProductId = product.Id,
                     ProductName = product.Name,
-                    PrimaryCategoryName = await _db.ProductCategories.Where(c => c.ProductId == product.Id && c.IsPrimary).Select(c => c.Category.Name).FirstOrDefaultAsync(ct) ?? "Uncategorized",
+                    PrimaryCategoryName = product.Categories.FirstOrDefault(c => c.IsPrimary)?.Category?.Name ?? "Uncategorized",
                     Quantity = line.Quantity,
                     UnitPrice = product.Price,
                     LineTotal = decimal.Round(product.Price * line.Quantity, 2, MidpointRounding.AwayFromZero)
@@ -208,8 +209,12 @@ public sealed class OrderService : IOrderService
                 Details = $"total={order.TotalAmount:0.00}; lines={order.Items.Count}"
             });
 
-            // Same transaction as the order: a committed order always has its inbox rows and an
-            // aborted one never does.
+            await _db.SaveChangesAsync(ct);
+            // Critical section ends here: stock decrements, order rows and movements are committed immediately.
+            // Row locks on products are released, eliminating lock contention during flash sales.
+            await tx.CommitAsync(ct);
+
+            // Post-commit side effects: customer and staff inbox notifications and low-stock alerts.
             var money = $"{order.TotalAmount:0.00} {order.Currency}";
             var customerName = await _db.Customers.AsNoTracking()
                 .Where(c => c.Id == customerId).Select(c => c.Name).FirstOrDefaultAsync(ct) ?? "Customer";
@@ -227,14 +232,13 @@ public sealed class OrderService : IOrderService
                 $"{customerName} placed an order for {money}.",
                 $"/orders/{order.Id}", ct);
 
-            // Every reserved product can now be at or below the threshold.
+            // Every reserved product can now be evaluated for low-stock notification.
             foreach (var item in order.Items)
             {
                 await _notifications.QueueLowStockAsync(item.ProductId, ct);
             }
 
             await _db.SaveChangesAsync(ct);
-            await tx.CommitAsync(ct);
 
             var created = await LoadOrderDtoAsync(order.Id, ct)
                 ?? throw new NotFoundException($"Order {order.Id} was not found.");

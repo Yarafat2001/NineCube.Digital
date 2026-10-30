@@ -6,24 +6,37 @@ namespace NineCube.Application.Services;
 
 /// <summary>
 /// The low stock threshold is a business value, not a code constant, so it lives in the
-/// Setting table and is editable by the Administrator at runtime.
+/// Setting table, is cached in memory, and is editable by the Administrator at runtime.
 /// </summary>
 public sealed class SettingsService : ISettingsService
 {
     public const int DefaultLowStockThreshold = 5;
+    private const string CacheKey = "settings:low_stock_threshold";
 
     private readonly IAppDbContext _db;
+    private readonly ICacheService _cache;
 
-    public SettingsService(IAppDbContext db) => _db = db;
+    public SettingsService(IAppDbContext db, ICacheService cache)
+    {
+        _db = db;
+        _cache = cache;
+    }
 
     public async Task<int> GetLowStockThresholdAsync(CancellationToken ct = default)
     {
-        var raw = await _db.Settings.AsNoTracking()
-            .Where(s => s.Key == SettingKeys.LowStockThreshold)
-            .Select(s => s.Value)
-            .FirstOrDefaultAsync(ct);
+        return await _cache.GetOrCreateAsync(
+            CacheKey,
+            async token =>
+            {
+                var raw = await _db.Settings.AsNoTracking()
+                    .Where(s => s.Key == SettingKeys.LowStockThreshold)
+                    .Select(s => s.Value)
+                    .FirstOrDefaultAsync(token);
 
-        return int.TryParse(raw, out var value) && value >= 0 ? value : DefaultLowStockThreshold;
+                return int.TryParse(raw, out var value) && value >= 0 ? value : DefaultLowStockThreshold;
+            },
+            TimeSpan.FromMinutes(10),
+            ct);
     }
 
     public async Task SetLowStockThresholdAsync(int value, CancellationToken ct = default)
@@ -42,5 +55,6 @@ public sealed class SettingsService : ISettingsService
         }
 
         await _db.SaveChangesAsync(ct);
+        _cache.Remove(CacheKey);
     }
 }

@@ -23,19 +23,22 @@ public sealed class AdminService : IAdminService
     private readonly IClock _clock;
     private readonly IPasswordHasherService _hasher;
     private readonly ISettingsService _settings;
+    private readonly ICacheService _cache;
 
     public AdminService(
         IAppDbContext db,
         ICurrentUser currentUser,
         IClock clock,
         IPasswordHasherService hasher,
-        ISettingsService settings)
+        ISettingsService settings,
+        ICacheService cache)
     {
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
         _hasher = hasher;
         _settings = settings;
+        _cache = cache;
     }
 
     public async Task<PagedResult<AdminUserDto>> ListUsersAsync(string? search, int page, int pageSize, CancellationToken ct = default)
@@ -149,6 +152,7 @@ public sealed class AdminService : IAdminService
         });
 
         await _db.SaveChangesAsync(ct);
+        _cache.Remove($"auth:user:{userId}");
         return Map(user);
     }
 
@@ -176,6 +180,7 @@ public sealed class AdminService : IAdminService
         });
 
         await _db.SaveChangesAsync(ct);
+        _cache.Remove($"auth:user:{userId}");
         return Map(user);
     }
 
@@ -229,6 +234,7 @@ public sealed class AdminService : IAdminService
             Details = $"{before} -> {settings.LowStockThreshold}"
         });
         await _db.SaveChangesAsync(ct);
+        _cache.Remove("settings:low_stock_threshold");
 
         return new SettingsDto(settings.LowStockThreshold);
     }

@@ -8,11 +8,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using NineCube.Application.Abstractions;
+using NineCube.Domain;
+using NineCube.Infrastructure.Caching;
 using NineCube.Infrastructure.Identity;
 using NineCube.Infrastructure.Persistence;
 using NineCube.Infrastructure.Storage;
 
 namespace NineCube.Infrastructure;
+
+public sealed record CachedUserInfo(int Id, string Email, UserRole Role, int? CustomerId, bool IsActive);
 
 public static class DependencyInjection
 {
@@ -25,6 +29,9 @@ public static class DependencyInjection
         // handled by ITransientErrorPolicy, which understands which errors are actually retryable.
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+
+        services.AddMemoryCache();
+        services.AddSingleton<ICacheService, MemoryCacheService>();
 
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
@@ -84,11 +91,20 @@ public static class DependencyInjection
                             return;
                         }
 
+                        var cache = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
                         var db = context.HttpContext.RequestServices.GetRequiredService<IAppDbContext>();
-                        var user = await db.Users.AsNoTracking()
-                            .Where(u => u.Id == userId)
-                            .Select(u => new { u.Id, u.Email, u.Role, u.CustomerId, u.IsActive })
-                            .FirstOrDefaultAsync(context.HttpContext.RequestAborted);
+
+                        var user = await cache.GetOrCreateAsync(
+                            $"auth:user:{userId}",
+                            async ct =>
+                            {
+                                return await db.Users.AsNoTracking()
+                                    .Where(u => u.Id == userId)
+                                    .Select(u => new CachedUserInfo(u.Id, u.Email, u.Role, u.CustomerId, u.IsActive))
+                                    .FirstOrDefaultAsync(ct);
+                            },
+                            TimeSpan.FromSeconds(30),
+                            context.HttpContext.RequestAborted);
 
                         if (user is null)
                         {

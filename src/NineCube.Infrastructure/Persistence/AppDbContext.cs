@@ -145,6 +145,9 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.HasIndex(p => p.Name);
             e.HasIndex(p => p.BrandId);
             e.HasIndex(p => p.ProductLineId);
+            e.HasIndex(p => new { p.IsActive, p.Price, p.Id });
+            e.HasIndex(p => new { p.IsActive, p.StockQuantity, p.Id });
+            e.HasIndex(p => new { p.IsActive, p.CreatedAt, p.Id });
             // Deleting a brand or series must never silently rewrite products.
             e.HasOne(p => p.Brand).WithMany().HasForeignKey(p => p.BrandId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(p => p.ProductLine).WithMany().HasForeignKey(p => p.ProductLineId).OnDelete(DeleteBehavior.Restrict);
@@ -233,6 +236,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
             e.HasIndex(o => o.Status);
             e.HasIndex(o => o.CreatedAt);
+            e.HasIndex(o => new { o.CustomerId, o.CreatedAt });
 
             e.HasOne(o => o.Customer)
                 .WithMany(c => c.Orders)
@@ -273,6 +277,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(m => m.CreatedAt);
             e.HasIndex(m => m.ProductId);
             e.HasIndex(m => m.OrderId);
+            e.HasIndex(m => new { m.ProductId, m.CreatedAt });
 
             e.HasOne(m => m.Product)
                 .WithMany()

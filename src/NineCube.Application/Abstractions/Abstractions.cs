@@ -65,6 +65,14 @@ public interface IClock
     DateTime UtcNow { get; }
 }
 
+/// <summary>High-performance in-memory and distributed caching abstraction.</summary>
+public interface ICacheService
+{
+    Task<T> GetOrCreateAsync<T>(string key, Func<CancellationToken, Task<T>> factory, TimeSpan? expiration = null, CancellationToken ct = default);
+    void Remove(string key);
+    void RemoveByPrefix(string prefix);
+}
+
 /// <summary>Reads and writes the DB-backed application settings (e.g. low stock threshold).</summary>
 public interface ISettingsService
 {

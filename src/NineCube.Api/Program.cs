@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using FluentValidation;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -63,6 +65,74 @@ builder.Services.AddCors(options => options.AddPolicy("spa", policy => policy
     .AllowAnyHeader()
     .AllowAnyMethod()));
 
+// ---------------------------------------------------------------- rate limiting
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, _) =>
+    {
+        await ProblemDetailsFactoryExtensions.WriteProblemAsync(
+            context.HttpContext,
+            StatusCodes.Status429TooManyRequests,
+            "rate_limit_exceeded",
+            "Too Many Requests.",
+            "You have sent too many requests. Please wait before retrying.");
+    };
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        if (builder.Environment.IsEnvironment("Testing") || httpContext.Request.Path.StartsWithSegments("/health"))
+        {
+            return RateLimitPartition.GetNoLimiter("unlimited");
+        }
+
+        var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+        return RateLimitPartition.GetSlidingWindowLimiter(
+            clientIp,
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 300,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 6,
+                QueueLimit = 0
+            });
+    });
+
+    options.AddPolicy("auth", httpContext =>
+    {
+        if (builder.Environment.IsEnvironment("Testing"))
+            return RateLimitPartition.GetNoLimiter("unlimited");
+
+        var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+        return RateLimitPartition.GetSlidingWindowLimiter(
+            clientIp,
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 6,
+                QueueLimit = 0
+            });
+    });
+
+    options.AddPolicy("checkout", httpContext =>
+    {
+        if (builder.Environment.IsEnvironment("Testing"))
+            return RateLimitPartition.GetNoLimiter("unlimited");
+
+        var key = httpContext.User.Identity?.Name ?? httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous";
+        return RateLimitPartition.GetSlidingWindowLimiter(
+            key,
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 4,
+                QueueLimit = 0
+            });
+    });
+});
+
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>("postgres");
 
 builder.Services.AddEndpointsApiExplorer();
@@ -120,6 +190,7 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseSerilogRequestLogging();
 app.UseCors("spa");
+app.UseRateLimiter();
 
 // Uploaded product media is served straight from the storage folder, outside the build output, so the
 // files a merchant uploaded survive a restart or a redeploy. <img> requests cannot carry a bearer token,
