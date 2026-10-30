@@ -109,15 +109,16 @@ describe('Light theme tokens', () => {
     expect(valueOf(lightBlock, '--surface-glass')).not.toBe(valueOf(lightBlock, '--surface'));
   });
 
-  it('defaults to Light theme with toggle buttons present', () => {
+  it('defaults to Light theme with a single toggle button', () => {
     localStorage.clear();
     render(<ThemeControls />);
     expect(document.documentElement.dataset.theme).toBe('light');
     expect(screen.queryByRole('button', { name: 'System theme' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Light theme' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Dark theme' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Light theme' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: 'Dark theme' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.queryByRole('button', { name: 'Light theme' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Dark theme' })).not.toBeInTheDocument();
+    const toggle = screen.getByRole('button', { name: 'Switch to dark theme' });
+    expect(toggle).toBeInTheDocument();
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
     delete document.documentElement.dataset.theme;
   });
 

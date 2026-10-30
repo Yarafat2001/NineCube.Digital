@@ -19,7 +19,9 @@ test('products page surfaces differ in light and dark, drawer at mobile', async 
 
   await page.setViewportSize({ width: 1280, height: 900 });
   for (const theme of ['light', 'dark'] as const) {
-    await page.getByRole('button', { name: `${theme === 'light' ? 'Light' : 'Dark'} theme` }).click();
+    if ((await page.locator('html').getAttribute('data-theme')) !== theme) {
+      await page.getByRole('button', { name: `Switch to ${theme === 'light' ? 'light' : 'dark'} theme` }).click();
+    }
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await page.waitForTimeout(300);
     const surfaces = await page.evaluate(() => {
@@ -51,7 +53,9 @@ test('products page surfaces differ in light and dark, drawer at mobile', async 
 
   // Mobile drawer at 390px.
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.getByRole('button', { name: 'Light theme' }).click();
+  if ((await page.locator('html').getAttribute('data-theme')) !== 'light') {
+    await page.getByRole('button', { name: 'Switch to light theme' }).click();
+  }
   // The panel trigger, not the identical button in the mobile bottom bar.
   await page.locator('.category-filter-trigger').click();
   await expect(page.getByRole('dialog')).toBeVisible();
