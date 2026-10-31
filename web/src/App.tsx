@@ -26,6 +26,7 @@ const AdminPage = lazy(() => import('./pages/AdminPage').then((module) => ({ def
 const AccountDashboardPage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.AccountDashboardPage })));
 const ProfilePage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.ProfilePage })));
 const NotificationsPage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.NotificationsPage })));
+const GiftCardsPage = lazy(() => import('./pages/GiftCardsPage').then((module) => ({ default: module.GiftCardsPage })));
 
 function RouteFallback() {
   useLanguage();
@@ -183,6 +184,8 @@ export function App() {
                 </RequireRole>
               }
             />
+
+            <Route path="/gift-cards" element={<GiftCardsPage />} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

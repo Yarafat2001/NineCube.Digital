@@ -288,7 +288,8 @@ export function AccountMenu() {
     { to: '/account', label: 'Dashboard', icon: 'grid' }, { to: '/account/profile', label: 'Profile', icon: 'user' },
     ...(user.role === 'Customer' ? [
       { to: '/orders', label: 'My Orders', icon: 'box' as const },
-      { to: '/wishlist', label: 'Wishlist', icon: 'heart' as const }
+      { to: '/wishlist', label: 'Wishlist', icon: 'heart' as const },
+      { to: '/gift-cards', label: 'Gift Cards', icon: 'wallet' as const }
     ] : []),
     { to: '/notifications', label: 'Notifications', icon: 'bell' }
   ];

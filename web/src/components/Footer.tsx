@@ -14,7 +14,7 @@ export function Footer() {
         <Link to={user ? '/products' : '/'} className="site-footer__brand"><Brand /></Link>
         <p className="site-footer__description">{t("Orders and inventory, in one place.")}</p>
         <nav aria-label={t("Footer")} className="site-footer__links">
-          <Link to={user ? workspace : '/'}>{t(user ? 'Workspace' : 'Home')}</Link><Link to="/products">{t("Catalogue")}</Link>
+          <Link to={user ? workspace : '/'}>{t(user ? 'Workspace' : 'Home')}</Link><Link to="/products">{t("Catalogue")}</Link><Link to="/gift-cards">{t("Gift Cards")}</Link>
         </nav>
         <div className="site-footer__bottom">
           <p>{t("© ")}{t(new Date().getFullYear())} {t(" NineCube.Digital")}</p>
