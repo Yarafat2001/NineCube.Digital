@@ -286,6 +286,10 @@ namespace NineCube.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CampaignTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -308,8 +312,28 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsAutomatic")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsBannerPromoted")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal?>("MaxDiscountCap")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("MinOrderAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("StartsAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("TargetId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TargetType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<int>("UsageCount")
                         .HasColumnType("integer");
@@ -651,6 +675,9 @@ namespace NineCube.Infrastructure.Persistence.Migrations
 
                     b.Property<int?>("BrandId")
                         .HasColumnType("integer");
+
+                    b.Property<decimal?>("CompareAtPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
