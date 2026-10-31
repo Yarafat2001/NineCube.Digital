@@ -10,9 +10,13 @@ import {
   useUpdateSettings,
   useCoupons,
   useCreateCoupon,
-  useToggleCouponStatus
+  useToggleCouponStatus,
+  useCategories,
+  useBrands,
+  useProducts
 } from '../api/hooks';
-import type { CouponTargetType, UserRole } from '../api/types';
+import type { Coupon, CouponTargetType, UserRole } from '../api/types';
+import { flattenCategories } from '../components/CategoryFilters';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, useToast } from '../components/ui';
 import { formatDateTime, roleLabels, useDebouncedValue } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -65,6 +69,18 @@ export function AdminPage() {
   const [maxDiscountCap, setMaxDiscountCap] = useState('');
   const [campaignTitle, setCampaignTitle] = useState('');
   const [isBannerPromoted, setIsBannerPromoted] = useState(false);
+  const [targetId, setTargetId] = useState<number | null>(null);
+  const [startsAt, setStartsAt] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
+  const [isAutomatic, setIsAutomatic] = useState(false);
+
+  // Dynamic catalog targeting queries
+  const categoriesQuery = useCategories();
+  const allCategories = flattenCategories(categoriesQuery.data ?? []);
+  const brandsQuery = useBrands({ q: '' });
+  const allBrands = brandsQuery.data ?? [];
+  const productsQuery = useProducts({ q: '', page: 1, pageSize: 100 });
+  const allProducts = productsQuery.data?.items ?? [];
 
   const submitUser = async (event: FormEvent) => {
     event.preventDefault();
@@ -100,6 +116,11 @@ export function AdminPage() {
     event.preventDefault();
     if (!couponCode.trim()) return;
 
+    if (couponTargetType !== 'Order' && !targetId) {
+      toast.push('error', 'Please select a specific target (category, brand, or product).');
+      return;
+    }
+
     try {
       const created = await createCoupon.mutateAsync({
         code: couponCode.trim().toUpperCase(),
@@ -108,6 +129,10 @@ export function AdminPage() {
         minOrderAmount: Number(minOrderAmount || 0),
         usageLimit: usageLimit ? Number(usageLimit) : null,
         targetType: couponTargetType,
+        targetId: couponTargetType === 'Order' ? null : targetId,
+        startsAt: startsAt ? new Date(startsAt).toISOString() : null,
+        expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
+        isAutomatic,
         maxDiscountCap: maxDiscountCap ? Number(maxDiscountCap) : null,
         campaignTitle: campaignTitle.trim() || null,
         isBannerPromoted
@@ -121,9 +146,29 @@ export function AdminPage() {
       setCampaignTitle('');
       setIsBannerPromoted(false);
       setCouponTargetType('Order');
+      setTargetId(null);
+      setStartsAt('');
+      setExpiresAt('');
+      setIsAutomatic(false);
     } catch (caught) {
       toast.pushError(caught);
     }
+  };
+
+  const resolveTargetLabel = (c: Coupon) => {
+    if (c.targetType === 'Category' && c.targetId) {
+      const cat = allCategories.find((x) => x.id === c.targetId);
+      return cat ? `📁 ${cat.name}` : `📁 ${t("Category")} #${c.targetId}`;
+    }
+    if (c.targetType === 'Brand' && c.targetId) {
+      const b = allBrands.find((x) => x.id === c.targetId);
+      return b ? `🏷️ ${b.name}` : `🏷️ ${t("Brand")} #${c.targetId}`;
+    }
+    if (c.targetType === 'Product' && c.targetId) {
+      const p = allProducts.find((x) => x.id === c.targetId);
+      return p ? `📦 ${p.name}` : `📦 ${t("Product")} #${c.targetId}`;
+    }
+    return `🛒 ${t("All products (Order)")}`;
   };
 
   return (
@@ -448,7 +493,10 @@ export function AdminPage() {
               <select
                 id="coupon-target-type"
                 value={couponTargetType}
-                onChange={(e) => setCouponTargetType(e.target.value as CouponTargetType)}
+                onChange={(e) => {
+                  setCouponTargetType(e.target.value as CouponTargetType);
+                  setTargetId(null);
+                }}
               >
                 <option value="Order">{t("Entire Order / Basket")}</option>
                 <option value="Category">{t("Specific Category (e.g. Footwear)")}</option>
@@ -456,6 +504,63 @@ export function AdminPage() {
                 <option value="Product">{t("Specific Product")}</option>
               </select>
             </div>
+
+            {couponTargetType === 'Category' && (
+              <div className="field">
+                <label htmlFor="coupon-target-category">{t("Target Category")}</label>
+                <select
+                  id="coupon-target-category"
+                  required
+                  value={targetId ?? ''}
+                  onChange={(e) => setTargetId(e.target.value ? Number(e.target.value) : null)}
+                >
+                  <option value="">{t("Choose a category...")}</option>
+                  {allCategories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {couponTargetType === 'Brand' && (
+              <div className="field">
+                <label htmlFor="coupon-target-brand">{t("Target Brand")}</label>
+                <select
+                  id="coupon-target-brand"
+                  required
+                  value={targetId ?? ''}
+                  onChange={(e) => setTargetId(e.target.value ? Number(e.target.value) : null)}
+                >
+                  <option value="">{t("Choose a brand...")}</option>
+                  {allBrands.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {couponTargetType === 'Product' && (
+              <div className="field">
+                <label htmlFor="coupon-target-product">{t("Target Product")}</label>
+                <select
+                  id="coupon-target-product"
+                  required
+                  value={targetId ?? ''}
+                  onChange={(e) => setTargetId(e.target.value ? Number(e.target.value) : null)}
+                >
+                  <option value="">{t("Choose a product...")}</option>
+                  {allProducts.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({p.sku})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div className="field">
               <label htmlFor="coupon-max-cap">{t("Max discount cap (BDT, optional)")}</label>
@@ -471,6 +576,26 @@ export function AdminPage() {
             </div>
 
             <div className="field">
+              <label htmlFor="coupon-starts-at">{t("Start date & time (optional)")}</label>
+              <input
+                id="coupon-starts-at"
+                type="datetime-local"
+                value={startsAt}
+                onChange={(e) => setStartsAt(e.target.value)}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="coupon-expires-at">{t("Expiration date & time (optional)")}</label>
+              <input
+                id="coupon-expires-at"
+                type="datetime-local"
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.target.value)}
+              />
+            </div>
+
+            <div className="field">
               <label htmlFor="coupon-campaign-title">{t("Campaign banner title (optional)")}</label>
               <input
                 id="coupon-campaign-title"
@@ -481,14 +606,65 @@ export function AdminPage() {
               />
             </div>
 
-            <label className="checkbox" style={{ alignSelf: 'center', marginTop: 'var(--space-4)' }}>
-              <input
-                type="checkbox"
-                checked={isBannerPromoted}
-                onChange={(e) => setIsBannerPromoted(e.target.checked)}
-              />
-              <span>{t("Show in top announcement banner")}</span>
-            </label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignSelf: 'center', marginTop: 'var(--space-4)' }}>
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  checked={isBannerPromoted}
+                  onChange={(e) => setIsBannerPromoted(e.target.checked)}
+                />
+                <span>{t("Show in top announcement banner")}</span>
+              </label>
+
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  checked={isAutomatic}
+                  onChange={(e) => setIsAutomatic(e.target.checked)}
+                />
+                <span>{t("Apply automatically in cart")}</span>
+              </label>
+            </div>
+
+            {/* Live Discount Rule Summary Preview */}
+            <div
+              className="card-glass"
+              style={{
+                gridColumn: '1 / -1',
+                padding: 'var(--space-3) var(--space-4)',
+                borderRadius: 'var(--radius-md, 8px)',
+                background: 'rgba(245, 158, 11, 0.08)',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                flexWrap: 'wrap'
+              }}
+            >
+              <span style={{ fontSize: '1.25rem' }}>⚡</span>
+              <div style={{ flex: 1, minWidth: '220px' }}>
+                <strong style={{ display: 'block', fontSize: 'var(--text-sm)', color: 'var(--brand, #f59e0b)' }}>
+                  {t("Rule Preview")}: {couponCode.trim() ? couponCode.trim().toUpperCase() : t("DISCOUNT_CODE")}
+                </strong>
+                <span className="muted" style={{ fontSize: 'var(--text-xs)' }}>
+                  {discountType === 'Percentage' ? `${discountValue || '0'}% ${t("OFF")}` : `${t("BDT")} ${discountValue || '0'} ${t("OFF")}`}
+                  {' · '}
+                  {couponTargetType === 'Order'
+                    ? t("All products (Order)")
+                    : couponTargetType === 'Category'
+                    ? `${t("Category")}: ${allCategories.find((c) => c.id === targetId)?.name ?? t("Select category")}`
+                    : couponTargetType === 'Brand'
+                    ? `${t("Brand")}: ${allBrands.find((b) => b.id === targetId)?.name ?? t("Select brand")}`
+                    : `${t("Product")}: ${allProducts.find((p) => p.id === targetId)?.name ?? t("Select product")}`}
+                  {maxDiscountCap ? ` · ${t("Max savings")} ${t("BDT")} ${maxDiscountCap}` : ''}
+                  {Number(minOrderAmount) > 0 ? ` · ${t("Min order")} ${t("BDT")} ${minOrderAmount}` : ''}
+                  {campaignTitle ? ` · 📢 "${campaignTitle}"` : ''}
+                  {isAutomatic ? ` · 🤖 ${t("Automatic")}` : ''}
+                  {startsAt ? ` · 📅 ${t("Starts:")} ${startsAt.replace('T', ' ')}` : ''}
+                  {expiresAt ? ` · ⌛ ${t("Expires:")} ${expiresAt.replace('T', ' ')}` : ''}
+                </span>
+              </div>
+            </div>
 
             <div className="form-actions" style={{ alignSelf: 'flex-end' }}>
               <button type="submit" className="btn btn--primary" disabled={createCoupon.isPending || !couponCode.trim() || !discountValue}>
@@ -521,7 +697,17 @@ export function AdminPage() {
                     {(couponsQuery.data ?? []).map((c) => (
                       <tr key={c.id}>
                         <td><strong>{c.code}</strong></td>
-                        <td>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}{c.targetType && c.targetType !== 'Order' ? ` · ${t(c.targetType)}` : ''}</td>
+                        <td>
+                          <div>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}</div>
+                          <small className="muted" style={{ display: 'block', fontSize: 'var(--text-xs)' }}>
+                            {resolveTargetLabel(c)}
+                          </small>
+                          {c.isAutomatic ? (
+                            <span className="badge" style={{ fontSize: '10px', background: 'var(--surface-sunken)', marginTop: '2px' }}>
+                              🤖 {t("Automatic")}
+                            </span>
+                          ) : null}
+                        </td>
                         <td className="num">{c.discountType === 'Percentage' ? `${c.discountValue}%` : `${t("BDT")} ${c.discountValue}`}{c.maxDiscountCap ? <><br /><small className="muted">{t("Cap:")} {t("BDT")} {c.maxDiscountCap}</small></> : null}</td>
                         <td className="num">{c.minOrderAmount > 0 ? `BDT ${c.minOrderAmount}` : t("None")}</td>
                         <td className="num">{c.usageCount}{c.usageLimit ? ` / ${c.usageLimit}` : ''}</td>
@@ -530,6 +716,15 @@ export function AdminPage() {
                           <span className={`badge ${c.isActive ? 'badge--ok' : 'badge--neutral'}`}>
                             {t(c.isActive ? 'Active' : 'Disabled')}
                           </span>
+                          {c.expiresAt && new Date(c.expiresAt) < new Date() ? (
+                            <span className="badge badge--neutral" style={{ display: 'block', marginTop: '3px', fontSize: '10px' }}>
+                              {t("Expired")}
+                            </span>
+                          ) : c.startsAt && new Date(c.startsAt) > new Date() ? (
+                            <span className="badge badge--warn" style={{ display: 'block', marginTop: '3px', fontSize: '10px' }}>
+                              {t("Scheduled")}
+                            </span>
+                          ) : null}
                         </td>
                         <td className="actions">
                           <button
