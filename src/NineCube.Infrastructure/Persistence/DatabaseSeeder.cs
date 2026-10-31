@@ -38,6 +38,7 @@ public static class DatabaseSeeder
         await SeedSettingsAsync(db, configuration, ct);
         await SeedProductsAsync(db, ct);
         await SeedCouponsAsync(db, ct);
+        await SeedGiftCardsAsync(db, ct);
         await ProductionCatalogImporter.ImportAsync(db, logger, ct);
 
         // The brand/series facet is derived from rows that already exist (see BrandCatalogImporter), so it
@@ -68,6 +69,53 @@ public static class DatabaseSeeder
         // variables so the system is never locked out when no admin exists. Idempotent —
         // an existing admin is never overwritten. The password is never committed.
         await SeedProductionAdminAsync(db, hasher, logger, ct);
+    }
+
+    private static async Task SeedGiftCardsAsync(AppDbContext db, CancellationToken ct)
+    {
+        if (await db.GiftCards.AnyAsync(ct)) return;
+
+        db.GiftCards.AddRange(
+            new GiftCard
+            {
+                Code = "GC-WELCOME-1000",
+                InitialBalance = 1000,
+                CurrentBalance = 1000,
+                Currency = "BDT",
+                RecipientName = "Valued Customer",
+                RecipientEmail = "customer@ninecube.digital",
+                Note = "Welcome to NineCube Digital! Enjoy your shopping.",
+                IsActive = true,
+                ExpiresAt = DateTime.UtcNow.AddYears(1),
+                CreatedAt = DateTime.UtcNow
+            },
+            new GiftCard
+            {
+                Code = "GC-EID2026-2500",
+                InitialBalance = 2500,
+                CurrentBalance = 2500,
+                Currency = "BDT",
+                RecipientName = "Eid Celebrant",
+                Note = "Eid Mubarak! May your celebration be filled with joy.",
+                IsActive = true,
+                ExpiresAt = DateTime.UtcNow.AddYears(1),
+                CreatedAt = DateTime.UtcNow
+            },
+            new GiftCard
+            {
+                Code = "GC-VIP-5000",
+                InitialBalance = 5000,
+                CurrentBalance = 3500,
+                Currency = "BDT",
+                RecipientName = "VIP Member",
+                RecipientEmail = "vip@ninecube.digital",
+                Note = "Exclusive VIP Reward Balance.",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            }
+        );
+
+        await db.SaveChangesAsync(ct);
     }
 
     private static async Task SeedCouponsAsync(AppDbContext db, CancellationToken ct)

@@ -41,6 +41,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     public DbSet<Address> Addresses => Set<Address>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<Coupon> Coupons => Set<Coupon>();
+    public DbSet<GiftCard> GiftCards => Set<GiftCard>();
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
@@ -234,6 +235,9 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.HasKey(o => o.Id);
             e.Property(o => o.Status).HasConversion<string>().HasMaxLength(32).IsRequired();
             e.Property(o => o.TotalAmount).HasColumnType("decimal(18,2)");
+            e.Property(o => o.CouponCode).HasMaxLength(50);
+            e.Property(o => o.GiftCardCode).HasMaxLength(50);
+            e.Property(o => o.GiftCardAmount).HasColumnType("decimal(18,2)");
             e.Property(o => o.CreatedAt);
             e.Property(o => o.UpdatedAt);
             e.Property(o => o.IdempotencyKey).HasMaxLength(200);
@@ -332,6 +336,21 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(c => c.CampaignTitle).HasMaxLength(200);
             e.Property(c => c.CreatedAt);
             e.HasIndex(c => c.Code).IsUnique();
+        });
+
+        modelBuilder.Entity<GiftCard>(e =>
+        {
+            e.ToTable("GiftCards");
+            e.HasKey(g => g.Id);
+            e.Property(g => g.Code).HasMaxLength(50).IsRequired();
+            e.Property(g => g.InitialBalance).HasColumnType("decimal(18,2)");
+            e.Property(g => g.CurrentBalance).HasColumnType("decimal(18,2)");
+            e.Property(g => g.Currency).HasMaxLength(3).IsRequired();
+            e.Property(g => g.RecipientEmail).HasMaxLength(256);
+            e.Property(g => g.RecipientName).HasMaxLength(150);
+            e.Property(g => g.Note).HasMaxLength(500);
+            e.Property(g => g.CreatedAt);
+            e.HasIndex(g => g.Code).IsUnique();
         });
 
         modelBuilder.Entity<PaymentTransaction>(e =>

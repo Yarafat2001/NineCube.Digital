@@ -3,8 +3,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ApiError, apiRequest } from '../api/client';
-import { usePlaceOrder, useValidateCoupon, useProcessPayment, useProfile } from '../api/hooks';
-import type { Order, Product, ShortItem, CouponValidationResult, PaymentMethod } from '../api/types';
+import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useProcessPayment, useProfile } from '../api/hooks';
+import type { Order, Product, ShortItem, CouponValidationResult, ValidateGiftCardResult, PaymentMethod } from '../api/types';
 import { Link } from 'react-router-dom';
 import { createIdempotencyKey, formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -40,11 +40,16 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
 
   const { data: profile } = useProfile();
   const validateCoupon = useValidateCoupon();
+  const validateGiftCard = useValidateGiftCard();
   const processPayment = useProcessPayment();
 
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
+
+  const [giftCardCode, setGiftCardCode] = useState('');
+  const [appliedGiftCard, setAppliedGiftCard] = useState<ValidateGiftCardResult | null>(null);
+  const [giftCardError, setGiftCardError] = useState<string | null>(null);
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CashOnDelivery');
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
@@ -57,7 +62,10 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
   }, [profile, selectedAddressId]);
 
   const discountAmount = appliedCoupon?.isValid ? appliedCoupon.discountAmount : 0;
-  const finalTotal = Math.max(0, cart.total - discountAmount);
+  const amountAfterCoupon = Math.max(0, cart.total - discountAmount);
+  const giftCardDeduction = appliedGiftCard?.isValid ? Math.min(amountAfterCoupon, appliedGiftCard.currentBalance) : 0;
+  const remainingGiftCardBalance = appliedGiftCard?.isValid ? appliedGiftCard.currentBalance - giftCardDeduction : 0;
+  const finalTotal = Math.max(0, amountAfterCoupon - giftCardDeduction);
 
   const applyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -81,6 +89,30 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
     setAppliedCoupon(null);
     setCouponCode('');
     setCouponError(null);
+  };
+
+  const applyGiftCard = async () => {
+    if (!giftCardCode.trim()) return;
+    setGiftCardError(null);
+    try {
+      const res = await validateGiftCard.mutateAsync(giftCardCode.trim());
+      if (res.isValid) {
+        setAppliedGiftCard(res);
+        toast.push('success', `Gift card applied: BDT ${res.currentBalance.toLocaleString()} available.`);
+      } else {
+        setAppliedGiftCard(null);
+        setGiftCardError(res.reason ?? 'Invalid gift card code.');
+      }
+    } catch (err: any) {
+      setAppliedGiftCard(null);
+      setGiftCardError(err.message ?? 'Failed to validate gift card.');
+    }
+  };
+
+  const removeGiftCard = () => {
+    setAppliedGiftCard(null);
+    setGiftCardCode('');
+    setGiftCardError(null);
   };
 
   const idempotencyKey = useRef<string | null>(null);
@@ -129,7 +161,8 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
       const order = await placeOrder.mutateAsync({
         items: cart.lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
         couponCode: appliedCoupon?.code ?? undefined,
-        paymentMethod,
+        giftCardCode: appliedGiftCard?.code ?? undefined,
+        paymentMethod: finalTotal === 0 ? 'CashOnDelivery' : paymentMethod,
         idempotencyKey: idempotencyKey.current
       });
 
@@ -315,6 +348,47 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
             {couponError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: '4px 0 0 0' }}>{t(couponError)}</p>}
           </div>
 
+          {/* Gift Card Code */}
+          <div className="cart-giftcard-block">
+            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>🎁 {t("Gift card")}</span>
+            {appliedGiftCard?.isValid ? (
+              <div className="stack" style={{ gap: '4px', padding: '8px 10px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '6px', border: '1px solid rgba(99, 102, 241, 0.4)' }}>
+                <div className="row-between">
+                  <span style={{ color: 'var(--accent, #a78bfa)', fontWeight: 700, fontSize: 'var(--text-sm)', fontFamily: 'monospace' }}>
+                    🎁 {appliedGiftCard.code}
+                  </span>
+                  <button type="button" className="link-button" onClick={removeGiftCard} style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)' }}>
+                    {t("Remove")}
+                  </button>
+                </div>
+                <div className="row-between" style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)' }}>
+                  <span>{t("Applied to order:")} -{formatMoney(giftCardDeduction, cart.currency)}</span>
+                  <span>{t("Remaining balance:")} {formatMoney(remainingGiftCardBalance, cart.currency)}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="row" style={{ gap: 'var(--space-2)' }}>
+                <input
+                  type="text"
+                  placeholder={t("Enter gift card code (e.g. GC-...)")}
+                  value={giftCardCode}
+                  onChange={e => setGiftCardCode(e.target.value.toUpperCase())}
+                  aria-label={t("Gift card code")}
+                  style={{ flex: 1, padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--border)', textTransform: 'uppercase', fontFamily: 'monospace' }}
+                />
+                <button
+                  type="button"
+                  className="btn btn--sm"
+                  onClick={applyGiftCard}
+                  disabled={validateGiftCard.isPending || !giftCardCode.trim()}
+                >
+                  {t(validateGiftCard.isPending ? 'Checking…' : 'Apply')}
+                </button>
+              </div>
+            )}
+            {giftCardError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: '4px 0 0 0' }}>{t(giftCardError)}</p>}
+          </div>
+
           {/* Payment Method */}
           <div className="cart-payment-block">
             <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>{t("Payment method")}</span>
@@ -364,6 +438,17 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
         <div className="row-between" style={{ fontSize: 'var(--text-sm)', color: 'var(--ok, #10b981)', marginBottom: 'var(--space-2)' }}>
           <span>{t("Discount")}</span>
           <span>-{t(formatMoney(discountAmount, cart.currency))}</span>
+        </div>
+      )}
+      {giftCardDeduction > 0 && (
+        <div className="row-between" style={{ fontSize: 'var(--text-sm)', color: 'var(--accent, #a78bfa)', marginBottom: 'var(--space-2)' }}>
+          <span>{t("Gift Card Applied")}</span>
+          <span>-{t(formatMoney(giftCardDeduction, cart.currency))}</span>
+        </div>
+      )}
+      {finalTotal === 0 && giftCardDeduction > 0 && (
+        <div style={{ padding: '6px 10px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--ok, #10b981)', borderRadius: '6px', fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)', marginBottom: 'var(--space-2)' }}>
+          ✓ {t("Your entire order is covered by this Gift Card!")}
         </div>
       )}
 

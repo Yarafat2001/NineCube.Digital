@@ -118,6 +118,8 @@ export interface Order {
   subTotal?: number;
   discountAmount?: number;
   couponCode?: string | null;
+  giftCardCode?: string | null;
+  giftCardAmount?: number;
   shippingAmount?: number;
   paymentStatus?: PaymentStatus;
   paymentMethod?: PaymentMethod;
@@ -356,4 +358,43 @@ export interface WishlistItem {
 export interface ForgotPasswordResponse {
   message: string;
   demoResetToken?: string | null;
+}
+
+
+export interface GiftCard {
+  id: number;
+  code: string;
+  initialBalance: number;
+  currentBalance: number;
+  currency: string;
+  recipientEmail: string | null;
+  recipientName: string | null;
+  note: string | null;
+  isActive: boolean;
+  expiresAt: string | null;
+  createdAt: string;
+  lastUsedAt: string | null;
+}
+
+export interface CreateGiftCardInput {
+  initialBalance: number;
+  code?: string;
+  recipientEmail?: string;
+  recipientName?: string;
+  note?: string;
+  expiresAt?: string | null;
+}
+
+export interface AdjustGiftCardBalanceInput {
+  newBalance: number;
+  reason?: string;
+}
+
+export interface ValidateGiftCardResult {
+  isValid: boolean;
+  code: string | null;
+  currentBalance: number;
+  currency: string;
+  recipientName: string | null;
+  reason: string | null;
 }

@@ -96,3 +96,42 @@ public sealed record WishlistItemDto(
     string? ImageUrl,
     bool InStock,
     DateTime AddedAt);
+
+
+// ---------------------------------------------------------------- Gift Cards
+public sealed record GiftCardDto(
+    int Id,
+    string Code,
+    decimal InitialBalance,
+    decimal CurrentBalance,
+    string Currency,
+    string? RecipientEmail,
+    string? RecipientName,
+    string? Note,
+    bool IsActive,
+    DateTime? ExpiresAt,
+    DateTime CreatedAt,
+    DateTime? LastUsedAt);
+
+public sealed record CreateGiftCardRequest(
+    decimal InitialBalance,
+    string? Code = null,
+    string? RecipientEmail = null,
+    string? RecipientName = null,
+    string? Note = null,
+    DateTime? ExpiresAt = null);
+
+public sealed record AdjustGiftCardBalanceRequest(
+    decimal NewBalance,
+    string? Reason = null);
+
+public sealed record ValidateGiftCardRequest(
+    string Code);
+
+public sealed record ValidateGiftCardResponse(
+    bool IsValid,
+    string? Code,
+    decimal CurrentBalance,
+    string Currency,
+    string? RecipientName,
+    string? Reason);

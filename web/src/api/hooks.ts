@@ -24,7 +24,10 @@ import type {
   ProductReview,
   ProductRatingSummary,
   WishlistItem,
-  ForgotPasswordResponse
+  ForgotPasswordResponse,
+  GiftCard,
+  CreateGiftCardInput,
+  ValidateGiftCardResult
 } from './types';
 import { useAuth } from '../state/AuthContext';
 
@@ -53,7 +56,8 @@ export const queryKeys = {
   reviews: (productId: number) => ['reviews', productId] as const,
   wishlist: ['wishlist'] as const,
   coupons: ['coupons'] as const,
-  orderPayments: (orderId: number) => ['order-payments', orderId] as const
+  orderPayments: (orderId: number) => ['order-payments', orderId] as const,
+  giftCards: ['gift-cards'] as const
 };
 
 /** Thin wrapper so every hook uses the current access token without repeating itself. */
@@ -261,6 +265,7 @@ export interface PlaceOrderInput {
   couponCode?: string;
   paymentMethod?: PaymentMethod;
   idempotencyKey: string;
+  giftCardCode?: string;
 }
 
 /**
@@ -274,11 +279,12 @@ export function usePlaceOrder() {
 
   return useMutation({
     mutationFn: (input: PlaceOrderInput) => {
-      const body: { items: { productId: number; quantity: number }[]; couponCode?: string; paymentMethod?: PaymentMethod } = {
+      const body: { items: { productId: number; quantity: number }[]; couponCode?: string; paymentMethod?: PaymentMethod; giftCardCode?: string } = {
         items: input.items
       };
       if (input.couponCode) body.couponCode = input.couponCode;
       if (input.paymentMethod) body.paymentMethod = input.paymentMethod;
+      if (input.giftCardCode) body.giftCardCode = input.giftCardCode;
 
       return request<Order>('/api/orders', { method: 'POST', body, idempotencyKey: input.idempotencyKey });
     },
@@ -722,5 +728,49 @@ export function useToggleWishlist() {
     mutationFn: (productId: number) =>
       request<{ inWishlist: boolean }>(`/api/wishlist/${productId}/toggle`, { method: 'POST' }),
     onSuccess: () => invalidate([queryKeys.wishlist])
+  });
+}
+
+
+export function useGiftCards() {
+  const request = useAuthedRequest();
+  return useQuery({
+    queryKey: queryKeys.giftCards,
+    queryFn: () => request<GiftCard[]>('/api/gift-cards')
+  });
+}
+
+export function useCreateGiftCard() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (payload: CreateGiftCardInput) => request<GiftCard>('/api/gift-cards', { method: 'POST', body: payload }),
+    onSuccess: () => invalidate([queryKeys.giftCards])
+  });
+}
+
+export function useToggleGiftCardStatus() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: ({ id }: { id: number }) => request<GiftCard>(`/api/gift-cards/${id}/status`, { method: 'PUT' }),
+    onSuccess: () => invalidate([queryKeys.giftCards])
+  });
+}
+
+export function useAdjustGiftCardBalance() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: ({ id, newBalance, reason }: { id: number; newBalance: number; reason?: string }) =>
+      request<GiftCard>(`/api/gift-cards/${id}/balance`, { method: 'PUT', body: { newBalance, reason } }),
+    onSuccess: () => invalidate([queryKeys.giftCards])
+  });
+}
+
+export function useValidateGiftCard() {
+  return useMutation({
+    mutationFn: (code: string) =>
+      apiRequest<ValidateGiftCardResult>('/api/gift-cards/validate', { method: 'POST', body: { code } })
   });
 }

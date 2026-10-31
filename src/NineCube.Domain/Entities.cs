@@ -102,6 +102,8 @@ public sealed class Order
     public decimal SubTotal { get; set; }
     public decimal DiscountAmount { get; set; }
     public string? CouponCode { get; set; }
+    public string? GiftCardCode { get; set; }
+    public decimal GiftCardAmount { get; set; }
     public decimal ShippingAmount { get; set; }
     public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Unpaid;
     public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.CashOnDelivery;
@@ -199,6 +201,22 @@ public sealed class Coupon
     public string? CampaignTitle { get; set; }
     public bool IsBannerPromoted { get; set; } = false;
     public DateTime CreatedAt { get; set; }
+}
+
+public sealed class GiftCard
+{
+    public int Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public decimal InitialBalance { get; set; }
+    public decimal CurrentBalance { get; set; }
+    public string Currency { get; set; } = "BDT";
+    public string? RecipientEmail { get; set; }
+    public string? RecipientName { get; set; }
+    public string? Note { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime? ExpiresAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? LastUsedAt { get; set; }
 }
 
 public sealed class PaymentTransaction

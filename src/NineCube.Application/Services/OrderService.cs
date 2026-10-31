@@ -219,6 +219,26 @@ public sealed class OrderService : IOrderService
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(request.GiftCardCode))
+            {
+                var gcCode = request.GiftCardCode.Trim().ToUpperInvariant();
+                var card = await _db.GiftCards.FirstOrDefaultAsync(g => g.Code == gcCode && g.IsActive, ct);
+                if (card != null && card.CurrentBalance > 0 && (card.ExpiresAt == null || card.ExpiresAt > now))
+                {
+                    var payable = order.TotalAmount;
+                    var deduction = Math.Min(payable, card.CurrentBalance);
+                    card.CurrentBalance -= deduction;
+                    card.LastUsedAt = now;
+                    order.GiftCardCode = card.Code;
+                    order.GiftCardAmount = deduction;
+                    order.TotalAmount = payable - deduction;
+                    if (order.TotalAmount == 0)
+                    {
+                        order.PaymentStatus = PaymentStatus.Paid;
+                    }
+                }
+            }
+
             _db.Orders.Add(order);
             await _db.SaveChangesAsync(ct); // needs order.Id for the ledger rows
 
@@ -545,6 +565,8 @@ public sealed class OrderService : IOrderService
                 o.SubTotal,
                 o.DiscountAmount,
                 o.CouponCode,
+                o.GiftCardCode,
+                o.GiftCardAmount,
                 o.ShippingAmount,
                 o.PaymentStatus,
                 o.PaymentMethod,
@@ -578,6 +600,8 @@ public sealed class OrderService : IOrderService
             o.SubTotal,
             o.DiscountAmount,
             o.CouponCode,
+            o.GiftCardCode,
+            o.GiftCardAmount,
             o.ShippingAmount,
             o.PaymentStatus,
             o.PaymentMethod,
@@ -626,6 +650,8 @@ public sealed class OrderService : IOrderService
                 o.SubTotal,
                 o.DiscountAmount,
                 o.CouponCode,
+                o.GiftCardCode,
+                o.GiftCardAmount,
                 o.ShippingAmount,
                 o.PaymentStatus,
                 o.PaymentMethod,
@@ -663,6 +689,8 @@ public sealed class OrderService : IOrderService
             order.SubTotal,
             order.DiscountAmount,
             order.CouponCode,
+            order.GiftCardCode,
+            order.GiftCardAmount,
             order.ShippingAmount,
             order.PaymentStatus,
             order.PaymentMethod,

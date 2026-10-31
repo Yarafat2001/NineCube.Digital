@@ -111,6 +111,64 @@ export let demoCoupons: Array<{
   { id: 4, code: 'EID2026', discountType: 'Percentage', discountValue: 15, minOrderAmount: 1000, maxDiscountCap: 2500, targetType: 'Category', targetId: 1, expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, isBannerPromoted: true, campaignTitle: '🌙 Eid Mega Festival: 15% OFF Footwear with code EID2026', createdAt: '2026-10-15T08:00:00Z' }
 ];
 
+export let demoGiftCards: Array<{
+  id: number;
+  code: string;
+  initialBalance: number;
+  currentBalance: number;
+  currency: string;
+  recipientEmail: string | null;
+  recipientName: string | null;
+  note: string | null;
+  isActive: boolean;
+  expiresAt: string | null;
+  createdAt: string;
+  lastUsedAt: string | null;
+}> = [
+  {
+    id: 1,
+    code: 'GC-WELCOME-1000',
+    initialBalance: 1000,
+    currentBalance: 1000,
+    currency: 'BDT',
+    recipientEmail: 'customer@ninecube.digital',
+    recipientName: 'Valued Customer',
+    note: 'Welcome to NineCube Digital! Enjoy your shopping.',
+    isActive: true,
+    expiresAt: '2027-10-31T00:00:00Z',
+    createdAt: '2026-10-31T00:00:00Z',
+    lastUsedAt: null
+  },
+  {
+    id: 2,
+    code: 'GC-EID2026-2500',
+    initialBalance: 2500,
+    currentBalance: 2500,
+    currency: 'BDT',
+    recipientEmail: null,
+    recipientName: 'Eid Celebrant',
+    note: 'Eid Mubarak! May your celebration be filled with joy.',
+    isActive: true,
+    expiresAt: '2027-10-31T00:00:00Z',
+    createdAt: '2026-10-31T00:00:00Z',
+    lastUsedAt: null
+  },
+  {
+    id: 3,
+    code: 'GC-VIP-5000',
+    initialBalance: 5000,
+    currentBalance: 3500,
+    currency: 'BDT',
+    recipientEmail: 'vip@ninecube.digital',
+    recipientName: 'VIP Member',
+    note: 'Exclusive VIP Reward Balance.',
+    isActive: true,
+    expiresAt: null,
+    createdAt: '2026-10-31T00:00:00Z',
+    lastUsedAt: '2026-10-31T02:00:00Z'
+  }
+];
+
 export const adminUsers: AdminUser[] = [
   { id: 10, email: 'customer@ninecube.demo', role: 'Customer', isActive: true, customerId: 1, createdAt: '2026-09-01T09:00:00Z' },
   { id: 11, email: 'staff@ninecube.demo', role: 'Staff', isActive: true, customerId: null, createdAt: '2026-09-01T09:00:00Z' }
@@ -569,6 +627,59 @@ export const handlers = [
     const found = demoCoupons.find((c) => c.id === Number(params.id));
     if (found) found.isActive = isActive;
     return HttpResponse.json({ success: true, isActive });
+  }),
+
+  // Gift Card endpoints
+  http.get(`${API}/api/gift-cards`, () => HttpResponse.json(demoGiftCards)),
+
+  http.post(`${API}/api/gift-cards`, async ({ request }) => {
+    const payload = (await request.json()) as any;
+    const code = payload.code || `GC-DEMO-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const newCard = {
+      id: demoGiftCards.length + 1,
+      code,
+      initialBalance: Number(payload.initialBalance),
+      currentBalance: Number(payload.initialBalance),
+      currency: 'BDT',
+      recipientEmail: payload.recipientEmail || null,
+      recipientName: payload.recipientName || null,
+      note: payload.note || null,
+      isActive: true,
+      expiresAt: payload.expiresAt || null,
+      createdAt: new Date().toISOString(),
+      lastUsedAt: null
+    };
+    demoGiftCards.unshift(newCard);
+    return HttpResponse.json(newCard, { status: 201 });
+  }),
+
+  http.put(`${API}/api/gift-cards/:id/status`, ({ params }) => {
+    const found = demoGiftCards.find((g) => g.id === Number(params.id));
+    if (found) found.isActive = !found.isActive;
+    return HttpResponse.json(found);
+  }),
+
+  http.put(`${API}/api/gift-cards/:id/balance`, async ({ params, request }) => {
+    const body = (await request.json()) as any;
+    const found = demoGiftCards.find((g) => g.id === Number(params.id));
+    if (found) found.currentBalance = Number(body.newBalance);
+    return HttpResponse.json(found);
+  }),
+
+  http.post(`${API}/api/gift-cards/validate`, async ({ request }) => {
+    const body = (await request.json()) as { code: string };
+    const code = (body.code || '').trim().toUpperCase();
+    const found = demoGiftCards.find((g) => g.code === code);
+    if (!found) {
+      return HttpResponse.json({ isValid: false, code: null, currentBalance: 0, currency: 'BDT', recipientName: null, reason: 'Gift card code not found.' });
+    }
+    if (!found.isActive) {
+      return HttpResponse.json({ isValid: false, code: found.code, currentBalance: 0, currency: found.currency, recipientName: found.recipientName, reason: 'This gift card has been disabled.' });
+    }
+    if (found.currentBalance <= 0) {
+      return HttpResponse.json({ isValid: false, code: found.code, currentBalance: 0, currency: found.currency, recipientName: found.recipientName, reason: 'This gift card has zero remaining balance.' });
+    }
+    return HttpResponse.json({ isValid: true, code: found.code, currentBalance: found.currentBalance, currency: found.currency, recipientName: found.recipientName, reason: null });
   }),
 
   http.post(`${API}/api/payments/process`, async ({ request }) => {

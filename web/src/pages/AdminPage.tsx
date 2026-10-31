@@ -13,9 +13,13 @@ import {
   useToggleCouponStatus,
   useCategories,
   useBrands,
-  useProducts
+  useProducts,
+  useGiftCards,
+  useCreateGiftCard,
+  useToggleGiftCardStatus,
+  useAdjustGiftCardBalance
 } from '../api/hooks';
-import type { Coupon, CouponTargetType, UserRole } from '../api/types';
+import type { Coupon, CouponTargetType, UserRole, GiftCard } from '../api/types';
 import { flattenCategories } from '../components/CategoryFilters';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, useToast } from '../components/ui';
 import { formatDateTime, roleLabels, useDebouncedValue } from '../lib/helpers';
@@ -23,7 +27,7 @@ import { useAuth } from '../state/AuthContext';
 
 const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrator'];
 
-type Tab = 'users' | 'audit' | 'settings' | 'coupons';
+type Tab = 'users' | 'audit' | 'settings' | 'coupons' | 'giftcards';
 
 export function AdminPage() {
   useLanguage();
@@ -73,6 +77,67 @@ export function AdminPage() {
   const [startsAt, setStartsAt] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [isAutomatic, setIsAutomatic] = useState(false);
+
+  // Gift Cards
+  const giftCardsQuery = useGiftCards();
+  const createGiftCard = useCreateGiftCard();
+  const toggleGiftCardStatus = useToggleGiftCardStatus();
+  const adjustGiftCardBalance = useAdjustGiftCardBalance();
+
+  const [gcCode, setGcCode] = useState('');
+  const [gcInitialBalance, setGcInitialBalance] = useState('1000');
+  const [gcRecipientName, setGcRecipientName] = useState('');
+  const [gcRecipientEmail, setGcRecipientEmail] = useState('');
+  const [gcNote, setGcNote] = useState('');
+  const [gcExpiresAt, setGcExpiresAt] = useState('');
+  const [gcSearch, setGcSearch] = useState('');
+  const [gcFilter, setGcFilter] = useState<'all' | 'active' | 'depleted' | 'disabled'>('all');
+  const [selectedCardForModal, setSelectedCardForModal] = useState<GiftCard | null>(null);
+  const [adjustModal, setAdjustModal] = useState<{ card: GiftCard; newBalance: string; reason: string } | null>(null);
+  const [revealedCodes, setRevealedCodes] = useState<Record<number, boolean>>({});
+
+  const generateNewGiftCardCode = () => {
+    const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const randPart = (len: number) => Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    setGcCode(`GC-${randPart(4)}-${randPart(4)}-${randPart(4)}`);
+  };
+
+  const copyToClipboard = (code: string) => {
+    navigator.clipboard.writeText(code).then(() => {
+      toast.push('success', `${code} ${t("copied to clipboard")}`);
+    }).catch(() => {
+      toast.push('info', code);
+    });
+  };
+
+  const submitGiftCard = async (event: FormEvent) => {
+    event.preventDefault();
+    const balanceNum = parseFloat(gcInitialBalance);
+    if (isNaN(balanceNum) || balanceNum <= 0) {
+      toast.push('error', 'Gift card initial balance must be greater than 0.');
+      return;
+    }
+
+    try {
+      const created = await createGiftCard.mutateAsync({
+        code: gcCode.trim() || undefined,
+        initialBalance: balanceNum,
+        recipientName: gcRecipientName.trim() || undefined,
+        recipientEmail: gcRecipientEmail.trim() || undefined,
+        note: gcNote.trim() || undefined,
+        expiresAt: gcExpiresAt ? new Date(gcExpiresAt).toISOString() : null
+      });
+
+      toast.push('success', `Gift Card ${created.code} for BDT ${created.initialBalance} created successfully!`);
+      setGcCode('');
+      setGcRecipientName('');
+      setGcRecipientEmail('');
+      setGcNote('');
+      setGcExpiresAt('');
+    } catch (caught) {
+      toast.pushError(caught);
+    }
+  };
 
   // Dynamic catalog targeting queries
   const categoriesQuery = useCategories();
@@ -182,7 +247,7 @@ export function AdminPage() {
       </header>
 
       <div className="row" role="tablist" aria-label={t("Administration sections")}>
-        {(['users', 'audit', 'settings', 'coupons'] as Tab[]).map((value) => (
+        {(['users', 'audit', 'settings', 'coupons', 'giftcards'] as Tab[]).map((value) => (
           <button
             key={value}
             type="button"
@@ -193,7 +258,7 @@ export function AdminPage() {
             className={`btn ${tab === value ? 'btn--primary' : ''}`}
             onClick={() => setTab(value)}
           >
-            {t(value === 'users' ? 'Users' : value === 'audit' ? 'Audit log' : value === 'settings' ? 'Settings' : 'Coupons & Discounts')}
+            {t(value === 'users' ? 'Users' : value === 'audit' ? 'Audit log' : value === 'settings' ? 'Settings' : value === 'coupons' ? 'Coupons & Discounts' : 'Gift Cards')}
           </button>
         ))}
       </div>
@@ -755,6 +820,636 @@ export function AdminPage() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      {tab === 'giftcards' ? (
+        <section role="tabpanel" id="panel-giftcards" aria-labelledby="tab-giftcards" className="stack">
+          {/* Issue Gift Card Form & Interactive Preview */}
+          <div className="card-glass" style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg, 12px)' }}>
+            <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-3)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              🎁 {t("Issue Digital Gift Card")}
+            </h2>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-4)', alignItems: 'start' }}>
+              {/* Left Column: Form */}
+              <form className="stack" onSubmit={submitGiftCard} style={{ gap: 'var(--space-3)' }}>
+                {/* Denomination Quick Presets */}
+                <div className="field">
+                  <label>{t("Gift Card Value (BDT)")}</label>
+                  <div className="row" style={{ gap: 'var(--space-2)', flexWrap: 'wrap', marginBottom: 'var(--space-2)' }}>
+                    {['500', '1000', '2000', '5000'].map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        className={`btn btn--sm ${gcInitialBalance === preset ? 'btn--primary' : ''}`}
+                        onClick={() => setGcInitialBalance(preset)}
+                      >
+                        {t("BDT")} {preset}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    required
+                    aria-label={t("Gift Card Value (BDT)")}
+                    placeholder="1000"
+                    value={gcInitialBalance}
+                    onChange={(e) => setGcInitialBalance(e.target.value)}
+                  />
+                </div>
+
+                {/* Card Code with Auto-Generator */}
+                <div className="field">
+                  <div className="row-between">
+                    <label htmlFor="gc-code-input">{t("Gift Card Code (leave blank to auto-generate)")}</label>
+                    <button
+                      type="button"
+                      className="link-button"
+                      style={{ fontSize: 'var(--text-xs)' }}
+                      onClick={generateNewGiftCardCode}
+                    >
+                      ⚡ {t("Generate Random Code")}
+                    </button>
+                  </div>
+                  <input
+                    id="gc-code-input"
+                    type="text"
+                    placeholder={t("e.g. GC-9K3D-88AF-2E10")}
+                    value={gcCode}
+                    onChange={(e) => setGcCode(e.target.value.toUpperCase())}
+                    style={{ textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px' }}
+                  />
+                </div>
+
+                {/* Recipient Details */}
+                <div className="row" style={{ gap: 'var(--space-3)', flexWrap: 'wrap' }}>
+                  <div className="field" style={{ flex: '1 1 180px' }}>
+                    <label htmlFor="gc-rec-name">{t("Recipient Name (optional)")}</label>
+                    <input
+                      id="gc-rec-name"
+                      type="text"
+                      placeholder={t("e.g. Sarah Ahmed")}
+                      value={gcRecipientName}
+                      onChange={(e) => setGcRecipientName(e.target.value)}
+                    />
+                  </div>
+                  <div className="field" style={{ flex: '1 1 180px' }}>
+                    <label htmlFor="gc-rec-email">{t("Recipient Email (optional)")}</label>
+                    <input
+                      id="gc-rec-email"
+                      type="email"
+                      placeholder={t("e.g. sarah@example.com")}
+                      value={gcRecipientEmail}
+                      onChange={(e) => setGcRecipientEmail(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Greeting Message & Expiration */}
+                <div className="row" style={{ gap: 'var(--space-3)', flexWrap: 'wrap' }}>
+                  <div className="field" style={{ flex: '2 1 240px' }}>
+                    <label htmlFor="gc-note">{t("Personal Note / Greeting (optional)")}</label>
+                    <input
+                      id="gc-note"
+                      type="text"
+                      placeholder={t("Happy Birthday! Enjoy your shopping.")}
+                      value={gcNote}
+                      onChange={(e) => setGcNote(e.target.value)}
+                    />
+                  </div>
+                  <div className="field" style={{ flex: '1 1 180px' }}>
+                    <label htmlFor="gc-expiry">{t("Expiration Date (optional)")}</label>
+                    <input
+                      id="gc-expiry"
+                      type="date"
+                      value={gcExpiresAt}
+                      onChange={(e) => setGcExpiresAt(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ paddingTop: 'var(--space-2)' }}>
+                  <button
+                    type="submit"
+                    className="btn btn--primary"
+                    disabled={createGiftCard.isPending}
+                    style={{ minWidth: '180px' }}
+                  >
+                    {createGiftCard.isPending ? (
+                      <>
+                        <span className="spinner" aria-hidden="true" /> {t("Issuing…")}
+                      </>
+                    ) : (
+                      `🎁 ${t("Issue Gift Card")}`
+                    )}
+                  </button>
+                </div>
+              </form>
+
+              {/* Right Column: Live Interactive Card Preview */}
+              <div className="stack" style={{ gap: 'var(--space-2)' }}>
+                <span style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {t("Digital Card Live Preview")}
+                </span>
+
+                <div
+                  className="gift-card-cert"
+                  style={{
+                    minHeight: '210px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  {/* Top Bar: Brand & Chip */}
+                  <div className="row-between" style={{ alignItems: 'flex-start' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '20px' }}>🎲</span>
+                        <strong style={{ fontSize: '15px', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#fff' }}>
+                          {t("NineCube Digital")}
+                        </strong>
+                      </div>
+                      <span style={{ fontSize: '11px', color: 'rgba(255, 215, 0, 0.85)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                        {t("E-Gift Certificate")}
+                      </span>
+                    </div>
+                    <div className="gift-card-chip" aria-hidden="true" />
+                  </div>
+
+                  {/* Center: Card Code & Balance */}
+                  <div style={{ margin: 'var(--space-3) 0' }}>
+                    <div className="row-between" style={{ alignItems: 'baseline' }}>
+                      <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>{t("Balance")}</span>
+                      <strong style={{ fontSize: '24px', fontWeight: 800, color: '#f9e29d', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
+                        {t("BDT")} {gcInitialBalance ? Number(gcInitialBalance).toLocaleString() : '0'}
+                      </strong>
+                    </div>
+
+                    <div style={{ marginTop: '6px', padding: '6px 12px', background: 'rgba(0,0,0,0.35)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontFamily: 'monospace', fontSize: '14px', letterSpacing: '1.5px', color: '#fff' }}>
+                        {gcCode || 'GC-••••-••••-••••'}
+                      </span>
+                      <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase' }}>{t("Online Only")}</span>
+                    </div>
+                  </div>
+
+                  {/* Bottom Bar: Recipient & Expiry */}
+                  <div className="row-between" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '8px' }}>
+                    <div>
+                      <span style={{ color: 'rgba(255,255,255,0.5)', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>{t("Recipient")}</span>
+                      <strong>{gcRecipientName || t("Valued Customer")}</strong>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ color: 'rgba(255,255,255,0.5)', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>{t("Expires")}</span>
+                      <span>{gcExpiresAt ? formatDateTime(gcExpiresAt) : t("Never")}</span>
+                    </div>
+                  </div>
+
+                  {/* Personalized Greeting Note */}
+                  {gcNote && (
+                    <div style={{ marginTop: '8px', fontSize: '11px', fontStyle: 'italic', color: '#f3e8ff', background: 'rgba(255,255,255,0.08)', padding: '4px 8px', borderRadius: '4px' }}>
+                      “{gcNote}”
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Gift Cards Management & Ledger Table */}
+          {giftCardsQuery.isPending ? (
+            <LoadingBlock label={t("Loading gift cards…")} />
+          ) : giftCardsQuery.isError ? (
+            <ErrorState error={giftCardsQuery.error} onRetry={() => giftCardsQuery.refetch()} />
+          ) : (
+            <div className="card-glass stack" style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg, 12px)' }}>
+              {/* Header with Search and Filter Tabs */}
+              <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0 }}>
+                  {t("Gift Cards Registry & Balances")} ({giftCardsQuery.data?.length ?? 0})
+                </h3>
+
+                <div className="row" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+                  <input
+                    type="search"
+                    placeholder={t("Search by code or recipient…")}
+                    value={gcSearch}
+                    onChange={(e) => setGcSearch(e.target.value)}
+                    style={{ padding: '4px 10px', fontSize: 'var(--text-xs)', minWidth: '220px' }}
+                  />
+
+                  {(['all', 'active', 'depleted', 'disabled'] as const).map((filterOpt) => (
+                    <button
+                      key={filterOpt}
+                      type="button"
+                      className={`btn btn--sm ${gcFilter === filterOpt ? 'btn--primary' : ''}`}
+                      onClick={() => setGcFilter(filterOpt)}
+                      style={{ textTransform: 'capitalize', fontSize: 'var(--text-xs)' }}
+                    >
+                      {t(filterOpt === 'all' ? 'All' : filterOpt === 'active' ? 'Active' : filterOpt === 'depleted' ? 'Depleted' : 'Disabled')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Table */}
+              <div className="table-wrap">
+                <table className="table" aria-label={t("Gift Cards")}>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t("CARD CODE")}</th>
+                      <th scope="col">{t("RECIPIENT")}</th>
+                      <th scope="col">{t("BALANCE")}</th>
+                      <th scope="col">{t("CREATED")}</th>
+                      <th scope="col">{t("EXPIRES")}</th>
+                      <th scope="col">{t("STATUS")}</th>
+                      <th scope="col" className="actions">{t("ACTIONS")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(giftCardsQuery.data ?? [])
+                      .filter((g) => {
+                        if (gcFilter === 'active') return g.isActive && g.currentBalance > 0 && (!g.expiresAt || new Date(g.expiresAt) > new Date());
+                        if (gcFilter === 'depleted') return g.currentBalance <= 0;
+                        if (gcFilter === 'disabled') return !g.isActive;
+                        return true;
+                      })
+                      .filter((g) => {
+                        if (!gcSearch.trim()) return true;
+                        const term = gcSearch.toLowerCase();
+                        return g.code.toLowerCase().includes(term) ||
+                          (g.recipientName?.toLowerCase().includes(term) ?? false) ||
+                          (g.recipientEmail?.toLowerCase().includes(term) ?? false);
+                      })
+                      .map((g) => {
+                        const isExpired = g.expiresAt && new Date(g.expiresAt) < new Date();
+                        const isDepleted = g.currentBalance <= 0;
+                        const isRevealed = revealedCodes[g.id] ?? false;
+                        const maskedDisplay = isRevealed ? g.code : `${g.code.slice(0, 3)}••••-••••-${g.code.slice(-4)}`;
+
+                        return (
+                          <tr key={g.id}>
+                            <td className="mono" style={{ fontWeight: 600 }}>
+                              <div className="row" style={{ gap: '6px', alignItems: 'center' }}>
+                                <span>{maskedDisplay}</span>
+                                <button
+                                  type="button"
+                                  className="link-button"
+                                  onClick={() => setRevealedCodes(prev => ({ ...prev, [g.id]: !prev[g.id] }))}
+                                  title={t(isRevealed ? "Hide code" : "Reveal code")}
+                                  aria-label={t(isRevealed ? "Hide code" : "Reveal code")}
+                                  style={{ fontSize: '12px' }}
+                                >
+                                  {isRevealed ? '👁️' : '🔒'}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="link-button"
+                                  onClick={() => copyToClipboard(g.code)}
+                                  title={t("Copy code")}
+                                  aria-label={t("Copy code")}
+                                  style={{ fontSize: '12px' }}
+                                >
+                                  📋
+                                </button>
+                              </div>
+                            </td>
+                            <td>
+                              <div>
+                                <strong>{g.recipientName || '—'}</strong>
+                                {g.recipientEmail && (
+                                  <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--muted)' }}>
+                                    {g.recipientEmail}
+                                  </span>
+                                )}
+                                {g.note && (
+                                  <span style={{ display: 'block', fontSize: 'var(--text-xs)', fontStyle: 'italic', color: 'var(--accent, #a78bfa)' }}>
+                                    “{g.note}”
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td>
+                              <div>
+                                <strong style={{ color: isDepleted ? 'var(--muted)' : 'var(--ok, #10b981)' }}>
+                                  {t("BDT")} {g.currentBalance.toLocaleString()}
+                                </strong>
+                                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)' }}>
+                                  {' '}/ {g.initialBalance.toLocaleString()}
+                                </span>
+                                {/* Progress bar */}
+                                <div style={{ width: '100px', height: '4px', background: 'var(--border)', borderRadius: '2px', marginTop: '4px', overflow: 'hidden' }}>
+                                  <div
+                                    style={{
+                                      width: `${Math.min(100, (g.currentBalance / (g.initialBalance || 1)) * 100)}%`,
+                                      height: '100%',
+                                      background: isDepleted ? 'var(--muted)' : 'var(--ok, #10b981)'
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </td>
+                            <td className="nowrap">{formatDateTime(g.createdAt)}</td>
+                            <td className="nowrap">
+                              {g.expiresAt ? formatDateTime(g.expiresAt) : t("Never")}
+                            </td>
+                            <td>
+                              {!g.isActive ? (
+                                <span className="badge badge--warn">{t("Disabled")}</span>
+                              ) : isExpired ? (
+                                <span className="badge badge--neutral">{t("Expired")}</span>
+                              ) : isDepleted ? (
+                                <span className="badge badge--neutral">{t("Depleted")}</span>
+                              ) : (
+                                <span className="badge badge--ok">{t("Active")}</span>
+                              )}
+                            </td>
+                            <td className="actions">
+                              <div className="row" style={{ gap: '4px', justifyContent: 'flex-end' }}>
+                                <button
+                                  type="button"
+                                  className="btn btn--sm"
+                                  onClick={() => setSelectedCardForModal(g)}
+                                  title={t("View digital certificate")}
+                                >
+                                  👁️ {t("View Card")}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn btn--sm"
+                                  onClick={() => setAdjustModal({ card: g, newBalance: String(g.currentBalance), reason: '' })}
+                                  title={t("Adjust card balance")}
+                                >
+                                  ⚙️ {t("Adjust")}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn btn--sm"
+                                  disabled={toggleGiftCardStatus.isPending}
+                                  onClick={async () => {
+                                    try {
+                                      await toggleGiftCardStatus.mutateAsync({ id: g.id });
+                                      toast.push('success', `${g.code} ${t("status updated.")}`);
+                                    } catch (err) {
+                                      toast.pushError(err);
+                                    }
+                                  }}
+                                >
+                                  {t(g.isActive ? 'Disable' : 'Enable')}
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    {(giftCardsQuery.data ?? []).length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
+                          {t("No gift cards issued yet.")}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* View Digital Card Certificate Modal */}
+          {selectedCardForModal && (
+            <div
+              role="dialog"
+              aria-modal="true"
+              style={{
+                position: 'fixed',
+                inset: 0,
+                background: 'rgba(0,0,0,0.7)',
+                backdropFilter: 'blur(6px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1000,
+                padding: 'var(--space-4)'
+              }}
+              onClick={() => setSelectedCardForModal(null)}
+            >
+              <div
+                className="stack"
+                style={{
+                  background: 'var(--surface-overlay, #18181b)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-lg, 16px)',
+                  padding: 'var(--space-5)',
+                  maxWidth: '460px',
+                  width: '100%',
+                  boxShadow: '0 24px 48px rgba(0,0,0,0.6)'
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="row-between" style={{ marginBottom: 'var(--space-2)' }}>
+                  <h3 style={{ margin: 0, fontSize: 'var(--text-md)', fontWeight: 700 }}>
+                    🎁 {t("Digital Gift Certificate")}
+                  </h3>
+                  <button
+                    type="button"
+                    className="link-button"
+                    onClick={() => setSelectedCardForModal(null)}
+                    style={{ fontSize: '18px' }}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div
+                  className="gift-card-cert"
+                  style={{
+                    minHeight: '230px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div className="row-between" style={{ alignItems: 'flex-start' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '24px' }}>🎲</span>
+                        <strong style={{ fontSize: '18px', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#fff' }}>
+                          {t("NineCube Digital")}
+                        </strong>
+                      </div>
+                      <span style={{ fontSize: '12px', color: 'rgba(255, 215, 0, 0.85)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                        {t("E-Gift Certificate")}
+                      </span>
+                    </div>
+                    <div className="gift-card-chip" aria-hidden="true" />
+                  </div>
+
+                  <div style={{ margin: 'var(--space-4) 0' }}>
+                    <div className="row-between" style={{ alignItems: 'baseline' }}>
+                      <span style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.7)' }}>{t("Available Balance")}</span>
+                      <strong style={{ fontSize: '28px', fontWeight: 800, color: '#f9e29d' }}>
+                        {t("BDT")} {selectedCardForModal.currentBalance.toLocaleString()}
+                      </strong>
+                    </div>
+
+                    <div style={{ marginTop: '8px', padding: '8px 14px', background: 'rgba(0,0,0,0.45)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontFamily: 'monospace', fontSize: '16px', letterSpacing: '2px', color: '#fff', fontWeight: 700 }}>
+                        {selectedCardForModal.code}
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn--sm"
+                        onClick={() => copyToClipboard(selectedCardForModal.code)}
+                        style={{ fontSize: '11px', padding: '2px 8px' }}
+                      >
+                        📋 {t("Copy")}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="row-between" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.85)', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '10px' }}>
+                    <div>
+                      <span style={{ color: 'rgba(255,255,255,0.5)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>{t("Recipient")}</span>
+                      <strong>{selectedCardForModal.recipientName || t("Valued Customer")}</strong>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ color: 'rgba(255,255,255,0.5)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>{t("Valid Thru")}</span>
+                      <span>{selectedCardForModal.expiresAt ? formatDateTime(selectedCardForModal.expiresAt) : t("Never Expires")}</span>
+                    </div>
+                  </div>
+
+                  {selectedCardForModal.note && (
+                    <div style={{ marginTop: '10px', fontSize: '12px', fontStyle: 'italic', color: '#f3e8ff', background: 'rgba(255,255,255,0.1)', padding: '6px 10px', borderRadius: '6px' }}>
+                      “{selectedCardForModal.note}”
+                    </div>
+                  )}
+                </div>
+
+                <div className="row-between" style={{ marginTop: 'var(--space-3)' }}>
+                  <button
+                    type="button"
+                    className="btn btn--sm"
+                    onClick={() => copyToClipboard(selectedCardForModal.code)}
+                  >
+                    📋 {t("Copy Card Code")}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn--primary btn--sm"
+                    onClick={() => setSelectedCardForModal(null)}
+                  >
+                    {t("Done")}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Adjust Balance Modal */}
+          {adjustModal && (
+            <div
+              role="dialog"
+              aria-modal="true"
+              style={{
+                position: 'fixed',
+                inset: 0,
+                background: 'rgba(0,0,0,0.7)',
+                backdropFilter: 'blur(6px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1000,
+                padding: 'var(--space-4)'
+              }}
+              onClick={() => setAdjustModal(null)}
+            >
+              <form
+                className="stack card-glass"
+                style={{
+                  background: 'var(--surface-overlay, #18181b)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-lg, 16px)',
+                  padding: 'var(--space-5)',
+                  maxWidth: '420px',
+                  width: '100%',
+                  boxShadow: '0 24px 48px rgba(0,0,0,0.6)',
+                  gap: 'var(--space-3)'
+                }}
+                onClick={(e) => e.stopPropagation()}
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const newBal = parseFloat(adjustModal.newBalance);
+                  if (isNaN(newBal) || newBal < 0) {
+                    toast.push('error', 'Balance cannot be negative.');
+                    return;
+                  }
+                  try {
+                    await adjustGiftCardBalance.mutateAsync({
+                      id: adjustModal.card.id,
+                      newBalance: newBal,
+                      reason: adjustModal.reason.trim() || undefined
+                    });
+                    toast.push('success', `${adjustModal.card.code} balance updated to BDT ${newBal}.`);
+                    setAdjustModal(null);
+                  } catch (err) {
+                    toast.pushError(err);
+                  }
+                }}
+              >
+                <div className="row-between">
+                  <h3 style={{ margin: 0, fontSize: 'var(--text-md)', fontWeight: 700 }}>
+                    ⚙️ {t("Adjust Gift Card Balance")}
+                  </h3>
+                  <button type="button" className="link-button" onClick={() => setAdjustModal(null)}>✕</button>
+                </div>
+
+                <p style={{ margin: 0, fontSize: 'var(--text-sm)', color: 'var(--muted)' }}>
+                  {t("Card Code:")} <strong className="mono">{adjustModal.card.code}</strong>
+                </p>
+
+                <div className="field">
+                  <label htmlFor="adjust-bal-input">{t("New Balance (BDT)")}</label>
+                  <input
+                    id="adjust-bal-input"
+                    type="number"
+                    min="0"
+                    step="1"
+                    required
+                    value={adjustModal.newBalance}
+                    onChange={(e) => setAdjustModal({ ...adjustModal, newBalance: e.target.value })}
+                  />
+                </div>
+
+                <div className="field">
+                  <label htmlFor="adjust-reason-input">{t("Reason for adjustment (optional)")}</label>
+                  <input
+                    id="adjust-reason-input"
+                    type="text"
+                    placeholder={t("e.g. VIP top up, order refund")}
+                    value={adjustModal.reason}
+                    onChange={(e) => setAdjustModal({ ...adjustModal, reason: e.target.value })}
+                  />
+                </div>
+
+                <div className="row-between" style={{ marginTop: 'var(--space-2)' }}>
+                  <button type="button" className="btn btn--sm" onClick={() => setAdjustModal(null)}>
+                    {t("Cancel")}
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn--primary btn--sm"
+                    disabled={adjustGiftCardBalance.isPending}
+                  >
+                    {adjustGiftCardBalance.isPending ? t("Updating…") : t("Save Balance")}
+                  </button>
+                </div>
+              </form>
             </div>
           )}
         </section>
