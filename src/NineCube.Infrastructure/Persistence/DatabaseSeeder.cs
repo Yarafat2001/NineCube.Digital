@@ -77,11 +77,29 @@ public static class DatabaseSeeder
         db.Coupons.AddRange(
             new Coupon
             {
+                Code = "EID2026",
+                DiscountType = DiscountType.Percentage,
+                DiscountValue = 15,
+                MinOrderAmount = 1000,
+                MaxDiscountCap = 2500,
+                TargetType = CouponTargetType.Category,
+                TargetId = 1,
+                IsActive = true,
+                IsBannerPromoted = true,
+                CampaignTitle = "🌙 Eid Mega Festival: 15% OFF Footwear with code EID2026",
+                CreatedAt = DateTime.UtcNow
+            },
+            new Coupon
+            {
                 Code = "SAVE10",
                 DiscountType = DiscountType.Percentage,
                 DiscountValue = 10,
                 MinOrderAmount = 0,
+                MaxDiscountCap = 1500,
+                TargetType = CouponTargetType.Order,
                 IsActive = true,
+                IsBannerPromoted = true,
+                CampaignTitle = "⚡ Flash Sale: 10% OFF Storewide with code SAVE10",
                 CreatedAt = DateTime.UtcNow
             },
             new Coupon
@@ -90,6 +108,7 @@ public static class DatabaseSeeder
                 DiscountType = DiscountType.FixedAmount,
                 DiscountValue = 50,
                 MinOrderAmount = 0,
+                TargetType = CouponTargetType.Order,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             },
@@ -99,6 +118,7 @@ public static class DatabaseSeeder
                 DiscountType = DiscountType.FixedAmount,
                 DiscountValue = 500,
                 MinOrderAmount = 2000,
+                TargetType = CouponTargetType.Order,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             }
@@ -124,23 +144,23 @@ public static class DatabaseSeeder
 
         var now = DateTime.UtcNow;
 
-        var products = new (string Sku, string Name, decimal Price, int Stock)[]
+        var products = new (string Sku, string Name, decimal Price, decimal? CompareAtPrice, int Stock)[]
         {
-            ("NC-1001", "Espresso Machine Pro", 249.00m, 12),
-            ("NC-1002", "Milk Frother", 39.90m, 4),
-            ("NC-1003", "Burr Coffee Grinder", 89.50m, 0),
-            ("NC-1004", "Pour Over Kettle", 64.00m, 18),
-            ("NC-1005", "Paper Filters (100 pack)", 6.75m, 240),
-            ("NC-1006", "Ceramic Mug Set", 24.00m, 7),
-            ("NC-1007", "Single Origin Beans 1kg", 32.40m, 60),
-            ("NC-1008", "Cold Brew Carafe", 45.00m, 3),
-            ("NC-1009", "Tamper & Mat Bundle", 29.99m, 0),
-            ("NC-1010", "Reusable Cup", 14.50m, 96)
+            ("NC-1001", "Espresso Machine Pro", 249.00m, 299.00m, 12),
+            ("NC-1002", "Milk Frother", 39.90m, 49.90m, 4),
+            ("NC-1003", "Burr Coffee Grinder", 89.50m, null, 0),
+            ("NC-1004", "Pour Over Kettle", 64.00m, 75.00m, 18),
+            ("NC-1005", "Paper Filters (100 pack)", 6.75m, null, 240),
+            ("NC-1006", "Ceramic Mug Set", 24.00m, 29.00m, 7),
+            ("NC-1007", "Single Origin Beans 1kg", 32.40m, 38.00m, 60),
+            ("NC-1008", "Cold Brew Carafe", 45.00m, null, 3),
+            ("NC-1009", "Tamper & Mat Bundle", 29.99m, null, 0),
+            ("NC-1010", "Reusable Cup", 14.50m, 18.00m, 96)
         };
 
         var coffeeCategoryId = await db.Categories.Where(c => c.Slug == "coffee-tea").Select(c => c.Id).FirstOrDefaultAsync(ct);
 
-        foreach (var (sku, name, price, stock) in products)
+        foreach (var (sku, name, price, compareAtPrice, stock) in products)
         {
             db.Products.Add(new Product
             {
@@ -149,6 +169,7 @@ public static class DatabaseSeeder
                 ImageUrl = $"/products/{sku.ToLowerInvariant()}.jpg",
                 Categories = new List<ProductCategory> { new() { CategoryId = coffeeCategoryId > 0 ? coffeeCategoryId : 1, IsPrimary = true } },
                 Price = price,
+                CompareAtPrice = compareAtPrice,
                 StockQuantity = stock,
                 IsActive = true,
                 CreatedAt = now,

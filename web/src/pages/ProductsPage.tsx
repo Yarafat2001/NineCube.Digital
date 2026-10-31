@@ -76,7 +76,21 @@ function ProductCard({
       </div>
 
       <div className="product-card__footer">
-        <p className="product-card__price">{t(formatMoney(product.price, product.currency))}</p>
+        <div>
+          {product.compareAtPrice && product.compareAtPrice > product.price ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <span className="product-card__price">{t(formatMoney(product.price, product.currency))}</span>
+              <span style={{ textDecoration: 'line-through', opacity: 0.6, fontSize: 'var(--text-xs)' }}>
+                {t(formatMoney(product.compareAtPrice, product.currency))}
+              </span>
+              <span style={{ fontSize: '10px', padding: '1px 5px', borderRadius: '4px', background: 'var(--ok-bg, #dcfce7)', color: 'var(--ok-text, #14532d)', fontWeight: 700 }}>
+                -{Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}%
+              </span>
+            </div>
+          ) : (
+            <p className="product-card__price">{t(formatMoney(product.price, product.currency))}</p>
+          )}
+        </div>
         <StockBadge product={product} threshold={threshold} />
       </div>
 

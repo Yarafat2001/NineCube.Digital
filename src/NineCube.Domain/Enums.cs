@@ -86,6 +86,14 @@ public enum DiscountType
     FixedAmount = 1
 }
 
+public enum CouponTargetType
+{
+    Order = 0,
+    Category = 1,
+    Brand = 2,
+    Product = 3
+}
+
 public enum PaymentMethod
 {
     CashOnDelivery = 0,

@@ -92,15 +92,23 @@ export let demoCoupons: Array<{
   discountType: 'Percentage' | 'FixedAmount';
   discountValue: number;
   minOrderAmount: number;
+  maxDiscountCap?: number | null;
+  targetType?: string;
+  targetId?: number | null;
+  startsAt?: string | null;
   expiresAt: string | null;
   usageLimit: number | null;
   usageCount: number;
   isActive: boolean;
+  isAutomatic?: boolean;
+  campaignTitle?: string | null;
+  isBannerPromoted?: boolean;
   createdAt: string;
 }> = [
-  { id: 1, code: 'SAVE10', discountType: 'Percentage', discountValue: 10, minOrderAmount: 0, expiresAt: null, usageLimit: null, usageCount: 2, isActive: true, createdAt: '2026-10-15T08:00:00Z' },
-  { id: 2, code: 'WELCOME50', discountType: 'FixedAmount', discountValue: 50, minOrderAmount: 0, expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, createdAt: '2026-10-15T08:00:00Z' },
-  { id: 3, code: 'NINECUBE', discountType: 'FixedAmount', discountValue: 500, minOrderAmount: 2000, expiresAt: null, usageLimit: null, usageCount: 1, isActive: true, createdAt: '2026-10-15T08:00:00Z' }
+  { id: 1, code: 'SAVE10', discountType: 'Percentage', discountValue: 10, minOrderAmount: 0, maxDiscountCap: 1500, targetType: 'Order', expiresAt: null, usageLimit: null, usageCount: 2, isActive: true, isBannerPromoted: true, campaignTitle: '⚡ Welcome Deal: 10% OFF Storewide with code SAVE10', createdAt: '2026-10-15T08:00:00Z' },
+  { id: 2, code: 'WELCOME50', discountType: 'FixedAmount', discountValue: 50, minOrderAmount: 0, targetType: 'Order', expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, isBannerPromoted: false, createdAt: '2026-10-15T08:00:00Z' },
+  { id: 3, code: 'NINECUBE', discountType: 'FixedAmount', discountValue: 500, minOrderAmount: 2000, targetType: 'Order', expiresAt: null, usageLimit: null, usageCount: 1, isActive: true, isBannerPromoted: false, createdAt: '2026-10-15T08:00:00Z' },
+  { id: 4, code: 'EID2026', discountType: 'Percentage', discountValue: 15, minOrderAmount: 1000, maxDiscountCap: 2500, targetType: 'Category', targetId: 1, expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, isBannerPromoted: true, campaignTitle: '🌙 Eid Mega Festival: 15% OFF Footwear with code EID2026', createdAt: '2026-10-15T08:00:00Z' }
 ];
 
 export const adminUsers: AdminUser[] = [
@@ -528,6 +536,7 @@ export const handlers = [
   }),
 
   http.get(`${API}/api/coupons`, () => HttpResponse.json(demoCoupons)),
+  http.get(`${API}/api/coupons/campaigns`, () => HttpResponse.json(demoCoupons.filter(c => c.isActive && c.isBannerPromoted))),
 
   http.post(`${API}/api/coupons`, async ({ request }) => {
     const payload = (await request.json()) as any;

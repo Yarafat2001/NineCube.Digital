@@ -12,7 +12,7 @@ import {
   useCreateCoupon,
   useToggleCouponStatus
 } from '../api/hooks';
-import type { UserRole } from '../api/types';
+import type { CouponTargetType, UserRole } from '../api/types';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, useToast } from '../components/ui';
 import { formatDateTime, roleLabels, useDebouncedValue } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -61,6 +61,10 @@ export function AdminPage() {
   const [discountValue, setDiscountValue] = useState('');
   const [minOrderAmount, setMinOrderAmount] = useState('0');
   const [usageLimit, setUsageLimit] = useState('');
+  const [couponTargetType, setCouponTargetType] = useState<CouponTargetType>('Order');
+  const [maxDiscountCap, setMaxDiscountCap] = useState('');
+  const [campaignTitle, setCampaignTitle] = useState('');
+  const [isBannerPromoted, setIsBannerPromoted] = useState(false);
 
   const submitUser = async (event: FormEvent) => {
     event.preventDefault();
@@ -102,13 +106,21 @@ export function AdminPage() {
         discountType,
         discountValue: Number(discountValue),
         minOrderAmount: Number(minOrderAmount || 0),
-        usageLimit: usageLimit ? Number(usageLimit) : null
+        usageLimit: usageLimit ? Number(usageLimit) : null,
+        targetType: couponTargetType,
+        maxDiscountCap: maxDiscountCap ? Number(maxDiscountCap) : null,
+        campaignTitle: campaignTitle.trim() || null,
+        isBannerPromoted
       });
       toast.push('success', `Coupon ${created.code} created.`);
       setCouponCode('');
       setDiscountValue('');
       setMinOrderAmount('0');
       setUsageLimit('');
+      setMaxDiscountCap('');
+      setCampaignTitle('');
+      setIsBannerPromoted(false);
+      setCouponTargetType('Order');
     } catch (caught) {
       toast.pushError(caught);
     }
@@ -431,6 +443,53 @@ export function AdminPage() {
               />
             </div>
 
+            <div className="field">
+              <label htmlFor="coupon-target-type">{t("Applies to / Target Scope")}</label>
+              <select
+                id="coupon-target-type"
+                value={couponTargetType}
+                onChange={(e) => setCouponTargetType(e.target.value as CouponTargetType)}
+              >
+                <option value="Order">{t("Entire Order / Basket")}</option>
+                <option value="Category">{t("Specific Category (e.g. Footwear)")}</option>
+                <option value="Brand">{t("Specific Brand")}</option>
+                <option value="Product">{t("Specific Product")}</option>
+              </select>
+            </div>
+
+            <div className="field">
+              <label htmlFor="coupon-max-cap">{t("Max discount cap (BDT, optional)")}</label>
+              <input
+                id="coupon-max-cap"
+                type="number"
+                min="1"
+                step="0.01"
+                placeholder={t("e.g. 2500 (limits max savings)")}
+                value={maxDiscountCap}
+                onChange={(e) => setMaxDiscountCap(e.target.value)}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="coupon-campaign-title">{t("Campaign banner title (optional)")}</label>
+              <input
+                id="coupon-campaign-title"
+                type="text"
+                placeholder={t("e.g. Eid Mega Festival")}
+                value={campaignTitle}
+                onChange={(e) => setCampaignTitle(e.target.value)}
+              />
+            </div>
+
+            <label className="checkbox" style={{ alignSelf: 'center', marginTop: 'var(--space-4)' }}>
+              <input
+                type="checkbox"
+                checked={isBannerPromoted}
+                onChange={(e) => setIsBannerPromoted(e.target.checked)}
+              />
+              <span>{t("Show in top announcement banner")}</span>
+            </label>
+
             <div className="form-actions" style={{ alignSelf: 'flex-end' }}>
               <button type="submit" className="btn btn--primary" disabled={createCoupon.isPending || !couponCode.trim() || !discountValue}>
                 {t(createCoupon.isPending ? 'Creating…' : 'Create Coupon')}
@@ -449,10 +508,11 @@ export function AdminPage() {
                   <thead>
                     <tr>
                       <th scope="col">{t("Code")}</th>
-                      <th scope="col">{t("Type")}</th>
+                      <th scope="col">{t("Type & Scope")}</th>
                       <th scope="col" className="num">{t("Discount")}</th>
                       <th scope="col" className="num">{t("Min order")}</th>
                       <th scope="col" className="num">{t("Times used")}</th>
+                      <th scope="col">{t("Campaign Banner")}</th>
                       <th scope="col">{t("Status")}</th>
                       <th scope="col" className="actions">{t("Actions")}</th>
                     </tr>
@@ -461,10 +521,11 @@ export function AdminPage() {
                     {(couponsQuery.data ?? []).map((c) => (
                       <tr key={c.id}>
                         <td><strong>{c.code}</strong></td>
-                        <td>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}</td>
-                        <td className="num">{c.discountType === 'Percentage' ? `${c.discountValue}%` : `BDT ${c.discountValue}`}</td>
+                        <td>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}{c.targetType && c.targetType !== 'Order' ? ` · ${t(c.targetType)}` : ''}</td>
+                        <td className="num">{c.discountType === 'Percentage' ? `${c.discountValue}%` : `${t("BDT")} ${c.discountValue}`}{c.maxDiscountCap ? <><br /><small className="muted">{t("Cap:")} {t("BDT")} {c.maxDiscountCap}</small></> : null}</td>
                         <td className="num">{c.minOrderAmount > 0 ? `BDT ${c.minOrderAmount}` : t("None")}</td>
                         <td className="num">{c.usageCount}{c.usageLimit ? ` / ${c.usageLimit}` : ''}</td>
+                        <td>{c.isBannerPromoted ? <span className="badge badge--ok" title={c.campaignTitle ?? ''}>📢 {c.campaignTitle ? t(c.campaignTitle) : t("Banner")}</span> : <span className="muted">—</span>}</td>
                         <td>
                           <span className={`badge ${c.isActive ? 'badge--ok' : 'badge--neutral'}`}>
                             {t(c.isActive ? 'Active' : 'Disabled')}
@@ -491,7 +552,7 @@ export function AdminPage() {
                     ))}
                     {(couponsQuery.data ?? []).length === 0 && (
                       <tr>
-                        <td colSpan={7} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
+                        <td colSpan={8} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
                           {t("No coupons created yet.")}
                         </td>
                       </tr>

@@ -136,7 +136,19 @@ export function ProductDetailPage() {
             ) : null}
           </div>
 
-          <p className="product-detail__price">{t(formatMoney(product.price, product.currency))}</p>
+          <div className="product-detail__price-row" style={{ display: 'flex', alignItems: 'baseline', gap: '10px', flexWrap: 'wrap' }}>
+            <span className="product-detail__price">{t(formatMoney(product.price, product.currency))}</span>
+            {product.compareAtPrice && product.compareAtPrice > product.price ? (
+              <>
+                <span style={{ textDecoration: 'line-through', opacity: 0.6, fontSize: 'var(--text-base, 1rem)' }}>
+                  {t(formatMoney(product.compareAtPrice, product.currency))}
+                </span>
+                <span className="badge" style={{ background: 'var(--ok-bg, #dcfce7)', color: 'var(--ok-text, #14532d)', fontSize: '0.8125rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px' }}>
+                  -{Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}% {t("OFF")}
+                </span>
+              </>
+            ) : null}
+          </div>
           <StockBadge product={product} threshold={threshold} />
 
           <div className="product-detail__description"><h2>{t("About this product")}</h2>{product.description ? <p>{t(product.description)}</p> : <p className="muted">{t("No description yet.")}</p>}</div>

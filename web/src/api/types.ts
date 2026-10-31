@@ -59,6 +59,7 @@ export interface Product {
   productLineName?: string | null;
   productLineSlug?: string | null;
   images?: ProductImage[] | null;
+  compareAtPrice?: number | null;
 }
 
 export interface ProductCategory { id: number; name: string; slug: string; isPrimary: boolean }
@@ -282,16 +283,25 @@ export interface ShortItem {
 }
 
 
+export type CouponTargetType = 'Order' | 'Category' | 'Brand' | 'Product';
+
 export interface Coupon {
   id: number;
   code: string;
   discountType: DiscountType;
   discountValue: number;
   minOrderAmount: number;
+  maxDiscountCap?: number | null;
+  targetType?: CouponTargetType;
+  targetId?: number | null;
+  startsAt?: string | null;
   expiresAt: string | null;
   usageLimit: number | null;
   usageCount: number;
   isActive: boolean;
+  isAutomatic?: boolean;
+  campaignTitle?: string | null;
+  isBannerPromoted?: boolean;
 }
 
 export interface CouponValidationResult {
@@ -299,6 +309,9 @@ export interface CouponValidationResult {
   reason: string | null;
   discountAmount: number;
   code: string | null;
+  campaignTitle?: string | null;
+  targetType?: CouponTargetType;
+  maxDiscountCap?: number | null;
 }
 
 export interface PaymentTransaction {

@@ -28,6 +28,8 @@ public sealed class Product
     public ProductLine? ProductLine { get; set; }
     /// <summary>decimal(18,2). Never a floating point type for money.</summary>
     public decimal Price { get; set; }
+    /// <summary>Optional original / regular MSRP price for showing strikethrough compare-at discounts.</summary>
+    public decimal? CompareAtPrice { get; set; }
     public int StockQuantity { get; set; }
     public bool IsActive { get; set; } = true;
     /// <summary>SQL Server rowversion. Not used for the stock reservation (we use atomic conditional
@@ -185,10 +187,17 @@ public sealed class Coupon
     public DiscountType DiscountType { get; set; }
     public decimal DiscountValue { get; set; }
     public decimal MinOrderAmount { get; set; }
+    public decimal? MaxDiscountCap { get; set; }
+    public CouponTargetType TargetType { get; set; } = CouponTargetType.Order;
+    public int? TargetId { get; set; }
+    public DateTime? StartsAt { get; set; }
     public DateTime? ExpiresAt { get; set; }
     public int? UsageLimit { get; set; }
     public int UsageCount { get; set; }
     public bool IsActive { get; set; } = true;
+    public bool IsAutomatic { get; set; } = false;
+    public string? CampaignTitle { get; set; }
+    public bool IsBannerPromoted { get; set; } = false;
     public DateTime CreatedAt { get; set; }
 }
 

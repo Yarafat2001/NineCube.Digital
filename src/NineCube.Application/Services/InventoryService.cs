@@ -59,6 +59,7 @@ public sealed class InventoryService : IInventoryService
             BrandId = brandId,
             ProductLineId = productLineId,
             Price = decimal.Round(request.Price, 2, MidpointRounding.AwayFromZero),
+            CompareAtPrice = request.CompareAtPrice.HasValue ? decimal.Round(request.CompareAtPrice.Value, 2, MidpointRounding.AwayFromZero) : null,
             StockQuantity = 0,
             IsActive = request.IsActive,
             CreatedAt = now,
@@ -93,6 +94,7 @@ public sealed class InventoryService : IInventoryService
 
         product.Name = request.Name.Trim();
         product.Price = decimal.Round(request.Price, 2, MidpointRounding.AwayFromZero);
+        product.CompareAtPrice = request.CompareAtPrice.HasValue ? decimal.Round(request.CompareAtPrice.Value, 2, MidpointRounding.AwayFromZero) : null;
         product.IsActive = request.IsActive;
         product.Description = request.Description?.Trim();
         product.ImageUrl = request.ImageUrl?.Trim();

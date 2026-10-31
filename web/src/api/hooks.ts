@@ -318,7 +318,7 @@ export function useCreateProduct() {
   const invalidate = useInvalidate();
 
   return useMutation({
-    mutationFn: (body: { sku: string; name: string; price: number; isActive: boolean; description?: string; imageUrl?: string; brandId?: number | null; productLineId?: number | null }) =>
+    mutationFn: (body: { sku: string; name: string; price: number; compareAtPrice?: number | null; isActive: boolean; description?: string; imageUrl?: string; brandId?: number | null; productLineId?: number | null }) =>
       request<Product>('/api/products', { method: 'POST', body }),
     onSuccess: () => invalidate([['products'], ['low-stock']])
   });
@@ -329,7 +329,7 @@ export function useUpdateProduct() {
   const invalidate = useInvalidate();
 
   return useMutation({
-    mutationFn: ({ id, ...body }: { id: number; name: string; price: number; isActive: boolean; description?: string; imageUrl?: string; brandId?: number | null; productLineId?: number | null }) =>
+    mutationFn: ({ id, ...body }: { id: number; name: string; price: number; compareAtPrice?: number | null; isActive: boolean; description?: string; imageUrl?: string; brandId?: number | null; productLineId?: number | null }) =>
       request<Product>(`/api/products/${id}`, { method: 'PUT', body }),
     onSuccess: () => invalidate([['products'], ['low-stock']])
   });
@@ -607,9 +607,21 @@ export function useResetPassword() {
   });
 }
 
+export function useActiveCampaigns() {
+  return useQuery({
+    queryKey: ['campaigns', 'active'],
+    queryFn: () => apiRequest<Coupon[]>('/api/coupons/campaigns'),
+    staleTime: 60_000
+  });
+}
+
 export function useValidateCoupon() {
   return useMutation({
-    mutationFn: (payload: { code: string; subTotal: number }) =>
+    mutationFn: (payload: {
+      code: string;
+      subTotal: number;
+      items?: { productId: number; quantity: number; unitPrice: number; categoryId?: number; brandId?: number }[];
+    }) =>
       apiRequest<CouponValidationResult>('/api/coupons/validate', {
         method: 'POST',
         body: payload
@@ -634,10 +646,17 @@ export function useCreateCoupon() {
       discountType: string;
       discountValue: number;
       minOrderAmount: number;
+      maxDiscountCap?: number | null;
+      targetType?: string;
+      targetId?: number | null;
+      startsAt?: string | null;
       expiresAt?: string | null;
       usageLimit?: number | null;
+      isAutomatic?: boolean;
+      campaignTitle?: string | null;
+      isBannerPromoted?: boolean;
     }) => request<Coupon>('/api/coupons', { method: 'POST', body: payload }),
-    onSuccess: () => invalidate([queryKeys.coupons])
+    onSuccess: () => invalidate([queryKeys.coupons, ['campaigns']])
   });
 }
 

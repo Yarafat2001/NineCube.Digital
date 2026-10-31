@@ -39,12 +39,13 @@ interface ProductFormState {
   sku: string;
   name: string;
   price: string;
+  compareAtPrice: string;
   isActive: boolean;
   description: string;
   imageUrl: string;
 }
 
-const emptyForm: ProductFormState = { id: null, sku: '', name: '', price: '', isActive: true, description: '', imageUrl: '' };
+const emptyForm: ProductFormState = { id: null, sku: '', name: '', price: '', compareAtPrice: '', isActive: true, description: '', imageUrl: '' };
 
 /** The API checks the file signature; this only stops an obvious mistake before the round trip. */
 function isAllowedImage(file: File): boolean {
@@ -278,6 +279,7 @@ export function InventoryPage() {
         sku: product.sku,
         name: product.name,
         price: product.price.toFixed(2),
+        compareAtPrice: product.compareAtPrice ? product.compareAtPrice.toFixed(2) : '',
         isActive: product.isActive,
         description: product.description ?? '',
         imageUrl: product.imageUrl ?? ''
@@ -375,6 +377,7 @@ export function InventoryPage() {
           sku: form.sku.trim(),
           name: form.name.trim(),
           price: Number(form.price),
+          compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : null,
           isActive: form.isActive,
           description: form.description.trim(),
           imageUrl: form.imageUrl.trim()
@@ -383,6 +386,7 @@ export function InventoryPage() {
           id: form.id,
           name: form.name.trim(),
           price: Number(form.price),
+          compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : null,
           isActive: form.isActive,
           description: form.description.trim(),
           imageUrl: form.imageUrl.trim()
@@ -518,7 +522,17 @@ export function InventoryPage() {
                     </td>
                     <td className="mono">{t(product.sku)}</td>
                     <td>{t(product.name)}</td>
-                    <td className="num">{t(formatMoney(product.price, product.currency))}</td>
+                    <td className="num">
+                      {product.compareAtPrice && product.compareAtPrice > product.price ? (
+                        <div>
+                          <span>{t(formatMoney(product.price, product.currency))}</span>
+                          <br />
+                          <small style={{ textDecoration: 'line-through', opacity: 0.6 }}>{t(formatMoney(product.compareAtPrice, product.currency))}</small>
+                        </div>
+                      ) : (
+                        t(formatMoney(product.price, product.currency))
+                      )}
+                    </td>
                     <td className="num">
                       <strong>{t(product.stockQuantity)}</strong>
                     </td>
@@ -536,6 +550,7 @@ export function InventoryPage() {
                               sku: product.sku,
                               name: product.name,
                               price: product.price.toFixed(2),
+        compareAtPrice: product.compareAtPrice ? product.compareAtPrice.toFixed(2) : '',
                               isActive: product.isActive,
         description: product.description ?? '',
         imageUrl: product.imageUrl ?? ''
@@ -626,6 +641,20 @@ export function InventoryPage() {
                 onChange={(event) => setForm({ ...form, price: event.target.value })}
               />
               <span className="hint">{t("Money is stored as decimal(18,2) - never a floating point value.")}</span>
+            </div>
+
+            <div className="field">
+              <label htmlFor="product-compare-at-price">{t("Compare-at / Original Price (optional)")}</label>
+              <input
+                id="product-compare-at-price"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder={t("Original price before discount")}
+                value={form.compareAtPrice}
+                onChange={(event) => setForm({ ...form, compareAtPrice: event.target.value })}
+              />
+              <span className="hint">{t("If set higher than price, shows strikethrough original price and discount badge.")}</span>
             </div>
 
             <label className="checkbox">

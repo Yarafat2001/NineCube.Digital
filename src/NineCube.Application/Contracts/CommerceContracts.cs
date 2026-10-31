@@ -17,7 +17,14 @@ public sealed record CouponDto(
     DateTime? ExpiresAt,
     int? UsageLimit,
     int UsageCount,
-    bool IsActive);
+    bool IsActive,
+    decimal? MaxDiscountCap = null,
+    CouponTargetType TargetType = CouponTargetType.Order,
+    int? TargetId = null,
+    DateTime? StartsAt = null,
+    bool IsAutomatic = false,
+    string? CampaignTitle = null,
+    bool IsBannerPromoted = false);
 
 public sealed record CreateCouponRequest(
     string Code,
@@ -25,10 +32,27 @@ public sealed record CreateCouponRequest(
     decimal DiscountValue,
     decimal MinOrderAmount,
     DateTime? ExpiresAt = null,
-    int? UsageLimit = null);
+    int? UsageLimit = null,
+    decimal? MaxDiscountCap = null,
+    CouponTargetType TargetType = CouponTargetType.Order,
+    int? TargetId = null,
+    DateTime? StartsAt = null,
+    bool IsAutomatic = false,
+    string? CampaignTitle = null,
+    bool IsBannerPromoted = false);
 
-public sealed record ApplyCouponRequest(string Code, decimal SubTotal);
-public sealed record CouponValidationResult(bool IsValid, string? Reason, decimal DiscountAmount, string? Code);
+public sealed record CartLineItemDto(int ProductId, int Quantity, decimal UnitPrice, int? CategoryId = null, int? BrandId = null);
+
+public sealed record ApplyCouponRequest(string Code, decimal SubTotal, IReadOnlyList<CartLineItemDto>? Items = null);
+
+public sealed record CouponValidationResult(
+    bool IsValid,
+    string? Reason,
+    decimal DiscountAmount,
+    string? Code,
+    string? CampaignTitle = null,
+    CouponTargetType TargetType = CouponTargetType.Order,
+    decimal? MaxDiscountCap = null);
 
 // ---------------------------------------------------------------- Payments
 public sealed record ProcessPaymentRequest(int OrderId, PaymentMethod Provider);

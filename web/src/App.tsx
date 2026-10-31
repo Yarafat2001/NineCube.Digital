@@ -2,6 +2,7 @@ import { t, useLanguage } from './i18n/language';
 import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './state/AuthContext';
+import { CampaignBanner } from './components/CampaignBanner';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { RequireAuth, RequireRole } from './components/guards';
@@ -54,6 +55,7 @@ export function App() {
 
   return (
     <div className="app-shell">
+      <CampaignBanner />
       <Navbar />
 
       <main id="main">

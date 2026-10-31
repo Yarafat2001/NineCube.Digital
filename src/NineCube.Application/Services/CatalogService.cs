@@ -208,5 +208,6 @@ public sealed class CatalogService : ICatalogService
             p.Currency, p.Slug, p.NeedsReview, p.SourceName, p.SourceUrl, p.PriceBasis, p.PriceVerifiedAt,
             p.BrandId, p.Brand == null ? null : p.Brand.Name, p.Brand == null ? null : p.Brand.Slug,
             p.ProductLineId, p.ProductLine == null ? null : p.ProductLine.Name, p.ProductLine == null ? null : p.ProductLine.Slug,
-            p.Images.OrderBy(i => i.SortOrder).ThenBy(i => i.Id).Select(i => new ProductImageDto(i.Id, i.Url, i.IsPrimary, i.AltText)).ToList());
+            p.Images.OrderBy(i => i.SortOrder).ThenBy(i => i.Id).Select(i => new ProductImageDto(i.Id, i.Url, i.IsPrimary, i.AltText)).ToList(),
+            p.CompareAtPrice);
 }

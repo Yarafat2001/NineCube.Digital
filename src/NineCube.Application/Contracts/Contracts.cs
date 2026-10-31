@@ -41,15 +41,16 @@ public sealed record ProductDto(
     string? SourceName = null, string? SourceUrl = null, string? PriceBasis = null, DateTime? PriceVerifiedAt = null,
     int? BrandId = null, string? BrandName = null, string? BrandSlug = null,
     int? ProductLineId = null, string? ProductLineName = null, string? ProductLineSlug = null,
-    IReadOnlyList<ProductImageDto>? Images = null);
+    IReadOnlyList<ProductImageDto>? Images = null,
+    decimal? CompareAtPrice = null);
 
 /// <summary>Upload metadata echoed back after a product image is stored.</summary>
 public sealed record ProductImageUploadRequest(string Url, bool SetAsPrimary = true, string? AltText = null);
 
 public sealed record CreateProductRequest(string Sku, string Name, decimal Price, bool IsActive = true,
-    string? Description = null, string? ImageUrl = null, int? BrandId = null, int? ProductLineId = null);
+    string? Description = null, string? ImageUrl = null, int? BrandId = null, int? ProductLineId = null, decimal? CompareAtPrice = null);
 public sealed record UpdateProductRequest(string Name, decimal Price, bool IsActive, string? Description = null,
-    string? ImageUrl = null, int? BrandId = null, int? ProductLineId = null);
+    string? ImageUrl = null, int? BrandId = null, int? ProductLineId = null, decimal? CompareAtPrice = null);
 public sealed record StockAdjustmentRequest(int Delta, string Reason);
 
 public sealed record InventoryMovementDto(

@@ -142,6 +142,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(p => p.Description).HasMaxLength(2000);
             e.Property(p => p.ImageUrl).HasMaxLength(2048);
             e.Property(p => p.Price).HasColumnType("decimal(18,2)");
+            e.Property(p => p.CompareAtPrice).HasColumnType("decimal(18,2)");
             e.Property(p => p.StockQuantity).IsRequired();
             e.Property(p => p.IsActive).IsRequired();
             e.Property(p => p.RowVersion);
@@ -326,6 +327,9 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(c => c.DiscountType).HasConversion<string>().HasMaxLength(32).IsRequired();
             e.Property(c => c.DiscountValue).HasColumnType("decimal(18,2)");
             e.Property(c => c.MinOrderAmount).HasColumnType("decimal(18,2)");
+            e.Property(c => c.MaxDiscountCap).HasColumnType("decimal(18,2)");
+            e.Property(c => c.TargetType).HasConversion<string>().HasMaxLength(32);
+            e.Property(c => c.CampaignTitle).HasMaxLength(200);
             e.Property(c => c.CreatedAt);
             e.HasIndex(c => c.Code).IsUnique();
         });

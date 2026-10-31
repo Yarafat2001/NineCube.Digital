@@ -196,8 +196,20 @@ public sealed class OrderService : IOrderService
 
             if (!string.IsNullOrWhiteSpace(request.CouponCode))
             {
+                var couponProductIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
+                var prodInfo = await _db.Products.AsNoTracking()
+                    .Where(p => couponProductIds.Contains(p.Id))
+                    .Select(p => new { p.Id, p.BrandId, CategoryId = p.Categories.Where(c => c.IsPrimary).Select(c => (int?)c.CategoryId).FirstOrDefault() })
+                    .ToListAsync(ct);
+
+                var lineDtos = order.Items.Select(i =>
+                {
+                    var match = prodInfo.FirstOrDefault(p => p.Id == i.ProductId);
+                    return new CartLineItemDto(i.ProductId, i.Quantity, i.UnitPrice, match?.CategoryId, match?.BrandId);
+                }).ToList();
+
                 var couponResult = await _couponService.ValidateCouponAsync(
-                    new ApplyCouponRequest(request.CouponCode, subTotal), ct);
+                    new ApplyCouponRequest(request.CouponCode, subTotal, lineDtos), ct);
 
                 if (couponResult.IsValid)
                 {
