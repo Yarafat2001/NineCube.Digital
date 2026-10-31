@@ -139,6 +139,49 @@ public static class DatabaseSeeder
             },
             new Coupon
             {
+                Code = "DURAMO25",
+
+                DiscountType = DiscountType.Percentage,
+                DiscountValue = 25,
+                MinOrderAmount = 0,
+                MaxDiscountCap = 3000,
+                TargetType = CouponTargetType.Product,
+                TargetId = 1,
+                IsActive = true,
+                IsBannerPromoted = true,
+                CampaignTitle = "👟 Duramo Special: 25% OFF Duramo SL Shoes with code DURAMO25",
+                CreatedAt = DateTime.UtcNow
+            },
+            new Coupon
+            {
+                Code = "APEX15",
+                DiscountType = DiscountType.Percentage,
+                DiscountValue = 15,
+                MinOrderAmount = 500,
+                MaxDiscountCap = 1500,
+                TargetType = CouponTargetType.Brand,
+                TargetId = 1,
+                IsActive = true,
+                IsBannerPromoted = true,
+                CampaignTitle = "🏷️ Apex Exclusive: 15% OFF All Apex Shoes with code APEX15",
+                CreatedAt = DateTime.UtcNow
+            },
+            new Coupon
+            {
+                Code = "AUTOMEGA",
+                DiscountType = DiscountType.Percentage,
+                DiscountValue = 10,
+                MinOrderAmount = 2000,
+                MaxDiscountCap = 2000,
+                TargetType = CouponTargetType.Order,
+                IsAutomatic = true,
+                IsActive = true,
+                IsBannerPromoted = true,
+                CampaignTitle = "⚡ Automatic Deal: 10% OFF on BDT 2,000+ Baskets",
+                CreatedAt = DateTime.UtcNow
+            },
+            new Coupon
+            {
                 Code = "SAVE10",
                 DiscountType = DiscountType.Percentage,
                 DiscountValue = 10,

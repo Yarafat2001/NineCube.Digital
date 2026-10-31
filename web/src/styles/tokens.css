@@ -16,11 +16,13 @@
     radial-gradient(800px 500px at 100% 10%, rgba(59, 130, 246, .12), transparent 60%);
   --surface: #FFFFFF;
   --surface-sunken: #F1F4F9;
+  --surface-overlay: rgba(255, 255, 255, 0.96);
   --surface-glass: rgba(255, 255, 255, .62);
   --border: #CBD3E1;
   --border-strong: #9AA6BA;
   --text: #0F172A;
   --text-muted: #475569;
+  --muted: #475569;
   --accent: #F59E0B;
   --accent-text: #9A3F00;
   --on-accent: #1A1100;
@@ -158,12 +160,14 @@
     --logo-face: #f5f2f3;
     --brand-wordmark: #ffab4d;
     --text-muted: #b9b3b5;
+    --muted: #b9b3b5;
     --border: rgba(255, 255, 255, 0.16);
     --border-strong: rgba(255, 255, 255, 0.3);
 
     --surface: #1b181a;
     --surface-raised: #232022;
     --surface-sunken: #131113;
+    --surface-overlay: rgba(27, 24, 26, 0.96);
 
     /* ---- spec aliases for dark ---------------------------------------- */
     --bg-page: #141113;
