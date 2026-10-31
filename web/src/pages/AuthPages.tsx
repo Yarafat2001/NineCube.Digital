@@ -4,6 +4,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ApiError, describeError } from '../api/client';
 import { AuthCard, NeuButton, NeuInput, SocialButtons, type SocialProvider } from '../components/auth/AuthCard';
 import { useAuth } from '../state/AuthContext';
+import { useForgotPassword, useResetPassword } from '../api/hooks';
 import styles from '../components/auth/Auth.module.css';
 
 const EMAIL_KEY = 'ninecube.auth.remembered-email';
@@ -37,6 +38,59 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
   const [submitted, setSubmitted] = useState(false);
   const [tooltip, setTooltip] = useState('');
   const previousPath = useRef(location.pathname);
+
+  // Password Recovery Modal State
+  const [showRecovery, setShowRecovery] = useState(false);
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [recoveryToken, setRecoveryToken] = useState('');
+  const [recoveryNewPassword, setRecoveryNewPassword] = useState('');
+  const [recoveryStep, setRecoveryStep] = useState<'request' | 'reset'>('request');
+  const [recoveryNotice, setRecoveryNotice] = useState<string | null>(null);
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
+
+  const forgotPasswordMutation = useForgotPassword();
+  const resetPasswordMutation = useResetPassword();
+
+  const handleRequestToken = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!recoveryEmail.trim()) return;
+    setRecoveryError(null);
+    setRecoveryNotice(null);
+    try {
+      const res = await forgotPasswordMutation.mutateAsync(recoveryEmail.trim());
+      setRecoveryNotice(res.message);
+      if (res.demoResetToken) {
+        setRecoveryToken(res.demoResetToken);
+      }
+      setRecoveryStep('reset');
+    } catch (err: any) {
+      setRecoveryError(err.message ?? 'Failed to send recovery instructions.');
+    }
+  };
+
+  const handleResetPassword = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!recoveryEmail.trim() || !recoveryToken.trim() || !recoveryNewPassword) return;
+    setRecoveryError(null);
+    setRecoveryNotice(null);
+    try {
+      const res = await resetPasswordMutation.mutateAsync({
+        email: recoveryEmail.trim(),
+        token: recoveryToken.trim(),
+        newPassword: recoveryNewPassword
+      });
+      setRecoveryNotice(res.message ?? 'Password successfully reset! You can now log in.');
+      setTimeout(() => {
+        setShowRecovery(false);
+        setRecoveryStep('request');
+        setRecoveryNotice(null);
+        setRecoveryToken('');
+        setRecoveryNewPassword('');
+      }, 2500);
+    } catch (err: any) {
+      setRecoveryError(err.message ?? 'Failed to reset password. Please verify your token.');
+    }
+  };
 
   useEffect(() => {
     if (previousPath.current === location.pathname) return;
@@ -146,9 +200,17 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
                         setRemember(event.target.checked);
                         if (!event.target.checked) { try { localStorage.removeItem(EMAIL_KEY); } catch { /* Optional preference. */ } }
                       }} /><span>{t("Remember me")}</span></label>
-                    <button type="button" className={styles.textButton} onClick={() => onForgotPassword
-                      ? void integration(() => onForgotPassword(email.trim()))
-                      : setNotice('For help accessing your account, contact your administrator.')}>{t("Forgot Password?")}</button>
+                    <button type="button" className={styles.textButton} onClick={() => {
+                      if (onForgotPassword) {
+                        void integration(() => onForgotPassword(email.trim()));
+                      } else {
+                        setRecoveryEmail(email.trim());
+                        setRecoveryError(null);
+                        setRecoveryNotice(null);
+                        setRecoveryStep('request');
+                        setShowRecovery(true);
+                      }
+                    }}>{t("Forgot Password?")}</button>
                   </div>
                   <p id="remember-description" className={styles.hint}>{t("Remembers your email on this device. Your session ends when you close this tab.")}</p>
                 </>}
@@ -168,6 +230,77 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
         })}
       </div>
       <p className={styles.notice} role="status" aria-live="polite" aria-atomic="true">{t(notice || (busy ? 'Please wait…' : ''))}</p>
+
+      {/* Self-service password recovery modal */}
+      {showRecovery && (
+        <div className="sheet-backdrop" onClick={() => setShowRecovery(false)} role="presentation" style={{ zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="card-glass stack" onClick={e => e.stopPropagation()} style={{ width: '90%', maxWidth: '440px', padding: 'var(--space-5)', borderRadius: 'var(--radius-lg, 16px)', background: 'var(--surface-overlay, #18181b)' }} role="dialog" aria-modal="true" aria-labelledby="recovery-title">
+            <div className="row-between">
+              <h2 id="recovery-title" style={{ fontSize: 'var(--text-lg)', margin: 0 }}>{t("Reset Password")}</h2>
+              <button type="button" className="link-button" onClick={() => setShowRecovery(false)} aria-label={t("Close")}>✕</button>
+            </div>
+
+            {recoveryStep === 'request' ? (
+              <form onSubmit={handleRequestToken} className="stack" style={{ gap: 'var(--space-3)', marginTop: 'var(--space-3)' }}>
+                <p className="muted" style={{ fontSize: 'var(--text-sm)', margin: 0 }}>
+                  {t("Enter your account email to receive a password reset token.")}
+                </p>
+                <input
+                  type="email"
+                  placeholder={t("Your account email")}
+                  value={recoveryEmail}
+                  onChange={e => setRecoveryEmail(e.target.value)}
+                  required
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--border)' }}
+                />
+                {recoveryError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: 0 }}>{recoveryError}</p>}
+                <div className="row" style={{ justifyContent: 'flex-end', gap: 'var(--space-2)' }}>
+                  <button type="button" className="btn btn--ghost btn--sm" onClick={() => setShowRecovery(false)}>{t("Cancel")}</button>
+                  <button type="submit" className="btn btn--primary btn--sm" disabled={forgotPasswordMutation.isPending || !recoveryEmail.trim()}>
+                    {t(forgotPasswordMutation.isPending ? 'Sending…' : 'Send Reset Token')}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleResetPassword} className="stack" style={{ gap: 'var(--space-3)', marginTop: 'var(--space-3)' }}>
+                <p className="muted" style={{ fontSize: 'var(--text-sm)', margin: 0 }}>
+                  {recoveryNotice ?? t("Enter the reset token sent to your email and your new password.")}
+                </p>
+                <div>
+                  <label style={{ fontSize: 'var(--text-xs)', display: 'block', marginBottom: '4px' }}>{t("Reset Token")}</label>
+                  <input
+                    type="text"
+                    placeholder={t("Paste reset token")}
+                    value={recoveryToken}
+                    onChange={e => setRecoveryToken(e.target.value)}
+                    required
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border)' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 'var(--text-xs)', display: 'block', marginBottom: '4px' }}>{t("New Password (min 8 chars)")}</label>
+                  <input
+                    type="password"
+                    placeholder={t("Enter new password")}
+                    value={recoveryNewPassword}
+                    onChange={e => setRecoveryNewPassword(e.target.value)}
+                    minLength={8}
+                    required
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border)' }}
+                  />
+                </div>
+                {recoveryError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: 0 }}>{recoveryError}</p>}
+                <div className="row" style={{ justifyContent: 'flex-end', gap: 'var(--space-2)' }}>
+                  <button type="button" className="btn btn--ghost btn--sm" onClick={() => setRecoveryStep('request')}>{t("Back")}</button>
+                  <button type="submit" className="btn btn--primary btn--sm" disabled={resetPasswordMutation.isPending || !recoveryToken.trim() || recoveryNewPassword.length < 8}>
+                    {t(resetPasswordMutation.isPending ? 'Updating…' : 'Set New Password')}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </AuthCard>
   );
 }

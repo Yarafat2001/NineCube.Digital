@@ -1,7 +1,8 @@
 import { t, useLanguage } from '../i18n/language';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useLowStockThreshold, useProduct } from '../api/hooks';
+import { useLowStockThreshold, useProduct, useProductReviews, useAddReview, useWishlist, useToggleWishlist } from '../api/hooks';
+import { formatDateTime } from '../lib/helpers';
 import { EmptyState, ErrorState, LoadingBlock, QuantityStepper, StockBadge } from '../components/ui';
 import { ProductViewer } from '../components/ProductViewer';
 import { cardPresentation } from '../lib/catalog';
@@ -23,10 +24,35 @@ export function ProductDetailPage() {
   const [copied, setCopied] = useState(false);
   const [added, setAdded] = useState(false);
 
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewError, setReviewError] = useState<string | null>(null);
+  const [reviewSuccess, setReviewSuccess] = useState(false);
+
   const productQuery = useProduct(Number.isFinite(productId) ? productId : null);
   const thresholdQuery = useLowStockThreshold();
+  const reviewsQuery = useProductReviews(Number.isFinite(productId) ? productId : 0);
+  const addReview = useAddReview(Number.isFinite(productId) ? productId : 0);
+  const wishlistQuery = useWishlist();
+  const toggleWishlist = useToggleWishlist();
+
   const product = productQuery.data;
   const threshold = thresholdQuery.data?.lowStockThreshold ?? 5;
+  const ratingSummary = reviewsQuery.data;
+  const isInWishlist = wishlistQuery.data?.some(item => item.productId === productId);
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setReviewError(null);
+    try {
+      await addReview.mutateAsync({ rating: reviewRating, comment: reviewComment.trim() || undefined });
+      setReviewComment('');
+      setReviewSuccess(true);
+      setTimeout(() => setReviewSuccess(false), 5000);
+    } catch (err: any) {
+      setReviewError(err.message ?? 'Failed to submit review.');
+    }
+  };
 
   if (productQuery.isLoading) return <div className="page container"><LoadingBlock label={t("Loading product")} variant="tile" count={2} /></div>;
 
@@ -85,6 +111,31 @@ export function ProductDetailPage() {
             </button>
           </div>
 
+          <div className="row-between" style={{ alignItems: 'center' }}>
+            {ratingSummary && ratingSummary.totalReviews > 0 ? (
+              <div className="row" style={{ alignItems: 'center', gap: '6px', fontSize: 'var(--text-sm)' }}>
+                <span style={{ color: '#f59e0b', fontWeight: 600 }}>★ {ratingSummary.averageRating.toFixed(1)}</span>
+                <span className="muted">({ratingSummary.totalReviews} {t(ratingSummary.totalReviews === 1 ? 'review' : 'reviews')})</span>
+              </div>
+            ) : (
+              <span className="muted" style={{ fontSize: 'var(--text-xs)' }}>{t("No reviews yet")}</span>
+            )}
+
+            {hasRole('Customer') ? (
+              <button
+                type="button"
+                className={`btn btn--sm ${isInWishlist ? 'btn--primary' : 'btn--ghost'}`}
+                onClick={() => toggleWishlist.mutate(productId)}
+                disabled={toggleWishlist.isPending}
+                aria-label={t(isInWishlist ? 'Remove from wishlist' : 'Add to wishlist')}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+              >
+                <span>{isInWishlist ? '♥' : '♡'}</span>
+                <span>{t(isInWishlist ? 'Saved' : 'Wishlist')}</span>
+              </button>
+            ) : null}
+          </div>
+
           <p className="product-detail__price">{t(formatMoney(product.price, product.currency))}</p>
           <StockBadge product={product} threshold={threshold} />
 
@@ -118,6 +169,85 @@ export function ProductDetailPage() {
           </div>
         </section>
       </div>
+
+      {/* Customer Reviews & Feedback Section */}
+      <section className="card-glass stack" style={{ marginTop: 'var(--space-6)', padding: 'var(--space-5)' }} aria-labelledby="reviews-heading">
+        <div className="row-between" style={{ borderBottom: '1px solid var(--border)', paddingBottom: 'var(--space-3)' }}>
+          <div>
+            <h2 id="reviews-heading" style={{ fontSize: 'var(--text-xl)', margin: 0 }}>{t("Customer Reviews & Ratings")}</h2>
+            <p className="muted" style={{ margin: 0, fontSize: 'var(--text-sm)' }}>
+              {ratingSummary && ratingSummary.totalReviews > 0
+                ? `${ratingSummary.averageRating.toFixed(1)} out of 5 stars based on ${ratingSummary.totalReviews} customer feedback`
+                : t("Be the first to review this product!")}
+            </p>
+          </div>
+        </div>
+
+        {/* Existing reviews */}
+        <div className="reviews-list stack" style={{ gap: 'var(--space-3)', margin: 'var(--space-3) 0' }}>
+          {ratingSummary && ratingSummary.recentReviews && ratingSummary.recentReviews.length > 0 ? (
+            ratingSummary.recentReviews.map(r => (
+              <div key={r.id} style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md, 8px)', background: 'var(--surface-muted, rgba(255,255,255,0.03))', border: '1px solid var(--border)' }}>
+                <div className="row-between" style={{ marginBottom: '4px' }}>
+                  <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontWeight: 600 }}>{r.customerName}</span>
+                    {r.isVerifiedBuyer ? (
+                      <span className="badge badge--neutral" style={{ fontSize: '10px', padding: '2px 6px', color: 'var(--ok, #10b981)' }}>
+                        ✓ {t("Verified Buyer")}
+                      </span>
+                    ) : null}
+                  </div>
+                  <span className="muted" style={{ fontSize: 'var(--text-xs)' }}>{formatDateTime(r.createdAt)}</span>
+                </div>
+                <div style={{ color: '#f59e0b', fontSize: 'var(--text-sm)', marginBottom: '4px' }}>
+                  {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                </div>
+                {r.comment ? <p style={{ margin: 0, fontSize: 'var(--text-sm)' }}>{r.comment}</p> : null}
+              </div>
+            ))
+          ) : (
+            <p className="muted">{t("No customer reviews for this product yet.")}</p>
+          )}
+        </div>
+
+        {/* Write a review form for customers */}
+        {hasRole('Customer') ? (
+          <form onSubmit={handleReviewSubmit} className="stack" style={{ marginTop: 'var(--space-4)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md, 8px)', background: 'var(--surface-muted, rgba(255,255,255,0.05))', border: '1px solid var(--border)' }}>
+            <h3 style={{ fontSize: 'var(--text-md)', margin: 0 }}>{t("Write a Review")}</h3>
+            <div className="row" style={{ alignItems: 'center', gap: 'var(--space-2)' }}>
+              <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>{t("Your Rating:")}</span>
+              <div className="row" style={{ gap: '4px' }}>
+                {[1, 2, 3, 4, 5].map(star => (
+                  <button
+                    key={star}
+                    type="button"
+                    className="link-button"
+                    style={{ fontSize: 'var(--text-lg)', color: star <= reviewRating ? '#f59e0b' : 'var(--muted)', cursor: 'pointer', padding: '0 2px' }}
+                    onClick={() => setReviewRating(star)}
+                    aria-label={`${star} stars`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            </div>
+            <textarea
+              rows={3}
+              placeholder={t("Share your thoughts about this product's quality, fit, and performance…")}
+              value={reviewComment}
+              onChange={e => setReviewComment(e.target.value)}
+              style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border)', background: 'transparent', color: 'inherit' }}
+            />
+            {reviewError ? <p style={{ color: 'var(--danger)', fontSize: 'var(--text-sm)', margin: 0 }}>{reviewError}</p> : null}
+            {reviewSuccess ? <p style={{ color: 'var(--ok, #10b981)', fontSize: 'var(--text-sm)', margin: 0 }}>{t("Thank you! Your review has been submitted.")}</p> : null}
+            <div>
+              <button type="submit" className="btn btn--sm btn--primary" disabled={addReview.isPending}>
+                {t(addReview.isPending ? 'Submitting…' : 'Submit Review')}
+              </button>
+            </div>
+          </form>
+        ) : null}
+      </section>
     </div>
   );
 }

@@ -258,6 +258,8 @@ export function useInvoice(id: number | null, enabled = true) {
 
 export interface PlaceOrderInput {
   items: { productId: number; quantity: number }[];
+  couponCode?: string;
+  paymentMethod?: PaymentMethod;
   idempotencyKey: string;
 }
 
@@ -271,8 +273,15 @@ export function usePlaceOrder() {
   const invalidate = useInvalidate();
 
   return useMutation({
-    mutationFn: (input: PlaceOrderInput) =>
-      request<Order>('/api/orders', { method: 'POST', body: { items: input.items }, idempotencyKey: input.idempotencyKey }),
+    mutationFn: (input: PlaceOrderInput) => {
+      const body: { items: { productId: number; quantity: number }[]; couponCode?: string; paymentMethod?: PaymentMethod } = {
+        items: input.items
+      };
+      if (input.couponCode) body.couponCode = input.couponCode;
+      if (input.paymentMethod) body.paymentMethod = input.paymentMethod;
+
+      return request<Order>('/api/orders', { method: 'POST', body, idempotencyKey: input.idempotencyKey });
+    },
     onSuccess: () => invalidate([queryKeys.orders({ page: 1, pageSize: 20 }), ['products']])
   });
 }

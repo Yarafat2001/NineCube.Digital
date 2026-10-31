@@ -465,7 +465,91 @@ export const handlers = [
 
   http.get(`${API}/api/admin/users`, () => HttpResponse.json(paged(adminUsers))),
   http.get(`${API}/api/admin/audit-logs`, () => HttpResponse.json(paged([]))),
-  http.get(`${API}/api/admin/settings`, () => HttpResponse.json({ lowStockThreshold: 5 }))
+  http.get(`${API}/api/admin/settings`, () => HttpResponse.json({ lowStockThreshold: 5 })),
+
+  // Enterprise endpoints
+  http.post(`${API}/api/coupons/validate`, async ({ request }) => {
+    const body = (await request.json()) as { code: string; subTotal: number };
+    if (body.code.toUpperCase() === 'SAVE10') {
+      return HttpResponse.json({
+        isValid: true,
+        reason: null,
+        discountAmount: Math.round(body.subTotal * 0.1),
+        code: 'SAVE10'
+      });
+    }
+    return HttpResponse.json({
+      isValid: false,
+      reason: 'Invalid or expired coupon code.',
+      discountAmount: 0,
+      code: null
+    });
+  }),
+
+  http.post(`${API}/api/payments/process`, async ({ request }) => {
+    const body = (await request.json()) as { orderId: number; provider: string };
+    return HttpResponse.json({
+      id: 999,
+      orderId: body.orderId,
+      amount: 100,
+      currency: 'BDT',
+      provider: body.provider,
+      transactionReference: `TX-MOCK-${Date.now()}`,
+      status: 'Paid',
+      createdAt: new Date().toISOString()
+    });
+  }),
+
+  http.get(`${API}/api/reviews/products/:id`, () =>
+    HttpResponse.json({
+      averageRating: 4.8,
+      totalReviews: 2,
+      recentReviews: [
+        {
+          id: 1,
+          productId: 1,
+          customerId: 10,
+          customerName: 'Rahim Ahmed',
+          rating: 5,
+          comment: 'Excellent build quality and reliable performance!',
+          isVerifiedBuyer: true,
+          createdAt: new Date().toISOString()
+        }
+      ]
+    })
+  ),
+
+  http.post(`${API}/api/reviews/products/:id`, async ({ params, request }) => {
+    const body = (await request.json()) as { rating: number; comment?: string };
+    return HttpResponse.json({
+      id: Math.floor(Math.random() * 1000) + 1,
+      productId: Number(params.id),
+      customerId: 10,
+      customerName: 'Customer',
+      rating: body.rating,
+      comment: body.comment ?? null,
+      isVerifiedBuyer: true,
+      createdAt: new Date().toISOString()
+    }, { status: 201 });
+  }),
+
+  http.get(`${API}/api/wishlist`, () => HttpResponse.json([])),
+
+  http.post(`${API}/api/wishlist/:id/toggle`, () =>
+    HttpResponse.json({ inWishlist: true })
+  ),
+
+  http.post(`${API}/api/auth/forgot-password`, async ({ request }) => {
+    void (await request.json());
+    return HttpResponse.json({
+      message: 'Password reset token generated.',
+      demoResetToken: 'DEMO-TOKEN-123456'
+    });
+  }),
+
+  http.post(`${API}/api/auth/reset-password`, () =>
+    HttpResponse.json({ success: true, message: 'Password has been successfully reset.' })
+  )
 ];
 
 /** Same required-field rule the API applies before it writes an address row. */

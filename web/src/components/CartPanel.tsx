@@ -3,8 +3,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ApiError, apiRequest } from '../api/client';
-import { usePlaceOrder } from '../api/hooks';
-import type { Order, Product, ShortItem } from '../api/types';
+import { usePlaceOrder, useValidateCoupon, useProcessPayment, useProfile } from '../api/hooks';
+import type { Order, Product, ShortItem, CouponValidationResult, PaymentMethod } from '../api/types';
+import { Link } from 'react-router-dom';
 import { createIdempotencyKey, formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
@@ -36,6 +37,51 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
   const [shortItems, setShortItems] = useState<ShortItem[]>([]);
   const [inlineError, setInlineError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+
+  const { data: profile } = useProfile();
+  const validateCoupon = useValidateCoupon();
+  const processPayment = useProcessPayment();
+
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CashOnDelivery');
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (profile?.addresses && profile.addresses.length > 0 && selectedAddressId === null) {
+      const def = profile.addresses.find(a => a.isDefault) ?? profile.addresses[0];
+      if (def) setSelectedAddressId(def.id);
+    }
+  }, [profile, selectedAddressId]);
+
+  const discountAmount = appliedCoupon?.isValid ? appliedCoupon.discountAmount : 0;
+  const finalTotal = Math.max(0, cart.total - discountAmount);
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponError(null);
+    try {
+      const res = await validateCoupon.mutateAsync({ code: couponCode.trim(), subTotal: cart.total });
+      if (res.isValid) {
+        setAppliedCoupon(res);
+        toast.push('success', `Coupon ${res.code} applied: save ${formatMoney(res.discountAmount, cart.currency)}!`);
+      } else {
+        setAppliedCoupon(null);
+        setCouponError(res.reason ?? 'Invalid coupon code.');
+      }
+    } catch (err: any) {
+      setAppliedCoupon(null);
+      setCouponError(err.message ?? 'Failed to validate coupon.');
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError(null);
+  };
 
   const idempotencyKey = useRef<string | null>(null);
   const inFlight = useRef(false);
@@ -82,8 +128,18 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
     try {
       const order = await placeOrder.mutateAsync({
         items: cart.lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
+        couponCode: appliedCoupon?.code ?? undefined,
+        paymentMethod,
         idempotencyKey: idempotencyKey.current
       });
+
+      if (paymentMethod !== 'CashOnDelivery') {
+        try {
+          await processPayment.mutateAsync({ orderId: order.id, provider: paymentMethod });
+        } catch {
+          // Non-blocking payment recording attempt
+        }
+      }
 
       idempotencyKey.current = null;
       setNotice(`Order #${order.id} placed.`);
@@ -193,9 +249,124 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
         </ul>
       )}
 
+      {cart.lines.length > 0 && (
+        <div className="cart-checkout-extras stack" style={{ gap: 'var(--space-3)', margin: 'var(--space-3) 0', padding: 'var(--space-3)', background: 'var(--surface-muted, rgba(255,255,255,0.05))', borderRadius: 'var(--radius-md, 8px)' }}>
+          {/* Address selection */}
+          <div className="cart-address-block">
+            <div className="row-between" style={{ marginBottom: 'var(--space-1)' }}>
+              <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>{t("Delivery address")}</span>
+              <Link to="/account/profile" className="link-button" style={{ fontSize: 'var(--text-xs)' }}>{t("Manage addresses")}</Link>
+            </div>
+            {profile?.addresses && profile.addresses.length > 0 ? (
+              <select
+                aria-label={t("Select delivery address")}
+                value={selectedAddressId ?? ''}
+                onChange={e => setSelectedAddressId(Number(e.target.value))}
+                style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--border)' }}
+              >
+                {profile.addresses.map(a => (
+                  <option key={a.id} value={a.id}>
+                    {a.label} ({a.division}, {a.district} - {a.addressLine})
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
+                {t("No address saved.")} <Link to="/account/profile" className="link-button">{t("Add delivery address")}</Link>
+              </p>
+            )}
+          </div>
+
+          {/* Coupon Code */}
+          <div className="cart-coupon-block">
+            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>{t("Promotional coupon")}</span>
+            {appliedCoupon?.isValid ? (
+              <div className="row-between" style={{ padding: '6px 10px', background: 'var(--surface-ok, rgba(16,185,129,0.1))', borderRadius: '6px', border: '1px solid var(--ok, #10b981)' }}>
+                <span style={{ color: 'var(--ok, #10b981)', fontWeight: 600, fontSize: 'var(--text-sm)' }}>
+                  ✓ {appliedCoupon.code} (-{formatMoney(appliedCoupon.discountAmount, cart.currency)})
+                </span>
+                <button type="button" className="link-button" onClick={removeCoupon} style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)' }}>
+                  {t("Remove")}
+                </button>
+              </div>
+            ) : (
+              <div className="row" style={{ gap: 'var(--space-2)' }}>
+                <input
+                  type="text"
+                  placeholder={t("Enter coupon code")}
+                  value={couponCode}
+                  onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                  aria-label={t("Coupon code")}
+                  style={{ flex: 1, padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--border)', textTransform: 'uppercase' }}
+                />
+                <button
+                  type="button"
+                  className="btn btn--sm"
+                  onClick={applyCoupon}
+                  disabled={validateCoupon.isPending || !couponCode.trim()}
+                >
+                  {t(validateCoupon.isPending ? 'Checking…' : 'Apply')}
+                </button>
+              </div>
+            )}
+            {couponError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: '4px 0 0 0' }}>{t(couponError)}</p>}
+          </div>
+
+          {/* Payment Method */}
+          <div className="cart-payment-block">
+            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>{t("Payment method")}</span>
+            <div className="row" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)', cursor: 'pointer' }}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="CashOnDelivery"
+                  checked={paymentMethod === 'CashOnDelivery'}
+                  onChange={() => setPaymentMethod('CashOnDelivery')}
+                />
+                <span>💵 {t("Cash on Delivery")}</span>
+              </label>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)', cursor: 'pointer' }}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="Card"
+                  checked={paymentMethod === 'Card'}
+                  onChange={() => setPaymentMethod('Card')}
+                />
+                <span>💳 {t("Card (Visa/Mastercard)")}</span>
+              </label>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)', cursor: 'pointer' }}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="MobileFinancialService"
+                  checked={paymentMethod === 'MobileFinancialService'}
+                  onChange={() => setPaymentMethod('MobileFinancialService')}
+                />
+                <span>📱 {t("Mobile Banking (bKash/Nagad)")}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {discountAmount > 0 && (
+        <div className="row-between" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted)', marginBottom: 'var(--space-1)' }}>
+          <span>{t("Subtotal")}</span>
+          <span>{t(formatMoney(cart.total, cart.currency))}</span>
+        </div>
+      )}
+      {discountAmount > 0 && (
+        <div className="row-between" style={{ fontSize: 'var(--text-sm)', color: 'var(--ok, #10b981)', marginBottom: 'var(--space-2)' }}>
+          <span>{t("Discount")}</span>
+          <span>-{t(formatMoney(discountAmount, cart.currency))}</span>
+        </div>
+      )}
+
       <div className="cart-total">
         <span>{t("Total")}</span>
-        <strong data-testid="cart-total">{t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(cart.total, cart.currency))}</strong>
+        <strong data-testid="cart-total">{t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}</strong>
       </div>
 
       {shortItems.length > 0 ? (

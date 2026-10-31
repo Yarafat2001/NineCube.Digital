@@ -232,6 +232,41 @@ export function OrderDetailPage() {
       <OrderTimeline order={order} />
       <p className="muted">{t(orderStatusMeta[order.status].description)}</p>
 
+      {/* Payment & Delivery Metadata Tiles */}
+      <div className="grid-cards" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)', margin: 'var(--space-4) 0' }}>
+        <div className="card-glass" style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md, 8px)' }}>
+          <span className="muted" style={{ fontSize: 'var(--text-xs)', display: 'block' }}>{t("Payment Method")}</span>
+          <strong style={{ fontSize: 'var(--text-sm)' }}>
+            {order.paymentMethod === 'Card' ? `💳 ${t("Card")}` : order.paymentMethod === 'MobileFinancialService' ? `📱 ${t("Mobile Banking (bKash/Nagad)")}` : `💵 ${t("Cash on Delivery")}`}
+          </strong>
+        </div>
+
+        <div className="card-glass" style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md, 8px)' }}>
+          <span className="muted" style={{ fontSize: 'var(--text-xs)', display: 'block' }}>{t("Payment Status")}</span>
+          <span className={`badge ${order.paymentStatus === 'Paid' ? 'badge--ok' : order.paymentStatus === 'Pending' ? 'badge--warn' : 'badge--neutral'}`} style={{ fontSize: 'var(--text-xs)', marginTop: '2px' }}>
+            {t(order.paymentStatus ?? 'Unpaid')}
+          </span>
+        </div>
+
+        {order.couponCode ? (
+          <div className="card-glass" style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md, 8px)' }}>
+            <span className="muted" style={{ fontSize: 'var(--text-xs)', display: 'block' }}>{t("Coupon Applied")}</span>
+            <span style={{ color: 'var(--ok, #10b981)', fontWeight: 600, fontSize: 'var(--text-sm)' }}>
+              {order.couponCode} (-{formatMoney(order.discountAmount ?? 0, order.currency)})
+            </span>
+          </div>
+        ) : null}
+
+        {order.trackingNumber ? (
+          <div className="card-glass" style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md, 8px)' }}>
+            <span className="muted" style={{ fontSize: 'var(--text-xs)', display: 'block' }}>{t("Shipment Tracking")}</span>
+            <strong style={{ fontSize: 'var(--text-sm)' }}>
+              {order.carrier ? `${order.carrier}: ` : ''}{order.trackingNumber}
+            </strong>
+          </div>
+        ) : null}
+      </div>
+
       <section className="table-surface" aria-labelledby="order-lines-heading">
         <div className="table-scroll">
           <table>
@@ -260,6 +295,18 @@ export function OrderDetailPage() {
               ))}
             </tbody>
             <tfoot>
+              {order.discountAmount && order.discountAmount > 0 ? (
+                <>
+                  <tr>
+                    <th scope="row" colSpan={3}>{t("Subtotal")}</th>
+                    <td className="num">{t(formatMoney(order.subTotal ?? (order.totalAmount + order.discountAmount), order.currency))}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" colSpan={3}>{t("Discount")} {order.couponCode ? `(${order.couponCode})` : ''}</th>
+                    <td className="num" style={{ color: 'var(--ok, #10b981)' }}>-{t(formatMoney(order.discountAmount, order.currency))}</td>
+                  </tr>
+                </>
+              ) : null}
               <tr>
                 <th scope="row" colSpan={3}>
                   {t("Total")}</th>

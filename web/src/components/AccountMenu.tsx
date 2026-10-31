@@ -286,7 +286,10 @@ export function AccountMenu() {
   if (!user) return null;
   const items: { to: string; label: string; icon: IconName }[] = [
     { to: '/account', label: 'Dashboard', icon: 'grid' }, { to: '/account/profile', label: 'Profile', icon: 'user' },
-    ...(user.role === 'Customer' ? [{ to: '/orders', label: 'My Orders', icon: 'box' as const }] : []),
+    ...(user.role === 'Customer' ? [
+      { to: '/orders', label: 'My Orders', icon: 'box' as const },
+      { to: '/wishlist', label: 'Wishlist', icon: 'heart' as const }
+    ] : []),
     { to: '/notifications', label: 'Notifications', icon: 'bell' }
   ];
   return <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}>

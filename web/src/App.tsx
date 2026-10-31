@@ -15,6 +15,7 @@ const ShowcasePage = lazy(() => import('./pages/ShowcasePage').then((module) => 
 const ProductsPage = lazy(() => import('./pages/ProductsPage').then((module) => ({ default: module.ProductsPage })));
 const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage').then((module) => ({ default: module.ProductDetailPage })));
 const MyOrdersPage = lazy(() => import('./pages/OrdersPages').then((module) => ({ default: module.MyOrdersPage })));
+const WishlistPage = lazy(() => import('./pages/WishlistPage').then((module) => ({ default: module.WishlistPage })));
 const OrderDetailPage = lazy(() => import('./pages/OrdersPages').then((module) => ({ default: module.OrderDetailPage })));
 const StaffPage = lazy(() => import('./pages/StaffPage').then((module) => ({ default: module.StaffPage })));
 const SalesSummaryPage = lazy(() => import('./pages/StaffPage').then((module) => ({ default: module.SalesSummaryPage })));
@@ -87,6 +88,15 @@ export function App() {
               element={
                 <RequireRole roles={['Customer']}>
                   <MyOrdersPage />
+                </RequireRole>
+              }
+            />
+
+            <Route
+              path="/wishlist"
+              element={
+                <RequireRole roles={['Customer']}>
+                  <WishlistPage />
                 </RequireRole>
               }
             />
