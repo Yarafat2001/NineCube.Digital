@@ -39,6 +39,16 @@ public sealed class GiftCardEndpoints : IEndpoint
             .RequireAuthorization(Policies.AdministratorOnly)
             .WithName("AdjustGiftCardBalance")
             .WithSummary("Adjusts the current balance of a gift card.");
+
+        group.MapPut("/{id:int}", UpdateGiftCardAsync)
+            .RequireAuthorization(Policies.AdministratorOnly)
+            .WithName("UpdateGiftCard")
+            .WithSummary("Updates recipient and note details of an existing gift card.");
+
+        group.MapDelete("/{id:int}", DeleteGiftCardAsync)
+            .RequireAuthorization(Policies.AdministratorOnly)
+            .WithName("DeleteGiftCard")
+            .WithSummary("Deletes an existing gift card.");
     }
 
     public static async Task<Results<Ok<ValidateGiftCardResponse>, BadRequest<string>>> ValidateGiftCardAsync(
@@ -84,5 +94,24 @@ public sealed class GiftCardEndpoints : IEndpoint
     {
         var card = await giftCardService.AdjustBalanceAsync(id, request, ct);
         return TypedResults.Ok(card);
+    }
+
+    public static async Task<Results<Ok<GiftCardDto>, ProblemHttpResult>> UpdateGiftCardAsync(
+        int id,
+        UpdateGiftCardRequest request,
+        IGiftCardService giftCardService,
+        CancellationToken ct)
+    {
+        var card = await giftCardService.UpdateGiftCardAsync(id, request, ct);
+        return TypedResults.Ok(card);
+    }
+
+    public static async Task<Results<Ok<object>, ProblemHttpResult>> DeleteGiftCardAsync(
+        int id,
+        IGiftCardService giftCardService,
+        CancellationToken ct)
+    {
+        var result = await giftCardService.DeleteGiftCardAsync(id, ct);
+        return TypedResults.Ok<object>(new { success = result, id });
     }
 }

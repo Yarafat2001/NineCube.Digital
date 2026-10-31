@@ -677,6 +677,37 @@ export function useCreateCoupon() {
   });
 }
 
+export function useUpdateCoupon() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: ({ id, ...body }: {
+      id: number;
+      discountValue: number;
+      minOrderAmount: number;
+      maxDiscountCap?: number | null;
+      targetType?: string;
+      targetId?: number | null;
+      startsAt?: string | null;
+      expiresAt?: string | null;
+      usageLimit?: number | null;
+      isAutomatic?: boolean;
+      campaignTitle?: string | null;
+      isBannerPromoted?: boolean;
+    }) => request<Coupon>(`/api/coupons/${id}`, { method: 'PUT', body }),
+    onSuccess: () => invalidate([queryKeys.coupons, ['campaigns']])
+  });
+}
+
+export function useDeleteCoupon() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (id: number) => request<{ success: boolean; id: number }>(`/api/coupons/${id}`, { method: 'DELETE' }),
+    onSuccess: () => invalidate([queryKeys.coupons, ['campaigns']])
+  });
+}
+
 export function useToggleCouponStatus() {
   const request = useAuthedRequest();
   const invalidate = useInvalidate();
@@ -756,6 +787,30 @@ export function useCreateGiftCard() {
   const invalidate = useInvalidate();
   return useMutation({
     mutationFn: (payload: CreateGiftCardInput) => request<GiftCard>('/api/gift-cards', { method: 'POST', body: payload }),
+    onSuccess: () => invalidate([queryKeys.giftCards])
+  });
+}
+
+export function useUpdateGiftCard() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: ({ id, ...body }: {
+      id: number;
+      recipientEmail?: string | null;
+      recipientName?: string | null;
+      note?: string | null;
+      expiresAt?: string | null;
+    }) => request<GiftCard>(`/api/gift-cards/${id}`, { method: 'PUT', body }),
+    onSuccess: () => invalidate([queryKeys.giftCards])
+  });
+}
+
+export function useDeleteGiftCard() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (id: number) => request<{ success: boolean; id: number }>(`/api/gift-cards/${id}`, { method: 'DELETE' }),
     onSuccess: () => invalidate([queryKeys.giftCards])
   });
 }

@@ -51,6 +51,16 @@ public sealed class CouponEndpoints : IEndpoint
             .RequireAuthorization(Policies.AdministratorOnly)
             .WithName("ToggleCouponStatus")
             .WithSummary("Enables or disables an existing coupon.");
+
+        group.MapPut("/{id:int}", UpdateCouponAsync)
+            .RequireAuthorization(Policies.AdministratorOnly)
+            .WithName("UpdateCoupon")
+            .WithSummary("Updates discount value and rules of an existing coupon.");
+
+        group.MapDelete("/{id:int}", DeleteCouponAsync)
+            .RequireAuthorization(Policies.AdministratorOnly)
+            .WithName("DeleteCoupon")
+            .WithSummary("Deletes an existing coupon.");
     }
 
     public static async Task<Results<Ok<CartPromotionsEvaluationResult>, ProblemHttpResult>> EvaluateCartPromotionsAsync(
@@ -116,5 +126,24 @@ public sealed class CouponEndpoints : IEndpoint
     {
         var result = await couponService.ToggleCouponStatusAsync(id, isActive, ct);
         return TypedResults.Ok<object>(new { success = result, isActive });
+    }
+
+    public static async Task<Results<Ok<CouponDto>, ProblemHttpResult>> UpdateCouponAsync(
+        int id,
+        UpdateCouponRequest request,
+        ICouponService couponService,
+        CancellationToken ct)
+    {
+        var coupon = await couponService.UpdateCouponAsync(id, request, ct);
+        return TypedResults.Ok(coupon);
+    }
+
+    public static async Task<Results<Ok<object>, ProblemHttpResult>> DeleteCouponAsync(
+        int id,
+        ICouponService couponService,
+        CancellationToken ct)
+    {
+        var result = await couponService.DeleteCouponAsync(id, ct);
+        return TypedResults.Ok<object>(new { success = result, id });
     }
 }

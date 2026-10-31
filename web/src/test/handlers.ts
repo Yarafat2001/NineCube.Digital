@@ -676,6 +676,37 @@ export const handlers = [
     return HttpResponse.json(newCoupon, { status: 201 });
   }),
 
+  http.put(`${API}/api/coupons/:id`, async ({ params, request }) => {
+    const id = Number(params.id);
+    const body = (await request.json()) as any;
+    const idx = demoCoupons.findIndex(c => c.id === id);
+    if (idx !== -1) {
+      demoCoupons[idx] = { ...demoCoupons[idx], ...body };
+      return HttpResponse.json(demoCoupons[idx]);
+    }
+    return new HttpResponse(null, { status: 404 });
+  }),
+  http.delete(`${API}/api/coupons/:id`, ({ params }) => {
+    const id = Number(params.id);
+    demoCoupons = demoCoupons.filter(c => c.id !== id);
+    return HttpResponse.json({ success: true, id });
+  }),
+  http.put(`${API}/api/gift-cards/:id`, async ({ params, request }) => {
+    const id = Number(params.id);
+    const body = (await request.json()) as any;
+    const idx = demoGiftCards.findIndex(g => g.id === id);
+    if (idx !== -1) {
+      demoGiftCards[idx] = { ...demoGiftCards[idx], ...body };
+      return HttpResponse.json(demoGiftCards[idx]);
+    }
+    return new HttpResponse(null, { status: 404 });
+  }),
+  http.delete(`${API}/api/gift-cards/:id`, ({ params }) => {
+    const id = Number(params.id);
+    demoGiftCards = demoGiftCards.filter(g => g.id !== id);
+    return HttpResponse.json({ success: true, id });
+  }),
+
   http.put(`${API}/api/coupons/:id/status`, ({ params, request }) => {
     const url = new URL(request.url);
     const isActive = url.searchParams.get('isActive') !== 'false';

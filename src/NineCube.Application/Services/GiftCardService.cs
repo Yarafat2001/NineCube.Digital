@@ -156,4 +156,28 @@ public sealed class GiftCardService : IGiftCardService
         g.ExpiresAt,
         g.CreatedAt,
         g.LastUsedAt);
+
+    public async Task<GiftCardDto> UpdateGiftCardAsync(int id, UpdateGiftCardRequest request, CancellationToken ct = default)
+    {
+        var card = await _db.GiftCards.FirstOrDefaultAsync(g => g.Id == id, ct)
+            ?? throw new NotFoundException($"Gift card with ID {id} was not found.");
+
+        card.RecipientEmail = request.RecipientEmail?.Trim();
+        card.RecipientName = request.RecipientName?.Trim();
+        card.Note = request.Note?.Trim();
+        card.ExpiresAt = request.ExpiresAt;
+
+        await _db.SaveChangesAsync(ct);
+        return MapToDto(card);
+    }
+
+    public async Task<bool> DeleteGiftCardAsync(int id, CancellationToken ct = default)
+    {
+        var card = await _db.GiftCards.FirstOrDefaultAsync(g => g.Id == id, ct)
+            ?? throw new NotFoundException($"Gift card with ID {id} was not found.");
+
+        _db.GiftCards.Remove(card);
+        await _db.SaveChangesAsync(ct);
+        return true;
+    }
 }

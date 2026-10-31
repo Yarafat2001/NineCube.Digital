@@ -337,11 +337,12 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                 <span className="nowrap">{t(formatMoney(line.unitPrice * line.quantity, line.currency))}</span>
                 <button
                   type="button"
-                  className="link-button"
+                  className="link-button cart-line-remove-btn"
                   onClick={() => cart.remove(line.productId)}
                   aria-label={t(`Remove ${line.name} from the cart`)}
+                  style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
                 >
-                  {t("Remove")}</button>
+                  🗑️ {t("Remove")}</button>
               </div>
             </li>
           ))}
@@ -663,8 +664,8 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
           )}
 
           <div className="cart-summary-row cart-summary-row--total">
-            <span>{t("Total")}</span>
-            <strong data-testid="cart-total" style={{ fontSize: 'var(--text-lg)', color: 'var(--text)' }}>
+            <span>{t("Order Total")}</span>
+            <strong style={{ fontSize: 'var(--text-md)', color: 'var(--text)' }}>
               {t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}
             </strong>
           </div>
@@ -718,20 +719,32 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
         </p>
       ) : null}
 
-      <button
-        type="button"
-        className="btn btn--primary"
-        onClick={submit}
-        disabled={busy || cart.lines.length === 0 || cart.mixedCurrencies}
-        data-testid="place-order"
-      >
-        {busy ? (
-          <>
-            <span className="spinner" aria-hidden="true" /> {t(" Placing order…")}</>
-        ) : (
-          'Place order'
-        )}
-      </button>
+      {cart.lines.length > 0 && (
+        <div className="cart-sticky-dock stack" style={{ gap: 'var(--space-2)' }}>
+          <div className="cart-summary-row cart-summary-row--total">
+            <span>{t("Total")}</span>
+            <strong data-testid="cart-total" style={{ fontSize: 'var(--text-lg)', color: 'var(--text)' }}>
+              {t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}
+            </strong>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn--primary"
+            onClick={submit}
+            disabled={busy || cart.lines.length === 0 || cart.mixedCurrencies}
+            data-testid="place-order"
+            style={{ width: '100%', padding: '12px', fontSize: 'var(--text-md)', fontWeight: 700 }}
+          >
+            {busy ? (
+              <>
+                <span className="spinner" aria-hidden="true" /> {t(" Placing order…")}</>
+            ) : (
+              'Place order'
+            )}
+          </button>
+        </div>
+      )}
 
       <span className="visually-hidden" role="status" aria-live="polite">
         {t(busy ? 'Placing your order' : '')}

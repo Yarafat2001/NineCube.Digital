@@ -151,3 +151,22 @@ public sealed record ValidateGiftCardResponse(
     string Currency,
     string? RecipientName,
     string? Reason);
+
+public sealed record UpdateCouponRequest(
+    decimal DiscountValue,
+    decimal MinOrderAmount,
+    DateTime? ExpiresAt = null,
+    int? UsageLimit = null,
+    decimal? MaxDiscountCap = null,
+    CouponTargetType TargetType = CouponTargetType.Order,
+    int? TargetId = null,
+    DateTime? StartsAt = null,
+    bool IsAutomatic = false,
+    string? CampaignTitle = null,
+    bool IsBannerPromoted = false);
+
+public sealed record UpdateGiftCardRequest(
+    string? RecipientEmail = null,
+    string? RecipientName = null,
+    string? Note = null,
+    DateTime? ExpiresAt = null);

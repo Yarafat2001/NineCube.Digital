@@ -15,6 +15,8 @@ public interface ICouponService
     Task<CouponDto> CreateCouponAsync(CreateCouponRequest request, CancellationToken ct = default);
     Task<bool> ToggleCouponStatusAsync(int id, bool isActive, CancellationToken ct = default);
     Task ConsumeCouponAsync(string code, CancellationToken ct = default);
+    Task<CouponDto> UpdateCouponAsync(int id, UpdateCouponRequest request, CancellationToken ct = default);
+    Task<bool> DeleteCouponAsync(int id, CancellationToken ct = default);
 }
 
 public sealed class CouponService : ICouponService
@@ -320,6 +322,54 @@ public sealed class CouponService : ICouponService
             ?? throw new NotFoundException($"Coupon {id} was not found.");
 
         coupon.IsActive = isActive;
+        await _db.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<CouponDto> UpdateCouponAsync(int id, UpdateCouponRequest request, CancellationToken ct = default)
+    {
+        var coupon = await _db.Coupons.FirstOrDefaultAsync(c => c.Id == id, ct)
+            ?? throw new NotFoundException($"Coupon {id} was not found.");
+
+        coupon.DiscountValue = request.DiscountValue;
+        coupon.MinOrderAmount = request.MinOrderAmount;
+        coupon.MaxDiscountCap = request.MaxDiscountCap;
+        coupon.TargetType = request.TargetType;
+        coupon.TargetId = request.TargetId;
+        coupon.StartsAt = request.StartsAt;
+        coupon.ExpiresAt = request.ExpiresAt;
+        coupon.UsageLimit = request.UsageLimit;
+        coupon.IsAutomatic = request.IsAutomatic;
+        coupon.CampaignTitle = request.CampaignTitle?.Trim();
+        coupon.IsBannerPromoted = request.IsBannerPromoted;
+
+        await _db.SaveChangesAsync(ct);
+
+        return new CouponDto(
+            coupon.Id,
+            coupon.Code,
+            coupon.DiscountType,
+            coupon.DiscountValue,
+            coupon.MinOrderAmount,
+            coupon.ExpiresAt,
+            coupon.UsageLimit,
+            coupon.UsageCount,
+            coupon.IsActive,
+            coupon.MaxDiscountCap,
+            coupon.TargetType,
+            coupon.TargetId,
+            coupon.StartsAt,
+            coupon.IsAutomatic,
+            coupon.CampaignTitle,
+            coupon.IsBannerPromoted);
+    }
+
+    public async Task<bool> DeleteCouponAsync(int id, CancellationToken ct = default)
+    {
+        var coupon = await _db.Coupons.FirstOrDefaultAsync(c => c.Id == id, ct)
+            ?? throw new NotFoundException($"Coupon {id} was not found.");
+
+        _db.Coupons.Remove(coupon);
         await _db.SaveChangesAsync(ct);
         return true;
     }

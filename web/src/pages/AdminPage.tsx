@@ -1,5 +1,5 @@
 import { t, useLanguage } from '../i18n/language';
-import { useState, type FormEvent } from 'react';
+import { useState, useMemo, type FormEvent } from 'react';
 import {
   useAdminUsers,
   useAuditLogs,
@@ -10,12 +10,16 @@ import {
   useUpdateSettings,
   useCoupons,
   useCreateCoupon,
+  useUpdateCoupon,
+  useDeleteCoupon,
   useToggleCouponStatus,
   useCategories,
   useBrands,
   useProducts,
   useGiftCards,
   useCreateGiftCard,
+  useUpdateGiftCard,
+  useDeleteGiftCard,
   useToggleGiftCardStatus,
   useAdjustGiftCardBalance
 } from '../api/hooks';
@@ -28,6 +32,197 @@ import { useAuth } from '../state/AuthContext';
 const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrator'];
 
 type Tab = 'users' | 'audit' | 'settings' | 'coupons' | 'giftcards';
+
+
+interface CatalogTargetPickerProps {
+  type: 'Category' | 'Brand' | 'Product';
+  items: Array<{ id: number; name: string; sku?: string; price?: number }>;
+  selectedId: number | null;
+  onSelect: (id: number | null) => void;
+  id: string;
+}
+
+function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogTargetPickerProps) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
+
+  const filtered = useMemo(() => {
+    if (!searchTerm.trim()) return items;
+    const term = searchTerm.toLowerCase();
+    return items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(term) ||
+        (item.sku && item.sku.toLowerCase().includes(term))
+    );
+  }, [items, searchTerm]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const startIdx = (effectivePage - 1) * pageSize;
+  const pagedItems = filtered.slice(startIdx, startIdx + pageSize);
+
+  const icon = type === 'Category' ? '📁' : type === 'Brand' ? '🏷️' : '📦';
+  const placeholder =
+    type === 'Category'
+      ? t("Search category by name…")
+      : type === 'Brand'
+      ? t("Search brand by name…")
+      : t("Search product by name or SKU…");
+
+  const selectedItem = items.find((i) => i.id === selectedId);
+
+  return (
+    <div className="catalog-target-picker stack" style={{ gap: '8px', marginTop: '6px' }}>
+      {/* Hidden native select for form accessibility and tests */}
+      <select
+        id={id}
+        value={selectedId ?? ''}
+        onChange={(e) => onSelect(e.target.value ? Number(e.target.value) : null)}
+        style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: '1px', height: '1px' }}
+        tabIndex={-1}
+        aria-hidden="true"
+      >
+        <option value="">{t("None")}</option>
+        {items.map((it) => (
+          <option key={it.id} value={it.id}>
+            {it.name}
+          </option>
+        ))}
+      </select>
+
+      {/* Search Input Bar */}
+      <div className="row" style={{ gap: '8px' }}>
+        <input
+          type="search"
+          placeholder={`🔍 ${placeholder}`}
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
+          style={{
+            flex: 1,
+            padding: '6px 12px',
+            fontSize: 'var(--text-xs)',
+            borderRadius: '6px',
+            border: '1px solid var(--border)'
+          }}
+        />
+        {selectedId && (
+          <button
+            type="button"
+            className="btn btn--sm btn--outline"
+            onClick={() => onSelect(null)}
+            style={{ fontSize: '11px', padding: '4px 8px' }}
+            title={t("Clear selection")}
+          >
+            ✕ {t("Clear")}
+          </button>
+        )}
+      </div>
+
+      {/* Currently Selected Banner */}
+      {selectedItem ? (
+        <div
+          style={{
+            padding: '6px 10px',
+            background: 'var(--surface-raised)',
+            borderRadius: '6px',
+            border: '1px solid var(--ok, #10b981)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: 'var(--text-xs)'
+          }}
+        >
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--ok, #10b981)' }}>
+            ✓ {t("Selected")}: {icon} {selectedItem.name} {selectedItem.sku ? `(${selectedItem.sku})` : ''}
+          </span>
+          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+            {type === 'Product' ? t("Discount applies strictly to this product") : t("Applies to all products in this scope")}
+          </span>
+        </div>
+      ) : (
+        <div style={{ fontSize: 'var(--text-xs)', color: 'var(--warn-text, #f59e0b)' }}>
+          ⚠️ {t("Please select an item below to target with this discount rule.")}
+        </div>
+      )}
+
+      {/* Grid of Choices with Hover Motion */}
+      {pagedItems.length === 0 ? (
+        <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
+          {t("No matching items found.")}
+        </div>
+      ) : (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+            gap: '8px',
+            maxHeight: '220px',
+            overflowY: 'auto',
+            padding: '2px'
+          }}
+        >
+          {pagedItems.map((item: { id: number; name: string; sku?: string; price?: number }) => {
+            const isSelected = selectedId === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`catalog-picker-card ${isSelected ? 'catalog-picker-card--active' : ''}`}
+                onClick={() => onSelect(item.id)}
+              >
+                <span className="catalog-picker-card__icon">{icon}</span>
+                <div className="catalog-picker-card__details">
+                  <div className="catalog-picker-card__name" title={item.name}>{item.name}</div>
+                  {item.sku && <div className="catalog-picker-card__sub">{item.sku}</div>}
+                  {item.price !== undefined && (
+                    <div className="catalog-picker-card__sub">{t("BDT")} {item.price.toLocaleString()}</div>
+                  )}
+                </div>
+                {isSelected && <span className="catalog-picker-card__check">✓</span>}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Pagination Footer */}
+      {totalPages > 1 && (
+        <div className="row-between" style={{ alignItems: 'center', paddingTop: '4px', borderTop: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+          <span>
+            {t("Showing")} {startIdx + 1}–{Math.min(startIdx + pageSize, filtered.length)} {t("of")} {filtered.length}
+          </span>
+          <div className="row" style={{ gap: '4px' }}>
+            <button
+              type="button"
+              className="btn btn--sm"
+              disabled={effectivePage <= 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              style={{ padding: '2px 8px', fontSize: '11px' }}
+            >
+              ‹ {t("Prev")}
+            </button>
+            <span style={{ padding: '2px 6px', fontWeight: 600 }}>
+              {effectivePage} / {totalPages}
+            </span>
+            <button
+              type="button"
+              className="btn btn--sm"
+              disabled={effectivePage >= totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              style={{ padding: '2px 8px', fontSize: '11px' }}
+            >
+              {t("Next")} ›
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function AdminPage() {
   useLanguage();
@@ -64,6 +259,31 @@ export function AdminPage() {
   const couponsQuery = useCoupons();
   const createCoupon = useCreateCoupon();
   const toggleCouponStatus = useToggleCouponStatus();
+
+  const updateCoupon = useUpdateCoupon();
+  const deleteCoupon = useDeleteCoupon();
+  const updateGiftCard = useUpdateGiftCard();
+  const deleteGiftCard = useDeleteGiftCard();
+
+  const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+  const [deletingCoupon, setDeletingCoupon] = useState<Coupon | null>(null);
+  const [editDiscountValue, setEditDiscountValue] = useState('');
+  const [editMinOrder, setEditMinOrder] = useState('');
+  const [editMaxCap, setEditMaxCap] = useState('');
+  const [editUsageLimit, setEditUsageLimit] = useState('');
+  const [editCampaignTitle, setEditCampaignTitle] = useState('');
+  const [editStartsAt, setEditStartsAt] = useState('');
+  const [editExpiresAt, setEditExpiresAt] = useState('');
+  const [editIsBanner, setEditIsBanner] = useState(false);
+  const [editIsAuto, setEditIsAuto] = useState(false);
+
+  const [editingGiftCard, setEditingGiftCard] = useState<GiftCard | null>(null);
+  const [deletingGiftCard, setDeletingGiftCard] = useState<GiftCard | null>(null);
+  const [editGcRecipientName, setEditGcRecipientName] = useState('');
+  const [editGcRecipientEmail, setEditGcRecipientEmail] = useState('');
+  const [editGcNote, setEditGcNote] = useState('');
+  const [editGcExpiresAt, setEditGcExpiresAt] = useState('');
+
   const [couponCode, setCouponCode] = useState('');
   const [discountType, setDiscountType] = useState<'Percentage' | 'FixedAmount'>('Percentage');
   const [discountValue, setDiscountValue] = useState('10');
@@ -617,30 +837,40 @@ export function AdminPage() {
           </div>
           <form className="card-glass grid-form" onSubmit={submitCoupon}>
             <div className="field">
-              <label htmlFor="coupon-code">
-                {t("Coupon code")}{' '}
-                <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
-              </label>
-              <div style={{ display: 'flex', gap: '6px' }}>
-                <input
-                  id="coupon-code"
-                  type="text"
-                  required
-                  placeholder={t("e.g. SUMMER25")}
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                  style={{ textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px', flex: 1 }}
-                />
+              <div className="row-between" style={{ alignItems: 'baseline' }}>
+                <label htmlFor="coupon-code">
+                  {t("Coupon code")}{' '}
+                  <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
+                </label>
                 <button
                   type="button"
-                  className="btn btn--outline btn--sm"
-                  style={{ whiteSpace: 'nowrap', padding: '0 10px', height: 'auto', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  className="btn-link"
+                  style={{
+                    fontSize: '11px',
+                    color: 'var(--brand, #f59e0b)',
+                    cursor: 'pointer',
+                    background: 'none',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2px',
+                    padding: 0
+                  }}
                   onClick={generateNewCouponCode}
                   title={t("Generate Code")}
                 >
-                  ⚡ {t("Generate")}
+                  ⚡ {t("Auto-generate")}
                 </button>
               </div>
+              <input
+                id="coupon-code"
+                type="text"
+                required
+                placeholder={t("e.g. SUMMER25")}
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                style={{ width: '100%', minWidth: 0, textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px' }}
+              />
             </div>
 
             <div className="field">
@@ -819,26 +1049,13 @@ export function AdminPage() {
                     </div>
                   )}
 
-                  <select
+                  <CatalogTargetPicker
+                    type="Category"
+                    items={allCategories}
+                    selectedId={targetId}
+                    onSelect={setTargetId}
                     id="coupon-target-category"
-                    required
-                    value={targetId ?? ''}
-                    onChange={(e) => setTargetId(e.target.value ? Number(e.target.value) : null)}
-                    style={{ marginTop: '4px' }}
-                  >
-                    <option value="">{t("Choose a category...")}</option>
-                    {allCategories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {targetId && (
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #16a34a)', fontWeight: 600 }}>
-                      ✓ {t("Selected:")} {allCategories.find((c) => c.id === targetId)?.name} — {t("Only items in this category will receive the discount.")}
-                    </div>
-                  )}
+                  />
                 </div>
               )}
 
@@ -874,26 +1091,13 @@ export function AdminPage() {
                     </div>
                   )}
 
-                  <select
+                  <CatalogTargetPicker
+                    type="Brand"
+                    items={allBrands}
+                    selectedId={targetId}
+                    onSelect={setTargetId}
                     id="coupon-target-brand"
-                    required
-                    value={targetId ?? ''}
-                    onChange={(e) => setTargetId(e.target.value ? Number(e.target.value) : null)}
-                    style={{ marginTop: '4px' }}
-                  >
-                    <option value="">{t("Choose a brand...")}</option>
-                    {allBrands.map((b) => (
-                      <option key={b.id} value={b.id}>
-                        {b.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  {targetId && (
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #16a34a)', fontWeight: 600 }}>
-                      ✓ {t("Selected:")} {allBrands.find((b) => b.id === targetId)?.name} — {t("Only items manufactured by this brand will receive the discount.")}
-                    </div>
-                  )}
+                  />
                 </div>
               )}
 
@@ -929,26 +1133,13 @@ export function AdminPage() {
                     </div>
                   )}
 
-                  <select
+                  <CatalogTargetPicker
+                    type="Product"
+                    items={allProducts}
+                    selectedId={targetId}
+                    onSelect={setTargetId}
                     id="coupon-target-product"
-                    required
-                    value={targetId ?? ''}
-                    onChange={(e) => setTargetId(e.target.value ? Number(e.target.value) : null)}
-                    style={{ marginTop: '4px' }}
-                  >
-                    <option value="">{t("Choose a product...")}</option>
-                    {allProducts.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name} ({p.sku}) — {t("BDT")} {p.price.toLocaleString()}
-                      </option>
-                    ))}
-                  </select>
-
-                  {targetId && (
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #16a34a)', fontWeight: 600 }}>
-                      ✓ {t("Selected:")} {allProducts.find((p) => p.id === targetId)?.name} — {t("Discount strictly applies to this specific product.")}
-                    </div>
-                  )}
+                  />
                 </div>
               )}
             </div>
@@ -1131,21 +1322,50 @@ export function AdminPage() {
                           ) : null}
                         </td>
                         <td className="actions">
-                          <button
-                            type="button"
-                            className="btn btn--sm"
-                            disabled={toggleCouponStatus.isPending}
-                            onClick={async () => {
-                              try {
-                                await toggleCouponStatus.mutateAsync({ id: c.id, isActive: !c.isActive });
-                                toast.push('success', `${c.code} status updated.`);
-                              } catch (err) {
-                                toast.pushError(err);
-                              }
-                            }}
-                          >
-                            {t(c.isActive ? 'Disable' : 'Enable')}
-                          </button>
+                          <div className="row" style={{ gap: '4px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                            <button
+                              type="button"
+                              className="btn btn--sm"
+                              onClick={() => {
+                                setEditingCoupon(c);
+                                setEditDiscountValue(String(c.discountValue));
+                                setEditMinOrder(String(c.minOrderAmount));
+                                setEditMaxCap(c.maxDiscountCap ? String(c.maxDiscountCap) : '');
+                                setEditUsageLimit(c.usageLimit ? String(c.usageLimit) : '');
+                                setEditCampaignTitle(c.campaignTitle ?? '');
+                                setEditStartsAt(c.startsAt ? c.startsAt.slice(0, 16) : '');
+                                setEditExpiresAt(c.expiresAt ? c.expiresAt.slice(0, 16) : '');
+                                setEditIsBanner(!!c.isBannerPromoted);
+                                setEditIsAuto(!!c.isAutomatic);
+                              }}
+                              title={t("Edit Coupon")}
+                            >
+                              ✏️ {t("Edit")}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn--sm"
+                              disabled={toggleCouponStatus.isPending}
+                              onClick={async () => {
+                                try {
+                                  await toggleCouponStatus.mutateAsync({ id: c.id, isActive: !c.isActive });
+                                  toast.push('success', `${c.code} status updated.`);
+                                } catch (err) {
+                                  toast.pushError(err);
+                                }
+                              }}
+                            >
+                              {t(c.isActive ? 'Disable' : 'Enable')}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn--sm btn--danger"
+                              onClick={() => setDeletingCoupon(c)}
+                              title={t("Delete Coupon")}
+                            >
+                              🗑️ {t("Delete")}
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -1795,6 +2015,356 @@ export function AdminPage() {
           )}
         </section>
       ) : null}
+
+      
+      {/* Edit Coupon Modal */}
+      {editingCoupon && (
+        <div className="sheet-backdrop" onClick={() => setEditingCoupon(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
+          <div
+            className="card-glass stack"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-coupon-title"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: 'min(640px, 95vw)',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              padding: 'var(--space-5)',
+              borderRadius: 'var(--radius-lg, 14px)',
+              border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-lg)',
+              background: 'var(--surface)'
+            }}
+          >
+            <div className="row-between" style={{ alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+              <h3 id="edit-coupon-title" style={{ margin: 0, fontSize: 'var(--text-lg)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                ✏️ {t("Edit Coupon")}: <span className="mono" style={{ color: 'var(--brand)' }}>{editingCoupon.code}</span>
+              </h3>
+              <button type="button" className="btn btn--sm" onClick={() => setEditingCoupon(null)} aria-label={t("Close")}>✕</button>
+            </div>
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  await updateCoupon.mutateAsync({
+                    id: editingCoupon.id,
+                    discountValue: Number(editDiscountValue),
+                    minOrderAmount: Number(editMinOrder) || 0,
+                    maxDiscountCap: editMaxCap ? Number(editMaxCap) : null,
+                    usageLimit: editUsageLimit ? Number(editUsageLimit) : null,
+                    campaignTitle: editCampaignTitle.trim() || null,
+                    startsAt: editStartsAt ? new Date(editStartsAt).toISOString() : null,
+                    expiresAt: editExpiresAt ? new Date(editExpiresAt).toISOString() : null,
+                    isBannerPromoted: editIsBanner,
+                    isAutomatic: editIsAuto
+                  });
+                  toast.push('success', `Coupon ${editingCoupon.code} updated.`);
+                  setEditingCoupon(null);
+                } catch (err) {
+                  toast.pushError(err);
+                }
+              }}
+              className="stack"
+              style={{ gap: 'var(--space-3)', marginTop: 'var(--space-3)' }}
+            >
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+                <div className="field">
+                  <label>{t("Discount Value")}</label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={editDiscountValue}
+                    onChange={(e) => setEditDiscountValue(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>{t("Minimum order amount (BDT)")}</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={editMinOrder}
+                    onChange={(e) => setEditMinOrder(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>{t("Max discount cap (BDT, optional)")}</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={editMaxCap}
+                    onChange={(e) => setEditMaxCap(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>{t("Usage limit (optional)")}</label>
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder={t("Unlimited")}
+                    value={editUsageLimit}
+                    onChange={(e) => setEditUsageLimit(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="field">
+                <label>{t("Campaign banner title (optional)")}</label>
+                <input
+                  type="text"
+                  placeholder={t("e.g. Eid Mega Festival")}
+                  value={editCampaignTitle}
+                  onChange={(e) => setEditCampaignTitle(e.target.value)}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+                <div className="field">
+                  <label>{t("Start date & time (optional)")}</label>
+                  <input
+                    type="datetime-local"
+                    value={editStartsAt}
+                    onChange={(e) => setEditStartsAt(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>{t("Expiration date & time (optional)")}</label>
+                  <input
+                    type="datetime-local"
+                    value={editExpiresAt}
+                    onChange={(e) => setEditExpiresAt(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="row" style={{ gap: '16px', flexWrap: 'wrap', margin: '4px 0' }}>
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={editIsBanner}
+                    onChange={(e) => setEditIsBanner(e.target.checked)}
+                  />
+                  <span>{t("Show in top announcement banner")}</span>
+                </label>
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={editIsAuto}
+                    onChange={(e) => setEditIsAuto(e.target.checked)}
+                  />
+                  <span>{t("Apply automatically in cart")}</span>
+                </label>
+              </div>
+
+              <div className="row" style={{ gap: '8px', justifyContent: 'flex-end', marginTop: 'var(--space-3)', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+                <button type="button" className="btn btn--outline" onClick={() => setEditingCoupon(null)}>
+                  {t("Cancel")}
+                </button>
+                <button type="submit" className="btn btn--primary" disabled={updateCoupon.isPending}>
+                  {t(updateCoupon.isPending ? "Saving…" : "Save Changes")}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Coupon Confirmation Dialog */}
+      {deletingCoupon && (
+        <div className="sheet-backdrop" onClick={() => setDeletingCoupon(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
+          <div
+            className="card-glass stack"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="del-coupon-title"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: 'min(440px, 90vw)',
+              padding: 'var(--space-5)',
+              borderRadius: 'var(--radius-lg, 12px)',
+              border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-lg)',
+              background: 'var(--surface)',
+              textAlign: 'center'
+            }}
+          >
+            <div style={{ fontSize: '36px', marginBottom: '8px' }}>🗑️</div>
+            <h3 id="del-coupon-title" style={{ margin: '0 0 8px 0', fontSize: 'var(--text-md)', fontWeight: 700 }}>
+              {t("Delete Coupon")}
+            </h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', margin: '0 0 16px 0' }}>
+              {t("Are you sure you want to permanently delete coupon")} <strong className="mono" style={{ color: 'var(--brand)' }}>{deletingCoupon.code}</strong>? {t("This action cannot be undone.")}
+            </p>
+            <div className="row" style={{ gap: '8px', justifyContent: 'center' }}>
+              <button type="button" className="btn btn--outline" onClick={() => setDeletingCoupon(null)}>
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--danger"
+                disabled={deleteCoupon.isPending}
+                onClick={async () => {
+                  try {
+                    await deleteCoupon.mutateAsync(deletingCoupon.id);
+                    toast.push('success', `Coupon ${deletingCoupon.code} deleted.`);
+                    setDeletingCoupon(null);
+                  } catch (err) {
+                    toast.pushError(err);
+                  }
+                }}
+              >
+                {t(deleteCoupon.isPending ? "Deleting…" : "Delete Coupon")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Gift Card Modal */}
+      {editingGiftCard && (
+        <div className="sheet-backdrop" onClick={() => setEditingGiftCard(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
+          <div
+            className="card-glass stack"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-gc-title"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: 'min(540px, 95vw)',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              padding: 'var(--space-5)',
+              borderRadius: 'var(--radius-lg, 14px)',
+              border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-lg)',
+              background: 'var(--surface)'
+            }}
+          >
+            <div className="row-between" style={{ alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+              <h3 id="edit-gc-title" style={{ margin: 0, fontSize: 'var(--text-lg)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                ✏️ {t("Edit Gift Card")}: <span className="mono" style={{ color: 'var(--brand)' }}>{editingGiftCard.code}</span>
+              </h3>
+              <button type="button" className="btn btn--sm" onClick={() => setEditingGiftCard(null)} aria-label={t("Close")}>✕</button>
+            </div>
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  await updateGiftCard.mutateAsync({
+                    id: editingGiftCard.id,
+                    recipientName: editGcRecipientName.trim() || null,
+                    recipientEmail: editGcRecipientEmail.trim() || null,
+                    note: editGcNote.trim() || null,
+                    expiresAt: editGcExpiresAt ? new Date(editGcExpiresAt).toISOString() : null
+                  });
+                  toast.push('success', `Gift card ${editingGiftCard.code} updated.`);
+                  setEditingGiftCard(null);
+                } catch (err) {
+                  toast.pushError(err);
+                }
+              }}
+              className="stack"
+              style={{ gap: 'var(--space-3)', marginTop: 'var(--space-3)' }}
+            >
+              <div className="field">
+                <label>{t("Recipient Name")}</label>
+                <input
+                  type="text"
+                  value={editGcRecipientName}
+                  onChange={(e) => setEditGcRecipientName(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label>{t("Recipient Email")}</label>
+                <input
+                  type="email"
+                  value={editGcRecipientEmail}
+                  onChange={(e) => setEditGcRecipientEmail(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label>{t("Personal Greeting Note")}</label>
+                <textarea
+                  rows={2}
+                  value={editGcNote}
+                  onChange={(e) => setEditGcNote(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label>{t("Expiration date & time (optional)")}</label>
+                <input
+                  type="datetime-local"
+                  value={editGcExpiresAt}
+                  onChange={(e) => setEditGcExpiresAt(e.target.value)}
+                />
+              </div>
+
+              <div className="row" style={{ gap: '8px', justifyContent: 'flex-end', marginTop: 'var(--space-3)', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+                <button type="button" className="btn btn--outline" onClick={() => setEditingGiftCard(null)}>
+                  {t("Cancel")}
+                </button>
+                <button type="submit" className="btn btn--primary" disabled={updateGiftCard.isPending}>
+                  {t(updateGiftCard.isPending ? "Saving…" : "Save Changes")}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Gift Card Confirmation Dialog */}
+      {deletingGiftCard && (
+        <div className="sheet-backdrop" onClick={() => setDeletingGiftCard(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
+          <div
+            className="card-glass stack"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="del-gc-title"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: 'min(440px, 90vw)',
+              padding: 'var(--space-5)',
+              borderRadius: 'var(--radius-lg, 12px)',
+              border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-lg)',
+              background: 'var(--surface)',
+              textAlign: 'center'
+            }}
+          >
+            <div style={{ fontSize: '36px', marginBottom: '8px' }}>🗑️</div>
+            <h3 id="del-gc-title" style={{ margin: '0 0 8px 0', fontSize: 'var(--text-md)', fontWeight: 700 }}>
+              {t("Delete Gift Card")}
+            </h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', margin: '0 0 16px 0' }}>
+              {t("Are you sure you want to permanently delete gift card")} <strong className="mono" style={{ color: 'var(--brand)' }}>{deletingGiftCard.code}</strong>? {t("This action cannot be undone.")}
+            </p>
+            <div className="row" style={{ gap: '8px', justifyContent: 'center' }}>
+              <button type="button" className="btn btn--outline" onClick={() => setDeletingGiftCard(null)}>
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--danger"
+                disabled={deleteGiftCard.isPending}
+                onClick={async () => {
+                  try {
+                    await deleteGiftCard.mutateAsync(deletingGiftCard.id);
+                    toast.push('success', `Gift card ${deletingGiftCard.code} deleted.`);
+                    setDeletingGiftCard(null);
+                  } catch (err) {
+                    toast.pushError(err);
+                  }
+                }}
+              >
+                {t(deleteGiftCard.isPending ? "Deleting…" : "Delete Gift Card")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <LiveRegion message={t("")} />
     </div>
