@@ -155,8 +155,11 @@ is the first point where the promise can actually be kept.
 1. Each line shows the unit price and what is available right now
 2. The stepper per line, capped at live stock
 3. Remove takes just that line out
-4. Total, priced in the store currency
-5. Place order sends the whole basket as one request with an idempotency key
+4. Delivery address picker: choose from saved delivery addresses or add a new address
+5. Promotional coupon: type a code (e.g. `SAVE10`, `WELCOME50`, `NINECUBE`) and click Apply to validate and deduct discounts
+6. Payment method: select Cash on Delivery, Card, or Mobile Banking (bKash/Nagad)
+7. Total breakdown: subtotal, discount deducted, and net total priced in the store currency
+8. Place order sends the whole basket as one request with an idempotency key
 
 What happens when you press Place order:
 
@@ -495,6 +498,20 @@ The one business number an administrator can edit.
 1. Low stock threshold. Products at or below it are flagged everywhere in the app, and the inventory
    rows are marked
 2. Save settings writes it to the database, not to a config file
+
+### 5.3 Promotional coupons and discounts
+
+Administrators launch, monitor and pause discount vouchers from the **Coupons & Discounts** tab on `/admin`.
+
+1. **Create a coupon**:
+   - **Coupon code**: The code customers type at checkout (e.g. `SAVE10`, `SUMMER25`). Codes are automatically converted to uppercase.
+   - **Discount type**: Choose **Percentage (%)** (e.g., 10% off) or **Fixed Amount (BDT)** (e.g., BDT 100 off).
+   - **Discount percentage / amount**: The rate or taka value deducted from eligible orders.
+   - **Minimum order amount**: The minimum cart spend required in BDT before the discount activates (enter `0` for no minimum).
+   - **Usage limit**: Optional total global redemption limit before the voucher turns off automatically (leave blank for unlimited).
+2. **Coupons table**:
+   - Displays all vouchers: code, type, discount rate, minimum order threshold, redemption count, and active status.
+   - **Enable / Disable action**: Instantly toggle any campaign active or inactive without losing sales history.
 
 ---
 

@@ -86,6 +86,23 @@ export const order: Order = {
   ]
 };
 
+export let demoCoupons: Array<{
+  id: number;
+  code: string;
+  discountType: 'Percentage' | 'FixedAmount';
+  discountValue: number;
+  minOrderAmount: number;
+  expiresAt: string | null;
+  usageLimit: number | null;
+  usageCount: number;
+  isActive: boolean;
+  createdAt: string;
+}> = [
+  { id: 1, code: 'SAVE10', discountType: 'Percentage', discountValue: 10, minOrderAmount: 0, expiresAt: null, usageLimit: null, usageCount: 2, isActive: true, createdAt: '2026-10-15T08:00:00Z' },
+  { id: 2, code: 'WELCOME50', discountType: 'FixedAmount', discountValue: 50, minOrderAmount: 0, expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, createdAt: '2026-10-15T08:00:00Z' },
+  { id: 3, code: 'NINECUBE', discountType: 'FixedAmount', discountValue: 500, minOrderAmount: 2000, expiresAt: null, usageLimit: null, usageCount: 1, isActive: true, createdAt: '2026-10-15T08:00:00Z' }
+];
+
 export const adminUsers: AdminUser[] = [
   { id: 10, email: 'customer@ninecube.demo', role: 'Customer', isActive: true, customerId: 1, createdAt: '2026-09-01T09:00:00Z' },
   { id: 11, email: 'staff@ninecube.demo', role: 'Staff', isActive: true, customerId: null, createdAt: '2026-09-01T09:00:00Z' }
@@ -508,6 +525,34 @@ export const handlers = [
       discountAmount: 0,
       code: null
     });
+  }),
+
+  http.get(`${API}/api/coupons`, () => HttpResponse.json(demoCoupons)),
+
+  http.post(`${API}/api/coupons`, async ({ request }) => {
+    const payload = (await request.json()) as any;
+    const newCoupon = {
+      id: demoCoupons.length + 1,
+      code: String(payload.code).toUpperCase(),
+      discountType: payload.discountType,
+      discountValue: Number(payload.discountValue),
+      minOrderAmount: Number(payload.minOrderAmount || 0),
+      expiresAt: payload.expiresAt || null,
+      usageLimit: payload.usageLimit ? Number(payload.usageLimit) : null,
+      usageCount: 0,
+      isActive: true,
+      createdAt: new Date().toISOString()
+    };
+    demoCoupons.push(newCoupon);
+    return HttpResponse.json(newCoupon, { status: 201 });
+  }),
+
+  http.put(`${API}/api/coupons/:id/status`, ({ params, request }) => {
+    const url = new URL(request.url);
+    const isActive = url.searchParams.get('isActive') !== 'false';
+    const found = demoCoupons.find((c) => c.id === Number(params.id));
+    if (found) found.isActive = isActive;
+    return HttpResponse.json({ success: true, isActive });
   }),
 
   http.post(`${API}/api/payments/process`, async ({ request }) => {

@@ -641,6 +641,16 @@ export function useCreateCoupon() {
   });
 }
 
+export function useToggleCouponStatus() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: ({ id, isActive }: { id: number; isActive: boolean }) =>
+      request<{ success: boolean; isActive: boolean }>(`/api/coupons/${id}/status?isActive=${isActive}`, { method: 'PUT' }),
+    onSuccess: () => invalidate([queryKeys.coupons])
+  });
+}
+
 export function useProcessPayment() {
   const request = useAuthedRequest();
   const invalidate = useInvalidate();

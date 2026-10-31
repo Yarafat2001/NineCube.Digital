@@ -7,7 +7,10 @@ import {
   useCreateUser,
   useSetUserActive,
   useSettings,
-  useUpdateSettings
+  useUpdateSettings,
+  useCoupons,
+  useCreateCoupon,
+  useToggleCouponStatus
 } from '../api/hooks';
 import type { UserRole } from '../api/types';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, useToast } from '../components/ui';
@@ -16,7 +19,7 @@ import { useAuth } from '../state/AuthContext';
 
 const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrator'];
 
-type Tab = 'users' | 'audit' | 'settings';
+type Tab = 'users' | 'audit' | 'settings' | 'coupons';
 
 export function AdminPage() {
   useLanguage();
@@ -49,6 +52,16 @@ export function AdminPage() {
   const updateSettings = useUpdateSettings();
   const [threshold, setThreshold] = useState<string>('');
 
+  // coupons
+  const couponsQuery = useCoupons();
+  const createCoupon = useCreateCoupon();
+  const toggleCouponStatus = useToggleCouponStatus();
+  const [couponCode, setCouponCode] = useState('');
+  const [discountType, setDiscountType] = useState<'Percentage' | 'FixedAmount'>('Percentage');
+  const [discountValue, setDiscountValue] = useState('');
+  const [minOrderAmount, setMinOrderAmount] = useState('0');
+  const [usageLimit, setUsageLimit] = useState('');
+
   const submitUser = async (event: FormEvent) => {
     event.preventDefault();
 
@@ -79,6 +92,28 @@ export function AdminPage() {
     }
   };
 
+  const submitCoupon = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!couponCode.trim()) return;
+
+    try {
+      const created = await createCoupon.mutateAsync({
+        code: couponCode.trim().toUpperCase(),
+        discountType,
+        discountValue: Number(discountValue),
+        minOrderAmount: Number(minOrderAmount || 0),
+        usageLimit: usageLimit ? Number(usageLimit) : null
+      });
+      toast.push('success', `Coupon ${created.code} created.`);
+      setCouponCode('');
+      setDiscountValue('');
+      setMinOrderAmount('0');
+      setUsageLimit('');
+    } catch (caught) {
+      toast.pushError(caught);
+    }
+  };
+
   return (
     <div className="page container">
       <header className="page-header">
@@ -90,7 +125,7 @@ export function AdminPage() {
       </header>
 
       <div className="row" role="tablist" aria-label={t("Administration sections")}>
-        {(['users', 'audit', 'settings'] as Tab[]).map((value) => (
+        {(['users', 'audit', 'settings', 'coupons'] as Tab[]).map((value) => (
           <button
             key={value}
             type="button"
@@ -101,7 +136,7 @@ export function AdminPage() {
             className={`btn ${tab === value ? 'btn--primary' : ''}`}
             onClick={() => setTab(value)}
           >
-            {t(value === 'users' ? 'Users' : value === 'audit' ? 'Audit log' : 'Settings')}
+            {t(value === 'users' ? 'Users' : value === 'audit' ? 'Audit log' : value === 'settings' ? 'Settings' : 'Coupons & Discounts')}
           </button>
         ))}
       </div>
@@ -323,6 +358,149 @@ export function AdminPage() {
                 {t("Save settings")}</button>
             </form>
           ) : null}
+        </section>
+      ) : null}
+
+      {tab === 'coupons' ? (
+        <section role="tabpanel" id="panel-coupons" aria-labelledby="tab-coupons" className="stack">
+          <form className="card-glass grid-form" onSubmit={submitCoupon}>
+            <div className="field">
+              <label htmlFor="coupon-code">{t("Coupon code")}</label>
+              <input
+                id="coupon-code"
+                type="text"
+                required
+                placeholder={t("e.g. SUMMER25")}
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                style={{ textTransform: 'uppercase' }}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="coupon-type">{t("Discount type")}</label>
+              <select
+                id="coupon-type"
+                value={discountType}
+                onChange={(e) => setDiscountType(e.target.value as 'Percentage' | 'FixedAmount')}
+              >
+                <option value="Percentage">{t("Percentage (%)")}</option>
+                <option value="FixedAmount">{t("Fixed Amount (BDT)")}</option>
+              </select>
+            </div>
+
+            <div className="field">
+              <label htmlFor="coupon-value">
+                {discountType === 'Percentage' ? t("Discount percentage (%)") : t("Discount amount (BDT)")}
+              </label>
+              <input
+                id="coupon-value"
+                type="number"
+                min="1"
+                step={discountType === 'Percentage' ? '1' : '0.01'}
+                max={discountType === 'Percentage' ? '100' : undefined}
+                required
+                placeholder={discountType === 'Percentage' ? '10' : '100'}
+                value={discountValue}
+                onChange={(e) => setDiscountValue(e.target.value)}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="coupon-min-order">{t("Minimum order amount (BDT)")}</label>
+              <input
+                id="coupon-min-order"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0"
+                value={minOrderAmount}
+                onChange={(e) => setMinOrderAmount(e.target.value)}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="coupon-limit">{t("Usage limit (optional)")}</label>
+              <input
+                id="coupon-limit"
+                type="number"
+                min="1"
+                placeholder={t("Unlimited")}
+                value={usageLimit}
+                onChange={(e) => setUsageLimit(e.target.value)}
+              />
+            </div>
+
+            <div className="form-actions" style={{ alignSelf: 'flex-end' }}>
+              <button type="submit" className="btn btn--primary" disabled={createCoupon.isPending || !couponCode.trim() || !discountValue}>
+                {t(createCoupon.isPending ? 'Creating…' : 'Create Coupon')}
+              </button>
+            </div>
+          </form>
+
+          {couponsQuery.isLoading ? (
+            <LoadingBlock label={t("Loading coupons")} variant="tile" count={3} />
+          ) : couponsQuery.isError ? (
+            <ErrorState error={couponsQuery.error} onRetry={() => couponsQuery.refetch()} />
+          ) : (
+            <div className="table-surface">
+              <div className="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t("Code")}</th>
+                      <th scope="col">{t("Type")}</th>
+                      <th scope="col" className="num">{t("Discount")}</th>
+                      <th scope="col" className="num">{t("Min order")}</th>
+                      <th scope="col" className="num">{t("Times used")}</th>
+                      <th scope="col">{t("Status")}</th>
+                      <th scope="col" className="actions">{t("Actions")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(couponsQuery.data ?? []).map((c) => (
+                      <tr key={c.id}>
+                        <td><strong>{c.code}</strong></td>
+                        <td>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}</td>
+                        <td className="num">{c.discountType === 'Percentage' ? `${c.discountValue}%` : `BDT ${c.discountValue}`}</td>
+                        <td className="num">{c.minOrderAmount > 0 ? `BDT ${c.minOrderAmount}` : t("None")}</td>
+                        <td className="num">{c.usageCount}{c.usageLimit ? ` / ${c.usageLimit}` : ''}</td>
+                        <td>
+                          <span className={`badge ${c.isActive ? 'badge--ok' : 'badge--neutral'}`}>
+                            {t(c.isActive ? 'Active' : 'Disabled')}
+                          </span>
+                        </td>
+                        <td className="actions">
+                          <button
+                            type="button"
+                            className="btn btn--sm"
+                            disabled={toggleCouponStatus.isPending}
+                            onClick={async () => {
+                              try {
+                                await toggleCouponStatus.mutateAsync({ id: c.id, isActive: !c.isActive });
+                                toast.push('success', `${c.code} status updated.`);
+                              } catch (err) {
+                                toast.pushError(err);
+                              }
+                            }}
+                          >
+                            {t(c.isActive ? 'Disable' : 'Enable')}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {(couponsQuery.data ?? []).length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
+                          {t("No coupons created yet.")}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </section>
       ) : null}
 
