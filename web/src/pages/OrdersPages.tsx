@@ -298,16 +298,30 @@ export function OrderDetailPage() {
               ))}
             </tbody>
             <tfoot>
-              {order.discountAmount && order.discountAmount > 0 ? (
+              {((order.discountAmount && order.discountAmount > 0) || (order.giftCardAmount && order.giftCardAmount > 0) || (order.shippingAmount !== undefined && order.shippingAmount > 0)) ? (
                 <>
                   <tr>
                     <th scope="row" colSpan={3}>{t("Subtotal")}</th>
-                    <td className="num">{t(formatMoney(order.subTotal ?? (order.totalAmount + order.discountAmount), order.currency))}</td>
+                    <td className="num">{t(formatMoney(order.subTotal ?? order.items.reduce((sum, item) => sum + item.lineTotal, 0), order.currency))}</td>
                   </tr>
-                  <tr>
-                    <th scope="row" colSpan={3}>{t("Discount")} {order.couponCode ? `(${order.couponCode})` : ''}</th>
-                    <td className="num" style={{ color: 'var(--ok, #10b981)' }}>-{t(formatMoney(order.discountAmount, order.currency))}</td>
-                  </tr>
+                  {order.discountAmount && order.discountAmount > 0 ? (
+                    <tr>
+                      <th scope="row" colSpan={3}>{t("Discount")} {order.couponCode ? `(${order.couponCode})` : ''}</th>
+                      <td className="num" style={{ color: 'var(--ok, #10b981)' }}>-{t(formatMoney(order.discountAmount, order.currency))}</td>
+                    </tr>
+                  ) : null}
+                  {order.giftCardAmount && order.giftCardAmount > 0 ? (
+                    <tr>
+                      <th scope="row" colSpan={3}>{t("Gift Card")} {order.giftCardCode ? `(${order.giftCardCode})` : ''}</th>
+                      <td className="num" style={{ color: 'var(--accent, #6366f1)' }}>-{t(formatMoney(order.giftCardAmount, order.currency))}</td>
+                    </tr>
+                  ) : null}
+                  {order.shippingAmount !== undefined && order.shippingAmount > 0 ? (
+                    <tr>
+                      <th scope="row" colSpan={3}>{t("Delivery Fee")}</th>
+                      <td className="num">{t(formatMoney(order.shippingAmount, order.currency))}</td>
+                    </tr>
+                  ) : null}
                 </>
               ) : null}
               <tr>

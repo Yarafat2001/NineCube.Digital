@@ -641,8 +641,14 @@ public sealed class OrderService : IOrderService
             order.CustomerName ?? "Customer",
             email,
             order.Items,
+            order.SubTotal > 0 ? order.SubTotal : (order.TotalAmount + order.DiscountAmount + order.GiftCardAmount),
             order.TotalAmount,
-            order.TotalAmount, order.Currency);
+            order.Currency,
+            order.DiscountAmount,
+            order.CouponCode,
+            order.GiftCardAmount,
+            order.GiftCardCode,
+            order.ShippingAmount);
     }
 
     private async Task<OrderDto?> LoadOrderDtoAsync(int id, CancellationToken ct)

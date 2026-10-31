@@ -110,7 +110,12 @@ public sealed record InvoiceDto(
     IReadOnlyList<OrderItemDto> Lines,
     decimal Subtotal,
     decimal Total,
-    string Currency = "BDT");
+    string Currency = "BDT",
+    decimal DiscountAmount = 0,
+    string? CouponCode = null,
+    decimal GiftCardAmount = 0,
+    string? GiftCardCode = null,
+    decimal ShippingAmount = 0);
 
 // ---------------------------------------------------------------- reports
 

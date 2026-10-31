@@ -137,6 +137,11 @@ export interface Invoice {
   lines: OrderItem[];
   subtotal: number;
   total: number;
+  discountAmount?: number;
+  couponCode?: string | null;
+  giftCardAmount?: number;
+  giftCardCode?: string | null;
+  shippingAmount?: number;
 }
 
 export interface SalesByStatus {

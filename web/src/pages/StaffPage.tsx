@@ -459,6 +459,40 @@ export function InvoicePage() {
             ))}
           </tbody>
           <tfoot>
+            {((data.discountAmount && data.discountAmount > 0) || (data.giftCardAmount && data.giftCardAmount > 0) || (data.shippingAmount !== undefined && data.shippingAmount > 0)) ? (
+              <>
+                <tr>
+                  <th scope="row" colSpan={4} style={{ textAlign: 'right' }}>{t("Subtotal")}</th>
+                  <td className="num">{t(formatMoney(data.subtotal, data.currency))}</td>
+                </tr>
+                {data.discountAmount && data.discountAmount > 0 ? (
+                  <tr>
+                    <th scope="row" colSpan={4} style={{ textAlign: 'right' }}>
+                      {t("Discount")} {data.couponCode ? `(${data.couponCode})` : ''}
+                    </th>
+                    <td className="num" style={{ color: 'var(--ok, #10b981)' }}>
+                      -{t(formatMoney(data.discountAmount, data.currency))}
+                    </td>
+                  </tr>
+                ) : null}
+                {data.giftCardAmount && data.giftCardAmount > 0 ? (
+                  <tr>
+                    <th scope="row" colSpan={4} style={{ textAlign: 'right' }}>
+                      {t("Gift Card")} {data.giftCardCode ? `(${data.giftCardCode})` : ''}
+                    </th>
+                    <td className="num" style={{ color: 'var(--accent, #6366f1)' }}>
+                      -{t(formatMoney(data.giftCardAmount, data.currency))}
+                    </td>
+                  </tr>
+                ) : null}
+                {data.shippingAmount !== undefined && data.shippingAmount > 0 ? (
+                  <tr>
+                    <th scope="row" colSpan={4} style={{ textAlign: 'right' }}>{t("Delivery Fee")}</th>
+                    <td className="num">{t(formatMoney(data.shippingAmount, data.currency))}</td>
+                  </tr>
+                ) : null}
+              </>
+            ) : null}
             <tr>
               <th scope="row" colSpan={4} style={{ textAlign: 'right' }}>
                 {t("Total")}</th>
