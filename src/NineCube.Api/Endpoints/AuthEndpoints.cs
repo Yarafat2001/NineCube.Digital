@@ -42,6 +42,16 @@ public sealed class AuthEndpoints : IEndpoint
             .AllowAnonymous()
             .WithName("ResetPassword")
             .WithSummary("Verifies a reset token and updates the user's password.");
+
+        group.MapPost("/refresh", RefreshAsync)
+            .AllowAnonymous()
+            .WithName("RefreshToken")
+            .WithSummary("Exchanges an active refresh token for a new access token and rotated refresh token.");
+
+        group.MapPost("/logout", LogoutAsync)
+            .AllowAnonymous()
+            .WithName("Logout")
+            .WithSummary("Revokes an active refresh token upon sign out.");
     }
 
     public static async Task<Results<Created<AuthResponse>, ProblemHttpResult>> RegisterAsync(
@@ -95,4 +105,23 @@ public sealed class AuthEndpoints : IEndpoint
         var success = await resetService.ResetPasswordAsync(request, ct);
         return TypedResults.Ok<object>(new { success, message = "Password has been successfully reset. You may now log in." });
     }
+
+    public static async Task<Results<Ok<AuthResponse>, ProblemHttpResult>> RefreshAsync(
+        RefreshTokenRequest request,
+        IAuthService auth,
+        CancellationToken ct)
+    {
+        var response = await auth.RefreshTokenAsync(request.RefreshToken, ct);
+        return TypedResults.Ok(response);
+    }
+
+    public static async Task<Results<Ok<object>, ProblemHttpResult>> LogoutAsync(
+        RefreshTokenRequest request,
+        IAuthService auth,
+        CancellationToken ct)
+    {
+        await auth.RevokeTokenAsync(request.RefreshToken, ct);
+        return TypedResults.Ok<object>(new { success = true, message = "Session successfully logged out." });
+    }
+
 }

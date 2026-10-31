@@ -40,9 +40,24 @@ public static class DependencyInjection
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
         services.AddSingleton<ITransientErrorPolicy, PostgresTransientErrorPolicy>();
-        services.AddSingleton<IProductStorage>(new ProductFileStorage(
-            configuration["Products:UploadPath"] ?? Path.Combine(environment.ContentRootPath, "uploads"),
-            configuration["Products:PublicPrefix"] ?? "/uploads"));
+        if (configuration["Storage:Provider"]?.Equals("S3", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            services.AddSingleton<IProductStorage>(new S3ProductStorage(
+                configuration["Storage:S3:Endpoint"] ?? "",
+                configuration["Storage:S3:Bucket"] ?? "",
+                configuration["Storage:S3:AccessKey"] ?? "",
+                configuration["Storage:S3:SecretKey"] ?? "",
+                configuration["Storage:S3:PublicUrlPrefix"] ?? "/uploads",
+                Path.Combine(environment.ContentRootPath, "uploads")
+            ));
+        }
+        else
+        {
+            services.AddSingleton<IProductStorage>(new ProductFileStorage(
+                configuration["Products:UploadPath"] ?? Path.Combine(environment.ContentRootPath, "uploads"),
+                configuration["Products:PublicPrefix"] ?? "/uploads"));
+        }
+        services.AddScoped<IEmailSender, NineCube.Infrastructure.Email.SmtpEmailSender>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         services.AddHttpContextAccessor();

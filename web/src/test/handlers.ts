@@ -549,6 +549,19 @@ export const handlers = [
 
   http.post(`${API}/api/auth/reset-password`, () =>
     HttpResponse.json({ success: true, message: 'Password has been successfully reset.' })
+  ),
+
+  http.post(`${API}/api/auth/refresh`, () =>
+    HttpResponse.json({
+      accessToken: 'MOCK-REFRESHED-JWT',
+      expiresAtUtc: new Date(Date.now() + 3600000).toISOString(),
+      user: { id: 1, email: 'customer@ninecube.demo', role: 'Customer', customerId: 10 },
+      refreshToken: 'MOCK-ROTATED-REFRESH-TOKEN'
+    })
+  ),
+
+  http.post(`${API}/api/auth/logout`, () =>
+    HttpResponse.json({ success: true })
   )
 ];
 

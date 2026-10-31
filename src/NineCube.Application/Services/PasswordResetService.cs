@@ -19,17 +19,20 @@ public sealed class PasswordResetService : IPasswordResetService
     private readonly IClock _clock;
     private readonly IPasswordHasherService _hasher;
     private readonly ICacheService _cache;
+    private readonly IEmailSender _emailSender;
 
     public PasswordResetService(
         IAppDbContext db,
         IClock clock,
         IPasswordHasherService hasher,
-        ICacheService cache)
+        ICacheService cache,
+        IEmailSender emailSender)
     {
         _db = db;
         _clock = clock;
         _hasher = hasher;
         _cache = cache;
+        _emailSender = emailSender;
     }
 
     public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken ct = default)
@@ -58,7 +61,13 @@ public sealed class PasswordResetService : IPasswordResetService
         _db.PasswordResetTokens.Add(resetToken);
         await _db.SaveChangesAsync(ct);
 
-        // In production this token is dispatched via email (SendGrid/SES). We also expose it in DemoResetToken for testing/development.
+        // Dispatch transactional email with reset token
+        _ = _emailSender.SendEmailAsync(
+            user.Email,
+            "Reset Your NineCube Password",
+            $"<p>Hello,</p><p>You requested a password reset for your NineCube Digital account.</p><p>Your secure reset token is: <strong>{rawToken}</strong></p><p>This token is valid for 1 hour. If you did not make this request, you can safely ignore this email.</p>",
+            ct);
+
         return new ForgotPasswordResponse(
             "If an active account with that email exists, reset instructions have been generated.",
             DemoResetToken: rawToken);

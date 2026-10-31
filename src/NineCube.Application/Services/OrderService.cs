@@ -44,8 +44,8 @@ public sealed class OrderService : IOrderService
     private readonly IClock _clock;
     private readonly ITransientErrorPolicy _errors;
     private readonly INotificationWriter _notifications;
-
     private readonly ICouponService _couponService;
+    private readonly IEmailSender _emailSender;
 
     public OrderService(
         IAppDbContext db,
@@ -53,7 +53,8 @@ public sealed class OrderService : IOrderService
         IClock clock,
         ITransientErrorPolicy errors,
         INotificationWriter notifications,
-        ICouponService couponService)
+        ICouponService couponService,
+        IEmailSender emailSender)
     {
         _db = db;
         _currentUser = currentUser;
@@ -61,6 +62,7 @@ public sealed class OrderService : IOrderService
         _errors = errors;
         _notifications = notifications;
         _couponService = couponService;
+        _emailSender = emailSender;
     }
 
     // ------------------------------------------------------------------ place
@@ -235,6 +237,15 @@ public sealed class OrderService : IOrderService
             // Critical section ends here: stock decrements, order rows and movements are committed immediately.
             // Row locks on products are released, eliminating lock contention during flash sales.
             await tx.CommitAsync(ct);
+
+            // Send transactional email receipt
+            var customer = await _db.Customers.AsNoTracking().FirstOrDefaultAsync(c => c.Id == customerId, ct);
+            if (customer is not null && !string.IsNullOrWhiteSpace(customer.Email))
+            {
+                var rows = string.Join("", order.Items.Select(i => $"<tr><td style='padding:6px;border:1px solid #ddd;'>{i.ProductName}</td><td style='padding:6px;border:1px solid #ddd;text-align:center;'>{i.Quantity}</td><td style='padding:6px;border:1px solid #ddd;text-align:right;'>{order.Currency} {i.LineTotal:0.00}</td></tr>"));
+                var emailBody = $"<div style='font-family:sans-serif;'><h2>Order Confirmation #{order.Id}</h2><p>Thank you for shopping with NineCube Digital!</p><table style='border-collapse:collapse;width:100%;'><thead><tr style='background:#f4f4f4;'><th style='padding:6px;border:1px solid #ddd;'>Item</th><th style='padding:6px;border:1px solid #ddd;'>Qty</th><th style='padding:6px;border:1px solid #ddd;'>Total</th></tr></thead><tbody>{rows}</tbody></table><p style='font-size:16px;'><strong>Order Total: {order.Currency} {order.TotalAmount:0.00}</strong></p><p>We will notify you as soon as your items are on the way.</p></div>";
+                _ = _emailSender.SendEmailAsync(customer.Email, $"Order #{order.Id} Confirmation - NineCube Digital", emailBody, CancellationToken.None);
+            }
 
             // Post-commit side effects: customer and staff inbox notifications and low-stock alerts.
             if (!string.IsNullOrWhiteSpace(order.CouponCode))

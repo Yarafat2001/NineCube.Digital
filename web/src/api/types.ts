@@ -27,6 +27,7 @@ export interface AuthResponse {
   accessToken: string;
   expiresAtUtc: string;
   user: UserSummary;
+  refreshToken?: string | null;
 }
 
 export interface ProductImage {

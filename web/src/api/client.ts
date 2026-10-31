@@ -114,6 +114,31 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       status: response.status
     };
 
+    // Automatic refresh token exchange on 401
+    if (response.status === 401 && !path.startsWith('/api/auth/')) {
+      const storedRefreshToken = localStorage.getItem('ninecube.auth.refresh-token');
+      if (storedRefreshToken) {
+        try {
+          const refreshRes = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ refreshToken: storedRefreshToken })
+          });
+          if (refreshRes.ok) {
+            const data = await refreshRes.json();
+            if (data.accessToken) {
+              if (data.refreshToken) {
+                localStorage.setItem('ninecube.auth.refresh-token', data.refreshToken);
+              }
+              return apiRequest<T>(path, { ...options, token: data.accessToken });
+            }
+          }
+        } catch {
+          // Fall through to unauthorized
+        }
+      }
+    }
+
     const error = new ApiError(problem, response.status);
 
     if (error.isUnauthorized && onUnauthorized) onUnauthorized();

@@ -204,10 +204,71 @@ export function ProductsPage() {
           <p>{t("Live availability straight from stock. The server is the source of truth for every quantity.")}</p>
         </div>
 
-        <div className="field" style={{ minWidth: 'min(320px, 100%)' }}>
+        <div className="field" style={{ minWidth: 'min(320px, 100%)', position: 'relative' }}>
           <label htmlFor="product-search">{t("Search products")}</label>
           <input id="product-search" type="search" placeholder={t("Name or SKU")} value={search}
+            autoComplete="off"
             onChange={event => setSearch(event.target.value)} />
+
+          {/* Live Autocomplete Suggestions */}
+          {search.trim().length >= 2 && productsQuery.data?.items && productsQuery.data.items.length > 0 ? (
+            <div
+              className="card-glass search-suggestions"
+              style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                zIndex: 50,
+                marginTop: '4px',
+                borderRadius: 'var(--radius-md, 8px)',
+                background: 'var(--surface-overlay, #1c1c20)',
+                boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0,0,0,0.5))',
+                maxHeight: '360px',
+                overflowY: 'auto',
+                border: '1px solid var(--border)'
+              }}
+              role="listbox"
+              aria-label={t("Search suggestions")}
+            >
+              <div style={{ padding: '6px 12px', fontSize: 'var(--text-xs)', color: 'var(--muted)', borderBottom: '1px solid var(--border)' }}>
+                {t("Quick matches")} ({productsQuery.data.items.slice(0, 5).length})
+              </div>
+              {productsQuery.data.items.slice(0, 5).map(item => (
+                <Link
+                  key={item.id}
+                  to={`/products/${item.id}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '8px 12px',
+                    borderBottom: '1px solid var(--border)',
+                    textDecoration: 'none',
+                    color: 'inherit'
+                  }}
+                  onClick={() => setSearch('')}
+                >
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt="" style={{ width: '32px', height: '32px', objectFit: 'contain', borderRadius: '4px' }} />
+                  ) : (
+                    <div style={{ width: '32px', height: '32px', background: 'var(--surface-muted, #333)', borderRadius: '4px' }} />
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {item.name}
+                    </div>
+                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)' }} className="mono">
+                      {item.sku}
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>
+                    {formatMoney(item.price, item.currency)}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : null}
         </div>
       </header>
 

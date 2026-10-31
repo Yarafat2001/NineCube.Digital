@@ -45,6 +45,7 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
     public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -380,6 +381,20 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.HasIndex(w => new { w.CustomerId, w.ProductId }).IsUnique();
             e.HasOne(w => w.Customer).WithMany(c => c.Wishlist).HasForeignKey(w => w.CustomerId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(w => w.Product).WithMany().HasForeignKey(w => w.ProductId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<RefreshToken>(e =>
+        {
+            e.ToTable("RefreshTokens");
+            e.HasKey(t => t.Id);
+            e.Property(t => t.Token).HasMaxLength(256).IsRequired();
+            e.Property(t => t.ExpiresAtUtc);
+            e.Property(t => t.CreatedAtUtc);
+            e.Property(t => t.RevokedAtUtc);
+            e.Property(t => t.ReplacedByToken).HasMaxLength(256);
+            e.HasIndex(t => t.Token).IsUnique();
+            e.HasIndex(t => t.UserId);
+            e.HasOne(t => t.User).WithMany().HasForeignKey(t => t.UserId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

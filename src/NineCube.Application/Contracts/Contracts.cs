@@ -18,7 +18,8 @@ public sealed record LoginRequest(string Email, string Password);
 
 public sealed record UserSummaryDto(int Id, string Email, UserRole Role, int? CustomerId);
 
-public sealed record AuthResponse(string AccessToken, DateTime ExpiresAtUtc, UserSummaryDto User);
+public sealed record AuthResponse(string AccessToken, DateTime ExpiresAtUtc, UserSummaryDto User, string? RefreshToken = null);
+public sealed record RefreshTokenRequest(string RefreshToken);
 
 // ---------------------------------------------------------------- catalog
 

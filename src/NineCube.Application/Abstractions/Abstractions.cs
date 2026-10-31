@@ -34,6 +34,7 @@ public interface IAppDbContext
     DbSet<PasswordResetToken> PasswordResetTokens { get; }
     DbSet<ProductReview> ProductReviews { get; }
     DbSet<WishlistItem> WishlistItems { get; }
+    DbSet<RefreshToken> RefreshTokens { get; }
 
     DatabaseFacade Database { get; }
     Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker ChangeTracker { get; }
@@ -136,4 +137,9 @@ public static class AuditActions
     public const string OrderShipped = "order.shipped";
     public const string OrderCancelled = "order.cancelled";
     public const string SettingsUpdated = "settings.updated";
+}
+
+public interface IEmailSender
+{
+    Task SendEmailAsync(string toEmail, string subject, string htmlBody, CancellationToken ct = default);
 }

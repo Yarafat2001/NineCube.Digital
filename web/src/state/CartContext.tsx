@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Product } from '../api/types';
 
 /**
@@ -35,8 +35,33 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export const MAX_QUANTITY_PER_LINE = 1000;
 
+const CART_STORAGE_KEY = 'ninecube.cart.v1';
+
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [lines, setLines] = useState<CartLine[]>([]);
+  const [lines, setLines] = useState<CartLine[]>(() => {
+    try {
+      const raw = localStorage.getItem(CART_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch {
+      // LocalStorage unavailable in test or private mode
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    try {
+      if (lines.length === 0) {
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } else {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(lines));
+      }
+    } catch {
+      // Ignore storage write issues
+    }
+  }, [lines]);
 
   const add = useCallback((product: Product, quantity: number) => {
     setLines((current) => {

@@ -10,6 +10,8 @@ public interface IAuthService
     Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken ct = default);
     Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken ct = default);
     Task<UserSummaryDto> GetMeAsync(CancellationToken ct = default);
+    Task<AuthResponse> RefreshTokenAsync(string refreshToken, CancellationToken ct = default);
+    Task RevokeTokenAsync(string refreshToken, CancellationToken ct = default);
 }
 
 public sealed class AuthService : IAuthService
@@ -84,8 +86,18 @@ public sealed class AuthService : IAuthService
         await tx.CommitAsync(ct);
 
         var token = _tokens.CreateAccessToken(user);
+        var refreshToken = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
+        _db.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = user.Id,
+            Token = refreshToken,
+            CreatedAtUtc = now,
+            ExpiresAtUtc = now.AddDays(14)
+        });
+        await _db.SaveChangesAsync(ct);
+
         return new AuthResponse(token.AccessToken, token.ExpiresAtUtc,
-            new UserSummaryDto(user.Id, user.Email, user.Role, user.CustomerId));
+            new UserSummaryDto(user.Id, user.Email, user.Role, user.CustomerId), refreshToken);
     }
 
     public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken ct = default)
@@ -129,8 +141,18 @@ public sealed class AuthService : IAuthService
         await _db.SaveChangesAsync(ct);
 
         var token = _tokens.CreateAccessToken(user);
+        var refreshToken = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
+        _db.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = user.Id,
+            Token = refreshToken,
+            CreatedAtUtc = _clock.UtcNow,
+            ExpiresAtUtc = _clock.UtcNow.AddDays(14)
+        });
+        await _db.SaveChangesAsync(ct);
+
         return new AuthResponse(token.AccessToken, token.ExpiresAtUtc,
-            new UserSummaryDto(user.Id, user.Email, user.Role, user.CustomerId));
+            new UserSummaryDto(user.Id, user.Email, user.Role, user.CustomerId), refreshToken);
     }
 
     public async Task<UserSummaryDto> GetMeAsync(CancellationToken ct = default)
@@ -146,4 +168,55 @@ public sealed class AuthService : IAuthService
     }
 
     internal static string Normalize(string email) => email.Trim().ToLowerInvariant();
+
+    public async Task<AuthResponse> RefreshTokenAsync(string refreshToken, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+            throw new UnauthorizedException("Refresh token is required.");
+
+        var existing = await _db.RefreshTokens
+            .Include(t => t.User)
+            .FirstOrDefaultAsync(t => t.Token == refreshToken, ct);
+
+        if (existing is null || !existing.IsActive)
+            throw new UnauthorizedException("Invalid, expired, or revoked refresh token.");
+
+        if (existing.User is null || !existing.User.IsActive)
+            throw new UnauthorizedException("This account is no longer active.");
+
+        var now = _clock.UtcNow;
+        var newRefreshToken = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
+
+        // Rotate token
+        existing.RevokedAtUtc = now;
+        existing.ReplacedByToken = newRefreshToken;
+
+        _db.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = existing.UserId,
+            Token = newRefreshToken,
+            CreatedAtUtc = now,
+            ExpiresAtUtc = now.AddDays(14)
+        });
+
+        await _db.SaveChangesAsync(ct);
+
+        var token = _tokens.CreateAccessToken(existing.User);
+        return new AuthResponse(token.AccessToken, token.ExpiresAtUtc,
+            new UserSummaryDto(existing.User.Id, existing.User.Email, existing.User.Role, existing.User.CustomerId),
+            newRefreshToken);
+    }
+
+    public async Task RevokeTokenAsync(string refreshToken, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken)) return;
+
+        var token = await _db.RefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken, ct);
+        if (token is not null && token.RevokedAtUtc is null)
+        {
+            token.RevokedAtUtc = _clock.UtcNow;
+            await _db.SaveChangesAsync(ct);
+        }
+    }
+
 }

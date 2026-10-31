@@ -20,6 +20,7 @@ interface StoredSession {
   accessToken: string;
   expiresAtUtc: string;
   user: UserSummary;
+  refreshToken?: string | null;
 }
 
 export interface AuthContextValue {
@@ -70,7 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const logout = useCallback(() => persist(null), [persist]);
+  const logout = useCallback(() => {
+    const currentToken = sessionRef.current?.refreshToken || localStorage.getItem('ninecube.auth.refresh-token');
+    if (currentToken) {
+      void apiRequest('/api/auth/logout', { method: 'POST', body: { refreshToken: currentToken } }).catch(() => {});
+    }
+    try { localStorage.removeItem('ninecube.auth.refresh-token'); } catch {}
+    persist(null);
+  }, [persist]);
 
   // Any 401 from anywhere in the app drops the session, so the guards send the user to /login.
   useEffect(() => {
@@ -118,12 +126,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const applyAuthResponse = useCallback(
-    (response: AuthResponse) =>
+    (response: AuthResponse) => {
+      if (response.refreshToken) {
+        try { localStorage.setItem('ninecube.auth.refresh-token', response.refreshToken); } catch {}
+      }
       persist({
         accessToken: response.accessToken,
         expiresAtUtc: response.expiresAtUtc,
-        user: response.user
-      }),
+        user: response.user,
+        refreshToken: response.refreshToken
+      });
+    },
     [persist]
   );
 
