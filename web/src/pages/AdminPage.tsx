@@ -77,6 +77,12 @@ export function AdminPage() {
   const [startsAt, setStartsAt] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [isAutomatic, setIsAutomatic] = useState(false);
+  const generateNewCouponCode = () => {
+    const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const rand = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    setCouponCode(`SALE-${rand}`);
+  };
+
 
   // Gift Cards
   const giftCardsQuery = useGiftCards();
@@ -485,9 +491,145 @@ export function AdminPage() {
 
       {tab === 'coupons' ? (
         <section role="tabpanel" id="panel-coupons" aria-labelledby="tab-coupons" className="stack">
+          {/* Quick-Fill Rule Templates */}
+          <div style={{ marginBottom: 'var(--space-4)', padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-raised)', borderRadius: 'var(--radius-md, 8px)', border: '1px solid var(--border)' }}>
+            <div className="row-between" style={{ marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
+              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', fontWeight: 700 }}>
+                ✨ {t("Quick Templates (1-Click Fill):")}
+              </span>
+              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                {t("Only Code & Discount are required — all other metadata below is optional.")}
+              </span>
+            </div>
+            <div className="row" style={{ gap: '8px', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                className="btn btn--sm"
+                onClick={() => {
+                  setCouponCode('SAVE10');
+                  setDiscountType('Percentage');
+                  setDiscountValue('10');
+                  setCouponTargetType('Order');
+                  setTargetId(null);
+                  setMinOrderAmount('0');
+                  setMaxDiscountCap('1500');
+                  setCampaignTitle('⚡ Flash Sale: 10% OFF Storewide');
+                  setIsBannerPromoted(true);
+                  setIsAutomatic(false);
+                }}
+              >
+                ⚡ {t("10% Storewide Deal")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--sm"
+                onClick={() => {
+                  setCouponCode('FOOTWEAR20');
+                  setDiscountType('Percentage');
+                  setDiscountValue('20');
+                  setCouponTargetType('Category');
+                  const cat = allCategories.find(c => c.name.toLowerCase().includes('footwear')) || allCategories[0];
+                  setTargetId(cat ? cat.id : null);
+                  setMinOrderAmount('1000');
+                  setMaxDiscountCap('2000');
+                  setCampaignTitle('👟 20% OFF Footwear Summer Sale');
+                  setIsBannerPromoted(true);
+                  setIsAutomatic(false);
+                }}
+              >
+                👟 {t("20% Off Footwear (Category)")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--sm"
+                onClick={() => {
+                  setCouponCode('APEX15');
+                  setDiscountType('Percentage');
+                  setDiscountValue('15');
+                  setCouponTargetType('Brand');
+                  const brand = allBrands.find(b => b.name.toLowerCase().includes('apex')) || allBrands[0];
+                  setTargetId(brand ? brand.id : null);
+                  setMinOrderAmount('500');
+                  setMaxDiscountCap('1500');
+                  setCampaignTitle('🏷️ 15% OFF All Apex Shoes');
+                  setIsBannerPromoted(true);
+                  setIsAutomatic(false);
+                }}
+              >
+                🏷️ {t("15% Off Apex Brand (Brand)")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--sm"
+                onClick={() => {
+                  setCouponCode('DURAMO25');
+                  setDiscountType('Percentage');
+                  setDiscountValue('25');
+                  setCouponTargetType('Product');
+                  const prod = allProducts.find(p => p.name.toLowerCase().includes('duramo')) || allProducts[0];
+                  setTargetId(prod ? prod.id : null);
+                  setMinOrderAmount('0');
+                  setMaxDiscountCap('3000');
+                  setCampaignTitle('👟 25% OFF Duramo SL Running Shoes');
+                  setIsBannerPromoted(true);
+                  setIsAutomatic(false);
+                }}
+              >
+                📦 {t("25% Off Duramo Shoe (Product)")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--sm"
+                onClick={() => {
+                  setCouponCode('AUTOMEGA');
+                  setDiscountType('Percentage');
+                  setDiscountValue('10');
+                  setCouponTargetType('Order');
+                  setTargetId(null);
+                  setMinOrderAmount('2000');
+                  setMaxDiscountCap('2000');
+                  setCampaignTitle('⚡ Automatic Deal: 10% OFF on BDT 2,000+ Baskets');
+                  setIsBannerPromoted(true);
+                  setIsAutomatic(true);
+                }}
+              >
+                🤖 {t("10% Auto-Applied Deal")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--sm"
+                onClick={() => {
+                  setCouponCode('VIP500');
+                  setDiscountType('FixedAmount');
+                  setDiscountValue('500');
+                  setCouponTargetType('Order');
+                  setTargetId(null);
+                  setMinOrderAmount('2500');
+                  setMaxDiscountCap('');
+                  setCampaignTitle('🎁 BDT 500 OFF on Orders > BDT 2,500');
+                  setIsBannerPromoted(false);
+                  setIsAutomatic(false);
+                }}
+              >
+                🛒 {t("BDT 500 Off Cart > 2500")}
+              </button>
+            </div>
+          </div>
           <form className="card-glass grid-form" onSubmit={submitCoupon}>
             <div className="field">
-              <label htmlFor="coupon-code">{t("Coupon code")}</label>
+              <div className="row-between">
+                <label htmlFor="coupon-code">
+                  {t("Coupon code")} <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
+                </label>
+                <button
+                  type="button"
+                  className="link-button"
+                  style={{ fontSize: 'var(--text-xs)' }}
+                  onClick={generateNewCouponCode}
+                >
+                  ⚡ {t("Generate Code")}
+                </button>
+              </div>
               <input
                 id="coupon-code"
                 type="text"
@@ -495,7 +637,7 @@ export function AdminPage() {
                 placeholder={t("e.g. SUMMER25")}
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                style={{ textTransform: 'uppercase' }}
+                style={{ textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px' }}
               />
             </div>
 
@@ -513,7 +655,8 @@ export function AdminPage() {
 
             <div className="field">
               <label htmlFor="coupon-value">
-                {discountType === 'Percentage' ? t("Discount percentage (%)") : t("Discount amount (BDT)")}
+                {discountType === 'Percentage' ? t("Discount percentage (%)") : t("Discount amount (BDT)")}{' '}
+                <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
               </label>
               <input
                 id="coupon-value"
