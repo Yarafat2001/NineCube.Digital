@@ -192,5 +192,5 @@ public sealed class ProductImageService(
     }
 
     private async Task<ProductDto> LoadAsync(int productId, CancellationToken ct) =>
-        await db.Products.AsNoTracking().Where(p => p.Id == productId).Select(CatalogService.Projection).SingleAsync(ct);
+        await db.Products.AsNoTracking().AsSplitQuery().Where(p => p.Id == productId).Select(CatalogService.Projection).SingleAsync(ct);
 }

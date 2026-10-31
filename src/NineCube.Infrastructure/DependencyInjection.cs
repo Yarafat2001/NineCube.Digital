@@ -29,8 +29,15 @@ public static class DependencyInjection
         // handled by ITransientErrorPolicy, which understands which errors are actually retryable.
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseNpgsql(connectionString);
-            options.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+            options.UseNpgsql(connectionString, npgsql =>
+            {
+                npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            });
+            options.ConfigureWarnings(w =>
+            {
+                w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning);
+                w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.MultipleCollectionIncludeWarning);
+            });
         });
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
