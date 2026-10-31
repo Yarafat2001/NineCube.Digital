@@ -85,6 +85,11 @@
   min-width: 0;
 }
 
+.grid-cards {
+  display: grid;
+  gap: var(--space-4);
+}
+
 .grid-tiles {
   display: grid;
   gap: var(--space-4);

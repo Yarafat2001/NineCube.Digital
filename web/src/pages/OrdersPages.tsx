@@ -233,7 +233,7 @@ export function OrderDetailPage() {
       <p className="muted">{t(orderStatusMeta[order.status].description)}</p>
 
       {/* Payment & Delivery Metadata Tiles */}
-      <div className="grid-cards" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)', margin: 'var(--space-4) 0' }}>
+      <div className="grid-tiles" style={{ margin: 'var(--space-5) 0' }}>
         <div className="card-glass" style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md, 8px)' }}>
           <span className="muted" style={{ fontSize: 'var(--text-xs)', display: 'block' }}>{t("Payment Method")}</span>
           <strong style={{ fontSize: 'var(--text-sm)' }}>
@@ -267,10 +267,12 @@ export function OrderDetailPage() {
         ) : null}
       </div>
 
-      <section className="table-surface" aria-labelledby="order-lines-heading">
+      <h2 style={{ fontSize: 'var(--text-lg)', margin: 'var(--space-6) 0 var(--space-3)' }}>{t("Order lines")}</h2>
+
+      <section className="table-surface" aria-label={t("Order lines")}>
         <div className="table-scroll">
           <table>
-            <caption id="order-lines-heading">{t("Order lines")}</caption>
+            <caption className="visually-hidden">{t("Order lines")}</caption>
             <thead>
               <tr>
                 <th scope="col">{t("Product")}</th>
@@ -286,7 +288,8 @@ export function OrderDetailPage() {
               {order.items.map((item) => (
                 <tr key={item.id}>
                   <td>
-                    {t(item.name)} <span className="mono muted">{t(item.sku)}</span>
+                    <div style={{ fontWeight: 600 }}>{t(item.name)}</div>
+                    <small className="mono muted" style={{ fontSize: 'var(--text-xs)' }}>{t(item.sku)}</small>
                   </td>
                   <td className="num">{t(item.quantity)}</td>
                   <td className="num">{t(formatMoney(item.unitPrice, order.currency))}</td>
@@ -319,21 +322,22 @@ export function OrderDetailPage() {
         </div>
       </section>
 
-      <div className="row">
-        <button type="button" className="btn btn--ghost" onClick={() => navigate(-1)}>
-          {t("Back")}</button>
+      <div className="row-between" style={{ marginTop: 'var(--space-6)', alignItems: 'center' }}>
+        <button type="button" className="btn" onClick={() => navigate(-1)}>
+          ← {t("Back")}
+        </button>
 
         {cancellable ? (
           <button type="button" className="btn btn--danger" onClick={cancel} disabled={action.isPending}>
             {t(action.isPending ? 'Cancelling…' : 'Cancel order')}
           </button>
-        ) : (
-          <span className="muted">
+        ) : (hasRole('Customer') || order.status === 'Shipped') ? (
+          <span className="muted" style={{ fontSize: 'var(--text-sm)' }}>
             {t(order.status === 'Shipped'
               ? 'Shipped orders cannot be cancelled.'
               : 'This order cannot be cancelled by you.')}
           </span>
-        )}
+        ) : null}
       </div>
     </div>
   );
