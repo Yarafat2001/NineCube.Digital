@@ -22,6 +22,11 @@ public sealed class CouponEndpoints : IEndpoint
             .WithName("ValidateCoupon")
             .WithSummary("Validates a coupon code against a cart subtotal and calculates discount.");
 
+        group.MapPost("/evaluate-cart", EvaluateCartPromotionsAsync)
+            .AllowAnonymous()
+            .WithName("EvaluateCartPromotions")
+            .WithSummary("Evaluates automatic campaign promotions, free shipping thresholds, and manual discounts for a cart.");
+
         group.MapGet("/campaigns", GetActiveCampaignsAsync)
             .AllowAnonymous()
             .WithName("GetActiveCampaigns")
@@ -41,6 +46,15 @@ public sealed class CouponEndpoints : IEndpoint
             .RequireAuthorization(Policies.AdministratorOnly)
             .WithName("ToggleCouponStatus")
             .WithSummary("Enables or disables an existing coupon.");
+    }
+
+    public static async Task<Results<Ok<CartPromotionsEvaluationResult>, ProblemHttpResult>> EvaluateCartPromotionsAsync(
+        EvaluateCartPromotionsRequest request,
+        ICouponService couponService,
+        CancellationToken ct)
+    {
+        var result = await couponService.EvaluateCartPromotionsAsync(request, ct);
+        return TypedResults.Ok(result);
     }
 
     public static async Task<Results<Ok<IReadOnlyList<CouponDto>>, ProblemHttpResult>> GetActiveCampaignsAsync(

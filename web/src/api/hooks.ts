@@ -27,7 +27,9 @@ import type {
   ForgotPasswordResponse,
   GiftCard,
   CreateGiftCardInput,
-  ValidateGiftCardResult
+  ValidateGiftCardResult,
+  EvaluateCartPromotionsRequest,
+  CartPromotionsEvaluationResult
 } from './types';
 import { useAuth } from '../state/AuthContext';
 
@@ -772,5 +774,13 @@ export function useValidateGiftCard() {
   return useMutation({
     mutationFn: (code: string) =>
       apiRequest<ValidateGiftCardResult>('/api/gift-cards/validate', { method: 'POST', body: { code } })
+  });
+}
+
+
+export function useEvaluateCartPromotions() {
+  return useMutation({
+    mutationFn: (payload: EvaluateCartPromotionsRequest) =>
+      apiRequest<CartPromotionsEvaluationResult>('/api/coupons/evaluate-cart', { method: 'POST', body: payload })
   });
 }

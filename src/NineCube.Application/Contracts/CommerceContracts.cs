@@ -54,6 +54,22 @@ public sealed record CouponValidationResult(
     CouponTargetType TargetType = CouponTargetType.Order,
     decimal? MaxDiscountCap = null);
 
+public sealed record EvaluateCartPromotionsRequest(
+    decimal SubTotal,
+    IReadOnlyList<CartLineItemDto>? Items = null,
+    string? ManualCouponCode = null);
+
+public sealed record CartPromotionsEvaluationResult(
+    CouponValidationResult? AutomaticDiscount,
+    CouponValidationResult? ManualDiscount,
+    CouponValidationResult? EffectiveDiscount,
+    decimal TotalDiscountAmount,
+    string? ActiveCampaignHeadline,
+    decimal FreeShippingThreshold,
+    bool QualifiesForFreeShipping,
+    decimal AmountNeededForFreeShipping);
+
+
 // ---------------------------------------------------------------- Payments
 public sealed record ProcessPaymentRequest(int OrderId, PaymentMethod Provider);
 public sealed record PaymentCallbackRequest(int OrderId, string TransactionReference, bool Success, string? ProviderPayload);

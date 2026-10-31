@@ -398,3 +398,21 @@ export interface ValidateGiftCardResult {
   recipientName: string | null;
   reason: string | null;
 }
+
+
+export interface EvaluateCartPromotionsRequest {
+  subTotal: number;
+  items?: { productId: number; quantity: number; unitPrice: number; categoryId?: number | null; brandId?: number | null }[];
+  manualCouponCode?: string | null;
+}
+
+export interface CartPromotionsEvaluationResult {
+  automaticDiscount: CouponValidationResult | null;
+  manualDiscount: CouponValidationResult | null;
+  effectiveDiscount: CouponValidationResult | null;
+  totalDiscountAmount: number;
+  activeCampaignHeadline: string | null;
+  freeShippingThreshold: number;
+  qualifiesForFreeShipping: boolean;
+  amountNeededForFreeShipping: number;
+}

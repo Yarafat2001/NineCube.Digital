@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ApiError, apiRequest } from '../api/client';
-import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useProcessPayment, useProfile } from '../api/hooks';
+import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useEvaluateCartPromotions, useProcessPayment, useProfile } from '../api/hooks';
 import type { Order, Product, ShortItem, CouponValidationResult, ValidateGiftCardResult, PaymentMethod } from '../api/types';
 import { Link } from 'react-router-dom';
 import { createIdempotencyKey, formatMoney } from '../lib/helpers';
@@ -41,7 +41,11 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
   const { data: profile } = useProfile();
   const validateCoupon = useValidateCoupon();
   const validateGiftCard = useValidateGiftCard();
+  const evaluatePromotions = useEvaluateCartPromotions();
   const processPayment = useProcessPayment();
+
+  const [autoPromo, setAutoPromo] = useState<CouponValidationResult | null>(null);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(2500);
 
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult | null>(null);
@@ -61,11 +65,48 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
     }
   }, [profile, selectedAddressId]);
 
-  const discountAmount = appliedCoupon?.isValid ? appliedCoupon.discountAmount : 0;
+  // Auto-evaluate cart promotions dynamically without typing coupon codes
+  useEffect(() => {
+    if (cart.lines.length === 0 || cart.total <= 0) {
+      setAutoPromo(null);
+      return;
+    }
+
+    const payload = {
+      subTotal: cart.total,
+      items: cart.lines.map(l => ({ productId: l.productId, quantity: l.quantity, unitPrice: l.unitPrice })),
+      manualCouponCode: couponCode.trim() || undefined
+    };
+
+    evaluatePromotions.mutateAsync(payload)
+      .then(res => {
+        if (res.automaticDiscount && res.automaticDiscount.isValid) {
+          setAutoPromo(res.automaticDiscount);
+        } else {
+          setAutoPromo(null);
+        }
+        if (res.freeShippingThreshold) {
+          setFreeShippingThreshold(res.freeShippingThreshold);
+        }
+      })
+      .catch(() => {
+        // Fallback gracefully if evaluation endpoint is offline
+      });
+  }, [cart.total, cart.lines.length, couponCode]);
+
+  // Promotional discount resolution: manual coupon takes precedence if applied, else auto-promo
+  const effectiveDiscount = appliedCoupon?.isValid ? appliedCoupon : autoPromo;
+  const isAutoApplied = !appliedCoupon?.isValid && !!autoPromo?.isValid;
+  const discountAmount = effectiveDiscount?.isValid ? effectiveDiscount.discountAmount : 0;
+
   const amountAfterCoupon = Math.max(0, cart.total - discountAmount);
   const giftCardDeduction = appliedGiftCard?.isValid ? Math.min(amountAfterCoupon, appliedGiftCard.currentBalance) : 0;
   const remainingGiftCardBalance = appliedGiftCard?.isValid ? appliedGiftCard.currentBalance - giftCardDeduction : 0;
   const finalTotal = Math.max(0, amountAfterCoupon - giftCardDeduction);
+
+  const qualifiesForFreeShipping = cart.total >= freeShippingThreshold;
+  const amountNeededForFreeShipping = Math.max(0, freeShippingThreshold - cart.total);
+  const freeShippingPercent = Math.min(100, Math.round((cart.total / (freeShippingThreshold || 1)) * 100));
 
   const applyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -160,7 +201,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
     try {
       const order = await placeOrder.mutateAsync({
         items: cart.lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
-        couponCode: appliedCoupon?.code ?? undefined,
+        couponCode: effectiveDiscount?.code ?? undefined,
         giftCardCode: appliedGiftCard?.code ?? undefined,
         paymentMethod: finalTotal === 0 ? 'CashOnDelivery' : paymentMethod,
         idempotencyKey: idempotencyKey.current
@@ -286,6 +327,33 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
       )}
 
       {cart.lines.length > 0 && (
+        <div style={{ padding: '10px 14px', background: 'var(--surface-muted, rgba(255,255,255,0.04))', borderRadius: '8px', border: '1px solid var(--border)', margin: 'var(--space-2) 0' }}>
+          <div className="row-between" style={{ fontSize: 'var(--text-xs)', marginBottom: '6px' }}>
+            <span style={{ fontWeight: 650, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              {qualifiesForFreeShipping ? (
+                <span style={{ color: 'var(--ok, #10b981)' }}>🎉 {t("You've unlocked FREE Delivery!")}</span>
+              ) : (
+                <span>🚚 {t("Add")} <strong style={{ color: 'var(--accent, #6366f1)' }}>{formatMoney(amountNeededForFreeShipping, cart.currency)}</strong> {t("more for FREE Delivery!")}</span>
+              )}
+            </span>
+            <span style={{ color: 'var(--muted)', fontVariantNumeric: 'tabular-nums' }}>
+              {freeShippingPercent}%
+            </span>
+          </div>
+          <div style={{ height: '6px', background: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
+            <div
+              style={{
+                width: `${freeShippingPercent}%`,
+                height: '100%',
+                background: qualifiesForFreeShipping ? 'var(--ok, #10b981)' : 'linear-gradient(90deg, #6366f1, #10b981)',
+                transition: 'width 0.4s ease'
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {cart.lines.length > 0 && (
         <div className="cart-checkout-extras stack" style={{ gap: 'var(--space-3)', margin: 'var(--space-3) 0', padding: 'var(--space-3)', background: 'var(--surface-muted, rgba(255,255,255,0.05))', borderRadius: 'var(--radius-md, 8px)' }}>
           {/* Address selection */}
           <div className="cart-address-block">
@@ -313,9 +381,26 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
             )}
           </div>
 
-          {/* Coupon Code */}
+          {/* Coupon Code & Auto-Applied Promotions */}
           <div className="cart-coupon-block">
-            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>{t("Promotional coupon")}</span>
+            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>{t("Promotions & Discounts")}</span>
+
+            {/* Auto-applied promotion chip when active without typing code */}
+            {isAutoApplied && autoPromo && (
+              <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '6px', marginBottom: 'var(--space-2)' }}>
+                <div className="row-between">
+                  <span style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    ⚡ {t("Auto-Applied Promotion:")} {autoPromo.campaignTitle || autoPromo.code}
+                  </span>
+                  <strong style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)' }}>
+                    -{formatMoney(autoPromo.discountAmount, cart.currency)}
+                  </strong>
+                </div>
+                <span style={{ display: 'block', fontSize: '10px', color: 'var(--muted)', marginTop: '2px' }}>
+                  {t("No code needed. Automatically applied to your basket.")}
+                </span>
+              </div>
+            )}
             {appliedCoupon?.isValid ? (
               <div className="row-between" style={{ padding: '6px 10px', background: 'var(--surface-ok, rgba(16,185,129,0.1))', borderRadius: '6px', border: '1px solid var(--ok, #10b981)' }}>
                 <span style={{ color: 'var(--ok, #10b981)', fontWeight: 600, fontSize: 'var(--text-sm)' }}>
@@ -436,7 +521,10 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
       )}
       {discountAmount > 0 && (
         <div className="row-between" style={{ fontSize: 'var(--text-sm)', color: 'var(--ok, #10b981)', marginBottom: 'var(--space-2)' }}>
-          <span>{t("Discount")}</span>
+          <span>
+            {isAutoApplied ? `⚡ ${t("Auto-Discount")}` : t("Coupon Discount")}
+            {effectiveDiscount?.code ? ` (${effectiveDiscount.code})` : ''}
+          </span>
           <span>-{t(formatMoney(discountAmount, cart.currency))}</span>
         </div>
       )}

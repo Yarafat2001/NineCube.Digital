@@ -108,7 +108,8 @@ export let demoCoupons: Array<{
   { id: 1, code: 'SAVE10', discountType: 'Percentage', discountValue: 10, minOrderAmount: 0, maxDiscountCap: 1500, targetType: 'Order', expiresAt: null, usageLimit: null, usageCount: 2, isActive: true, isBannerPromoted: true, campaignTitle: '⚡ Welcome Deal: 10% OFF Storewide with code SAVE10', createdAt: '2026-10-15T08:00:00Z' },
   { id: 2, code: 'WELCOME50', discountType: 'FixedAmount', discountValue: 50, minOrderAmount: 0, targetType: 'Order', expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, isBannerPromoted: false, createdAt: '2026-10-15T08:00:00Z' },
   { id: 3, code: 'NINECUBE', discountType: 'FixedAmount', discountValue: 500, minOrderAmount: 2000, targetType: 'Order', expiresAt: null, usageLimit: null, usageCount: 1, isActive: true, isBannerPromoted: false, createdAt: '2026-10-15T08:00:00Z' },
-  { id: 4, code: 'EID2026', discountType: 'Percentage', discountValue: 15, minOrderAmount: 1000, maxDiscountCap: 2500, targetType: 'Category', targetId: 1, expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, isBannerPromoted: true, campaignTitle: '🌙 Eid Mega Festival: 15% OFF Footwear with code EID2026', createdAt: '2026-10-15T08:00:00Z' }
+  { id: 4, code: 'EID2026', discountType: 'Percentage', discountValue: 15, minOrderAmount: 1000, maxDiscountCap: 2500, targetType: 'Category', targetId: 1, expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, isBannerPromoted: true, campaignTitle: '🌙 Eid Mega Festival: 15% OFF Footwear with code EID2026', createdAt: '2026-10-15T08:00:00Z' },
+  { id: 5, code: 'AUTO2000', discountType: 'Percentage', discountValue: 10, minOrderAmount: 2000, maxDiscountCap: 2000, targetType: 'Order', isAutomatic: true, isActive: true, isBannerPromoted: true, campaignTitle: '⚡ Auto-Promo: 10% OFF on BDT 2,000+ orders', createdAt: '2026-10-15T08:00:00Z', usageLimit: null, usageCount: 0, expiresAt: null }
 ];
 
 export let demoGiftCards: Array<{
@@ -590,6 +591,57 @@ export const handlers = [
       reason: 'Invalid or expired coupon code.',
       discountAmount: 0,
       code: null
+    });
+  }),
+
+  http.post(`${API}/api/coupons/evaluate-cart`, async ({ request }) => {
+    const body = (await request.json()) as { subTotal: number; manualCouponCode?: string };
+    const subTotal = Number(body.subTotal || 0);
+    const freeShippingThreshold = 2500;
+    const qualifiesForFreeShipping = subTotal >= freeShippingThreshold;
+    const amountNeededForFreeShipping = qualifiesForFreeShipping ? 0 : Math.max(0, freeShippingThreshold - subTotal);
+
+    let autoDiscount = null;
+    if (subTotal >= 2000) {
+      autoDiscount = {
+        isValid: true,
+        reason: null,
+        discountAmount: Math.min(2000, Math.round(subTotal * 0.1)),
+        code: 'AUTO2000',
+        campaignTitle: '⚡ Auto-Promo: 10% OFF on BDT 2,000+ orders',
+        targetType: 'Order'
+      };
+    }
+
+    let manualDiscount = null;
+    if (body.manualCouponCode) {
+      const code = body.manualCouponCode.toUpperCase();
+      if (code === 'SAVE10') {
+        manualDiscount = { isValid: true, reason: null, discountAmount: Math.round(subTotal * 0.1), code: 'SAVE10' };
+      } else if (code === 'WELCOME50') {
+        manualDiscount = { isValid: true, reason: null, discountAmount: Math.min(subTotal, 50), code: 'WELCOME50' };
+      } else if (code === 'NINECUBE') {
+        if (subTotal >= 2000) {
+          manualDiscount = { isValid: true, reason: null, discountAmount: Math.min(subTotal, 500), code: 'NINECUBE' };
+        } else {
+          manualDiscount = { isValid: false, reason: 'Order total must be at least BDT 2,000 to use this coupon.', discountAmount: 0, code: null };
+        }
+      }
+    }
+
+    const effective = (manualDiscount?.isValid && manualDiscount.discountAmount >= (autoDiscount?.discountAmount || 0))
+      ? manualDiscount
+      : (autoDiscount || manualDiscount);
+
+    return HttpResponse.json({
+      automaticDiscount: autoDiscount,
+      manualDiscount: manualDiscount,
+      effectiveDiscount: effective?.isValid ? effective : null,
+      totalDiscountAmount: effective?.isValid ? effective.discountAmount : 0,
+      activeCampaignHeadline: autoDiscount?.campaignTitle || '⚡ Spring Deals: Free Shipping on BDT 2,500+',
+      freeShippingThreshold,
+      qualifiesForFreeShipping,
+      amountNeededForFreeShipping
     });
   }),
 
