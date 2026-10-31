@@ -11,6 +11,7 @@ public interface ICouponService
     Task<CartPromotionsEvaluationResult> EvaluateCartPromotionsAsync(EvaluateCartPromotionsRequest request, CancellationToken ct = default);
     Task<IReadOnlyList<CouponDto>> ListCouponsAsync(CancellationToken ct = default);
     Task<IReadOnlyList<CouponDto>> GetActiveCampaignBannersAsync(CancellationToken ct = default);
+    Task<IReadOnlyList<CouponDto>> GetAvailableCouponsAsync(CancellationToken ct = default);
     Task<CouponDto> CreateCouponAsync(CreateCouponRequest request, CancellationToken ct = default);
     Task<bool> ToggleCouponStatusAsync(int id, bool isActive, CancellationToken ct = default);
     Task ConsumeCouponAsync(string code, CancellationToken ct = default);
@@ -209,6 +210,32 @@ public sealed class CouponService : ICouponService
             .ToListAsync(ct);
 
         return coupons;
+    }
+
+    public async Task<IReadOnlyList<CouponDto>> GetAvailableCouponsAsync(CancellationToken ct = default)
+    {
+        var now = _clock.UtcNow;
+        return await _db.Coupons.AsNoTracking()
+            .Where(c => c.IsActive && (!c.ExpiresAt.HasValue || c.ExpiresAt.Value > now) && (!c.StartsAt.HasValue || c.StartsAt.Value <= now))
+            .OrderByDescending(c => c.CreatedAt)
+            .Select(c => new CouponDto(
+                c.Id,
+                c.Code,
+                c.DiscountType,
+                c.DiscountValue,
+                c.MinOrderAmount,
+                c.ExpiresAt,
+                c.UsageLimit,
+                c.UsageCount,
+                c.IsActive,
+                c.MaxDiscountCap,
+                c.TargetType,
+                c.TargetId,
+                c.StartsAt,
+                c.IsAutomatic,
+                c.CampaignTitle,
+                c.IsBannerPromoted))
+            .ToListAsync(ct);
     }
 
     public async Task<IReadOnlyList<CouponDto>> GetActiveCampaignBannersAsync(CancellationToken ct = default)

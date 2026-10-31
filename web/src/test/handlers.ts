@@ -646,6 +646,7 @@ export const handlers = [
   }),
 
   http.get(`${API}/api/coupons`, () => HttpResponse.json(demoCoupons)),
+  http.get(`${API}/api/coupons/available`, () => HttpResponse.json(demoCoupons.filter(c => c.isActive))),
   http.get(`${API}/api/coupons/campaigns`, () => HttpResponse.json(demoCoupons.filter(c => c.isActive && c.isBannerPromoted))),
 
   http.post(`${API}/api/coupons`, async ({ request }) => {

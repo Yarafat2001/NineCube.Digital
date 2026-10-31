@@ -623,6 +623,15 @@ export function useActiveCampaigns() {
   });
 }
 
+export function useAvailableCoupons() {
+  return useQuery({
+    queryKey: ['available-coupons'],
+    queryFn: () => apiRequest<Coupon[]>('/api/coupons/available'),
+    staleTime: 60_000,
+    retry: 1
+  });
+}
+
 export function useValidateCoupon() {
   return useMutation({
     mutationFn: (payload: {

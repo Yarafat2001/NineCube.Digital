@@ -32,6 +32,11 @@ public sealed class CouponEndpoints : IEndpoint
             .WithName("GetActiveCampaigns")
             .WithSummary("Retrieves active promotional campaigns and announcement banners.");
 
+        group.MapGet("/available", GetAvailableCouponsAsync)
+            .AllowAnonymous()
+            .WithName("GetAvailableCoupons")
+            .WithSummary("Retrieves all active promotional coupons available to shoppers.");
+
         group.MapGet("/", ListCouponsAsync)
             .RequireAuthorization(Policies.AdministratorOnly)
             .WithName("ListCoupons")
@@ -55,6 +60,14 @@ public sealed class CouponEndpoints : IEndpoint
     {
         var result = await couponService.EvaluateCartPromotionsAsync(request, ct);
         return TypedResults.Ok(result);
+    }
+
+    public static async Task<Results<Ok<IReadOnlyList<CouponDto>>, ProblemHttpResult>> GetAvailableCouponsAsync(
+        ICouponService couponService,
+        CancellationToken ct)
+    {
+        var coupons = await couponService.GetAvailableCouponsAsync(ct);
+        return TypedResults.Ok(coupons);
     }
 
     public static async Task<Results<Ok<IReadOnlyList<CouponDto>>, ProblemHttpResult>> GetActiveCampaignsAsync(

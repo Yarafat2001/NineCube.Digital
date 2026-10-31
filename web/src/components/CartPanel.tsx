@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ApiError, apiRequest } from '../api/client';
-import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useEvaluateCartPromotions, useProcessPayment, useProfile } from '../api/hooks';
+import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useEvaluateCartPromotions, useAvailableCoupons, useProcessPayment, useProfile } from '../api/hooks';
 import type { Order, Product, ShortItem, CouponValidationResult, ValidateGiftCardResult, PaymentMethod } from '../api/types';
 import { Link } from 'react-router-dom';
 import { createIdempotencyKey, formatMoney } from '../lib/helpers';
@@ -45,6 +45,24 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
   const processPayment = useProcessPayment();
 
   const [autoPromo, setAutoPromo] = useState<CouponValidationResult | null>(null);
+  const [showCouponsDrawer, setShowCouponsDrawer] = useState<boolean>(false);
+  const availableCouponsQuery = useAvailableCoupons();
+
+  const defaultCoupons: { code: string; title: string; discountText: string; minOrder: number; type: 'percent' | 'fixed' }[] = [
+    { code: 'SAVE10', title: '10% OFF Storewide', discountText: '10% OFF', minOrder: 0, type: 'percent' },
+    { code: 'NINECUBE', title: 'BDT 500 OFF Big Basket', discountText: 'BDT 500 OFF', minOrder: 2000, type: 'fixed' },
+    { code: 'WELCOME50', title: 'BDT 50 Welcome Discount', discountText: 'BDT 50 OFF', minOrder: 0, type: 'fixed' }
+  ];
+
+  const availableCoupons = (availableCouponsQuery.data && availableCouponsQuery.data.length > 0)
+    ? availableCouponsQuery.data.map(c => ({
+        code: c.code,
+        title: c.campaignTitle || (c.discountType === 'Percentage' ? `${c.discountValue}% OFF` : `BDT ${c.discountValue} OFF`),
+        discountText: c.discountType === 'Percentage' ? `${c.discountValue}% OFF` : `BDT ${c.discountValue} OFF`,
+        minOrder: c.minOrderAmount,
+        type: c.discountType === 'Percentage' ? ('percent' as const) : ('fixed' as const)
+      }))
+    : defaultCoupons;
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(2500);
 
   const [couponCode, setCouponCode] = useState('');
@@ -108,11 +126,13 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
   const amountNeededForFreeShipping = Math.max(0, freeShippingThreshold - cart.total);
   const freeShippingPercent = Math.min(100, Math.round((cart.total / (freeShippingThreshold || 1)) * 100));
 
-  const applyCoupon = async () => {
-    if (!couponCode.trim()) return;
+  const applyCoupon = async (override?: string) => {
+    const code = (override ?? couponCode).trim().toUpperCase();
+    if (!code) return;
+    setCouponCode(code);
     setCouponError(null);
     try {
-      const res = await validateCoupon.mutateAsync({ code: couponCode.trim(), subTotal: cart.total });
+      const res = await validateCoupon.mutateAsync({ code, subTotal: cart.total });
       if (res.isValid) {
         setAppliedCoupon(res);
         toast.push('success', `Coupon ${res.code} applied: save ${formatMoney(res.discountAmount, cart.currency)}!`);
@@ -132,11 +152,13 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
     setCouponError(null);
   };
 
-  const applyGiftCard = async () => {
-    if (!giftCardCode.trim()) return;
+  const applyGiftCard = async (override?: string) => {
+    const code = (override ?? giftCardCode).trim().toUpperCase();
+    if (!code) return;
+    setGiftCardCode(code);
     setGiftCardError(null);
     try {
-      const res = await validateGiftCard.mutateAsync(giftCardCode.trim());
+      const res = await validateGiftCard.mutateAsync(code);
       if (res.isValid) {
         setAppliedGiftCard(res);
         toast.push('success', `Gift card applied: BDT ${res.currentBalance.toLocaleString()} available.`);
@@ -387,26 +409,31 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
 
             {/* Auto-applied promotion chip when active without typing code */}
             {isAutoApplied && autoPromo && (
-              <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '6px', marginBottom: 'var(--space-2)' }}>
+              <div style={{ padding: '8px 12px', background: 'var(--warn-bg, rgba(245, 158, 11, 0.12))', border: '1px solid var(--warn-border, rgba(245, 158, 11, 0.4))', borderRadius: '6px', marginBottom: 'var(--space-2)' }}>
                 <div className="row-between">
-                  <span style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--warn-text, #f59e0b)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     ⚡ {t("Auto-Applied Promotion:")} {autoPromo.campaignTitle || autoPromo.code}
                   </span>
                   <strong style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)' }}>
                     -{formatMoney(autoPromo.discountAmount, cart.currency)}
                   </strong>
                 </div>
-                <span style={{ display: 'block', fontSize: '10px', color: 'var(--muted)', marginTop: '2px' }}>
+                <span style={{ display: 'block', fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
                   {t("No code needed. Automatically applied to your basket.")}
                 </span>
               </div>
             )}
             {appliedCoupon?.isValid ? (
-              <div className="row-between" style={{ padding: '6px 10px', background: 'var(--surface-ok, rgba(16,185,129,0.1))', borderRadius: '6px', border: '1px solid var(--ok, #10b981)' }}>
-                <span style={{ color: 'var(--ok, #10b981)', fontWeight: 600, fontSize: 'var(--text-sm)' }}>
-                  ✓ {appliedCoupon.code} (-{formatMoney(appliedCoupon.discountAmount, cart.currency)})
-                </span>
-                <button type="button" className="link-button" onClick={removeCoupon} style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)' }}>
+              <div className="row-between" style={{ padding: '8px 12px', background: 'var(--surface-ok, rgba(16,185,129,0.1))', borderRadius: '6px', border: '1px solid var(--ok, #10b981)' }}>
+                <div>
+                  <span style={{ color: 'var(--ok, #10b981)', fontWeight: 700, fontSize: 'var(--text-sm)', display: 'block' }}>
+                    ✓ {appliedCoupon.code} (-{formatMoney(appliedCoupon.discountAmount, cart.currency)})
+                  </span>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    {t("Coupon applied to this basket")}
+                  </span>
+                </div>
+                <button type="button" className="link-button" onClick={removeCoupon} style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
                   {t("Remove")}
                 </button>
               </div>
@@ -414,16 +441,17 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
               <div className="row" style={{ gap: 'var(--space-2)' }}>
                 <input
                   type="text"
+                  className="cart-input"
                   placeholder={t("Enter coupon code")}
                   value={couponCode}
                   onChange={e => setCouponCode(e.target.value.toUpperCase())}
                   aria-label={t("Coupon code")}
-                  style={{ flex: 1, padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--border)', textTransform: 'uppercase' }}
+                  style={{ textTransform: 'uppercase' }}
                 />
                 <button
                   type="button"
                   className="btn btn--sm"
-                  onClick={applyCoupon}
+                  onClick={() => applyCoupon()}
                   disabled={validateCoupon.isPending || !couponCode.trim()}
                 >
                   {t(validateCoupon.isPending ? 'Checking…' : 'Apply')}
@@ -431,44 +459,125 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
               </div>
             )}
             {couponError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: '4px 0 0 0' }}>{t(couponError)}</p>}
+
+            {/* Interactive Available Coupons & Offers Accordion */}
+            <div className="cart-coupons-container">
+              <button
+                type="button"
+                className="cart-toggle-coupons-btn"
+                onClick={() => setShowCouponsDrawer(!showCouponsDrawer)}
+                aria-expanded={showCouponsDrawer}
+              >
+                <span>🏷️ {t("Available Coupons & Offers")} ({availableCoupons.length})</span>
+                <span>{showCouponsDrawer ? '▲ ' + t("Hide Available Coupons") : '▼ ' + t("View Available Coupons")}</span>
+              </button>
+
+              {showCouponsDrawer && (
+                <div className="cart-coupon-list">
+                  {availableCoupons.map((c) => {
+                    const isEligible = cart.total >= c.minOrder;
+                    const shortfall = Math.max(0, c.minOrder - cart.total);
+                    const isCurrentlyApplied = appliedCoupon?.isValid && appliedCoupon.code === c.code;
+
+                    return (
+                      <div key={c.code} className={`cart-coupon-card ${isCurrentlyApplied ? 'cart-coupon-card--active' : ''}`}>
+                        <div className="cart-coupon-info">
+                          <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
+                            <span className="cart-coupon-badge">{c.code}</span>
+                            <span className="cart-coupon-title">{c.title}</span>
+                          </div>
+                          <span className="cart-coupon-desc">
+                            {c.minOrder > 0
+                              ? `${t("Min order")}: ${formatMoney(c.minOrder, cart.currency)}`
+                              : t("Storewide")}
+                            {shortfall > 0
+                              ? ` · ${t("Add")} ${formatMoney(shortfall, cart.currency)} ${t("more")}`
+                              : ` · ${t("Eligible")}`}
+                          </span>
+                        </div>
+
+                        <div>
+                          {isCurrentlyApplied ? (
+                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)', fontWeight: 700 }}>
+                              ✓ {t("Applied")}
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              className="btn btn--sm"
+                              disabled={!isEligible || validateCoupon.isPending}
+                              onClick={() => applyCoupon(c.code)}
+                              style={{ padding: '4px 10px', fontSize: '11px' }}
+                            >
+                              {t("Apply")}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Gift Card Code */}
           <div className="cart-giftcard-block">
             <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>🎁 {t("Gift card")}</span>
             {appliedGiftCard?.isValid ? (
-              <div className="stack" style={{ gap: '4px', padding: '8px 10px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '6px', border: '1px solid rgba(99, 102, 241, 0.4)' }}>
+              <div className="stack" style={{ gap: '4px', padding: '8px 12px', background: 'var(--surface-raised, rgba(99, 102, 241, 0.1))', borderRadius: '6px', border: '1px solid var(--accent, #6366f1)' }}>
                 <div className="row-between">
-                  <span style={{ color: 'var(--accent, #a78bfa)', fontWeight: 700, fontSize: 'var(--text-sm)', fontFamily: 'monospace' }}>
+                  <span style={{ color: 'var(--accent-text, var(--accent))', fontWeight: 700, fontSize: 'var(--text-sm)', fontFamily: 'monospace' }}>
                     🎁 {appliedGiftCard.code}
                   </span>
-                  <button type="button" className="link-button" onClick={removeGiftCard} style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)' }}>
+                  <button type="button" className="link-button" onClick={removeGiftCard} style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
                     {t("Remove")}
                   </button>
                 </div>
-                <div className="row-between" style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)' }}>
+                <div className="row-between" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
                   <span>{t("Applied to order:")} -{formatMoney(giftCardDeduction, cart.currency)}</span>
                   <span>{t("Remaining balance:")} {formatMoney(remainingGiftCardBalance, cart.currency)}</span>
                 </div>
               </div>
             ) : (
-              <div className="row" style={{ gap: 'var(--space-2)' }}>
-                <input
-                  type="text"
-                  placeholder={t("Enter gift card code (e.g. GC-...)")}
-                  value={giftCardCode}
-                  onChange={e => setGiftCardCode(e.target.value.toUpperCase())}
-                  aria-label={t("Gift card code")}
-                  style={{ flex: 1, padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--border)', textTransform: 'uppercase', fontFamily: 'monospace' }}
-                />
-                <button
-                  type="button"
-                  className="btn btn--sm"
-                  onClick={applyGiftCard}
-                  disabled={validateGiftCard.isPending || !giftCardCode.trim()}
-                >
-                  {t(validateGiftCard.isPending ? 'Checking…' : 'Apply')}
-                </button>
+              <div>
+                <div className="row" style={{ gap: 'var(--space-2)' }}>
+                  <input
+                    type="text"
+                    className="cart-input"
+                    placeholder={t("Enter gift card code (e.g. GC-...)")}
+                    value={giftCardCode}
+                    onChange={e => setGiftCardCode(e.target.value.toUpperCase())}
+                    aria-label={t("Gift card code")}
+                    style={{ textTransform: 'uppercase', fontFamily: 'monospace' }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn--sm"
+                    onClick={() => applyGiftCard(giftCardCode)}
+                    disabled={validateGiftCard.isPending || !giftCardCode.trim()}
+                  >
+                    {t(validateGiftCard.isPending ? 'Checking…' : 'Apply')}
+                  </button>
+                </div>
+
+                {/* Quick Test Demo Chips for Gift Cards */}
+                <div className="cart-quick-chips">
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t("Try test gift card:")}</span>
+                  {['GC-WELCOME-1000', 'GC-EID2026-2500', 'GC-VIP-5000'].map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      className="cart-quick-chip"
+                      onClick={() => applyGiftCard(code)}
+                    >
+                      {code}
+                    </button>
+                  ))}
+                  <Link to="/gift-cards" className="link-button" style={{ fontSize: '11px', marginLeft: 'auto' }}>
+                    {t("Gift Cards Hub")} →
+                  </Link>
+                </div>
               </div>
             )}
             {giftCardError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: '4px 0 0 0' }}>{t(giftCardError)}</p>}
@@ -513,37 +622,67 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
         </div>
       )}
 
-      {discountAmount > 0 && (
-        <div className="row-between" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted)', marginBottom: 'var(--space-1)' }}>
-          <span>{t("Subtotal")}</span>
-          <span>{t(formatMoney(cart.total, cart.currency))}</span>
-        </div>
-      )}
-      {discountAmount > 0 && (
-        <div className="row-between" style={{ fontSize: 'var(--text-sm)', color: 'var(--ok, #10b981)', marginBottom: 'var(--space-2)' }}>
-          <span>
-            {isAutoApplied ? `⚡ ${t("Auto-Discount")}` : t("Coupon Discount")}
-            {effectiveDiscount?.code ? ` (${effectiveDiscount.code})` : ''}
-          </span>
-          <span>-{t(formatMoney(discountAmount, cart.currency))}</span>
-        </div>
-      )}
-      {giftCardDeduction > 0 && (
-        <div className="row-between" style={{ fontSize: 'var(--text-sm)', color: 'var(--accent, #a78bfa)', marginBottom: 'var(--space-2)' }}>
-          <span>{t("Gift Card Applied")}</span>
-          <span>-{t(formatMoney(giftCardDeduction, cart.currency))}</span>
-        </div>
-      )}
-      {finalTotal === 0 && giftCardDeduction > 0 && (
-        <div style={{ padding: '6px 10px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--ok, #10b981)', borderRadius: '6px', fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)', marginBottom: 'var(--space-2)' }}>
-          ✓ {t("Your entire order is covered by this Gift Card!")}
+      {cart.lines.length > 0 && (
+        <div className="cart-summary-box">
+          <div className="row-between" style={{ marginBottom: '8px' }}>
+            <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>{t("Order Summary")}</span>
+            {qualifiesForFreeShipping && (
+              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)', fontWeight: 600 }}>
+                ✓ {t("Free Delivery")}
+              </span>
+            )}
+          </div>
+
+          <div className="cart-summary-row">
+            <span>{t("Subtotal")}</span>
+            <span>{t(formatMoney(cart.total, cart.currency))}</span>
+          </div>
+
+          <div className="cart-summary-row">
+            <span>{t("Delivery Fee")}</span>
+            <span style={{ color: qualifiesForFreeShipping ? 'var(--ok, #10b981)' : undefined, fontWeight: qualifiesForFreeShipping ? 600 : undefined }}>
+              {qualifiesForFreeShipping ? t("Free Delivery") : t(formatMoney(60, cart.currency))}
+            </span>
+          </div>
+
+          {discountAmount > 0 && (
+            <div className="cart-summary-row cart-summary-row--highlight">
+              <span>
+                {isAutoApplied ? `⚡ ${t("Auto-Discount")}` : t("Coupon Discount")}
+                {effectiveDiscount?.code ? ` (${effectiveDiscount.code})` : ''}
+              </span>
+              <span>-{t(formatMoney(discountAmount, cart.currency))}</span>
+            </div>
+          )}
+
+          {giftCardDeduction > 0 && (
+            <div className="cart-summary-row cart-summary-row--accent">
+              <span>{t("Gift Card Applied")}</span>
+              <span>-{t(formatMoney(giftCardDeduction, cart.currency))}</span>
+            </div>
+          )}
+
+          <div className="cart-summary-row cart-summary-row--total">
+            <span>{t("Total")}</span>
+            <strong data-testid="cart-total" style={{ fontSize: 'var(--text-lg)', color: 'var(--text)' }}>
+              {t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}
+            </strong>
+          </div>
+
+          {finalTotal === 0 && giftCardDeduction > 0 && (
+            <div style={{ marginTop: '8px', padding: '6px 10px', background: 'var(--surface-ok, rgba(16, 185, 129, 0.1))', border: '1px solid var(--ok, #10b981)', borderRadius: '6px', fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)' }}>
+              ✓ {t("Your entire order is covered by this Gift Card!")}
+            </div>
+          )}
         </div>
       )}
 
-      <div className="cart-total">
-        <span>{t("Total")}</span>
-        <strong data-testid="cart-total">{t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}</strong>
-      </div>
+      {cart.lines.length === 0 ? (
+        <div className="cart-total">
+          <span>{t("Total")}</span>
+          <strong data-testid="cart-total">{t(formatMoney(0, cart.currency))}</strong>
+        </div>
+      ) : null}
 
       {shortItems.length > 0 ? (
         <div role="alert" data-testid="short-items" className="inline-banner">
