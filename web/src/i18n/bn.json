@@ -1561,5 +1561,11 @@
   "10% Storewide Deal": "১০% স্টোরব্যাপী ডিল",
   "Only Code & Discount are required — all other metadata below is optional.": "শুধুমাত্র কোড এবং ছাড়ের হার আবশ্যক — নিচের অন্যান্য সব মেটাডাটা ঐচ্ছিক।",
   "Generate Code": "কোড তৈরি করুন",
-  "Required": "আবশ্যক"
+  "Required": "আবশ্যক",
+  "Generate": "তৈরি করুন",
+  "Action:": "পদক্ষেপ:",
+  "Primary category:": "প্রধান বিভাগ:",
+  "Tags:": "ট্যাগ:",
+  "Brand:": "ব্র্যান্ড:",
+  "Series:": "সিরিজ:"
 }

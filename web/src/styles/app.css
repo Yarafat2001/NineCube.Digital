@@ -1598,29 +1598,136 @@ tr[data-low-stock='true'] {
 .filter-drawer__actions { position: sticky; bottom: 0; display: flex; gap: 10px; padding-top: 12px; background: var(--surface); }
 .filter-chips, .product-category-chips, .category-breadcrumb { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .filter-chips { margin-block: 12px; }
-/* Staff bulk-action bar: fixed to the bottom, only while rows are selected. */
+/* Staff bulk-action dock: fixed to bottom, only while rows are selected. */
 .bulkbar {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   z-index: var(--z-bulkbar);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--space-3);
   flex-wrap: wrap;
-  max-width: min(94vw, 720px);
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface-glass);
+  max-width: min(96vw, 880px);
+  padding: 10px 18px;
+  background: var(--surface-overlay, var(--surface));
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-radius: var(--radius-lg, 14px);
+  box-shadow: 0 16px 42px -6px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--border);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  animation: bulkbar-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.bulkbar__count { font-weight: 700; white-space: nowrap; }
+.bulkbar:hover {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 22px 52px -6px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--accent);
+}
+.bulkbar__badge-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.bulkbar__count {
+  font-weight: 700;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  background: var(--selected-bg, rgba(245, 158, 11, 0.15));
+  color: var(--accent-text, var(--accent));
+  border: 1px solid var(--selected-bar, var(--accent));
+  padding: 6px 12px;
+  border-radius: var(--radius-md, 8px);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.bulkbar__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+}
+.bulkbar__field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.bulkbar__label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin: 0;
+}
+.bulkbar__select,
+.bulkbar__input {
+  min-height: 36px;
+  max-width: 260px;
+  padding: 4px 10px;
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md, 8px);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  color: var(--text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.bulkbar__select:hover,
+.bulkbar__input:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+.bulkbar__select:focus,
+.bulkbar__input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--selected-bg);
+  outline: none;
+}
+.bulkbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.bulkbar__actions .btn {
+  min-height: 36px;
+  padding: 0 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.bulkbar__error {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  font-size: var(--text-xs);
+}
+@keyframes bulkbar-pop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .bulkbar { transform: translateX(-50%); }
+  .bulkbar {
+    animation: none !important;
+    transition: none !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+/* Selected row highlight across all table surfaces */
+tbody tr[data-selected='true'] {
+  background: var(--selected-bg) !important;
+  box-shadow: inset 3px 0 0 var(--selected-bar);
+  transition: background-color 0.15s ease;
 }
 
 /* Mobile bottom bar: Filters (N), sort, cart total in BDT, Checkout. */

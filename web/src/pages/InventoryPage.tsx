@@ -151,59 +151,109 @@ function BulkBar(props: {
 
   return (
     <div className="bulkbar" data-testid="product-bulk-bar" role="toolbar" aria-label={t("Bulk edit selected products")}>
-      <span className="bulkbar__count" role="status" aria-live="polite" data-testid="bulkbar-count">
-        {t(count)} {t(" selected")}</span>
-      <div className="field">
-        <label htmlFor="bulk-action">{t("Action")}</label>
-        <select id="bulk-action" value={props.action}
-          onChange={event => props.setAction(event.target.value as BulkProductAction)}>
-          {BULK_ACTIONS.map(entry => <option key={entry.value} value={entry.value}>{t(entry.label)}</option>)}
-        </select>
+      <div className="bulkbar__badge-wrap">
+        <span className="bulkbar__count" role="status" aria-live="polite" data-testid="bulkbar-count">
+          {t(count)} {t(" selected")}
+        </span>
       </div>
-      {props.needs === 'category' ? (
-        <div className="field">
-          <label htmlFor="bulk-category">{t("Primary category")}</label>
-          <select id="bulk-category" value={props.categoryId} onChange={event => props.setCategoryId(event.target.value)}>
-            <option value="">{t("Choose a category")}</option>
-            {props.categoryOptions.map(option => <option key={option.id} value={option.id}>{t(option.label)}</option>)}
+
+      <div className="bulkbar__controls">
+        <div className="bulkbar__field">
+          <label htmlFor="bulk-action" className="bulkbar__label">{t("Action")}</label>
+          <select
+            id="bulk-action"
+            className="bulkbar__select"
+            value={props.action}
+            onChange={event => props.setAction(event.target.value as BulkProductAction)}
+          >
+            {BULK_ACTIONS.map(entry => <option key={entry.value} value={entry.value}>{t(entry.label)}</option>)}
           </select>
         </div>
-      ) : null}
-      {props.needs === 'tags' ? (
-        <div className="field">
-          <label htmlFor="bulk-tags">{t("Tags")}</label>
-          <input id="bulk-tags" value={props.tagText} list="bulk-tag-options" placeholder={t("Featured, Offer")}
-            autoComplete="off" onChange={event => props.setTagText(event.target.value)} />
-          <datalist id="bulk-tag-options" data-testid="bulk-tag-options">
-            {props.tagOptions.map(tag => <option key={tag.id} value={tag.name} />)}
-          </datalist>
-        </div>
-      ) : null}
-      {props.needs === 'brand' ? (
-        <>
-          <div className="field">
-            <label htmlFor="bulk-brand">{t("Brand")}</label>
-            <select id="bulk-brand" value={props.brandIdText}
-              onChange={event => { props.setBrandIdText(event.target.value); props.setLineIdText(''); }}>
-              <option value="">{t("Choose a brand")}</option>
-              {props.brands.map(brand => <option key={brand.id} value={brand.id}>{t(brand.name)}</option>)}
+
+        {props.needs === 'category' ? (
+          <div className="bulkbar__field">
+            <label htmlFor="bulk-category" className="bulkbar__label">{t("Primary category")}</label>
+            <select
+              id="bulk-category"
+              className="bulkbar__select"
+              value={props.categoryId}
+              onChange={event => props.setCategoryId(event.target.value)}
+            >
+              <option value="">{t("Choose a category")}</option>
+              {props.categoryOptions.map(option => <option key={option.id} value={option.id}>{t(option.label)}</option>)}
             </select>
           </div>
-          <div className="field">
-            <label htmlFor="bulk-line">{t("Series")}</label>
-            <select id="bulk-line" value={props.lineIdText} disabled={!props.selectedBrand}
-              onChange={event => props.setLineIdText(event.target.value)}>
-              <option value="">{t("No series")}</option>
-              {props.lines.map(line => <option key={line.id} value={line.id}>{t(line.name)}</option>)}
-            </select>
+        ) : null}
+
+        {props.needs === 'tags' ? (
+          <div className="bulkbar__field">
+            <label htmlFor="bulk-tags" className="bulkbar__label">{t("Tags")}</label>
+            <input
+              id="bulk-tags"
+              className="bulkbar__input"
+              value={props.tagText}
+              list="bulk-tag-options"
+              placeholder={t("Featured, Offer")}
+              autoComplete="off"
+              onChange={event => props.setTagText(event.target.value)}
+            />
+            <datalist id="bulk-tag-options" data-testid="bulk-tag-options">
+              {props.tagOptions.map(tag => <option key={tag.id} value={tag.name} />)}
+            </datalist>
           </div>
-        </>
-      ) : null}
-      <button type="button" className="btn btn--primary" disabled={props.pending} onClick={props.onReview}>
-        {t("Review changes")}</button>
-      <button type="button" className="btn btn--ghost" onClick={props.onClear}>
-        {t("Clear")}</button>
-      {props.bulkError ? <p className="filter-error" role="alert">{t(props.bulkError)}</p> : null}
+        ) : null}
+
+        {props.needs === 'brand' ? (
+          <>
+            <div className="bulkbar__field">
+              <label htmlFor="bulk-brand" className="bulkbar__label">{t("Brand")}</label>
+              <select
+                id="bulk-brand"
+                className="bulkbar__select"
+                value={props.brandIdText}
+                onChange={event => { props.setBrandIdText(event.target.value); props.setLineIdText(''); }}
+              >
+                <option value="">{t("Choose a brand")}</option>
+                {props.brands.map(brand => <option key={brand.id} value={brand.id}>{t(brand.name)}</option>)}
+              </select>
+            </div>
+            <div className="bulkbar__field">
+              <label htmlFor="bulk-line" className="bulkbar__label">{t("Series")}</label>
+              <select
+                id="bulk-line"
+                className="bulkbar__select"
+                value={props.lineIdText}
+                disabled={!props.selectedBrand}
+                onChange={event => props.setLineIdText(event.target.value)}
+              >
+                <option value="">{t("No series")}</option>
+                {props.lines.map(line => <option key={line.id} value={line.id}>{t(line.name)}</option>)}
+              </select>
+            </div>
+          </>
+        ) : null}
+      </div>
+
+      <div className="bulkbar__actions">
+        <button
+          type="button"
+          className="btn btn--primary"
+          disabled={props.pending}
+          onClick={props.onReview}
+          data-testid="bulk-review-btn"
+        >
+          {t("Review changes")}
+        </button>
+        <button
+          type="button"
+          className="btn btn--ghost"
+          onClick={props.onClear}
+        >
+          {t("Clear")}
+        </button>
+      </div>
+
+      {props.bulkError ? <p className="filter-error bulkbar__error" role="alert">{t(props.bulkError)}</p> : null}
     </div>
   );
 }
@@ -515,7 +565,11 @@ export function InventoryPage() {
               </thead>
               <tbody>
                 {productsQuery.data.items.map((product) => (
-                  <tr key={product.id} data-low-stock={product.isActive && product.stockQuantity <= threshold}>
+                  <tr
+                    key={product.id}
+                    data-selected={checked.includes(product.id)}
+                    data-low-stock={product.isActive && product.stockQuantity <= threshold}
+                  >
                     <td className="check">
                       <input type="checkbox" aria-label={t(`Select ${product.sku}`)} checked={checked.includes(product.id)}
                         onChange={event => toggleRow(product.id, event.target.checked)} />

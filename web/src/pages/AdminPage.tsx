@@ -617,28 +617,30 @@ export function AdminPage() {
           </div>
           <form className="card-glass grid-form" onSubmit={submitCoupon}>
             <div className="field">
-              <div className="row-between">
-                <label htmlFor="coupon-code">
-                  {t("Coupon code")} <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
-                </label>
+              <label htmlFor="coupon-code">
+                {t("Coupon code")}{' '}
+                <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
+              </label>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <input
+                  id="coupon-code"
+                  type="text"
+                  required
+                  placeholder={t("e.g. SUMMER25")}
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  style={{ textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px', flex: 1 }}
+                />
                 <button
                   type="button"
-                  className="link-button"
-                  style={{ fontSize: 'var(--text-xs)' }}
+                  className="btn btn--outline btn--sm"
+                  style={{ whiteSpace: 'nowrap', padding: '0 10px', height: 'auto', display: 'flex', alignItems: 'center', gap: '4px' }}
                   onClick={generateNewCouponCode}
+                  title={t("Generate Code")}
                 >
-                  ⚡ {t("Generate Code")}
+                  ⚡ {t("Generate")}
                 </button>
               </div>
-              <input
-                id="coupon-code"
-                type="text"
-                required
-                placeholder={t("e.g. SUMMER25")}
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                style={{ textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px' }}
-              />
             </div>
 
             <div className="field">
