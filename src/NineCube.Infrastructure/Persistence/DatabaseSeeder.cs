@@ -37,6 +37,7 @@ public static class DatabaseSeeder
 
         await SeedSettingsAsync(db, configuration, ct);
         await SeedProductsAsync(db, ct);
+        await SeedCouponsAsync(db, ct);
         await ProductionCatalogImporter.ImportAsync(db, logger, ct);
 
         // The brand/series facet is derived from rows that already exist (see BrandCatalogImporter), so it
@@ -67,6 +68,43 @@ public static class DatabaseSeeder
         // variables so the system is never locked out when no admin exists. Idempotent —
         // an existing admin is never overwritten. The password is never committed.
         await SeedProductionAdminAsync(db, hasher, logger, ct);
+    }
+
+    private static async Task SeedCouponsAsync(AppDbContext db, CancellationToken ct)
+    {
+        if (await db.Coupons.AnyAsync(ct)) return;
+
+        db.Coupons.AddRange(
+            new Coupon
+            {
+                Code = "SAVE10",
+                DiscountType = DiscountType.Percentage,
+                DiscountValue = 10,
+                MinOrderAmount = 0,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new Coupon
+            {
+                Code = "WELCOME50",
+                DiscountType = DiscountType.FixedAmount,
+                DiscountValue = 50,
+                MinOrderAmount = 0,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            },
+            new Coupon
+            {
+                Code = "NINECUBE",
+                DiscountType = DiscountType.FixedAmount,
+                DiscountValue = 500,
+                MinOrderAmount = 2000,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            }
+        );
+
+        await db.SaveChangesAsync(ct);
     }
 
     private static async Task SeedSettingsAsync(AppDbContext db, IConfiguration configuration, CancellationToken ct)

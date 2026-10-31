@@ -478,6 +478,30 @@ export const handlers = [
         code: 'SAVE10'
       });
     }
+    if (body.code.toUpperCase() === 'WELCOME50') {
+      return HttpResponse.json({
+        isValid: true,
+        reason: null,
+        discountAmount: Math.min(body.subTotal, 50),
+        code: 'WELCOME50'
+      });
+    }
+    if (body.code.toUpperCase() === 'NINECUBE') {
+      if (body.subTotal < 2000) {
+        return HttpResponse.json({
+          isValid: false,
+          reason: 'Order total must be at least BDT 2,000 to use this coupon.',
+          discountAmount: 0,
+          code: null
+        });
+      }
+      return HttpResponse.json({
+        isValid: true,
+        reason: null,
+        discountAmount: Math.min(body.subTotal, 500),
+        code: 'NINECUBE'
+      });
+    }
     return HttpResponse.json({
       isValid: false,
       reason: 'Invalid or expired coupon code.',
