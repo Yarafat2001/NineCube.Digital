@@ -592,7 +592,7 @@ export function useForgotPassword() {
     mutationFn: (email: string) =>
       apiRequest<ForgotPasswordResponse>('/api/auth/forgot-password', {
         method: 'POST',
-        body: JSON.stringify({ email })
+        body: { email }
       })
   });
 }
@@ -602,7 +602,7 @@ export function useResetPassword() {
     mutationFn: (payload: { email: string; token: string; newPassword: string }) =>
       apiRequest<{ success: boolean; message: string }>('/api/auth/reset-password', {
         method: 'POST',
-        body: JSON.stringify(payload)
+        body: payload
       })
   });
 }
@@ -612,7 +612,7 @@ export function useValidateCoupon() {
     mutationFn: (payload: { code: string; subTotal: number }) =>
       apiRequest<CouponValidationResult>('/api/coupons/validate', {
         method: 'POST',
-        body: JSON.stringify(payload)
+        body: payload
       })
   });
 }
@@ -636,7 +636,7 @@ export function useCreateCoupon() {
       minOrderAmount: number;
       expiresAt?: string | null;
       usageLimit?: number | null;
-    }) => request<Coupon>('/api/coupons', { method: 'POST', body: JSON.stringify(payload) }),
+    }) => request<Coupon>('/api/coupons', { method: 'POST', body: payload }),
     onSuccess: () => invalidate([queryKeys.coupons])
   });
 }
@@ -646,7 +646,7 @@ export function useProcessPayment() {
   const invalidate = useInvalidate();
   return useMutation({
     mutationFn: (payload: { orderId: number; provider: PaymentMethod }) =>
-      request<PaymentTransaction>('/api/payments/process', { method: 'POST', body: JSON.stringify(payload) }),
+      request<PaymentTransaction>('/api/payments/process', { method: 'POST', body: payload }),
     onSuccess: (_, vars) => invalidate([queryKeys.order(vars.orderId), queryKeys.orderPayments(vars.orderId)])
   });
 }
@@ -673,7 +673,7 @@ export function useAddReview(productId: number) {
   const invalidate = useInvalidate();
   return useMutation({
     mutationFn: (payload: { rating: number; comment?: string }) =>
-      request<ProductReview>(`/api/reviews/products/${productId}`, { method: 'POST', body: JSON.stringify(payload) }),
+      request<ProductReview>(`/api/reviews/products/${productId}`, { method: 'POST', body: payload }),
     onSuccess: () => invalidate([queryKeys.reviews(productId)])
   });
 }

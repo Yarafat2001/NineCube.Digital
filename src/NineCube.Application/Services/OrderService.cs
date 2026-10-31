@@ -530,6 +530,14 @@ public sealed class OrderService : IOrderService
                 o.CreatedAt,
                 o.UpdatedAt,
                 o.IdempotencyKey,
+                o.SubTotal,
+                o.DiscountAmount,
+                o.CouponCode,
+                o.ShippingAmount,
+                o.PaymentStatus,
+                o.PaymentMethod,
+                o.TrackingNumber,
+                o.Carrier,
                 Items = o.Items.Select(i => new
                 {
                     i.Id,
@@ -545,8 +553,24 @@ public sealed class OrderService : IOrderService
             .ToListAsync(ct);
 
         var dtos = items.Select(o => new OrderDto(
-            o.Id, o.CustomerId, o.CustomerName, o.Status, o.TotalAmount, o.CreatedAt, o.UpdatedAt, o.IdempotencyKey,
-            o.Items.Select(i => new OrderItemDto(i.Id, i.ProductId, i.Sku, i.Name, i.Quantity, i.UnitPrice, i.LineTotal, i.PrimaryCategoryName)).ToList(), o.Currency))
+            o.Id,
+            o.CustomerId,
+            o.CustomerName,
+            o.Status,
+            o.TotalAmount,
+            o.CreatedAt,
+            o.UpdatedAt,
+            o.IdempotencyKey,
+            o.Items.Select(i => new OrderItemDto(i.Id, i.ProductId, i.Sku, i.Name, i.Quantity, i.UnitPrice, i.LineTotal, i.PrimaryCategoryName)).ToList(),
+            o.Currency,
+            o.SubTotal,
+            o.DiscountAmount,
+            o.CouponCode,
+            o.ShippingAmount,
+            o.PaymentStatus,
+            o.PaymentMethod,
+            o.TrackingNumber,
+            o.Carrier))
             .ToList();
 
         return new PagedResult<OrderDto>(dtos, page, pageSize, total);
@@ -587,6 +611,14 @@ public sealed class OrderService : IOrderService
                 o.CreatedAt,
                 o.UpdatedAt,
                 o.IdempotencyKey,
+                o.SubTotal,
+                o.DiscountAmount,
+                o.CouponCode,
+                o.ShippingAmount,
+                o.PaymentStatus,
+                o.PaymentMethod,
+                o.TrackingNumber,
+                o.Carrier,
                 Items = o.Items
                     .OrderBy(i => i.Id)
                     .Select(i => new
@@ -614,7 +646,16 @@ public sealed class OrderService : IOrderService
             order.CreatedAt,
             order.UpdatedAt,
             order.IdempotencyKey,
-            order.Items.Select(i => new OrderItemDto(i.Id, i.ProductId, i.Sku, i.Name, i.Quantity, i.UnitPrice, i.LineTotal, i.PrimaryCategoryName)).ToList(), order.Currency);
+            order.Items.Select(i => new OrderItemDto(i.Id, i.ProductId, i.Sku, i.Name, i.Quantity, i.UnitPrice, i.LineTotal, i.PrimaryCategoryName)).ToList(),
+            order.Currency,
+            order.SubTotal,
+            order.DiscountAmount,
+            order.CouponCode,
+            order.ShippingAmount,
+            order.PaymentStatus,
+            order.PaymentMethod,
+            order.TrackingNumber,
+            order.Carrier);
     }
 
     private async Task<OrderDto?> FindByIdempotencyKeyAsync(int customerId, string idempotencyKey, CancellationToken ct)

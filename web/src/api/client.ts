@@ -87,7 +87,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     response = await fetch(`${API_BASE_URL}${path}`, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined ? undefined : typeof body === 'string' ? body : JSON.stringify(body),
       signal
     });
   } catch (cause) {

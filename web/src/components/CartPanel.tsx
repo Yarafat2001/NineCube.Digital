@@ -136,8 +136,11 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
       if (paymentMethod !== 'CashOnDelivery') {
         try {
           await processPayment.mutateAsync({ orderId: order.id, provider: paymentMethod });
-        } catch {
-          // Non-blocking payment recording attempt
+          order.paymentMethod = paymentMethod;
+          order.paymentStatus = 'Paid';
+          order.status = 'Confirmed';
+        } catch (err) {
+          console.warn('Payment recording failed:', err);
         }
       }
 
