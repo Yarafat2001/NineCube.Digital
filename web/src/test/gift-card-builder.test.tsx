@@ -48,7 +48,7 @@ describe('Gift card builder', () => {
     expect(screen.getByRole('spinbutton', { name: /gift card value/i })).toHaveValue(2500);
     expect(screen.getByPlaceholderText(/Sarah Ahmed/i)).toHaveValue('Eid Celebrant');
     expect(screen.getByPlaceholderText(/Happy Birthday/i)).toHaveValue('Eid Mubarak! May your celebration be filled with joy.');
-    expect(screen.getByPlaceholderText(/GC-9K3D/i).value).toMatch(/^GC-[23456789A-HJ-NP-Z]{4}-[23456789A-HJ-NP-Z]{4}-[23456789A-HJ-NP-Z]{4}$/);
+    expect(screen.getByPlaceholderText<HTMLInputElement>(/GC-9K3D/i).value).toMatch(/^GC-[23456789A-HJ-NP-Z]{4}-[23456789A-HJ-NP-Z]{4}-[23456789A-HJ-NP-Z]{4}$/);
 
     expect(eid).toHaveAttribute('aria-pressed', 'true');
     expect(birthday).toHaveAttribute('aria-pressed', 'false');
