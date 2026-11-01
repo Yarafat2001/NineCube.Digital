@@ -388,6 +388,16 @@ export function AdminPage() {
   const [startsAt, setStartsAt] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [isAutomatic, setIsAutomatic] = useState(false);
+
+  const applyDurationPreset = (days: number | null) => {
+    if (days === null) {
+      setExpiresAt('');
+      return;
+    }
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    setExpiresAt(d.toISOString().slice(0, 16));
+  };
   const generateNewCouponCode = () => {
     const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
     const rand = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
@@ -943,435 +953,656 @@ export function AdminPage() {
               </button>
             </div>
           </div>
-          <form className="card-glass grid-form" onSubmit={submitCoupon}>
-            <div className="field">
-              <div className="row-between" style={{ alignItems: 'baseline' }}>
-                <label htmlFor="coupon-code">
-                  {t("Coupon code")}{' '}
-                  <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
-                </label>
-                <button
-                  type="button"
-                  className="btn-link"
-                  style={{
-                    fontSize: '11px',
-                    color: 'var(--brand, #f59e0b)',
-                    cursor: 'pointer',
-                    background: 'none',
-                    border: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '2px',
-                    padding: 0
-                  }}
-                  onClick={generateNewCouponCode}
-                  title={t("Generate Code")}
-                >
-                  ⚡ {t("Auto-generate")}
-                </button>
+          <form onSubmit={submitCoupon} className="discount-builder-layout">
+            {/* Left Column: Multi-Rule Configurator */}
+            <div className="discount-rules-column">
+              {/* Card 1: Method & Coupon Code */}
+              <div className="discount-config-card">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className="discount-card-step">1</span>
+                    {t("Promotion Method & Code")}
+                  </h4>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    {isAutomatic ? t("Auto-applied in cart") : t("Customer code at checkout")}
+                  </span>
+                </div>
+
+                {/* Method Switcher Tabs: Code vs Automatic */}
+                <div className="discount-method-tabs" role="tablist">
+                  <button
+                    type="button"
+                    className={`discount-method-tab ${!isAutomatic ? 'discount-method-tab--active' : ''}`}
+                    onClick={() => setIsAutomatic(false)}
+                  >
+                    <span>🎟️</span>
+                    <span>{t("Discount Code")}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`discount-method-tab ${isAutomatic ? 'discount-method-tab--active' : ''}`}
+                    onClick={() => {
+                      setIsAutomatic(true);
+                      if (!couponCode.trim()) {
+                        generateNewCouponCode();
+                      }
+                    }}
+                  >
+                    <span>⚡</span>
+                    <span>{t("Automatic Promotion")}</span>
+                  </button>
+                </div>
+
+                <div className="field">
+                  <div className="row-between" style={{ alignItems: 'baseline' }}>
+                    <label htmlFor="coupon-code">
+                      {t("Coupon code")}{' '}
+                      <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
+                    </label>
+                    <button
+                      type="button"
+                      className="btn-link"
+                      style={{
+                        fontSize: '11px',
+                        color: 'var(--brand, #f59e0b)',
+                        cursor: 'pointer',
+                        background: 'none',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2px',
+                        padding: 0
+                      }}
+                      onClick={generateNewCouponCode}
+                      title={t("Generate Code")}
+                    >
+                      ⚡ {t("Auto-generate")}
+                    </button>
+                  </div>
+                  <div className="row" style={{ gap: '8px', alignItems: 'center' }}>
+                    <input
+                      id="coupon-code"
+                      type="text"
+                      required
+                      placeholder={t("e.g. SUMMER25")}
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      style={{ flex: 1, minWidth: 0, textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px' }}
+                    />
+                    {couponCode && (
+                      <button
+                        type="button"
+                        className="btn btn--sm"
+                        style={{ padding: '6px 10px' }}
+                        onClick={() => copyToClipboard(couponCode)}
+                        title={t("Copy code")}
+                      >
+                        📋
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {isAutomatic && (
+                  <div style={{ padding: '8px 12px', background: 'var(--surface-sunken)', borderRadius: '6px', border: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                    🤖 <strong>{t("Automatic Promotion:")}</strong> {t("This discount will automatically apply at checkout to eligible orders without the shopper needing to manually enter a code.")}
+                  </div>
+                )}
               </div>
-              <input
-                id="coupon-code"
-                type="text"
-                required
-                placeholder={t("e.g. SUMMER25")}
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                style={{ width: '100%', minWidth: 0, textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px' }}
-              />
-            </div>
 
-            <div className="field">
-              <label htmlFor="coupon-type">{t("Discount type")}</label>
-              <select
-                id="coupon-type"
-                value={discountType}
-                onChange={(e) => setDiscountType(e.target.value as 'Percentage' | 'FixedAmount')}
-              >
-                <option value="Percentage">{t("Percentage (%)")}</option>
-                <option value="FixedAmount">{t("Fixed Amount (BDT)")}</option>
-              </select>
-            </div>
+              {/* Card 2: Discount Value & Calculation */}
+              <div className="discount-config-card">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className="discount-card-step">2</span>
+                    {t("Discount Value & Calculation")}
+                  </h4>
+                </div>
 
-            <div className="field">
-              <label htmlFor="coupon-value">
-                {discountType === 'Percentage' ? t("Discount percentage (%)") : t("Discount amount (BDT)")}{' '}
-                <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
-              </label>
-              <input
-                id="coupon-value"
-                type="number"
-                min="1"
-                step={discountType === 'Percentage' ? '1' : '0.01'}
-                max={discountType === 'Percentage' ? '100' : undefined}
-                required
-                placeholder={discountType === 'Percentage' ? '10' : '100'}
-                value={discountValue}
-                onChange={(e) => setDiscountValue(e.target.value)}
-              />
-            </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+                  <div className="field">
+                    <label htmlFor="coupon-type">{t("Discount type")}</label>
+                    <select
+                      id="coupon-type"
+                      value={discountType}
+                      onChange={(e) => setDiscountType(e.target.value as 'Percentage' | 'FixedAmount')}
+                    >
+                      <option value="Percentage">{t("Percentage (%)")}</option>
+                      <option value="FixedAmount">{t("Fixed Amount (BDT)")}</option>
+                    </select>
+                  </div>
 
-            <div className="field">
-              <label htmlFor="coupon-min-order">{t("Minimum order amount (BDT)")}</label>
-              <input
-                id="coupon-min-order"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0"
-                value={minOrderAmount}
-                onChange={(e) => setMinOrderAmount(e.target.value)}
-              />
-            </div>
+                  <div className="field">
+                    <label htmlFor="coupon-value">
+                      {discountType === 'Percentage' ? t("Discount percentage (%)") : t("Discount amount (BDT)")}{' '}
+                      <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
+                    </label>
+                    <input
+                      id="coupon-value"
+                      type="number"
+                      min="1"
+                      step={discountType === 'Percentage' ? '1' : '0.01'}
+                      max={discountType === 'Percentage' ? '100' : undefined}
+                      required
+                      placeholder={discountType === 'Percentage' ? '10' : '100'}
+                      value={discountValue}
+                      onChange={(e) => setDiscountValue(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-            <div className="field">
-              <label htmlFor="coupon-limit">{t("Usage limit (optional)")}</label>
-              <input
-                id="coupon-limit"
-                type="number"
-                min="1"
-                placeholder={t("Unlimited")}
-                value={usageLimit}
-                onChange={(e) => setUsageLimit(e.target.value)}
-              />
-            </div>
-
-            {/* Dynamic Target Scope & Catalog Picker */}
-            <div
-              style={{
-                gridColumn: '1 / -1',
-                padding: 'var(--space-4)',
-                background: 'var(--surface-sunken)',
-                borderRadius: 'var(--radius-md, 10px)',
-                border: '1px solid var(--border)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 'var(--space-3)'
-              }}
-            >
-              <div className="row-between" style={{ flexWrap: 'wrap', gap: '8px' }}>
+                {/* Quick Value Chips */}
                 <div>
-                  <label htmlFor="coupon-target-type" style={{ fontWeight: 700, fontSize: 'var(--text-sm)', display: 'block', color: 'var(--text)' }}>
-                    🎯 {t("Applies to / Target Scope")}
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+                    {t("Quick Values:")}
+                  </span>
+                  <div className="discount-quick-pills">
+                    {discountType === 'Percentage'
+                      ? ['5', '10', '15', '20', '25', '30', '50'].map((val) => (
+                          <button
+                            key={val}
+                            type="button"
+                            className={`discount-quick-pill ${discountValue === val ? 'discount-quick-pill--active' : ''}`}
+                            onClick={() => setDiscountValue(val)}
+                          >
+                            {val}%
+                          </button>
+                        ))
+                      : ['100', '250', '500', '1000', '2500'].map((val) => (
+                          <button
+                            key={val}
+                            type="button"
+                            className={`discount-quick-pill ${discountValue === val ? 'discount-quick-pill--active' : ''}`}
+                            onClick={() => setDiscountValue(val)}
+                          >
+                            {t("BDT")} {val}
+                          </button>
+                        ))}
+                  </div>
+                </div>
+
+                {discountType === 'Percentage' && (
+                  <div className="field">
+                    <label htmlFor="coupon-max-cap">{t("Max discount cap (BDT, optional)")}</label>
+                    <input
+                      id="coupon-max-cap"
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      placeholder={t("e.g. 2500 (limits max savings)")}
+                      value={maxDiscountCap}
+                      onChange={(e) => setMaxDiscountCap(e.target.value)}
+                    />
+                    <small className="muted" style={{ fontSize: '11px' }}>
+                      {t("Prevents very large percentage deductions on high-value carts.")}
+                    </small>
+                  </div>
+                )}
+              </div>
+
+              {/* Card 3: Target Scope & Applies-To Rules */}
+              <div className="discount-config-card">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className="discount-card-step">3</span>
+                    {t("Applies to / Target Scope")}
+                  </h4>
+                </div>
+
+                <div className="discount-quick-pills">
+                  <button
+                    type="button"
+                    className={`btn btn--sm ${couponTargetType === 'Order' ? 'btn--primary' : 'btn--outline'}`}
+                    onClick={() => {
+                      setCouponTargetType('Order');
+                      setTargetId(null);
+                    }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <span>🛒</span>
+                    <strong>{t("Entire Order / Basket")}</strong>
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn btn--sm ${couponTargetType === 'Category' ? 'btn--primary' : 'btn--outline'}`}
+                    onClick={() => {
+                      setCouponTargetType('Category');
+                      if (allCategories.length > 0 && !targetId) {
+                        setTargetId(allCategories[0].id);
+                      }
+                    }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <span>📁</span>
+                    <strong>{t("Specific Category (e.g. Footwear)")}</strong>
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn btn--sm ${couponTargetType === 'Brand' ? 'btn--primary' : 'btn--outline'}`}
+                    onClick={() => {
+                      setCouponTargetType('Brand');
+                      if (allBrands.length > 0 && !targetId) {
+                        setTargetId(allBrands[0].id);
+                      }
+                    }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <span>🏷️</span>
+                    <strong>{t("Specific Brand")}</strong>
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn btn--sm ${couponTargetType === 'Product' ? 'btn--primary' : 'btn--outline'}`}
+                    onClick={() => {
+                      setCouponTargetType('Product');
+                      if (allProducts.length > 0 && !targetId) {
+                        setTargetId(allProducts[0].id);
+                      }
+                    }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <span>📦</span>
+                    <strong>{t("Specific Product")}</strong>
+                  </button>
+                </div>
+
+                {couponTargetType === 'Order' && (
+                  <div style={{ padding: '8px 12px', background: 'var(--surface-sunken)', borderRadius: '6px', border: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                    ✅ <strong>{t("Storewide Basket Scope:")}</strong> {t("Discount applies to all eligible products in customer basket when minimum order is met.")}
+                  </div>
+                )}
+
+                {couponTargetType === 'Category' && (
+                  <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface-sunken)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                    <div className="row-between" style={{ alignItems: 'center' }}>
+                      <label htmlFor="coupon-target-category" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
+                        📁 {t("Choose Category:")}
+                      </label>
+                      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                        {allCategories.length} {t("categories available")}
+                      </span>
+                    </div>
+
+                    {allCategories.length > 0 && (
+                      <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
+                        {allCategories.slice(0, 8).map((cat) => (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            className={`btn btn--sm ${targetId === cat.id ? 'btn--primary' : ''}`}
+                            style={{
+                              fontSize: '11px',
+                              padding: '3px 8px',
+                              borderColor: targetId === cat.id ? undefined : 'var(--border)'
+                            }}
+                            onClick={() => setTargetId(cat.id)}
+                          >
+                            {cat.name.toLowerCase().includes('footwear') || cat.name.toLowerCase().includes('shoe') ? '👟' : '📁'} {cat.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <CatalogTargetPicker
+                      type="Category"
+                      items={allCategories}
+                      selectedId={targetId}
+                      onSelect={setTargetId}
+                      id="coupon-target-category"
+                    />
+                  </div>
+                )}
+
+                {couponTargetType === 'Brand' && (
+                  <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface-sunken)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                    <div className="row-between" style={{ alignItems: 'center' }}>
+                      <label htmlFor="coupon-target-brand" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
+                        🏷️ {t("Choose Brand:")}
+                      </label>
+                      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                        {allBrands.length} {t("brands available")}
+                      </span>
+                    </div>
+
+                    {allBrands.length > 0 && (
+                      <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
+                        {allBrands.slice(0, 8).map((b) => (
+                          <button
+                            key={b.id}
+                            type="button"
+                            className={`btn btn--sm ${targetId === b.id ? 'btn--primary' : ''}`}
+                            style={{
+                              fontSize: '11px',
+                              padding: '3px 8px',
+                              borderColor: targetId === b.id ? undefined : 'var(--border)'
+                            }}
+                            onClick={() => setTargetId(b.id)}
+                          >
+                            🏷️ {b.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <CatalogTargetPicker
+                      type="Brand"
+                      items={allBrands}
+                      selectedId={targetId}
+                      onSelect={setTargetId}
+                      id="coupon-target-brand"
+                    />
+                  </div>
+                )}
+
+                {couponTargetType === 'Product' && (
+                  <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface-sunken)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                    <div className="row-between" style={{ alignItems: 'center' }}>
+                      <label htmlFor="coupon-target-product" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
+                        📦 {t("Choose Product:")}
+                      </label>
+                      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                        {allProducts.length} {t("products in catalogue")}
+                      </span>
+                    </div>
+
+                    {allProducts.length > 0 && (
+                      <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
+                        {allProducts.slice(0, 5).map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            className={`btn btn--sm ${targetId === p.id ? 'btn--primary' : ''}`}
+                            style={{
+                              fontSize: '11px',
+                              padding: '3px 8px',
+                              borderColor: targetId === p.id ? undefined : 'var(--border)'
+                            }}
+                            onClick={() => setTargetId(p.id)}
+                          >
+                            👟 {p.name.slice(0, 26)}...
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <CatalogTargetPicker
+                      type="Product"
+                      items={allProducts}
+                      selectedId={targetId}
+                      onSelect={setTargetId}
+                      id="coupon-target-product"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Card 4: Spend Conditions & Usage Limits */}
+              <div className="discount-config-card">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className="discount-card-step">4</span>
+                    {t("Minimum Spend & Usage Limits")}
+                  </h4>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+                  <div className="field">
+                    <label htmlFor="coupon-min-order">{t("Minimum order amount (BDT)")}</label>
+                    <input
+                      id="coupon-min-order"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0"
+                      value={minOrderAmount}
+                      onChange={(e) => setMinOrderAmount(e.target.value)}
+                    />
+                    <div className="discount-quick-pills" style={{ marginTop: '4px' }}>
+                      {['0', '500', '1000', '2000', '2500', '5000'].map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          className={`discount-quick-pill ${minOrderAmount === amt ? 'discount-quick-pill--active' : ''}`}
+                          onClick={() => setMinOrderAmount(amt)}
+                        >
+                          {amt === '0' ? t("No Min") : `${t("BDT")} ${amt}`}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="coupon-limit">{t("Usage limit (optional)")}</label>
+                    <input
+                      id="coupon-limit"
+                      type="number"
+                      min="1"
+                      placeholder={t("Unlimited")}
+                      value={usageLimit}
+                      onChange={(e) => setUsageLimit(e.target.value)}
+                    />
+                    <div className="discount-quick-pills" style={{ marginTop: '4px' }}>
+                      {['', '50', '100', '500', '1000'].map((lim) => (
+                        <button
+                          key={lim}
+                          type="button"
+                          className={`discount-quick-pill ${usageLimit === lim ? 'discount-quick-pill--active' : ''}`}
+                          onClick={() => setUsageLimit(lim)}
+                        >
+                          {lim === '' ? t("Unlimited") : `${lim} ${t("uses")}`}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 5: Active Dates & Campaign Placement */}
+              <div className="discount-config-card">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className="discount-card-step">5</span>
+                    {t("Active Dates & Campaign Placement")}
+                  </h4>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+                  <div className="field">
+                    <label htmlFor="coupon-starts-at">{t("Start date & time (optional)")}</label>
+                    <input
+                      id="coupon-starts-at"
+                      type="datetime-local"
+                      value={startsAt}
+                      onChange={(e) => setStartsAt(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="coupon-expires-at">{t("Expiration date & time (optional)")}</label>
+                    <input
+                      id="coupon-expires-at"
+                      type="datetime-local"
+                      value={expiresAt}
+                      onChange={(e) => setExpiresAt(e.target.value)}
+                    />
+                    <div className="discount-quick-pills" style={{ marginTop: '4px' }}>
+                      <button
+                        type="button"
+                        className="discount-quick-pill"
+                        onClick={() => applyDurationPreset(7)}
+                      >
+                        +7 {t("Days")}
+                      </button>
+                      <button
+                        type="button"
+                        className="discount-quick-pill"
+                        onClick={() => applyDurationPreset(14)}
+                      >
+                        +14 {t("Days")}
+                      </button>
+                      <button
+                        type="button"
+                        className="discount-quick-pill"
+                        onClick={() => applyDurationPreset(30)}
+                      >
+                        +30 {t("Days")}
+                      </button>
+                      <button
+                        type="button"
+                        className={`discount-quick-pill ${!expiresAt ? 'discount-quick-pill--active' : ''}`}
+                        onClick={() => setExpiresAt('')}
+                      >
+                        {t("Never")}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="field">
+                  <label htmlFor="coupon-campaign-title">{t("Campaign banner title (optional)")}</label>
+                  <input
+                    id="coupon-campaign-title"
+                    type="text"
+                    placeholder={t("e.g. Eid Mega Festival")}
+                    value={campaignTitle}
+                    onChange={(e) => setCampaignTitle(e.target.value)}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      checked={isBannerPromoted}
+                      onChange={(e) => setIsBannerPromoted(e.target.checked)}
+                    />
+                    <span>{t("Show in top announcement banner")}</span>
                   </label>
-                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                    {t("Select whether this discount applies storewide across the entire cart or targets specific catalog items.")}
-                  </span>
+
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      checked={isAutomatic}
+                      onChange={(e) => setIsAutomatic(e.target.checked)}
+                    />
+                    <span>{t("Apply automatically in cart")}</span>
+                  </label>
                 </div>
               </div>
-
-              {/* Scope Segmented Pill Switcher */}
-              <div className="row" style={{ gap: '8px', flexWrap: 'wrap' }}>
-                <button
-                  type="button"
-                  className={`btn btn--sm ${couponTargetType === 'Order' ? 'btn--primary' : 'btn--outline'}`}
-                  onClick={() => {
-                    setCouponTargetType('Order');
-                    setTargetId(null);
-                  }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <span>🛒</span>
-                  <strong>{t("Entire Order / Basket")}</strong>
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn--sm ${couponTargetType === 'Category' ? 'btn--primary' : 'btn--outline'}`}
-                  onClick={() => {
-                    setCouponTargetType('Category');
-                    if (allCategories.length > 0 && !targetId) {
-                      setTargetId(allCategories[0].id);
-                    }
-                  }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <span>📁</span>
-                  <strong>{t("Specific Category (e.g. Footwear)")}</strong>
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn--sm ${couponTargetType === 'Brand' ? 'btn--primary' : 'btn--outline'}`}
-                  onClick={() => {
-                    setCouponTargetType('Brand');
-                    if (allBrands.length > 0 && !targetId) {
-                      setTargetId(allBrands[0].id);
-                    }
-                  }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <span>🏷️</span>
-                  <strong>{t("Specific Brand")}</strong>
-                </button>
-                <button
-                  type="button"
-                  className={`btn btn--sm ${couponTargetType === 'Product' ? 'btn--primary' : 'btn--outline'}`}
-                  onClick={() => {
-                    setCouponTargetType('Product');
-                    if (allProducts.length > 0 && !targetId) {
-                      setTargetId(allProducts[0].id);
-                    }
-                  }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <span>📦</span>
-                  <strong>{t("Specific Product")}</strong>
-                </button>
-              </div>
-
-              {/* Dynamic Catalog Selectors based on Scope */}
-              {couponTargetType === 'Order' && (
-                <div style={{ padding: '8px 12px', background: 'var(--surface)', borderRadius: '6px', border: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                  ✅ <strong>{t("Storewide Basket Scope:")}</strong> {t("Discount applies to all eligible products in customer basket when minimum order is met.")}
-                </div>
-              )}
-
-              {couponTargetType === 'Category' && (
-                <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  <div className="row-between" style={{ alignItems: 'center' }}>
-                    <label htmlFor="coupon-target-category" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
-                      📁 {t("Choose Category:")}
-                    </label>
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                      {allCategories.length} {t("categories available")}
-                    </span>
-                  </div>
-
-                  {/* Quick-Click Category Pills */}
-                  {allCategories.length > 0 && (
-                    <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
-                      {allCategories.slice(0, 8).map((cat) => (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          className={`btn btn--sm ${targetId === cat.id ? 'btn--primary' : ''}`}
-                          style={{
-                            fontSize: '11px',
-                            padding: '3px 8px',
-                            borderColor: targetId === cat.id ? undefined : 'var(--border)'
-                          }}
-                          onClick={() => setTargetId(cat.id)}
-                        >
-                          {cat.name.toLowerCase().includes('footwear') || cat.name.toLowerCase().includes('shoe') ? '👟' : '📁'} {cat.name}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  <CatalogTargetPicker
-                    type="Category"
-                    items={allCategories}
-                    selectedId={targetId}
-                    onSelect={setTargetId}
-                    id="coupon-target-category"
-                  />
-                </div>
-              )}
-
-              {couponTargetType === 'Brand' && (
-                <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  <div className="row-between" style={{ alignItems: 'center' }}>
-                    <label htmlFor="coupon-target-brand" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
-                      🏷️ {t("Choose Brand:")}
-                    </label>
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                      {allBrands.length} {t("brands available")}
-                    </span>
-                  </div>
-
-                  {/* Quick-Click Brand Pills */}
-                  {allBrands.length > 0 && (
-                    <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
-                      {allBrands.slice(0, 8).map((b) => (
-                        <button
-                          key={b.id}
-                          type="button"
-                          className={`btn btn--sm ${targetId === b.id ? 'btn--primary' : ''}`}
-                          style={{
-                            fontSize: '11px',
-                            padding: '3px 8px',
-                            borderColor: targetId === b.id ? undefined : 'var(--border)'
-                          }}
-                          onClick={() => setTargetId(b.id)}
-                        >
-                          🏷️ {b.name}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  <CatalogTargetPicker
-                    type="Brand"
-                    items={allBrands}
-                    selectedId={targetId}
-                    onSelect={setTargetId}
-                    id="coupon-target-brand"
-                  />
-                </div>
-              )}
-
-              {couponTargetType === 'Product' && (
-                <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  <div className="row-between" style={{ alignItems: 'center' }}>
-                    <label htmlFor="coupon-target-product" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
-                      📦 {t("Choose Product:")}
-                    </label>
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                      {allProducts.length} {t("products in catalogue")}
-                    </span>
-                  </div>
-
-                  {/* Quick-Click Product Pills */}
-                  {allProducts.length > 0 && (
-                    <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
-                      {allProducts.slice(0, 5).map((p) => (
-                        <button
-                          key={p.id}
-                          type="button"
-                          className={`btn btn--sm ${targetId === p.id ? 'btn--primary' : ''}`}
-                          style={{
-                            fontSize: '11px',
-                            padding: '3px 8px',
-                            borderColor: targetId === p.id ? undefined : 'var(--border)'
-                          }}
-                          onClick={() => setTargetId(p.id)}
-                        >
-                          👟 {p.name.slice(0, 26)}...
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  <CatalogTargetPicker
-                    type="Product"
-                    items={allProducts}
-                    selectedId={targetId}
-                    onSelect={setTargetId}
-                    id="coupon-target-product"
-                  />
-                </div>
-              )}
             </div>
 
-            <div className="field">
-              <label htmlFor="coupon-max-cap">{t("Max discount cap (BDT, optional)")}</label>
-              <input
-                id="coupon-max-cap"
-                type="number"
-                min="1"
-                step="0.01"
-                placeholder={t("e.g. 2500 (limits max savings)")}
-                value={maxDiscountCap}
-                onChange={(e) => setMaxDiscountCap(e.target.value)}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="coupon-starts-at">{t("Start date & time (optional)")}</label>
-              <input
-                id="coupon-starts-at"
-                type="datetime-local"
-                value={startsAt}
-                onChange={(e) => setStartsAt(e.target.value)}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="coupon-expires-at">{t("Expiration date & time (optional)")}</label>
-              <input
-                id="coupon-expires-at"
-                type="datetime-local"
-                value={expiresAt}
-                onChange={(e) => setExpiresAt(e.target.value)}
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="coupon-campaign-title">{t("Campaign banner title (optional)")}</label>
-              <input
-                id="coupon-campaign-title"
-                type="text"
-                placeholder={t("e.g. Eid Mega Festival")}
-                value={campaignTitle}
-                onChange={(e) => setCampaignTitle(e.target.value)}
-              />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignSelf: 'center', marginTop: 'var(--space-4)' }}>
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  checked={isBannerPromoted}
-                  onChange={(e) => setIsBannerPromoted(e.target.checked)}
-                />
-                <span>{t("Show in top announcement banner")}</span>
-              </label>
-
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  checked={isAutomatic}
-                  onChange={(e) => setIsAutomatic(e.target.checked)}
-                />
-                <span>{t("Apply automatically in cart")}</span>
-              </label>
-            </div>
-
-            {/* Live Discount Rule Summary Preview */}
-            <div
-              className="card-glass"
-              style={{
-                gridColumn: '1 / -1',
-                padding: 'var(--space-3) var(--space-4)',
-                borderRadius: 'var(--radius-md, 8px)',
-                background: 'rgba(245, 158, 11, 0.08)',
-                border: '1px solid rgba(245, 158, 11, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                flexWrap: 'wrap'
-              }}
-            >
-              <span style={{ fontSize: '1.5rem' }}>⚡</span>
-              <div style={{ flex: 1, minWidth: '220px' }}>
-                <div className="row" style={{ alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  <strong style={{ fontSize: 'var(--text-sm)', color: 'var(--brand, #f59e0b)' }}>
-                    {t("Rule Preview")}: {couponCode.trim() ? couponCode.trim().toUpperCase() : t("DISCOUNT_CODE")}
-                  </strong>
-                  <span className="badge badge--ok" style={{ fontSize: '10px' }}>
-                    {discountType === 'Percentage' ? `${discountValue || '10'}% ${t("OFF")}` : `${t("BDT")} ${discountValue || '100'} ${t("OFF")}`}
+            {/* Right Column: Live Digital Ticket Voucher & Summary */}
+            <div className="voucher-ticket-container">
+              <div className="voucher-ticket">
+                <div className="voucher-ticket__header">
+                  <div className="voucher-ticket__notch-left" />
+                  <div className="voucher-ticket__notch-right" />
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-muted)', fontWeight: 700 }}>
+                    {isAutomatic ? t("Automatic Discount") : t("Discount Coupon")}
                   </span>
-                  {isAutomatic && (
-                    <span className="badge" style={{ fontSize: '10px', background: 'var(--surface-sunken)' }}>
-                      🤖 {t("Auto-applied at checkout")}
+                  <div className="voucher-ticket__badge">
+                    {discountType === 'Percentage' ? `${discountValue || '10'}% OFF` : `${t("BDT")} ${discountValue || '100'} OFF`}
+                  </div>
+                  <div className="voucher-ticket__code-badge">
+                    <span>{couponCode.trim() ? couponCode.trim().toUpperCase() : 'CODE'}</span>
+                    {couponCode && (
+                      <span style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => copyToClipboard(couponCode)} title={t("Copy code")}>
+                        📋
+                      </span>
+                    )}
+                  </div>
+                  {campaignTitle && (
+                    <span className="badge badge--ok" style={{ fontSize: '11px', marginTop: '2px' }}>
+                      📢 {campaignTitle}
                     </span>
                   )}
+                </div>
+
+                <div className="voucher-ticket__body">
+                  <div style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    {t("Active Rules Summary")}
+                  </div>
+
+                  <div className="voucher-rule-item">
+                    <span className="voucher-rule-icon">🎯</span>
+                    <div>
+                      <strong>{t("Scope")}: </strong>
+                      {couponTargetType === 'Order'
+                        ? t("Entire Order / Basket (Storewide)")
+                        : couponTargetType === 'Category'
+                        ? `${t("Category")}: ${allCategories.find((c) => c.id === targetId)?.name ?? t("Select category")}`
+                        : couponTargetType === 'Brand'
+                        ? `${t("Brand")}: ${allBrands.find((b) => b.id === targetId)?.name ?? t("Select brand")}`
+                        : `${t("Product")}: ${allProducts.find((p) => p.id === targetId)?.name ?? t("Select product")}`}
+                    </div>
+                  </div>
+
+                  <div className="voucher-rule-item">
+                    <span className="voucher-rule-icon">💰</span>
+                    <div>
+                      <strong>{t("Minimum Spend")}: </strong>
+                      {Number(minOrderAmount) > 0 ? `${t("BDT")} ${minOrderAmount}` : t("None (Any amount)")}
+                    </div>
+                  </div>
+
+                  {discountType === 'Percentage' && maxDiscountCap && (
+                    <div className="voucher-rule-item">
+                      <span className="voucher-rule-icon">🛡️</span>
+                      <div>
+                        <strong>{t("Max Savings Cap")}: </strong>
+                        {t("BDT")} {maxDiscountCap}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="voucher-rule-item">
+                    <span className="voucher-rule-icon">👥</span>
+                    <div>
+                      <strong>{t("Usage Limit")}: </strong>
+                      {usageLimit ? `${usageLimit} ${t("uses")}` : t("Unlimited")}
+                    </div>
+                  </div>
+
+                  <div className="voucher-rule-item">
+                    <span className="voucher-rule-icon">📅</span>
+                    <div>
+                      <strong>{t("Validity")}: </strong>
+                      {startsAt ? `${t("Starts")} ${startsAt.slice(0, 10)} · ` : ''}
+                      {expiresAt ? `${t("Expires")} ${expiresAt.slice(0, 10)}` : t("Ongoing / No Expiration")}
+                    </div>
+                  </div>
+
                   {isBannerPromoted && (
-                    <span className="badge" style={{ fontSize: '10px', background: 'rgba(245, 158, 11, 0.2)', color: 'var(--brand, #f59e0b)' }}>
-                      📢 {t("Top Banner Promoted")}
-                    </span>
+                    <div className="voucher-rule-item">
+                      <span className="voucher-rule-icon">📢</span>
+                      <div>
+                        <strong>{t("Storefront Banner")}: </strong>
+                        {t("Promoted in top marquee banner")}
+                      </div>
+                    </div>
+                  )}
+
+                  {isAutomatic && (
+                    <div className="voucher-rule-item">
+                      <span className="voucher-rule-icon">🤖</span>
+                      <div>
+                        <strong>{t("Cart Application")}: </strong>
+                        {t("Auto-applied at checkout")}
+                      </div>
+                    </div>
                   )}
                 </div>
-                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', marginTop: '4px' }}>
-                  <strong>{t("Scope:")} </strong>
-                  {couponTargetType === 'Order'
-                    ? t("All products (Entire Order)")
-                    : couponTargetType === 'Category'
-                    ? `${t("Category")}: ${allCategories.find((c) => c.id === targetId)?.name ?? t("Select category")}`
-                    : couponTargetType === 'Brand'
-                    ? `${t("Brand")}: ${allBrands.find((b) => b.id === targetId)?.name ?? t("Select brand")}`
-                    : `${t("Product")}: ${allProducts.find((p) => p.id === targetId)?.name ?? t("Select product")}`}
-                  {maxDiscountCap ? ` · ${t("Max savings cap")} ${t("BDT")} ${maxDiscountCap}` : ''}
-                  {Number(minOrderAmount) > 0 ? ` · ${t("Min order")} ${t("BDT")} ${minOrderAmount}` : ` · ${t("No minimum spend")}`}
-                  {campaignTitle ? ` · "${campaignTitle}"` : ''}
-                  {startsAt ? ` · ${t("Starts:")} ${startsAt.replace('T', ' ')}` : ''}
-                  {expiresAt ? ` · ${t("Expires:")} ${expiresAt.replace('T', ' ')}` : ''}
-                </div>
               </div>
-            </div>
 
-            <div className="form-actions" style={{ alignSelf: 'flex-end' }}>
-              <button type="submit" className="btn btn--primary" disabled={createCoupon.isPending || !couponCode.trim() || !discountValue}>
-                {t(createCoupon.isPending ? 'Creating…' : 'Create Coupon')}
+              {/* Action Button */}
+              <button
+                type="submit"
+                className="btn btn--primary"
+                style={{ width: '100%', padding: '12px', fontSize: 'var(--text-sm)', fontWeight: 750, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                disabled={createCoupon.isPending || !couponCode.trim() || !discountValue}
+              >
+                <span>🚀</span>
+                <span>{t(createCoupon.isPending ? 'Creating…' : 'Create Coupon')}</span>
               </button>
             </div>
           </form>

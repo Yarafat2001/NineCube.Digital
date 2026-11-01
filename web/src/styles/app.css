@@ -2468,3 +2468,243 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 .table-surface tbody tr[data-selected="true"] {
   background: var(--selected-bg, rgba(245, 158, 11, 0.08)) !important;
 }
+
+
+/* ------------------- Modern E-Commerce Discount Builder (Multi-Rule) ------------------- */
+.discount-builder-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(320px, 1.15fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .discount-builder-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.discount-rules-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.discount-config-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--space-4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: border-color 0.15s ease;
+}
+
+.discount-config-card:focus-within {
+  border-color: var(--brand, #f59e0b);
+}
+
+.discount-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.discount-card-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  margin: 0;
+}
+
+.discount-card-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  color: var(--brand, #f59e0b);
+  font-size: 11px;
+  font-weight: 750;
+  border: 1px solid var(--border);
+}
+
+/* Method Selector Tabs (Code vs Auto) */
+.discount-method-tabs {
+  display: flex;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 8px);
+  padding: 3px;
+  gap: 4px;
+}
+
+.discount-method-tab {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.discount-method-tab--active {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.discount-quick-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.discount-quick-pill {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-sunken);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.discount-quick-pill:hover {
+  border-color: var(--brand, #f59e0b);
+  color: var(--brand, #f59e0b);
+  transform: translateY(-1px);
+}
+
+.discount-quick-pill--active {
+  background: var(--selected-bg, rgba(245, 158, 11, 0.15));
+  border-color: var(--brand, #f59e0b);
+  color: var(--accent-text, #d97706);
+  font-weight: 700;
+}
+
+/* Digital Coupon Ticket Voucher (Sidebar) */
+.voucher-ticket-container {
+  position: sticky;
+  top: calc(var(--nav-h, 60px) + 20px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.voucher-ticket {
+  position: relative;
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.voucher-ticket:hover {
+  border-color: var(--brand, #f59e0b);
+  box-shadow: 0 8px 28px rgba(245, 158, 11, 0.15);
+}
+
+.voucher-ticket__header {
+  padding: var(--space-4);
+  background: var(--surface-sunken);
+  border-bottom: 2px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  position: relative;
+}
+
+/* Cutout notches on ticket sides */
+.voucher-ticket__notch-left,
+.voucher-ticket__notch-right {
+  position: absolute;
+  top: 100%;
+  width: 20px;
+  height: 20px;
+  background: var(--bg-page);
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  z-index: 2;
+}
+
+.voucher-ticket__notch-left {
+  left: -11px;
+  transform: translateY(-50%);
+}
+
+.voucher-ticket__notch-right {
+  right: -11px;
+  transform: translateY(-50%);
+}
+
+.voucher-ticket__badge {
+  font-size: 1.5rem;
+  font-weight: 850;
+  color: var(--brand, #f59e0b);
+  letter-spacing: -0.02em;
+}
+
+.voucher-ticket__code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md, 8px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: monospace;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  letter-spacing: 1.5px;
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.voucher-ticket__body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.voucher-rule-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: var(--text-xs);
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.voucher-rule-icon {
+  flex-shrink: 0;
+  color: var(--ok, #10b981);
+  font-weight: 700;
+}
