@@ -26,13 +26,87 @@ import {
 import type { Coupon, CouponTargetType, UserRole, GiftCard } from '../api/types';
 import { flattenCategories } from '../components/CategoryFilters';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, useToast } from '../components/ui';
-import { Icon } from '../components/Icon';
-import { formatDateTime, roleLabels, useDebouncedValue } from '../lib/helpers';
+import { Icon, type IconName } from '../components/Icon';
+import { formatDateTime, formatMoney, roleLabels, useDebouncedValue } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 
 const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrator'];
 
 type Tab = 'users' | 'audit' | 'settings' | 'coupons' | 'giftcards';
+
+/**
+ * The plays an operator starts a campaign from. Each one carries the exact values it writes into the
+ * builder, so the card can state the rule before it is applied and light up when the form already
+ * matches it. The banner titles are the storefront copy, so they are stored verbatim.
+ */
+type CouponTemplate = {
+  id: string;
+  icon: IconName;
+  name: string;
+  targetHint?: string;
+  values: {
+    couponCode: string;
+    discountType: 'Percentage' | 'FixedAmount';
+    discountValue: string;
+    couponTargetType: CouponTargetType;
+    minOrderAmount: string;
+    maxDiscountCap: string;
+    campaignTitle: string;
+    isBannerPromoted: boolean;
+    isAutomatic: boolean;
+  };
+};
+
+const COUPON_TEMPLATES: CouponTemplate[] = [
+  {
+    id: 'storewide-10', icon: 'bolt', name: '10% Storewide Deal',
+    values: {
+      couponCode: 'SAVE10', discountType: 'Percentage', discountValue: '10', couponTargetType: 'Order',
+      minOrderAmount: '0', maxDiscountCap: '1500', campaignTitle: '⚡ Flash Sale: 10% OFF Storewide',
+      isBannerPromoted: true, isAutomatic: false
+    }
+  },
+  {
+    id: 'footwear-20', icon: 'folder', name: '20% Off Footwear (Category)', targetHint: 'footwear',
+    values: {
+      couponCode: 'FOOTWEAR20', discountType: 'Percentage', discountValue: '20', couponTargetType: 'Category',
+      minOrderAmount: '1000', maxDiscountCap: '2000', campaignTitle: '👟 20% OFF Footwear Summer Sale',
+      isBannerPromoted: true, isAutomatic: false
+    }
+  },
+  {
+    id: 'apex-15', icon: 'tag', name: '15% Off Apex Brand (Brand)', targetHint: 'apex',
+    values: {
+      couponCode: 'APEX15', discountType: 'Percentage', discountValue: '15', couponTargetType: 'Brand',
+      minOrderAmount: '500', maxDiscountCap: '1500', campaignTitle: '🏷️ 15% OFF All Apex Shoes',
+      isBannerPromoted: true, isAutomatic: false
+    }
+  },
+  {
+    id: 'duramo-25', icon: 'box', name: '25% Off Duramo Shoe (Product)', targetHint: 'duramo',
+    values: {
+      couponCode: 'DURAMO25', discountType: 'Percentage', discountValue: '25', couponTargetType: 'Product',
+      minOrderAmount: '0', maxDiscountCap: '3000', campaignTitle: '👟 25% OFF Duramo SL Running Shoes',
+      isBannerPromoted: true, isAutomatic: false
+    }
+  },
+  {
+    id: 'auto-10', icon: 'cart', name: '10% Auto-Applied Deal',
+    values: {
+      couponCode: 'AUTOMEGA', discountType: 'Percentage', discountValue: '10', couponTargetType: 'Order',
+      minOrderAmount: '2000', maxDiscountCap: '2000', campaignTitle: '⚡ Automatic Deal: 10% OFF on BDT 2,000+ Baskets',
+      isBannerPromoted: true, isAutomatic: true
+    }
+  },
+  {
+    id: 'basket-500', icon: 'wallet', name: 'BDT 500 Off Cart > 2500',
+    values: {
+      couponCode: 'VIP500', discountType: 'FixedAmount', discountValue: '500', couponTargetType: 'Order',
+      minOrderAmount: '2500', maxDiscountCap: '', campaignTitle: '🎁 BDT 500 OFF on Orders > BDT 2,500',
+      isBannerPromoted: false, isAutomatic: false
+    }
+  }
+];
 
 
 interface CatalogTargetPickerProps {
@@ -42,6 +116,12 @@ interface CatalogTargetPickerProps {
   onSelect: (id: number | null) => void;
   id: string;
 }
+
+const TARGET_ICON: Record<'Category' | 'Brand' | 'Product', IconName> = {
+  Category: 'folder',
+  Brand: 'tag',
+  Product: 'box'
+};
 
 function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogTargetPickerProps) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,7 +137,6 @@ function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogT
     );
   }, [items, searchTerm]);
 
-  const icon = type === 'Category' ? '📁' : type === 'Brand' ? '🏷️' : '📦';
   const typeLabel = type === 'Category' ? t("Category") : type === 'Brand' ? t("Brand") : t("Product");
   const placeholder =
     type === 'Category'
@@ -69,14 +148,20 @@ function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogT
   const selectedItem = items.find((i) => i.id === selectedId);
   const popularItems = useMemo(() => items.slice(0, 6), [items]);
 
+  const choose = (targetId: number) => {
+    onSelect(targetId);
+    setShowDropdown(false);
+    setSearchTerm('');
+  };
+
   return (
-    <div className="catalog-target-combobox" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      {/* Hidden native select for form accessibility and tests */}
+    <div className="target-picker">
+      {/* Hidden native select keeps the field reachable for forms, tests and assistive tech. */}
       <select
         id={id}
+        className="target-picker__native"
         value={selectedId ?? ''}
         onChange={(e) => onSelect(e.target.value ? Number(e.target.value) : null)}
-        style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: '1px', height: '1px' }}
         tabIndex={-1}
         aria-hidden="true"
       >
@@ -88,144 +173,87 @@ function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogT
         ))}
       </select>
 
-      {/* Selected Target Card */}
       {selectedItem ? (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '10px 14px',
-            background: 'var(--surface-raised, var(--surface))',
-            border: '1.5px solid var(--ok, #10b981)',
-            borderRadius: '10px',
-            boxShadow: '0 2px 8px rgba(16, 185, 129, 0.1)',
-            gap: '12px',
-            flexWrap: 'wrap'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '1.4rem' }}>{icon}</span>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--text)' }}>
-                {selectedItem.name} {selectedItem.sku ? `(${selectedItem.sku})` : ''}
-              </div>
-              <div style={{ fontSize: '11px', color: 'var(--ok, #10b981)', fontWeight: 600 }}>
-                ✓ {typeLabel} {t("selected")} · {type === 'Product' ? t("Applies strictly to this product") : t("Applies to all products in this scope")}
-              </div>
-            </div>
+        <div className="target-chosen">
+          <span className="target-chosen__icon">
+            <Icon name={TARGET_ICON[type]} width={17} height={17} />
+          </span>
+          <div className="target-chosen__text">
+            <span className="target-chosen__name">
+              {selectedItem.name}
+              {selectedItem.sku ? <span className="target-chosen__sku">{selectedItem.sku}</span> : null}
+            </span>
+            <span className="target-chosen__note">
+              <Icon name="check" width={12} height={12} />
+              {typeLabel} {t("selected")} · {type === 'Product' ? t("Applies strictly to this product") : t("Applies to all products in this scope")}
+            </span>
           </div>
-          <div className="row" style={{ gap: '6px' }}>
+          <div className="target-chosen__actions">
             <button
               type="button"
               className="btn btn--sm btn--outline"
-              style={{ fontSize: '11px', padding: '4px 10px', borderRadius: 'var(--radius-pill)' }}
               onClick={() => setShowDropdown((prev) => !prev)}
             >
-              {showDropdown ? t("Close Search ▲") : t("Change Target 🔍")}
+              {showDropdown ? t("Close search") : t("Change target")}
             </button>
             <button
               type="button"
-              className="btn btn--sm"
-              style={{ fontSize: '11px', padding: '4px 10px', borderRadius: 'var(--radius-pill)' }}
+              className="target-chosen__clear"
               onClick={() => {
                 onSelect(null);
                 setShowDropdown(true);
               }}
               title={t("Clear selection")}
+              aria-label={t("Clear selection")}
             >
-              ✕ {t("Clear")}
+              <Icon name="x" width={13} height={13} />
             </button>
           </div>
         </div>
       ) : (
-        <div style={{ fontSize: 'var(--text-xs)', color: 'var(--warn-text, #f59e0b)', fontWeight: 600 }}>
-          ⚠️ {t("Please select a target below to apply this discount:")}
-        </div>
+        <p className="target-picker__prompt">
+          <Icon name="target" width={14} height={14} />
+          {t("Please select a target below to apply this discount:")}
+        </p>
       )}
 
-      {/* Search & Selection Dropdown Menu */}
       {(showDropdown || !selectedId) && (
-        <div
-          style={{
-            padding: '12px',
-            background: 'var(--surface-sunken)',
-            borderRadius: '10px',
-            border: '1px solid var(--border)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px'
-          }}
-        >
-          {/* Quick Popular Pills */}
+        <div className="target-search">
           {popularItems.length > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
-                {t("Quick Select:")}
-              </span>
+            <div className="target-search__quick">
+              <span className="target-search__quick-label">{t("Quick Select:")}</span>
               {popularItems.map((p) => (
                 <button
                   key={p.id}
                   type="button"
                   className={`discount-quick-pill ${selectedId === p.id ? 'discount-quick-pill--active' : ''}`}
-                  onClick={() => {
-                    onSelect(p.id);
-                    setShowDropdown(false);
-                    setSearchTerm('');
-                  }}
+                  onClick={() => choose(p.id)}
                 >
-                  {icon} {p.name}
+                  {p.name}
                 </button>
               ))}
             </div>
           )}
 
-          {/* Search Input Bar */}
-          <div className="row" style={{ gap: '8px', alignItems: 'center' }}>
+          <div className="target-search__bar">
+            <Icon name="search" width={15} height={15} />
             <input
               type="search"
-              placeholder={`🔍 ${placeholder}`}
+              aria-label={placeholder}
+              placeholder={placeholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                flex: 1,
-                padding: '7px 12px',
-                fontSize: 'var(--text-xs)',
-                borderRadius: '8px',
-                border: '1px solid var(--border)',
-                background: 'var(--surface)'
-              }}
             />
             {searchTerm && (
-              <button
-                type="button"
-                className="btn btn--sm"
-                onClick={() => setSearchTerm('')}
-                style={{ padding: '4px 8px', fontSize: '11px' }}
-              >
-                ✕ {t("Clear")}
+              <button type="button" className="target-search__clear" onClick={() => setSearchTerm('')} aria-label={t("Clear")}>
+                <Icon name="x" width={13} height={13} />
               </button>
             )}
           </div>
 
-          {/* Clean Scrollable List of Choices */}
-          <div
-            style={{
-              maxHeight: '180px',
-              overflowY: 'auto',
-              background: 'var(--surface)',
-              borderRadius: '8px',
-              border: '1px solid var(--border)',
-              padding: '4px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px'
-            }}
-          >
+          <div className="target-list">
             {filtered.length === 0 ? (
-              <div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-                {t("No matching items found.")}
-              </div>
+              <p className="target-list__empty">{t("No matching items found.")}</p>
             ) : (
               filtered.map((item) => {
                 const isSelected = selectedId === item.id;
@@ -233,49 +261,14 @@ function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogT
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => {
-                      onSelect(item.id);
-                      setShowDropdown(false);
-                      setSearchTerm('');
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                      padding: '7px 10px',
-                      borderRadius: '6px',
-                      border: 'none',
-                      background: isSelected ? 'var(--selected-bg, rgba(245, 158, 11, 0.15))' : 'transparent',
-                      color: isSelected ? 'var(--accent-text, #d97706)' : 'var(--text)',
-                      fontWeight: isSelected ? 700 : 500,
-                      fontSize: 'var(--text-xs)',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      transition: 'background 0.15s ease'
-                    }}
+                    className={`target-row ${isSelected ? 'target-row--active' : ''}`}
+                    aria-pressed={isSelected}
+                    onClick={() => choose(item.id)}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
-                      <span>{icon}</span>
-                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                        {item.name}
-                      </span>
-                      {item.sku && (
-                        <span style={{ fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-sunken)', padding: '1px 5px', borderRadius: '4px' }}>
-                          {item.sku}
-                        </span>
-                      )}
-                      {item.price !== undefined && (
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                          · {t("BDT")} {item.price.toLocaleString()}
-                        </span>
-                      )}
-                    </div>
-                    {isSelected && (
-                      <span style={{ color: 'var(--ok, #10b981)', fontWeight: 750, marginLeft: '8px' }}>
-                        ✓
-                      </span>
-                    )}
+                    <span className="target-row__name">{item.name}</span>
+                    {item.sku ? <span className="target-row__sku">{item.sku}</span> : null}
+                    {item.price !== undefined ? <span className="target-row__price">{formatMoney(item.price)}</span> : null}
+                    {isSelected ? <Icon name="check" width={14} height={14} /> : null}
                   </button>
                 );
               })
@@ -552,6 +545,67 @@ export function AdminPage() {
   const allBrands = brandsQuery.data ?? [];
   const productsQuery = useProducts({ q: '', page: 1, pageSize: 100 });
   const allProducts = productsQuery.data?.items ?? [];
+
+  // --- coupon builder derivations: these read the form, they never hold a second copy of it -------
+  const applyCouponTemplate = (template: CouponTemplate) => {
+    const values = template.values;
+    setCouponCode(values.couponCode);
+    setDiscountType(values.discountType);
+    setDiscountValue(values.discountValue);
+    setCouponTargetType(values.couponTargetType);
+    setMinOrderAmount(values.minOrderAmount);
+    setMaxDiscountCap(values.maxDiscountCap);
+    setCampaignTitle(values.campaignTitle);
+    setIsBannerPromoted(values.isBannerPromoted);
+    setIsAutomatic(values.isAutomatic);
+    if (values.couponTargetType === 'Order') {
+      setTargetId(null);
+      return;
+    }
+    const pool = values.couponTargetType === 'Category' ? allCategories : values.couponTargetType === 'Brand' ? allBrands : allProducts;
+    const hint = (template.targetHint ?? '').toLowerCase();
+    const picked = pool.find(item => item.name.toLowerCase().includes(hint)) ?? pool[0];
+    setTargetId(picked?.id ?? null);
+  };
+
+  // A template reads as applied only while the builder still holds exactly what it wrote.
+  const activeTemplateId = COUPON_TEMPLATES.find(template => {
+    const values = template.values;
+    return values.couponCode === couponCode.trim().toUpperCase()
+      && values.discountType === discountType
+      && values.discountValue === discountValue
+      && values.couponTargetType === couponTargetType
+      && values.minOrderAmount === minOrderAmount
+      && values.maxDiscountCap === maxDiscountCap
+      && values.isAutomatic === isAutomatic
+      && values.isBannerPromoted === isBannerPromoted;
+  })?.id ?? null;
+
+  const targetedName = couponTargetType === 'Category'
+    ? allCategories.find(item => item.id === targetId)?.name
+    : couponTargetType === 'Brand'
+    ? allBrands.find(item => item.id === targetId)?.name
+    : couponTargetType === 'Product'
+    ? allProducts.find(item => item.id === targetId)?.name
+    : undefined;
+
+  const valueNumber = Number(discountValue);
+  const capNumber = Number(maxDiscountCap);
+  const minimumNumber = Number(minOrderAmount);
+  // The ticket quotes one basket so the operator can see the money the rule produces, using the same
+  // arithmetic the server applies: a percentage is taken off the basket and then capped.
+  const sampleBasket = Math.max(Number.isFinite(minimumNumber) ? minimumNumber : 0, 3000);
+  const rawSavings = discountType === 'Percentage'
+    ? sampleBasket * (Number.isFinite(valueNumber) ? valueNumber : 0) / 100
+    : Number.isFinite(valueNumber) ? valueNumber : 0;
+  const sampleSavings = Math.min(
+    rawSavings,
+    sampleBasket,
+    discountType === 'Percentage' && capNumber > 0 ? capNumber : sampleBasket
+  );
+  const remainingDays = expiresAt
+    ? Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 86_400_000)
+    : null;
 
   const submitUser = async (event: FormEvent) => {
     event.preventDefault();
@@ -891,157 +945,82 @@ export function AdminPage() {
 
       {tab === 'coupons' ? (
         <section role="tabpanel" id="panel-coupons" aria-labelledby="tab-coupons" className="stack">
-          {/* Quick-Fill Rule Templates */}
-          <div style={{ marginBottom: 'var(--space-4)', padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-raised)', borderRadius: 'var(--radius-md, 8px)', border: '1px solid var(--border)' }}>
-            <div className="row-between" style={{ marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
-              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', fontWeight: 700 }}>
-                ✨ {t("Quick Templates (1-Click Fill):")}
+          {/* Start-from-a-play rail: every card states the rule it writes, so nothing is applied blind. */}
+          <div className="coupon-templates">
+            <div className="coupon-templates__head">
+              <span className="coupon-templates__label">
+                <Icon name="spark" width={14} height={14} />
+                {t("Quick Templates (1-Click Fill):")}
               </span>
-              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+              <span className="coupon-templates__hint">
                 {t("Only Code & Discount are required — all other metadata below is optional.")}
               </span>
             </div>
-            <div className="row" style={{ gap: '8px', flexWrap: 'wrap' }}>
-              <button
-                type="button"
-                className="btn btn--sm"
-                onClick={() => {
-                  setCouponCode('SAVE10');
-                  setDiscountType('Percentage');
-                  setDiscountValue('10');
-                  setCouponTargetType('Order');
-                  setTargetId(null);
-                  setMinOrderAmount('0');
-                  setMaxDiscountCap('1500');
-                  setCampaignTitle('⚡ Flash Sale: 10% OFF Storewide');
-                  setIsBannerPromoted(true);
-                  setIsAutomatic(false);
-                }}
-              >
-                ⚡ {t("10% Storewide Deal")}
-              </button>
-              <button
-                type="button"
-                className="btn btn--sm"
-                onClick={() => {
-                  setCouponCode('FOOTWEAR20');
-                  setDiscountType('Percentage');
-                  setDiscountValue('20');
-                  setCouponTargetType('Category');
-                  const cat = allCategories.find(c => c.name.toLowerCase().includes('footwear')) || allCategories[0];
-                  setTargetId(cat ? cat.id : null);
-                  setMinOrderAmount('1000');
-                  setMaxDiscountCap('2000');
-                  setCampaignTitle('👟 20% OFF Footwear Summer Sale');
-                  setIsBannerPromoted(true);
-                  setIsAutomatic(false);
-                }}
-              >
-                👟 {t("20% Off Footwear (Category)")}
-              </button>
-              <button
-                type="button"
-                className="btn btn--sm"
-                onClick={() => {
-                  setCouponCode('APEX15');
-                  setDiscountType('Percentage');
-                  setDiscountValue('15');
-                  setCouponTargetType('Brand');
-                  const brand = allBrands.find(b => b.name.toLowerCase().includes('apex')) || allBrands[0];
-                  setTargetId(brand ? brand.id : null);
-                  setMinOrderAmount('500');
-                  setMaxDiscountCap('1500');
-                  setCampaignTitle('🏷️ 15% OFF All Apex Shoes');
-                  setIsBannerPromoted(true);
-                  setIsAutomatic(false);
-                }}
-              >
-                🏷️ {t("15% Off Apex Brand (Brand)")}
-              </button>
-              <button
-                type="button"
-                className="btn btn--sm"
-                onClick={() => {
-                  setCouponCode('DURAMO25');
-                  setDiscountType('Percentage');
-                  setDiscountValue('25');
-                  setCouponTargetType('Product');
-                  const prod = allProducts.find(p => p.name.toLowerCase().includes('duramo')) || allProducts[0];
-                  setTargetId(prod ? prod.id : null);
-                  setMinOrderAmount('0');
-                  setMaxDiscountCap('3000');
-                  setCampaignTitle('👟 25% OFF Duramo SL Running Shoes');
-                  setIsBannerPromoted(true);
-                  setIsAutomatic(false);
-                }}
-              >
-                📦 {t("25% Off Duramo Shoe (Product)")}
-              </button>
-              <button
-                type="button"
-                className="btn btn--sm"
-                onClick={() => {
-                  setCouponCode('AUTOMEGA');
-                  setDiscountType('Percentage');
-                  setDiscountValue('10');
-                  setCouponTargetType('Order');
-                  setTargetId(null);
-                  setMinOrderAmount('2000');
-                  setMaxDiscountCap('2000');
-                  setCampaignTitle('⚡ Automatic Deal: 10% OFF on BDT 2,000+ Baskets');
-                  setIsBannerPromoted(true);
-                  setIsAutomatic(true);
-                }}
-              >
-                🤖 {t("10% Auto-Applied Deal")}
-              </button>
-              <button
-                type="button"
-                className="btn btn--sm"
-                onClick={() => {
-                  setCouponCode('VIP500');
-                  setDiscountType('FixedAmount');
-                  setDiscountValue('500');
-                  setCouponTargetType('Order');
-                  setTargetId(null);
-                  setMinOrderAmount('2500');
-                  setMaxDiscountCap('');
-                  setCampaignTitle('🎁 BDT 500 OFF on Orders > BDT 2,500');
-                  setIsBannerPromoted(false);
-                  setIsAutomatic(false);
-                }}
-              >
-                🛒 {t("BDT 500 Off Cart > 2500")}
-              </button>
+            <div className="coupon-templates__rail">
+              {COUPON_TEMPLATES.map((template) => {
+                const values = template.values;
+                const rule = values.discountType === 'Percentage'
+                  ? `${values.discountValue}% ${t("off")}`
+                  : `${t("BDT")} ${values.discountValue} ${t("off")}`;
+                const scope = values.couponTargetType === 'Order'
+                  ? t("Storewide")
+                  : t(values.couponTargetType);
+                const floor = values.minOrderAmount === '0'
+                  ? t("No minimum")
+                  : `${t("BDT")} ${values.minOrderAmount}+`;
+                const active = activeTemplateId === template.id;
+                return (
+                  <button
+                    key={template.id}
+                    type="button"
+                    className={`coupon-template ${active ? 'coupon-template--active' : ''}`}
+                    onClick={() => applyCouponTemplate(template)}
+                    aria-pressed={active}
+                  >
+                    <span className="coupon-template__top">
+                      <span className="coupon-template__icon">
+                        <Icon name={template.icon} width={16} height={16} />
+                      </span>
+                      <span className="coupon-template__code">{values.couponCode}</span>
+                    </span>
+                    <span className="coupon-template__name">{t(template.name)}</span>
+                    <span className="coupon-template__rule">{rule} · {scope} · {floor}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
           <form onSubmit={submitCoupon} className="discount-builder-layout">
-            {/* Left Column: Multi-Rule Configurator */}
+            {/* Left column: the five rules, read top to bottom */}
             <div className="discount-rules-column">
-              {/* Card 1: Method & Coupon Code */}
-              <div className="discount-config-card">
+              <div className="discount-config-card" data-testid="discount-step-1">
                 <div className="discount-card-header">
                   <h4 className="discount-card-title">
-                    <span className="discount-card-step">1</span>
+                    <span className={`discount-card-step ${couponCode.trim() ? 'discount-card-step--done' : ''}`}>
+                      {couponCode.trim() ? <Icon name="check" width={12} height={12} /> : '1'}
+                    </span>
                     {t("Promotion Method & Code")}
                   </h4>
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                  <span className="discount-card-flag">
                     {isAutomatic ? t("Auto-applied in cart") : t("Customer code at checkout")}
                   </span>
                 </div>
 
-                {/* Method Switcher Tabs: Code vs Automatic */}
                 <div className="discount-method-tabs" role="tablist">
                   <button
                     type="button"
+                    role="tab"
+                    aria-selected={!isAutomatic}
                     className={`discount-method-tab ${!isAutomatic ? 'discount-method-tab--active' : ''}`}
                     onClick={() => setIsAutomatic(false)}
                   >
-                    <span>🎟️</span>
-                    <span>{t("Discount Code")}</span>
+                    <Icon name="ticket" width={15} height={15} />
+                    {t("Discount Code")}
                   </button>
                   <button
                     type="button"
+                    role="tab"
+                    aria-selected={isAutomatic}
                     className={`discount-method-tab ${isAutomatic ? 'discount-method-tab--active' : ''}`}
                     onClick={() => {
                       setIsAutomatic(true);
@@ -1050,78 +1029,70 @@ export function AdminPage() {
                       }
                     }}
                   >
-                    <span>⚡</span>
-                    <span>{t("Automatic Promotion")}</span>
+                    <Icon name="bolt" width={15} height={15} />
+                    {t("Automatic Promotion")}
                   </button>
                 </div>
 
                 <div className="field">
-                  <div className="row-between" style={{ alignItems: 'baseline' }}>
+                  <div className="field__aside">
                     <label htmlFor="coupon-code">
-                      {t("Coupon code")}{' '}
-                      <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
+                      {t("Coupon code")} <span className="field__required">{t("Required")}</span>
                     </label>
-                    <button
-                      type="button"
-                      className="btn-link"
-                      style={{
-                        fontSize: '11px',
-                        color: 'var(--brand, #f59e0b)',
-                        cursor: 'pointer',
-                        background: 'none',
-                        border: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '2px',
-                        padding: 0
-                      }}
-                      onClick={generateNewCouponCode}
-                      title={t("Generate Code")}
-                    >
-                      ⚡ {t("Auto-generate")}
+                    <button type="button" className="field__action" onClick={generateNewCouponCode}>
+                      <Icon name="shuffle" width={13} height={13} />
+                      {t("Auto-generate")}
                     </button>
                   </div>
-                  <div className="row" style={{ gap: '8px', alignItems: 'center' }}>
+                  <div className="field__with-action">
                     <input
                       id="coupon-code"
                       type="text"
                       required
+                      className="coupon-code-input"
                       placeholder={t("e.g. SUMMER25")}
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                      style={{ flex: 1, minWidth: 0, textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px' }}
                     />
                     {couponCode && (
                       <button
                         type="button"
-                        className="btn btn--sm"
-                        style={{ padding: '6px 10px' }}
+                        className="icon-tile"
                         onClick={() => copyToClipboard(couponCode)}
                         title={t("Copy code")}
+                        aria-label={t("Copy code")}
                       >
-                        📋
+                        <Icon name="copy" width={15} height={15} />
                       </button>
                     )}
                   </div>
                 </div>
 
                 {isAutomatic && (
-                  <div style={{ padding: '8px 12px', background: 'var(--surface-sunken)', borderRadius: '6px', border: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                    🤖 <strong>{t("Automatic Promotion:")}</strong> {t("This discount will automatically apply at checkout to eligible orders without the shopper needing to manually enter a code.")}
-                  </div>
+                  <p className="discount-note">
+                    <Icon name="bolt" width={14} height={14} />
+                    <span>
+                      <strong>{t("Automatic Promotion:")}</strong>{' '}
+                      {t("This discount will automatically apply at checkout to eligible orders without the shopper needing to manually enter a code.")}
+                    </span>
+                  </p>
                 )}
               </div>
 
-              {/* Card 2: Discount Value & Calculation */}
-              <div className="discount-config-card">
+              <div className="discount-config-card" data-testid="discount-step-2">
                 <div className="discount-card-header">
                   <h4 className="discount-card-title">
-                    <span className="discount-card-step">2</span>
+                    <span className={`discount-card-step ${Number(discountValue) > 0 ? 'discount-card-step--done' : ''}`}>
+                      {Number(discountValue) > 0 ? <Icon name="check" width={12} height={12} /> : '2'}
+                    </span>
                     {t("Discount Value & Calculation")}
                   </h4>
+                  <span className="discount-card-flag">
+                    {discountType === 'Percentage' ? t("Percentage (%)") : t("Fixed Amount (BDT)")}
+                  </span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+                <div className="discount-field-grid">
                   <div className="field">
                     <label htmlFor="coupon-type">{t("Discount type")}</label>
                     <select
@@ -1137,7 +1108,7 @@ export function AdminPage() {
                   <div className="field">
                     <label htmlFor="coupon-value">
                       {discountType === 'Percentage' ? t("Discount percentage (%)") : t("Discount amount (BDT)")}{' '}
-                      <strong style={{ color: 'var(--brand, #f59e0b)', fontSize: '11px' }}>({t("Required")})</strong>
+                      <span className="field__required">{t("Required")}</span>
                     </label>
                     <input
                       id="coupon-value"
@@ -1153,11 +1124,8 @@ export function AdminPage() {
                   </div>
                 </div>
 
-                {/* Quick Value Chips */}
-                <div>
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
-                    {t("Quick Values:")}
-                  </span>
+                <div className="field">
+                  <span className="field__label-row">{t("Quick Values:")}</span>
                   <div className="discount-quick-pills">
                     {discountType === 'Percentage'
                       ? ['5', '10', '15', '20', '25', '30', '50'].map((val) => (
@@ -1195,83 +1163,57 @@ export function AdminPage() {
                       value={maxDiscountCap}
                       onChange={(e) => setMaxDiscountCap(e.target.value)}
                     />
-                    <small className="muted" style={{ fontSize: '11px' }}>
-                      {t("Prevents very large percentage deductions on high-value carts.")}
-                    </small>
+                    <span className="field__hint">{t("Prevents very large percentage deductions on high-value carts.")}</span>
                   </div>
                 )}
               </div>
 
-              {/* Card 3: Target Scope & Applies-To Rules */}
-              <div className="discount-config-card">
+              <div className="discount-config-card" data-testid="discount-step-3">
                 <div className="discount-card-header">
                   <h4 className="discount-card-title">
-                    <span className="discount-card-step">3</span>
+                    <span className={`discount-card-step ${couponTargetType === 'Order' || targetId ? 'discount-card-step--done' : ''}`}>
+                      {couponTargetType === 'Order' || targetId ? <Icon name="check" width={12} height={12} /> : '3'}
+                    </span>
                     {t("Applies to / Target Scope")}
                   </h4>
                 </div>
 
-                <div className="discount-quick-pills">
-                  <button
-                    type="button"
-                    className={`btn btn--sm ${couponTargetType === 'Order' ? 'btn--primary' : 'btn--outline'}`}
-                    onClick={() => {
-                      setCouponTargetType('Order');
-                      setTargetId(null);
-                    }}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <span>🛒</span>
-                    <strong>{t("Entire Order / Basket")}</strong>
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn btn--sm ${couponTargetType === 'Category' ? 'btn--primary' : 'btn--outline'}`}
-                    onClick={() => {
-                      setCouponTargetType('Category');
-                      if (allCategories.length > 0 && !targetId) {
-                        setTargetId(allCategories[0].id);
-                      }
-                    }}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <span>📁</span>
-                    <strong>{t("Specific Category (e.g. Footwear)")}</strong>
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn btn--sm ${couponTargetType === 'Brand' ? 'btn--primary' : 'btn--outline'}`}
-                    onClick={() => {
-                      setCouponTargetType('Brand');
-                      if (allBrands.length > 0 && !targetId) {
-                        setTargetId(allBrands[0].id);
-                      }
-                    }}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <span>🏷️</span>
-                    <strong>{t("Specific Brand")}</strong>
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn btn--sm ${couponTargetType === 'Product' ? 'btn--primary' : 'btn--outline'}`}
-                    onClick={() => {
-                      setCouponTargetType('Product');
-                      if (allProducts.length > 0 && !targetId) {
-                        setTargetId(allProducts[0].id);
-                      }
-                    }}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <span>📦</span>
-                    <strong>{t("Specific Product")}</strong>
-                  </button>
+                <div className="discount-scope">
+                  {([
+                    ['Order', 'cart', t("Entire Order / Basket")],
+                    ['Category', 'folder', t("Specific Category (e.g. Footwear)")],
+                    ['Brand', 'tag', t("Specific Brand")],
+                    ['Product', 'box', t("Specific Product")]
+                  ] as Array<[CouponTargetType, IconName, string]>).map(([kind, icon, label]) => (
+                    <button
+                      key={kind}
+                      type="button"
+                      className={`discount-scope__option ${couponTargetType === kind ? 'discount-scope__option--active' : ''}`}
+                      aria-pressed={couponTargetType === kind}
+                      onClick={() => {
+                        setCouponTargetType(kind);
+                        if (kind === 'Order') {
+                          setTargetId(null);
+                          return;
+                        }
+                        const pool = kind === 'Category' ? allCategories : kind === 'Brand' ? allBrands : allProducts;
+                        if (!targetId && pool.length > 0) setTargetId(pool[0].id);
+                      }}
+                    >
+                      <Icon name={icon} width={15} height={15} />
+                      <span>{label}</span>
+                    </button>
+                  ))}
                 </div>
 
                 {couponTargetType === 'Order' && (
-                  <div style={{ padding: '10px 14px', background: 'var(--surface-sunken)', borderRadius: '8px', border: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                    ✅ <strong>{t("Storewide Basket Scope:")}</strong> {t("Discount applies to all eligible products in customer basket when minimum order is met.")}
-                  </div>
+                  <p className="discount-note">
+                    <Icon name="check" width={14} height={14} />
+                    <span>
+                      <strong>{t("Storewide Basket Scope:")}</strong>{' '}
+                      {t("Discount applies to all eligible products in customer basket when minimum order is met.")}
+                    </span>
+                  </p>
                 )}
 
                 {couponTargetType === 'Category' && (
@@ -1305,16 +1247,16 @@ export function AdminPage() {
                 )}
               </div>
 
-              {/* Card 4: Spend Conditions & Usage Limits */}
-              <div className="discount-config-card">
+              <div className="discount-config-card" data-testid="discount-step-4">
                 <div className="discount-card-header">
                   <h4 className="discount-card-title">
                     <span className="discount-card-step">4</span>
                     {t("Minimum Spend & Usage Limits")}
                   </h4>
+                  <span className="discount-card-flag">{t("Optional")}</span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+                <div className="discount-field-grid">
                   <div className="field">
                     <label htmlFor="coupon-min-order">{t("Minimum order amount (BDT)")}</label>
                     <input
@@ -1326,7 +1268,7 @@ export function AdminPage() {
                       value={minOrderAmount}
                       onChange={(e) => setMinOrderAmount(e.target.value)}
                     />
-                    <div className="discount-quick-pills" style={{ marginTop: '4px' }}>
+                    <div className="discount-quick-pills">
                       {['0', '500', '1000', '2000', '2500', '5000'].map((amt) => (
                         <button
                           key={amt}
@@ -1350,7 +1292,7 @@ export function AdminPage() {
                       value={usageLimit}
                       onChange={(e) => setUsageLimit(e.target.value)}
                     />
-                    <div className="discount-quick-pills" style={{ marginTop: '4px' }}>
+                    <div className="discount-quick-pills">
                       {['', '50', '100', '500', '1000'].map((lim) => (
                         <button
                           key={lim}
@@ -1366,16 +1308,16 @@ export function AdminPage() {
                 </div>
               </div>
 
-              {/* Card 5: Active Dates & Campaign Placement */}
-              <div className="discount-config-card">
+              <div className="discount-config-card" data-testid="discount-step-5">
                 <div className="discount-card-header">
                   <h4 className="discount-card-title">
                     <span className="discount-card-step">5</span>
                     {t("Active Dates & Campaign Placement")}
                   </h4>
+                  <span className="discount-card-flag">{t("Optional")}</span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+                <div className="discount-field-grid">
                   <div className="field">
                     <label htmlFor="coupon-starts-at">{t("Start date & time (optional)")}</label>
                     <input
@@ -1394,32 +1336,16 @@ export function AdminPage() {
                       value={expiresAt}
                       onChange={(e) => setExpiresAt(e.target.value)}
                     />
-                    <div className="discount-quick-pills" style={{ marginTop: '4px' }}>
-                      <button
-                        type="button"
-                        className="discount-quick-pill"
-                        onClick={() => applyDurationPreset(7)}
-                      >
-                        +7 {t("Days")}
-                      </button>
-                      <button
-                        type="button"
-                        className="discount-quick-pill"
-                        onClick={() => applyDurationPreset(14)}
-                      >
-                        +14 {t("Days")}
-                      </button>
-                      <button
-                        type="button"
-                        className="discount-quick-pill"
-                        onClick={() => applyDurationPreset(30)}
-                      >
-                        +30 {t("Days")}
-                      </button>
+                    <div className="discount-quick-pills">
+                      {[7, 14, 30].map((days) => (
+                        <button key={days} type="button" className="discount-quick-pill" onClick={() => applyDurationPreset(days)}>
+                          +{days} {t("Days")}
+                        </button>
+                      ))}
                       <button
                         type="button"
                         className={`discount-quick-pill ${!expiresAt ? 'discount-quick-pill--active' : ''}`}
-                        onClick={() => setExpiresAt('')}
+                        onClick={() => applyDurationPreset(null)}
                       >
                         {t("Never")}
                       </button>
@@ -1438,7 +1364,7 @@ export function AdminPage() {
                   />
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+                <div className="discount-toggles">
                   <label className="checkbox">
                     <input
                       type="checkbox"
@@ -1460,80 +1386,94 @@ export function AdminPage() {
               </div>
             </div>
 
-            {/* Right Column: Live Digital Ticket Voucher & Summary */}
+            {/* Right column: the coupon as the shopper will meet it */}
             <div className="voucher-ticket-container">
               <div className="voucher-ticket">
-                <div className="voucher-ticket__header">
-                  <div className="voucher-ticket__notch-left" />
-                  <div className="voucher-ticket__notch-right" />
-                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-muted)', fontWeight: 700 }}>
+                <div className="voucher-ticket__head">
+                  <span className="voucher-ticket__kind">
                     {isAutomatic ? t("Automatic Discount") : t("Discount Coupon")}
                   </span>
-                  <div className="voucher-ticket__badge">
-                    {discountType === 'Percentage' ? `${discountValue || '10'}% OFF` : `${t("BDT")} ${discountValue || '100'} OFF`}
-                  </div>
-                  <div className="voucher-ticket__code-badge">
-                    <span>{couponCode.trim() ? couponCode.trim().toUpperCase() : 'CODE'}</span>
+                  <span className="voucher-ticket__value">
+                    {discountType === 'Percentage' ? `${discountValue || '10'}%` : `${t("BDT")} ${discountValue || '100'}`}
+                    <span className="voucher-ticket__unit">{t("off")}</span>
+                  </span>
+                  <span className="voucher-ticket__code">
+                    <span className="voucher-ticket__code-text">{couponCode.trim() ? couponCode.trim().toUpperCase() : 'CODE'}</span>
                     {couponCode && (
-                      <span style={{ cursor: 'pointer', fontSize: '12px' }} onClick={() => copyToClipboard(couponCode)} title={t("Copy code")}>
-                        📋
-                      </span>
+                      <button
+                        type="button"
+                        className="voucher-ticket__copy"
+                        onClick={() => copyToClipboard(couponCode)}
+                        title={t("Copy code")}
+                        aria-label={t("Copy code")}
+                      >
+                        <Icon name="copy" width={13} height={13} />
+                      </button>
                     )}
-                  </div>
+                  </span>
                   {campaignTitle && (
-                    <span className="badge badge--ok" style={{ fontSize: '11px', marginTop: '2px' }}>
-                      📢 {campaignTitle}
+                    <span className="voucher-ticket__campaign">
+                      <Icon name="megaphone" width={13} height={13} />
+                      {campaignTitle}
                     </span>
                   )}
                 </div>
 
+                <div className="voucher-ticket__perf">
+                  <span className="voucher-ticket__notch voucher-ticket__notch--left" />
+                  <span className="voucher-ticket__notch voucher-ticket__notch--right" />
+                  <span className="voucher-ticket__barcode" aria-hidden="true" />
+                </div>
+
                 <div className="voucher-ticket__body">
-                  <div style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {t("Active Rules Summary")}
+                  <div className="voucher-ticket__sample">
+                    <span className="voucher-ticket__sample-label">{t("Sample basket")}</span>
+                    <span className="voucher-ticket__sample-value">{formatMoney(sampleBasket)}</span>
+                    <span className="voucher-ticket__sample-save">
+                      {t("You save")} {formatMoney(sampleSavings)}
+                      {discountType === 'Percentage' && capNumber > 0 && rawSavings > capNumber ? ` · ${t("Max Savings Cap")}` : ''}
+                    </span>
                   </div>
 
-                  <div className="voucher-rule-item">
-                    <span className="voucher-rule-icon">🎯</span>
+                  <div className="voucher-ticket__rules-head">{t("Active Rules Summary")}</div>
+
+                  <div className="voucher-rule">
+                    <Icon name="target" width={14} height={14} />
                     <div>
                       <strong>{t("Scope")}: </strong>
                       {couponTargetType === 'Order'
                         ? t("Entire Order / Basket (Storewide)")
-                        : couponTargetType === 'Category'
-                        ? `${t("Category")}: ${allCategories.find((c) => c.id === targetId)?.name ?? t("Select category")}`
-                        : couponTargetType === 'Brand'
-                        ? `${t("Brand")}: ${allBrands.find((b) => b.id === targetId)?.name ?? t("Select brand")}`
-                        : `${t("Product")}: ${allProducts.find((p) => p.id === targetId)?.name ?? t("Select product")}`}
+                        : `${t(couponTargetType)}: ${targetedName ?? t(`Select ${couponTargetType.toLowerCase()}`)}`}
                     </div>
                   </div>
 
-                  <div className="voucher-rule-item">
-                    <span className="voucher-rule-icon">💰</span>
+                  <div className="voucher-rule">
+                    <Icon name="wallet" width={14} height={14} />
                     <div>
                       <strong>{t("Minimum Spend")}: </strong>
-                      {Number(minOrderAmount) > 0 ? `${t("BDT")} ${minOrderAmount}` : t("None (Any amount)")}
+                      {minimumNumber > 0 ? formatMoney(minimumNumber) : t("None (Any amount)")}
                     </div>
                   </div>
 
-                  {discountType === 'Percentage' && maxDiscountCap && (
-                    <div className="voucher-rule-item">
-                      <span className="voucher-rule-icon">🛡️</span>
+                  {discountType === 'Percentage' && capNumber > 0 && (
+                    <div className="voucher-rule">
+                      <Icon name="shield" width={14} height={14} />
                       <div>
-                        <strong>{t("Max Savings Cap")}: </strong>
-                        {t("BDT")} {maxDiscountCap}
+                        <strong>{t("Max Savings Cap")}: </strong>{formatMoney(capNumber)}
                       </div>
                     </div>
                   )}
 
-                  <div className="voucher-rule-item">
-                    <span className="voucher-rule-icon">👥</span>
+                  <div className="voucher-rule">
+                    <Icon name="users" width={14} height={14} />
                     <div>
                       <strong>{t("Usage Limit")}: </strong>
                       {usageLimit ? `${usageLimit} ${t("uses")}` : t("Unlimited")}
                     </div>
                   </div>
 
-                  <div className="voucher-rule-item">
-                    <span className="voucher-rule-icon">📅</span>
+                  <div className="voucher-rule">
+                    <Icon name="calendar" width={14} height={14} />
                     <div>
                       <strong>{t("Validity")}: </strong>
                       {startsAt ? `${t("Starts")} ${startsAt.slice(0, 10)} · ` : ''}
@@ -1542,37 +1482,47 @@ export function AdminPage() {
                   </div>
 
                   {isBannerPromoted && (
-                    <div className="voucher-rule-item">
-                      <span className="voucher-rule-icon">📢</span>
+                    <div className="voucher-rule">
+                      <Icon name="megaphone" width={14} height={14} />
                       <div>
-                        <strong>{t("Storefront Banner")}: </strong>
-                        {t("Promoted in top marquee banner")}
+                        <strong>{t("Storefront Banner")}: </strong>{t("Promoted in top marquee banner")}
                       </div>
                     </div>
                   )}
 
                   {isAutomatic && (
-                    <div className="voucher-rule-item">
-                      <span className="voucher-rule-icon">🤖</span>
+                    <div className="voucher-rule">
+                      <Icon name="cart" width={14} height={14} />
                       <div>
-                        <strong>{t("Cart Application")}: </strong>
-                        {t("Auto-applied at checkout")}
+                        <strong>{t("Cart Application")}: </strong>{t("Auto-applied at checkout")}
                       </div>
                     </div>
                   )}
                 </div>
+
+                {remainingDays !== null && (
+                  <div className={`voucher-ticket__foot ${remainingDays <= 3 ? 'voucher-ticket__foot--soon' : ''}`}>
+                    <Icon name="clock" width={13} height={13} />
+                    {remainingDays > 0 ? `${remainingDays} ${t("days left")}` : t("Expires in the past")}
+                  </div>
+                )}
               </div>
 
-              {/* Action Button */}
-              <button
-                type="submit"
-                className="btn btn--primary"
-                style={{ width: '100%', padding: '12px', fontSize: 'var(--text-sm)', fontWeight: 750, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-                disabled={createCoupon.isPending || !couponCode.trim() || !discountValue}
-              >
-                <span>🚀</span>
-                <span>{t(createCoupon.isPending ? 'Creating…' : 'Create Coupon')}</span>
-              </button>
+              <div className="voucher-action">
+                <button
+                  type="submit"
+                  className="btn btn--primary voucher-action__button"
+                  disabled={createCoupon.isPending || !couponCode.trim() || !discountValue}
+                >
+                  <Icon name="ticket" width={16} height={16} />
+                  {t(createCoupon.isPending ? 'Creating…' : 'Create Coupon')}
+                </button>
+                <p className="voucher-action__hint">
+                  {couponCode.trim() && discountValue
+                    ? t("Ready — this creates the coupon exactly as previewed.")
+                    : t("Add a code and a discount value to continue")}
+                </p>
+              </div>
             </div>
           </form>
 

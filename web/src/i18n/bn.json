@@ -1666,8 +1666,16 @@
   "Promoted in top marquee banner": "শীর্ষ মার্কি ব্যানারে প্রচারিত",
   "Cart Application": "কার্টে প্রয়োগ",
   "Applies strictly to this product": "শুধুমাত্র এই পণ্যের ক্ষেত্রে প্রযোজ্য",
-  "Close Search ▲": "অনুসন্ধান বন্ধ করুন ▲",
-  "Change Target 🔍": "লক্ষ্য পরিবর্তন করুন 🔍",
   "Please select a target below to apply this discount:": "এই ছাড় প্রয়োগ করতে অনুগ্রহ করে নিচে একটি লক্ষ্য নির্বাচন করুন:",
-  "Quick Select:": "দ্রুত নির্বাচন:"
+  "Quick Select:": "দ্রুত নির্বাচন:",
+  "Optional": "ঐচ্ছিক",
+  "off": "ছাড়",
+  "No minimum": "ন্যূনতম নেই",
+  "Change target": "লক্ষ্য পরিবর্তন করুন",
+  "Close search": "অনুসন্ধান বন্ধ করুন",
+  "Sample basket": "নমুনা কার্ট",
+  "days left": "দিন বাকি",
+  "Expires in the past": "মেয়াদ আগেই শেষ হয়েছে",
+  "Ready — this creates the coupon exactly as previewed.": "তৈরিতে প্রস্তুত — কাউপনটি ঠিক যেমন দেখানো হয়েছে তেমনই তৈরি হবে।",
+  "Add a code and a discount value to continue": "চালিয়ে যেতে একটি কোড ও ছাড়ের মান দিন"
 }

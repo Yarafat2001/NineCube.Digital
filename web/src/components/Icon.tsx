@@ -22,6 +22,19 @@ const paths = {
   sliders: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
   ban: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-7.07 7.07L16.93 19.07',
   x: 'M18 6 6 18M6 6l12 12',
+  ticket: 'M3 7h18v3.5a2 2 0 0 0 0 3V17H3v-3.5a2 2 0 0 0 0-3V7Zm9 0v10',
+  percent: 'M19 5 5 19M7.5 5.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4m9 9a2 2 0 1 0 0 4 2 2 0 0 0 0-4',
+  tag: 'M12 2H4v8l10 10 8-8L12 2Zm-4 4h.01',
+  bolt: 'M13 2 4 14h6l-1 8 10-13h-7l1-7Z',
+  copy: 'M9 9h11v11H9zM5 15H4V4h11v1',
+  shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z',
+  users: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8m12.5 10v-2a4 4 0 0 0-3-3.87',
+  megaphone: 'M3 11v2a1 1 0 0 0 1 1h2l7 4V6L6 10H4a1 1 0 0 0-1 1Zm15 1a4 4 0 0 0-2-3.46M16 9.5a2 2 0 0 1 0 4',
+  calendar: 'M5 5h14v16H5zM3 9h18M9 3v4m6-4v4',
+  target: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-4.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0-3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3',
+  folder: 'M3 6h6l2 2h10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z',
+  shuffle: 'M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5',
+  search: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm10 2-4.35-4.35',
 };
 export type IconName = keyof typeof paths;
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {
