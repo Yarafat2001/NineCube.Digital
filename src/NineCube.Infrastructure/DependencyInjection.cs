@@ -31,7 +31,7 @@ public static class DependencyInjection
         {
             options.UseNpgsql(connectionString, npgsql =>
             {
-                npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
             });
             options.ConfigureWarnings(w =>
             {

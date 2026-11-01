@@ -176,7 +176,6 @@ public sealed class CatalogService : ICatalogService
     public async Task<ProductDto> GetAsync(int id, CancellationToken ct = default)
     {
         var product = await _db.Products.AsNoTracking()
-            .AsSplitQuery()
             .Where(p => p.Id == id)
             .Select(Projection)
             .FirstOrDefaultAsync(ct);
@@ -189,7 +188,6 @@ public sealed class CatalogService : ICatalogService
         var threshold = await _settings.GetLowStockThresholdAsync(ct);
 
         return await _db.Products.AsNoTracking()
-            .AsSplitQuery()
             .Where(p => p.IsActive && p.StockQuantity <= threshold)
             .OrderBy(p => p.StockQuantity).ThenBy(p => p.Name)
             .Select(Projection)
