@@ -304,6 +304,26 @@ export function AdminPage() {
     }
   };
 
+  const openEditCoupon = (c: Coupon) => {
+    setEditingCoupon(c);
+    setEditDiscountValue(String(c.discountValue));
+    setEditMinOrder(String(c.minOrderAmount));
+    setEditMaxCap(c.maxDiscountCap ? String(c.maxDiscountCap) : '');
+    setEditUsageLimit(c.usageLimit ? String(c.usageLimit) : '');
+    setEditCampaignTitle(c.campaignTitle ?? '');
+    setEditStartsAt(c.startsAt ? c.startsAt.slice(0, 16) : '');
+    setEditExpiresAt(c.expiresAt ? c.expiresAt.slice(0, 16) : '');
+    setEditIsBanner(!!c.isBannerPromoted);
+    setEditIsAuto(!!c.isAutomatic);
+  };
+
+  const openEditGiftCard = (g: GiftCard) => {
+    setEditingGiftCard(g);
+    setEditGcRecipientName(g.recipientName ?? '');
+    setEditGcRecipientEmail(g.recipientEmail ?? '');
+    setEditGcNote(g.note ?? '');
+    setEditGcExpiresAt(g.expiresAt ? g.expiresAt.slice(0, 16) : '');
+  };
   const handleBulkCouponDelete = async () => {
     if (selectedCouponIds.length === 0 || isBulkBusy) return;
     setIsBulkBusy(true);
@@ -1360,64 +1380,72 @@ export function AdminPage() {
           ) : couponsQuery.isError ? (
             <ErrorState error={couponsQuery.error} onRetry={() => couponsQuery.refetch()} />
           ) : (
-            <div className="stack" style={{ gap: 'var(--space-2)' }}>
-              {/* Coupons Bulk Actions Bar */}
-              {selectedCouponIds.length > 0 && (
-                <div
-                  className="bulk-bar"
-                  data-testid="coupons-bulk-bar"
-                  role="toolbar"
-                  aria-label={t("Bulk actions for selected coupons")}
-                  style={{ marginBottom: 'var(--space-2)' }}
-                >
-                  <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
-                    <span className="badge badge--primary" style={{ fontWeight: 750, fontSize: 'var(--text-xs)' }}>
-                      {selectedCouponIds.length} {t("selected")}
-                    </span>
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                      {t("Bulk actions:")}
-                    </span>
-                  </div>
-
-                  <div className="row" style={{ gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <button
-                      type="button"
-                      className="btn btn--sm"
-                      disabled={isBulkBusy}
-                      onClick={() => handleBulkCouponStatus(true)}
-                      title={t("Enable selected coupons")}
-                    >
-                      ✓ {t("Enable Selected")}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn--sm"
-                      disabled={isBulkBusy}
-                      onClick={() => handleBulkCouponStatus(false)}
-                      title={t("Disable selected coupons")}
-                    >
-                      ⊘ {t("Disable Selected")}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn--sm btn--danger"
-                      disabled={isBulkBusy}
-                      onClick={() => setBulkReviewModal({ type: 'coupon', action: 'delete' })}
-                      title={t("Delete selected coupons")}
-                    >
-                      🗑️ {t("Delete Selected")}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn--sm btn--outline"
-                      disabled={isBulkBusy}
-                      onClick={() => setSelectedCouponIds([])}
-                    >
-                      {t("Clear selection")}
-                    </button>
-                  </div>
+            <div className="stack" style={{ gap: 'var(--space-3)' }}>
+              {/* Header with Title and Segmented Pill Dock (Matching Image 1) */}
+              <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center' }}>
+                <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0 }}>
+                    {t("Promotional Coupons & Discounts")} ({(couponsQuery.data ?? []).length})
+                  </h3>
+                  <span className={`badge ${selectedCouponIds.length > 0 ? 'badge--primary' : 'badge--neutral'}`} style={{ fontWeight: 700 }}>
+                    {selectedCouponIds.length} {t("selected")}
+                  </span>
                 </div>
-              )}
+
+                {/* Pill Segmented Controls (Matching Image 1) */}
+                <div className="bulk-pill-dock" role="toolbar" aria-label={t("Coupons bulk actions")}>
+                  <button
+                    type="button"
+                    className={`bulk-pill-btn ${selectedCouponIds.length === 1 ? 'bulk-pill-btn--primary' : ''}`}
+                    disabled={selectedCouponIds.length !== 1}
+                    onClick={() => {
+                      const c = (couponsQuery.data ?? []).find((item) => item.id === selectedCouponIds[0]);
+                      if (c) openEditCoupon(c);
+                    }}
+                    title={selectedCouponIds.length === 1 ? t("Edit selected coupon") : t("Select exactly 1 coupon to edit")}
+                  >
+                    ✏️ {t("Edit")}
+                  </button>
+                  <button
+                    type="button"
+                    className="bulk-pill-btn"
+                    disabled={selectedCouponIds.length === 0 || isBulkBusy}
+                    onClick={() => handleBulkCouponStatus(true)}
+                    title={t("Enable selected coupons")}
+                  >
+                    ✓ {t("Enable")}
+                  </button>
+                  <button
+                    type="button"
+                    className="bulk-pill-btn"
+                    disabled={selectedCouponIds.length === 0 || isBulkBusy}
+                    onClick={() => handleBulkCouponStatus(false)}
+                    title={t("Disable selected coupons")}
+                  >
+                    ⊘ {t("Disable")}
+                  </button>
+                  <button
+                    type="button"
+                    className="bulk-pill-btn bulk-pill-btn--danger"
+                    disabled={selectedCouponIds.length === 0 || isBulkBusy}
+                    onClick={() => setBulkReviewModal({ type: 'coupon', action: 'delete' })}
+                    title={t("Delete selected coupons")}
+                  >
+                    🗑️ {t("Delete")}
+                  </button>
+                  {selectedCouponIds.length > 0 && (
+                    <button
+                      type="button"
+                      className="bulk-pill-btn"
+                      onClick={() => setSelectedCouponIds([])}
+                      title={t("Clear selection")}
+                      style={{ fontSize: '11px', opacity: 0.8 }}
+                    >
+                      ✕ {t("Clear")}
+                    </button>
+                  )}
+                </div>
+              </div>
 
               <div className="table-surface">
               <div className="table-scroll">
@@ -1448,7 +1476,6 @@ export function AdminPage() {
                       <th scope="col" className="num">{t("Times used")}</th>
                       <th scope="col">{t("Campaign Banner")}</th>
                       <th scope="col">{t("Status")}</th>
-                      <th scope="col" className="actions">{t("Actions")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1468,7 +1495,7 @@ export function AdminPage() {
                             }}
                           />
                         </td>
-                        <td><strong>{c.code}</strong></td>
+                        <td onDoubleClick={() => openEditCoupon(c)} style={{ cursor: "pointer" }} title={t("Click row to select · Double click to edit")}><strong className="mono">{c.code}</strong></td>
                         <td>
                           <div>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}</div>
                           <small className="muted" style={{ display: 'block', fontSize: 'var(--text-xs)' }}>
@@ -1498,52 +1525,7 @@ export function AdminPage() {
                             </span>
                           ) : null}
                         </td>
-                        <td className="actions">
-                          <div className="row" style={{ gap: '4px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-                            <button
-                              type="button"
-                              className="btn btn--sm"
-                              onClick={() => {
-                                setEditingCoupon(c);
-                                setEditDiscountValue(String(c.discountValue));
-                                setEditMinOrder(String(c.minOrderAmount));
-                                setEditMaxCap(c.maxDiscountCap ? String(c.maxDiscountCap) : '');
-                                setEditUsageLimit(c.usageLimit ? String(c.usageLimit) : '');
-                                setEditCampaignTitle(c.campaignTitle ?? '');
-                                setEditStartsAt(c.startsAt ? c.startsAt.slice(0, 16) : '');
-                                setEditExpiresAt(c.expiresAt ? c.expiresAt.slice(0, 16) : '');
-                                setEditIsBanner(!!c.isBannerPromoted);
-                                setEditIsAuto(!!c.isAutomatic);
-                              }}
-                              title={t("Edit Coupon")}
-                            >
-                              ✏️ {t("Edit")}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn--sm"
-                              disabled={toggleCouponStatus.isPending}
-                              onClick={async () => {
-                                try {
-                                  await toggleCouponStatus.mutateAsync({ id: c.id, isActive: !c.isActive });
-                                  toast.push('success', `${c.code} status updated.`);
-                                } catch (err) {
-                                  toast.pushError(err);
-                                }
-                              }}
-                            >
-                              {t(c.isActive ? 'Disable' : 'Enable')}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn--sm btn--danger"
-                              onClick={() => setDeletingCoupon(c)}
-                              title={t("Delete Coupon")}
-                            >
-                              🗑️ {t("Delete")}
-                            </button>
-                          </div>
-                        </td>
+
                       </tr>
                     ))}
                     {(couponsQuery.data ?? []).length === 0 && (
@@ -1841,21 +1823,95 @@ export function AdminPage() {
             <ErrorState error={giftCardsQuery.error} onRetry={() => giftCardsQuery.refetch()} />
           ) : (
             <div className="card-glass stack" style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg, 12px)' }}>
-              {/* Header with Search and Filter Tabs */}
-              <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)' }}>
-                <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0 }}>
-                  {t("Gift Cards Registry & Balances")} ({giftCardsQuery.data?.length ?? 0})
-                </h3>
+              {/* Header with Search, Filters and Segmented Pill Dock (Matching Image 1) */}
+              <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center' }}>
+                <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0 }}>
+                    {t("Gift Cards Registry & Balances")} ({giftCardsQuery.data?.length ?? 0})
+                  </h3>
+                  <span className={`badge ${selectedGiftCardIds.length > 0 ? 'badge--primary' : 'badge--neutral'}`} style={{ fontWeight: 700 }}>
+                    {selectedGiftCardIds.length} {t("selected")}
+                  </span>
+                </div>
 
-                <div className="row" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  <input
-                    type="search"
-                    placeholder={t("Search by code or recipient…")}
-                    value={gcSearch}
-                    onChange={(e) => setGcSearch(e.target.value)}
-                    style={{ padding: '4px 10px', fontSize: 'var(--text-xs)', minWidth: '220px' }}
-                  />
+                {/* Pill Segmented Controls (Matching Image 1) */}
+                <div className="bulk-pill-dock" role="toolbar" aria-label={t("Gift cards bulk actions")}>
+                  <button
+                    type="button"
+                    className={`bulk-pill-btn ${selectedGiftCardIds.length === 1 ? 'bulk-pill-btn--primary' : ''}`}
+                    disabled={selectedGiftCardIds.length !== 1}
+                    onClick={() => {
+                      const g = (giftCardsQuery.data ?? []).find((item) => item.id === selectedGiftCardIds[0]);
+                      if (g) openEditGiftCard(g);
+                    }}
+                    title={selectedGiftCardIds.length === 1 ? t("Edit selected gift card") : t("Select exactly 1 gift card to edit")}
+                  >
+                    ✏️ {t("Edit")}
+                  </button>
+                  <button
+                    type="button"
+                    className="bulk-pill-btn"
+                    disabled={selectedGiftCardIds.length !== 1}
+                    onClick={() => {
+                      const g = (giftCardsQuery.data ?? []).find((item) => item.id === selectedGiftCardIds[0]);
+                      if (g) setSelectedCardForModal(g);
+                    }}
+                    title={t("View digital certificate")}
+                  >
+                    👁️ {t("View Card")}
+                  </button>
+                  <button
+                    type="button"
+                    className="bulk-pill-btn"
+                    disabled={selectedGiftCardIds.length === 0 || isBulkBusy}
+                    onClick={() => handleBulkGiftCardStatus(true)}
+                    title={t("Activate selected gift cards")}
+                  >
+                    ✓ {t("Activate")}
+                  </button>
+                  <button
+                    type="button"
+                    className="bulk-pill-btn"
+                    disabled={selectedGiftCardIds.length === 0 || isBulkBusy}
+                    onClick={() => handleBulkGiftCardStatus(false)}
+                    title={t("Deactivate selected gift cards")}
+                  >
+                    ⊘ {t("Deactivate")}
+                  </button>
+                  <button
+                    type="button"
+                    className="bulk-pill-btn bulk-pill-btn--danger"
+                    disabled={selectedGiftCardIds.length === 0 || isBulkBusy}
+                    onClick={() => setBulkReviewModal({ type: 'giftcard', action: 'delete' })}
+                    title={t("Delete selected gift cards")}
+                  >
+                    🗑️ {t("Delete")}
+                  </button>
+                  {selectedGiftCardIds.length > 0 && (
+                    <button
+                      type="button"
+                      className="bulk-pill-btn"
+                      onClick={() => setSelectedGiftCardIds([])}
+                      title={t("Clear selection")}
+                      style={{ fontSize: '11px', opacity: 0.8 }}
+                    >
+                      ✕ {t("Clear")}
+                    </button>
+                  )}
+                </div>
+              </div>
 
+              {/* Sub-bar: Search & Filter Tabs */}
+              <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
+                <input
+                  type="search"
+                  placeholder={t("Search by code or recipient…")}
+                  value={gcSearch}
+                  onChange={(e) => setGcSearch(e.target.value)}
+                  style={{ padding: '4px 10px', fontSize: 'var(--text-xs)', minWidth: '220px' }}
+                />
+
+                <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
                   {(['all', 'active', 'depleted', 'disabled'] as const).map((filterOpt) => (
                     <button
                       key={filterOpt}
@@ -1869,64 +1925,6 @@ export function AdminPage() {
                   ))}
                 </div>
               </div>
-
-              {/* Gift Cards Bulk Actions Bar */}
-              {selectedGiftCardIds.length > 0 && (
-                <div
-                  className="bulk-bar"
-                  data-testid="giftcards-bulk-bar"
-                  role="toolbar"
-                  aria-label={t("Bulk actions for selected gift cards")}
-                  style={{ margin: 'var(--space-2) 0' }}
-                >
-                  <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
-                    <span className="badge badge--primary" style={{ fontWeight: 750, fontSize: 'var(--text-xs)' }}>
-                      {selectedGiftCardIds.length} {t("selected")}
-                    </span>
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                      {t("Bulk actions:")}
-                    </span>
-                  </div>
-
-                  <div className="row" style={{ gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <button
-                      type="button"
-                      className="btn btn--sm"
-                      disabled={isBulkBusy}
-                      onClick={() => handleBulkGiftCardStatus(true)}
-                      title={t("Activate selected gift cards")}
-                    >
-                      ✓ {t("Activate Selected")}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn--sm"
-                      disabled={isBulkBusy}
-                      onClick={() => handleBulkGiftCardStatus(false)}
-                      title={t("Deactivate selected gift cards")}
-                    >
-                      ⊘ {t("Deactivate Selected")}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn--sm btn--danger"
-                      disabled={isBulkBusy}
-                      onClick={() => setBulkReviewModal({ type: 'giftcard', action: 'delete' })}
-                      title={t("Delete selected gift cards")}
-                    >
-                      🗑️ {t("Delete Selected")}
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn--sm btn--outline"
-                      disabled={isBulkBusy}
-                      onClick={() => setSelectedGiftCardIds([])}
-                    >
-                      {t("Clear selection")}
-                    </button>
-                  </div>
-                </div>
-              )}
 
               {/* Table */}
               <div className="table-wrap">
@@ -1956,7 +1954,6 @@ export function AdminPage() {
                       <th scope="col">{t("CREATED")}</th>
                       <th scope="col">{t("EXPIRES")}</th>
                       <th scope="col">{t("STATUS")}</th>
-                      <th scope="col" className="actions">{t("ACTIONS")}</th>
                     </tr>
                   </thead>
                   <tbody>

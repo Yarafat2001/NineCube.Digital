@@ -2299,3 +2299,61 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
 }
+
+/* --------------------------------------------------- bulk pill segmented dock ---- */
+.bulk-pill-dock {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  flex-wrap: wrap;
+}
+
+.bulk-pill-btn {
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-weight: 600;
+  font-size: var(--text-xs);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.bulk-pill-btn:hover:not(:disabled) {
+  background: var(--surface-raised);
+  color: var(--text-bright, var(--text));
+  transform: translateY(-1px);
+}
+
+.bulk-pill-btn--primary {
+  background: var(--brand, #f59e0b) !important;
+  color: var(--text-on-brand, #000000) !important;
+  font-weight: 750;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.bulk-pill-btn--danger:hover:not(:disabled) {
+  background: var(--bad-bg, rgba(239, 68, 68, 0.15));
+  color: var(--danger, #ef4444);
+  border-color: var(--bad-border, rgba(239, 68, 68, 0.3));
+}
+
+.bulk-pill-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.table tbody tr[data-selected="true"],
+.table-surface tbody tr[data-selected="true"] {
+  background: var(--selected-bg, rgba(245, 158, 11, 0.08)) !important;
+}

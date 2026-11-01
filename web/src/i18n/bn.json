@@ -1625,5 +1625,13 @@
   "Activate selected gift cards": "নির্বাচিত গিফট কার্ড সক্রিয় করুন",
   "Deactivate selected gift cards": "নির্বাচিত গিফট কার্ড নিষ্ক্রিয় করুন",
   "Delete selected gift cards": "নির্বাচিত গিফট কার্ড মুছে ফেলুন",
-  "Deleting…": "মুছে ফেলা হচ্ছে…"
+  "Deleting…": "মুছে ফেলা হচ্ছে…",
+  "Promotional Coupons & Discounts": "প্রচারমূলক কুপন এবং ছাড়",
+  "Edit selected coupon": "নির্বাচিত কুপন সম্পাদনা করুন",
+  "Select exactly 1 coupon to edit": "সম্পাদনা করতে ঠিক ১টি কুপন নির্বাচন করুন",
+  "Edit selected gift card": "নির্বাচিত গিফট কার্ড সম্পাদনা করুন",
+  "Select exactly 1 gift card to edit": "সম্পাদনা করতে ঠিক ১টি গিফট কার্ড নির্বাচন করুন",
+  "Coupons bulk actions": "কুপন বাল্ক অ্যাকশন",
+  "Gift cards bulk actions": "গিফট কার্ড বাল্ক অ্যাকশন",
+  "Click row to select · Double click to edit": "নির্বাচন করতে সারিতে ক্লিক করুন · সম্পাদনা করতে ডাবল ক্লিক করুন"
 }
