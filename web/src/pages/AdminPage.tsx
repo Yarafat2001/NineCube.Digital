@@ -25,7 +25,7 @@ import {
 } from '../api/hooks';
 import type { Coupon, CouponTargetType, UserRole, GiftCard } from '../api/types';
 import { flattenCategories } from '../components/CategoryFilters';
-import { EmptyState, ErrorState, LiveRegion, LoadingBlock, useToast } from '../components/ui';
+import { EmptyState, ErrorState, LiveRegion, LoadingBlock, Modal, useToast } from '../components/ui';
 import { Icon, type IconName } from '../components/Icon';
 import { formatDateTime, formatMoney, formatMoneyWhole, roleLabels, useDebouncedValue } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -2409,52 +2409,24 @@ export function AdminPage() {
             </div>
           )}
 
-          {/* View Digital Card Certificate Modal */}
+          {/* View Digital Card Certificate */}
           {selectedCardForModal && (
-            <div
-              role="dialog"
-              aria-modal="true"
-              style={{
-                position: 'fixed',
-                inset: 0,
-                background: 'rgba(0,0,0,0.7)',
-                backdropFilter: 'blur(6px)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1000,
-                padding: 'var(--space-4)'
-              }}
-              onClick={() => setSelectedCardForModal(null)}
-            >
-              <div
-                className="stack"
-                style={{
-                  background: 'var(--surface)',
-                  color: 'var(--text)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-lg, 16px)',
-                  padding: 'var(--space-5)',
-                  maxWidth: '460px',
-                  width: '100%',
-                  boxShadow: '0 24px 48px rgba(0,0,0,0.6)'
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="row-between" style={{ marginBottom: 'var(--space-2)' }}>
-                  <h3 style={{ margin: 0, fontSize: 'var(--text-md)', fontWeight: 700 }}>
-                    🎁 {t("Digital Gift Certificate")}
-                  </h3>
-                  <button
-                    type="button"
-                    className="link-button"
-                    onClick={() => setSelectedCardForModal(null)}
-                    style={{ fontSize: '18px', color: 'var(--text-muted)' }}
-                  >
-                    ✕
+            <Modal
+              open
+              size="md"
+              onClose={() => setSelectedCardForModal(null)}
+              title={<span className="modal__title"><Icon name="gift" width={15} height={15} /> {t("Digital Gift Certificate")}</span>}
+              footer={
+                <>
+                  <button type="button" className="btn btn--sm" onClick={() => copyToClipboard(selectedCardForModal.code)}>
+                    <Icon name="copy" width={14} height={14} /> {t("Copy Card Code")}
                   </button>
-                </div>
-
+                  <button type="button" className="btn btn--primary btn--sm" onClick={() => setSelectedCardForModal(null)}>
+                    {t("Done")}
+                  </button>
+                </>
+              }
+            >
                 <div
                   className="gift-card-cert"
                   style={{
@@ -2467,7 +2439,7 @@ export function AdminPage() {
                   <div className="row-between" style={{ alignItems: 'flex-start' }}>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '24px' }}>🎲</span>
+                        <Icon name="gift" width={22} height={22} aria-hidden="true" />
                         <strong style={{ fontSize: '18px', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#fff' }}>
                           {t("NineCube Digital")}
                         </strong>
@@ -2497,7 +2469,7 @@ export function AdminPage() {
                         onClick={() => copyToClipboard(selectedCardForModal.code)}
                         style={{ fontSize: '11px', padding: '2px 8px' }}
                       >
-                        📋 {t("Copy")}
+                        <Icon name="copy" width={13} height={13} /> {t("Copy")}
                       </button>
                     </div>
                   </div>
@@ -2519,59 +2491,36 @@ export function AdminPage() {
                     </div>
                   )}
                 </div>
-
-                <div className="row-between" style={{ marginTop: 'var(--space-3)' }}>
-                  <button
-                    type="button"
-                    className="btn btn--sm"
-                    onClick={() => copyToClipboard(selectedCardForModal.code)}
-                  >
-                    📋 {t("Copy Card Code")}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn--primary btn--sm"
-                    onClick={() => setSelectedCardForModal(null)}
-                  >
-                    {t("Done")}
-                  </button>
-                </div>
-              </div>
-            </div>
+            </Modal>
           )}
 
-          {/* Adjust Balance Modal */}
+          {/* Adjust Balance */}
           {adjustModal && (
-            <div
-              role="dialog"
-              aria-modal="true"
-              style={{
-                position: 'fixed',
-                inset: 0,
-                background: 'rgba(0,0,0,0.7)',
-                backdropFilter: 'blur(6px)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1000,
-                padding: 'var(--space-4)'
-              }}
-              onClick={() => setAdjustModal(null)}
+            <Modal
+              open
+              size="sm"
+              onClose={() => setAdjustModal(null)}
+              title={<span className="modal__title"><Icon name="sliders" width={15} height={15} /> {t("Adjust Gift Card Balance")} <span className="modal__code mono">{adjustModal.card.code}</span></span>}
+              footer={
+                <>
+                  <button type="button" className="btn btn--outline btn--sm" onClick={() => setAdjustModal(null)}>
+                    {t("Cancel")}
+                  </button>
+                  <button
+                    type="submit"
+                    form="adjust-balance-form"
+                    className="btn btn--primary btn--sm"
+                    disabled={adjustGiftCardBalance.isPending}
+                  >
+                    {adjustGiftCardBalance.isPending ? t("Updating…") : t("Save Balance")}
+                  </button>
+                </>
+              }
             >
               <form
-                className="stack card-glass"
-                style={{
-                  background: 'var(--surface)',
-                  color: 'var(--text)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-lg, 16px)',
-                  padding: 'var(--space-5)',
-                  maxWidth: '420px',
-                  width: '100%',
-                  boxShadow: '0 24px 48px rgba(0,0,0,0.6)',
-                  gap: 'var(--space-3)'
-                }}
-                onClick={(e) => e.stopPropagation()}
+                id="adjust-balance-form"
+                className="stack"
+                style={{ gap: 'var(--space-3)' }}
                 onSubmit={async (e) => {
                   e.preventDefault();
                   const newBal = parseFloat(adjustModal.newBalance);
@@ -2592,17 +2541,6 @@ export function AdminPage() {
                   }
                 }}
               >
-                <div className="row-between">
-                  <h3 style={{ margin: 0, fontSize: 'var(--text-md)', fontWeight: 700 }}>
-                    ⚙️ {t("Adjust Gift Card Balance")}
-                  </h3>
-                  <button type="button" className="link-button" onClick={() => setAdjustModal(null)} style={{ color: "var(--text-muted)" }}>✕</button>
-                </div>
-
-                <p style={{ margin: 0, fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
-                  {t("Card Code:")} <strong className="mono">{adjustModal.card.code}</strong>
-                </p>
-
                 <div className="field">
                   <label htmlFor="adjust-bal-input">{t("New Balance (BDT)")}</label>
                   <input
@@ -2626,54 +2564,37 @@ export function AdminPage() {
                     onChange={(e) => setAdjustModal({ ...adjustModal, reason: e.target.value })}
                   />
                 </div>
-
-                <div className="row-between" style={{ marginTop: 'var(--space-2)' }}>
-                  <button type="button" className="btn btn--sm" onClick={() => setAdjustModal(null)}>
-                    {t("Cancel")}
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn--primary btn--sm"
-                    disabled={adjustGiftCardBalance.isPending}
-                  >
-                    {adjustGiftCardBalance.isPending ? t("Updating…") : t("Save Balance")}
-                  </button>
-                </div>
               </form>
-            </div>
+            </Modal>
           )}
         </section>
       ) : null}
 
-      
-      {/* Edit Coupon Modal */}
+      {/* Edit Coupon */}
       {editingCoupon && (
-        <div className="sheet-backdrop" onClick={() => setEditingCoupon(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
-          <div
-            className="card-glass stack"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="edit-coupon-title"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: 'min(640px, 95vw)',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: 'var(--space-5)',
-              borderRadius: 'var(--radius-lg, 14px)',
-              border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-lg)',
-              background: 'var(--surface)'
-            }}
-          >
-            <div className="row-between" style={{ alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-              <h3 id="edit-coupon-title" style={{ margin: 0, fontSize: 'var(--text-lg)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                ✏️ {t("Edit Coupon")}: <span className="mono" style={{ color: 'var(--brand)' }}>{editingCoupon.code}</span>
-              </h3>
-              <button type="button" className="btn btn--sm" onClick={() => setEditingCoupon(null)} aria-label={t("Close")}>✕</button>
-            </div>
-
+        <Modal
+          open
+          onClose={() => setEditingCoupon(null)}
+          title={(
+            <span className="modal__title">
+              <Icon name="pencil" width={15} height={15} />
+              {t("Edit Coupon")}
+              <span className="modal__code mono">{editingCoupon.code}</span>
+            </span>
+          )}
+          footer={(
+            <>
+              <button type="button" className="btn btn--outline btn--sm" onClick={() => setEditingCoupon(null)}>
+                {t("Cancel")}
+              </button>
+              <button type="submit" form="edit-coupon-form" className="btn btn--primary btn--sm" disabled={updateCoupon.isPending}>
+                {t(updateCoupon.isPending ? "Saving…" : "Save Changes")}
+              </button>
+            </>
+          )}
+        >
             <form
+              id="edit-coupon-form"
               onSubmit={async (e) => {
                 e.preventDefault();
                 try {
@@ -2696,143 +2617,152 @@ export function AdminPage() {
                 }
               }}
               className="stack"
-              style={{ gap: 'var(--space-3)', marginTop: 'var(--space-3)' }}
+              style={{ gap: 'var(--space-4)' }}
             >
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
-                <div className="field">
-                  <label>{t("Discount Value")}</label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={editDiscountValue}
-                    onChange={(e) => setEditDiscountValue(e.target.value)}
-                  />
+              <div className="modal-section">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">{t("Discount Value & Calculation")}</h4>
+                  <span className="discount-card-flag">
+                    {editingCoupon.discountType === 'Percentage' ? t("Percentage (%)") : t("Fixed Amount (BDT)")}
+                  </span>
                 </div>
-                <div className="field">
-                  <label>{t("Minimum order amount (BDT)")}</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={editMinOrder}
-                    onChange={(e) => setEditMinOrder(e.target.value)}
-                  />
-                </div>
-                <div className="field">
-                  <label>{t("Max discount cap (BDT, optional)")}</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={editMaxCap}
-                    onChange={(e) => setEditMaxCap(e.target.value)}
-                  />
-                </div>
-                <div className="field">
-                  <label>{t("Usage limit (optional)")}</label>
-                  <input
-                    type="number"
-                    min="1"
-                    placeholder={t("Unlimited")}
-                    value={editUsageLimit}
-                    onChange={(e) => setEditUsageLimit(e.target.value)}
-                  />
+
+                <div className="discount-field-grid">
+                  <div className="field">
+                    <label htmlFor="edit-coupon-value">
+                      {t("Discount Value")} <span className="field__required">{t("Required")}</span>
+                    </label>
+                    <input
+                      id="edit-coupon-value"
+                      type="number"
+                      min="1"
+                      required
+                      value={editDiscountValue}
+                      onChange={(e) => setEditDiscountValue(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="edit-coupon-max-cap">{t("Max discount cap (BDT, optional)")}</label>
+                    <input
+                      id="edit-coupon-max-cap"
+                      type="number"
+                      min="0"
+                      value={editMaxCap}
+                      onChange={(e) => setEditMaxCap(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="field">
-                <label>{t("Campaign banner title (optional)")}</label>
-                <input
-                  type="text"
-                  placeholder={t("e.g. Eid Mega Festival")}
-                  value={editCampaignTitle}
-                  onChange={(e) => setEditCampaignTitle(e.target.value)}
-                />
+              <div className="modal-section">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">{t("Minimum Spend & Usage Limits")}</h4>
+                  <span className="discount-card-flag">{t("Optional")}</span>
+                </div>
+
+                <div className="discount-field-grid">
+                  <div className="field">
+                    <label htmlFor="edit-coupon-min-order">{t("Minimum order amount (BDT)")}</label>
+                    <input
+                      id="edit-coupon-min-order"
+                      type="number"
+                      min="0"
+                      value={editMinOrder}
+                      onChange={(e) => setEditMinOrder(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="edit-coupon-limit">{t("Usage limit (optional)")}</label>
+                    <input
+                      id="edit-coupon-limit"
+                      type="number"
+                      min="1"
+                      placeholder={t("Unlimited")}
+                      value={editUsageLimit}
+                      onChange={(e) => setEditUsageLimit(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
+              <div className="modal-section">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">{t("Active Dates & Campaign Placement")}</h4>
+                  <span className="discount-card-flag">{t("Optional")}</span>
+                </div>
+
+                <div className="discount-field-grid">
+                  <div className="field">
+                    <label htmlFor="edit-coupon-starts-at">{t("Start date & time (optional)")}</label>
+                    <input
+                      id="edit-coupon-starts-at"
+                      type="datetime-local"
+                      value={editStartsAt}
+                      onChange={(e) => setEditStartsAt(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="edit-coupon-expires-at">{t("Expiration date & time (optional)")}</label>
+                    <input
+                      id="edit-coupon-expires-at"
+                      type="datetime-local"
+                      value={editExpiresAt}
+                      onChange={(e) => setEditExpiresAt(e.target.value)}
+                    />
+                  </div>
+                </div>
+
                 <div className="field">
-                  <label>{t("Start date & time (optional)")}</label>
+                  <label htmlFor="edit-coupon-campaign-title">{t("Campaign banner title (optional)")}</label>
                   <input
-                    type="datetime-local"
-                    value={editStartsAt}
-                    onChange={(e) => setEditStartsAt(e.target.value)}
+                    id="edit-coupon-campaign-title"
+                    type="text"
+                    placeholder={t("e.g. Eid Mega Festival")}
+                    value={editCampaignTitle}
+                    onChange={(e) => setEditCampaignTitle(e.target.value)}
                   />
                 </div>
-                <div className="field">
-                  <label>{t("Expiration date & time (optional)")}</label>
-                  <input
-                    type="datetime-local"
-                    value={editExpiresAt}
-                    onChange={(e) => setEditExpiresAt(e.target.value)}
-                  />
+
+                <div className="discount-toggles">
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      checked={editIsBanner}
+                      onChange={(e) => setEditIsBanner(e.target.checked)}
+                    />
+                    <span>{t("Show in top announcement banner")}</span>
+                  </label>
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      checked={editIsAuto}
+                      onChange={(e) => setEditIsAuto(e.target.checked)}
+                    />
+                    <span>{t("Apply automatically in cart")}</span>
+                  </label>
                 </div>
-              </div>
-
-              <div className="row" style={{ gap: '16px', flexWrap: 'wrap', margin: '4px 0' }}>
-                <label className="checkbox">
-                  <input
-                    type="checkbox"
-                    checked={editIsBanner}
-                    onChange={(e) => setEditIsBanner(e.target.checked)}
-                  />
-                  <span>{t("Show in top announcement banner")}</span>
-                </label>
-                <label className="checkbox">
-                  <input
-                    type="checkbox"
-                    checked={editIsAuto}
-                    onChange={(e) => setEditIsAuto(e.target.checked)}
-                  />
-                  <span>{t("Apply automatically in cart")}</span>
-                </label>
-              </div>
-
-              <div className="row" style={{ gap: '8px', justifyContent: 'flex-end', marginTop: 'var(--space-3)', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-                <button type="button" className="btn btn--outline" onClick={() => setEditingCoupon(null)}>
-                  {t("Cancel")}
-                </button>
-                <button type="submit" className="btn btn--primary" disabled={updateCoupon.isPending}>
-                  {t(updateCoupon.isPending ? "Saving…" : "Save Changes")}
-                </button>
               </div>
             </form>
-          </div>
-        </div>
+        </Modal>
       )}
 
-      {/* Delete Coupon Confirmation Dialog */}
+      {/* Delete Coupon confirmation */}
       {deletingCoupon && (
-        <div className="sheet-backdrop" onClick={() => setDeletingCoupon(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
-          <div
-            className="card-glass stack"
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="del-coupon-title"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: 'min(440px, 90vw)',
-              padding: 'var(--space-5)',
-              borderRadius: 'var(--radius-lg, 12px)',
-              border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-lg)',
-              background: 'var(--surface)',
-              textAlign: 'center'
-            }}
-          >
-            <div style={{ fontSize: '36px', marginBottom: '8px' }}>🗑️</div>
-            <h3 id="del-coupon-title" style={{ margin: '0 0 8px 0', fontSize: 'var(--text-md)', fontWeight: 700 }}>
-              {t("Delete Coupon")}
-            </h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', margin: '0 0 16px 0' }}>
-              {t("Are you sure you want to permanently delete coupon")} <strong className="mono" style={{ color: 'var(--brand)' }}>{deletingCoupon.code}</strong>? {t("This action cannot be undone.")}
-            </p>
-            <div className="row" style={{ gap: '8px', justifyContent: 'center' }}>
-              <button type="button" className="btn btn--outline" onClick={() => setDeletingCoupon(null)}>
+        <Modal
+          open
+          alert
+          size="sm"
+          onClose={() => setDeletingCoupon(null)}
+          title={t("Delete Coupon")}
+          footerClassName="modal__footer--center"
+          footer={(
+            <>
+              <button type="button" className="btn btn--outline btn--sm" onClick={() => setDeletingCoupon(null)}>
                 {t("Cancel")}
               </button>
               <button
                 type="button"
-                className="btn btn--danger"
+                className="btn btn--danger btn--sm"
                 disabled={deleteCoupon.isPending}
                 onClick={async () => {
                   try {
@@ -2846,39 +2776,45 @@ export function AdminPage() {
               >
                 {t(deleteCoupon.isPending ? "Deleting…" : "Delete Coupon")}
               </button>
-            </div>
-          </div>
-        </div>
+            </>
+          )}
+        >
+            <p className="modal__confirm">
+              <span className="modal__confirm-glyph">
+                <Icon name="trash" width={22} height={22} aria-hidden="true" />
+              </span>
+              {t("Are you sure you want to permanently delete coupon")}{' '}
+              <strong className="mono">{deletingCoupon.code}</strong>? {t("This action cannot be undone.")}
+            </p>
+        </Modal>
       )}
 
-      {/* Edit Gift Card Modal */}
+      {/* Edit Gift Card */}
       {editingGiftCard && (
-        <div className="sheet-backdrop" onClick={() => setEditingGiftCard(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
-          <div
-            className="card-glass stack"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="edit-gc-title"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: 'min(540px, 95vw)',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: 'var(--space-5)',
-              borderRadius: 'var(--radius-lg, 14px)',
-              border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-lg)',
-              background: 'var(--surface)'
-            }}
-          >
-            <div className="row-between" style={{ alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-              <h3 id="edit-gc-title" style={{ margin: 0, fontSize: 'var(--text-lg)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                ✏️ {t("Edit Gift Card")}: <span className="mono" style={{ color: 'var(--brand)' }}>{editingGiftCard.code}</span>
-              </h3>
-              <button type="button" className="btn btn--sm" onClick={() => setEditingGiftCard(null)} aria-label={t("Close")}>✕</button>
-            </div>
-
+        <Modal
+          open
+          size="md"
+          onClose={() => setEditingGiftCard(null)}
+          title={(
+            <span className="modal__title">
+              <Icon name="pencil" width={15} height={15} />
+              {t("Edit Gift Card")}
+              <span className="modal__code mono">{editingGiftCard.code}</span>
+            </span>
+          )}
+          footer={(
+            <>
+              <button type="button" className="btn btn--outline btn--sm" onClick={() => setEditingGiftCard(null)}>
+                {t("Cancel")}
+              </button>
+              <button type="submit" form="edit-giftcard-form" className="btn btn--primary btn--sm" disabled={updateGiftCard.isPending}>
+                {t(updateGiftCard.isPending ? "Saving…" : "Save Changes")}
+              </button>
+            </>
+          )}
+        >
             <form
+              id="edit-giftcard-form"
               onSubmit={async (e) => {
                 e.preventDefault();
                 try {
@@ -2896,87 +2832,84 @@ export function AdminPage() {
                 }
               }}
               className="stack"
-              style={{ gap: 'var(--space-3)', marginTop: 'var(--space-3)' }}
+              style={{ gap: 'var(--space-4)' }}
             >
-              <div className="field">
-                <label>{t("Recipient Name")}</label>
-                <input
-                  type="text"
-                  value={editGcRecipientName}
-                  onChange={(e) => setEditGcRecipientName(e.target.value)}
-                />
-              </div>
-              <div className="field">
-                <label>{t("Recipient Email")}</label>
-                <input
-                  type="email"
-                  value={editGcRecipientEmail}
-                  onChange={(e) => setEditGcRecipientEmail(e.target.value)}
-                />
-              </div>
-              <div className="field">
-                <label>{t("Personal Greeting Note")}</label>
-                <textarea
-                  rows={2}
-                  value={editGcNote}
-                  onChange={(e) => setEditGcNote(e.target.value)}
-                />
-              </div>
-              <div className="field">
-                <label>{t("Expiration date & time (optional)")}</label>
-                <input
-                  type="datetime-local"
-                  value={editGcExpiresAt}
-                  onChange={(e) => setEditGcExpiresAt(e.target.value)}
-                />
+              <div className="modal-section">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">{t("Recipient")}</h4>
+                  <span className="discount-card-flag">{t("Optional")}</span>
+                </div>
+
+                <div className="discount-field-grid">
+                  <div className="field">
+                    <label htmlFor="edit-gc-name">{t("Recipient Name")}</label>
+                    <input
+                      id="edit-gc-name"
+                      type="text"
+                      value={editGcRecipientName}
+                      onChange={(e) => setEditGcRecipientName(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="edit-gc-email">{t("Recipient Email")}</label>
+                    <input
+                      id="edit-gc-email"
+                      type="email"
+                      value={editGcRecipientEmail}
+                      onChange={(e) => setEditGcRecipientEmail(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="row" style={{ gap: '8px', justifyContent: 'flex-end', marginTop: 'var(--space-3)', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-                <button type="button" className="btn btn--outline" onClick={() => setEditingGiftCard(null)}>
-                  {t("Cancel")}
-                </button>
-                <button type="submit" className="btn btn--primary" disabled={updateGiftCard.isPending}>
-                  {t(updateGiftCard.isPending ? "Saving…" : "Save Changes")}
-                </button>
+              <div className="modal-section">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">{t("Greeting & Validity")}</h4>
+                  <span className="discount-card-flag">
+                    {editGcExpiresAt ? `${t("Expires")} ${editGcExpiresAt.slice(0, 10)}` : t("Never expires")}
+                  </span>
+                </div>
+
+                <div className="field">
+                  <label htmlFor="edit-gc-note">{t("Personal Greeting Note")}</label>
+                  <textarea
+                    id="edit-gc-note"
+                    rows={2}
+                    value={editGcNote}
+                    onChange={(e) => setEditGcNote(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="edit-gc-expires-at">{t("Expiration date & time (optional)")}</label>
+                  <input
+                    id="edit-gc-expires-at"
+                    type="datetime-local"
+                    value={editGcExpiresAt}
+                    onChange={(e) => setEditGcExpiresAt(e.target.value)}
+                  />
+                </div>
               </div>
             </form>
-          </div>
-        </div>
+        </Modal>
       )}
 
-      {/* Delete Gift Card Confirmation Dialog */}
+      {/* Delete Gift Card confirmation */}
       {deletingGiftCard && (
-        <div className="sheet-backdrop" onClick={() => setDeletingGiftCard(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
-          <div
-            className="card-glass stack"
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="del-gc-title"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: 'min(440px, 90vw)',
-              padding: 'var(--space-5)',
-              borderRadius: 'var(--radius-lg, 12px)',
-              border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-lg)',
-              background: 'var(--surface)',
-              textAlign: 'center'
-            }}
-          >
-            <div style={{ fontSize: '36px', marginBottom: '8px' }}>🗑️</div>
-            <h3 id="del-gc-title" style={{ margin: '0 0 8px 0', fontSize: 'var(--text-md)', fontWeight: 700 }}>
-              {t("Delete Gift Card")}
-            </h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', margin: '0 0 16px 0' }}>
-              {t("Are you sure you want to permanently delete gift card")} <strong className="mono" style={{ color: 'var(--brand)' }}>{deletingGiftCard.code}</strong>? {t("This action cannot be undone.")}
-            </p>
-            <div className="row" style={{ gap: '8px', justifyContent: 'center' }}>
-              <button type="button" className="btn btn--outline" onClick={() => setDeletingGiftCard(null)}>
+        <Modal
+          open
+          alert
+          size="sm"
+          onClose={() => setDeletingGiftCard(null)}
+          title={t("Delete Gift Card")}
+          footerClassName="modal__footer--center"
+          footer={(
+            <>
+              <button type="button" className="btn btn--outline btn--sm" onClick={() => setDeletingGiftCard(null)}>
                 {t("Cancel")}
               </button>
               <button
                 type="button"
-                className="btn btn--danger"
+                className="btn btn--danger btn--sm"
                 disabled={deleteGiftCard.isPending}
                 onClick={async () => {
                   try {
@@ -2990,35 +2923,59 @@ export function AdminPage() {
               >
                 {t(deleteGiftCard.isPending ? "Deleting…" : "Delete Gift Card")}
               </button>
-            </div>
-          </div>
-        </div>
+            </>
+          )}
+        >
+            <p className="modal__confirm">
+              <span className="modal__confirm-glyph">
+                <Icon name="trash" width={22} height={22} aria-hidden="true" />
+              </span>
+              {t("Are you sure you want to permanently delete gift card")}{' '}
+              <strong className="mono">{deletingGiftCard.code}</strong>? {t("This action cannot be undone.")}
+            </p>
+        </Modal>
       )}
 
-            {/* Bulk Delete Review Modal */}
+      {/* Bulk delete review */}
       {bulkReviewModal && (
-        <div className="sheet-backdrop" onClick={() => !isBulkBusy && setBulkReviewModal(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
-          <div
-            className="card-glass stack"
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="bulk-review-title"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: 'min(480px, 92vw)',
-              padding: 'var(--space-5)',
-              borderRadius: 'var(--radius-lg, 12px)',
-              border: '1px solid var(--border)',
-              boxShadow: 'var(--shadow-lg)',
-              background: 'var(--surface)',
-              textAlign: 'center'
-            }}
-          >
-            <div style={{ fontSize: '36px', marginBottom: '8px' }}>🗑️</div>
-            <h3 id="bulk-review-title" style={{ margin: '0 0 8px 0', fontSize: 'var(--text-md)', fontWeight: 700 }}>
-              {t("Review Bulk Deletion")}
-            </h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', margin: '0 0 16px 0' }}>
+        <Modal
+          open
+          alert
+          size="sm"
+          onClose={() => { if (!isBulkBusy) setBulkReviewModal(null); }}
+          title={t("Review Bulk Deletion")}
+          footerClassName="modal__footer--center"
+          footer={(
+            <>
+              <button
+                type="button"
+                className="btn btn--outline btn--sm"
+                disabled={isBulkBusy}
+                onClick={() => setBulkReviewModal(null)}
+              >
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--danger btn--sm"
+                disabled={isBulkBusy}
+                onClick={bulkReviewModal.type === 'coupon' ? handleBulkCouponDelete : handleBulkGiftCardDelete}
+              >
+                {isBulkBusy ? (
+                  <>
+                    <span className="spinner" aria-hidden="true" /> {t("Deleting…")}
+                  </>
+                ) : (
+                  t("Delete Selected")
+                )}
+              </button>
+            </>
+          )}
+        >
+            <p className="modal__confirm">
+              <span className="modal__confirm-glyph">
+                <Icon name="trash" width={22} height={22} aria-hidden="true" />
+              </span>
               {t("Are you sure you want to permanently delete")}{' '}
               <strong>
                 {bulkReviewModal.type === 'coupon' ? selectedCouponIds.length : selectedGiftCardIds.length}
@@ -3027,19 +2984,7 @@ export function AdminPage() {
               {t("This action cannot be undone.")}
             </p>
 
-            <div
-              style={{
-                maxHeight: '160px',
-                overflowY: 'auto',
-                background: 'var(--surface-sunken)',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid var(--border)',
-                marginBottom: '16px',
-                textAlign: 'left',
-                fontSize: 'var(--text-xs)'
-              }}
-            >
+            <div className="modal-list">
               {bulkReviewModal.type === 'coupon'
                 ? (couponsQuery.data ?? [])
                     .filter((c) => selectedCouponIds.includes(c.id))
@@ -3062,33 +3007,7 @@ export function AdminPage() {
                       </div>
                     ))}
             </div>
-
-            <div className="row" style={{ gap: '8px', justifyContent: 'center' }}>
-              <button
-                type="button"
-                className="btn btn--outline"
-                disabled={isBulkBusy}
-                onClick={() => setBulkReviewModal(null)}
-              >
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="btn btn--danger"
-                disabled={isBulkBusy}
-                onClick={bulkReviewModal.type === 'coupon' ? handleBulkCouponDelete : handleBulkGiftCardDelete}
-              >
-                {isBulkBusy ? (
-                  <>
-                    <span className="spinner" aria-hidden="true" /> {t("Deleting…")}
-                  </>
-                ) : (
-                  t("Delete Selected")
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+        </Modal>
       )}
       <LiveRegion message={t("")} />
     </div>

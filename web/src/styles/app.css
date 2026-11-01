@@ -1139,6 +1139,93 @@ tr[data-low-stock='true'] {
   flex: 0 0 auto;
 }
 
+/* Narrower dialogs: md holds a single record's fields, sm asks one yes/no question. */
+.modal--md {
+  width: min(540px, 100%);
+}
+
+.modal--sm {
+  width: min(460px, 100%);
+}
+
+/* Actions belong below a hairline, not in the field column, so a footer can never be
+   mistaken for another row of the form above it. */
+.modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+.modal__footer--center {
+  justify-content: center;
+}
+
+/* The dialog is the only surface on screen, so a section inside it is a heading plus its fields,
+   divided from the next by a hairline instead of a second card (nested plates read as junk boxes). */
+.modal-section + .modal-section {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+/* A title glyph and a record-code chip have to sit on the heading's baseline. This flexes the
+   inner span rather than the h3 itself, which must stay a block so a 60-character SKU still wraps
+   inside the dialog width (see .modal > .row-between above). */
+.modal__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.modal__code {
+  padding: 2px 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  color: var(--brand-strong);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+}
+
+/* Destructive confirmations lead with the sprite glyph in the danger tint, the same tint the
+   status badges use, instead of a loose emoji over a centred paragraph. */
+.modal__confirm {
+  text-align: center;
+}
+
+.modal__confirm-glyph {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto var(--space-3);
+  border: 1px solid var(--danger);
+  border-radius: 50%;
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.modal__confirm p {
+  margin: 0 auto;
+}
+
+/* The bulk review lists exactly what is about to be destroyed. A sunken well reads as data rather
+   than another control, and the capped height keeps the question on one screen. */
+.modal-list {
+  max-height: 160px;
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  font-size: var(--text-xs);
+  text-align: left;
+}
+
 /* --------------------------------------------------------------- cart ----- */
 
 .cart-panel {

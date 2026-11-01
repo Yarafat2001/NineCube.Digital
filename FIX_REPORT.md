@@ -1,5 +1,97 @@
 # FIX_REPORT
 
+# Round 11 — the admin record dialogs were bottom sheets wearing a modal's clothes
+
+Date: 2026-11-01. Brief: two screenshots of the Edit Coupon and Edit Gift Card dialogs, "both edit
+pages not shows in the proper position in hovour and give this system relevent design".
+
+## The real cause, measured before touching anything
+
+The app already has one dialog component — `Modal` in `web/src/components/ui.tsx`, which six other
+screens use. The seven admin record dialogs were written by hand instead, and four of the six
+overlays (`edit coupon`, `delete coupon`, `edit gift card`, `delete gift card`, plus bulk review) were
+wrapped in `.sheet-backdrop`. That class is the mobile bell/cart bottom sheet: `app.css:748` sets
+`align-items: flex-end` with no padding. The remaining two (certificate viewer, adjust balance) hand-
+rolled their own `position: fixed` layer. Chromium at 1440×900 and 390×844, light and dark:
+
+| measured (Edit Coupon, 1440) | before | after |
+| --- | --- | --- |
+| distance from the dialog to the top edge | 317 px | 116 px |
+| distance to the bottom edge | **0 px** | 116 px |
+| vertical offset from the viewport centre | −175 px | **0 px** |
+| backdrop blur | none | `blur(4px)` |
+| Escape closes it | **no** | yes |
+| fields whose `<label>` points at nothing | **7 of 7** | 0 of 7 |
+| colour emoji in the dialog | 1 (`✏️`) | 0 |
+| inline style properties on the dialog box itself | 8 | 0 |
+
+So "not in the proper position" was exact: the dialog was pinned to the bottom edge of the screen and
+offset 175 px below the centre, with no gap under it. The off-centre was not a transformed ancestor —
+the probe walked the parent chain for `transform`/`filter`/`backdrop-filter`/`contain` and found none.
+`modern.css:325` already carried a `.sheet-backdrop:has([aria-label='Your cart'])` override to pull
+*one* sheet back to centre, which is how the mismatch was being lived with.
+
+The unlabelled fields are a separate defect the same dialogs carried: `<div className="field">` held a
+`<label>` and an `<input>` as siblings with no `for`, so clicking a label did not focus its input and
+assistive tech announced all 7 coupon and 4 gift-card controls as nameless.
+
+## What was changed
+
+- `Modal` grew four props instead of the dialogs growing their own markup: `title` now takes JSX (a
+  string is still translated), `footer` renders the action row, `footerClassName` centres it for
+  confirmations, `size` picks 640/540/460 px, and `alert` announces a destructive question as an
+  `alertdialog`. All six existing `Modal` call sites are untouched and still get the same dialog.
+- All seven admin dialogs now render through it, so they inherit what the hand-rolled ones did not
+  have: the centred `.modal-backdrop`, the 4 px blur, `data-overlay-open` (which stops the page behind
+  scrolling), Escape to close, a focus trap and focus returned to the row that opened it.
+- The editors read like the builders they belong to: the record code moved out of the sentence into a
+  `.modal__code` chip beside a sprite `pencil`, the fields grouped under the builder's own section
+  titles (`Discount Value & Calculation`, `Minimum Spend & Usage Limits`, `Active Dates & Campaign
+  Placement`, `Recipient`, `Greeting & Validity`) with the same `.discount-card-flag` pills, and the
+  two placement checkboxes moved into the builder's `.discount-toggles` column. The dialog stays the
+  only surface on screen — sections divide with a hairline, not a nested card.
+- Every control got an `id` and a matching `htmlFor`. The footer's Save button lives outside the form
+  and submits it through `form="edit-coupon-form"` / `form="edit-giftcard-form"`, which the new test
+  proves reaches the same `PUT` with the same body as before.
+- 10 emoji glyph sites in the seven dialogs (pencil twice, trash three times, gift, dice, clipboard
+  twice, gear) became sprite icons (`pencil`, `sliders`, `gift`, `copy`, `trash`); the trash sits in a
+  `.modal__confirm-glyph` danger-tinted disc instead of a loose 36 px emoji. The bulk deletion list
+  moved from an inline-styled box into `.modal-list`.
+
+## Measured after
+
+Across all four width × theme combinations, for all five dialogs an operator can actually reach
+(coupon editor, gift card editor, certificate viewer, adjust balance, bulk delete review):
+`centreOffsetX: 0` and `centreOffsetY: 0`, `gapTop === gapBottom` (116/116, 202/202, 219/219,
+282/282, 280/280 at 1440), no clipping at any edge, no horizontal overflow inside the dialog,
+`border-radius: 22px` and `backdrop-filter: blur(4px)` from the shared sheet, 0 emoji, 0 unlabelled
+controls, and Escape closes every one of them. `npm run build` reports `AdminPage` at 75.74 kB — the
+dialogs got smaller as well as shorter.
+
+## Left alone deliberately
+
+- The cart and notification bell sheets still use `.sheet-backdrop`. They are meant to come up from the
+  bottom on a phone; only the record dialogs were wearing the pattern by mistake.
+- The gift certificate artwork inside its dialog keeps its own inline styling (dark plate, gold
+  numbers). That is the certificate, not the dialog furniture, and it was approved as drawn.
+- The two single-record delete confirms (`deletingCoupon`, `deletingGiftCard`) are unreachable: nothing
+  in the toolbars ever calls their setters, so the trash button always opens the bulk review. They were
+  restyled to match rather than deleted, because removing an operator-visible path is a call to make
+  separately. Say the word and the dead state, dialogs and mutations come out.
+- No field, no label wording, no request body and no validation rule changed. Discount type is still
+  fixed at creation, exactly as it was.
+
+## Tests
+
+`web/src/test/admin-dialogs.test.tsx` (new, 5 tests): the coupon editor resolves to `.modal` inside
+`.modal-backdrop` and never `.sheet-backdrop`, Escape closes it, the code chip and sprite-only title
+are present; all 7 controls are label-associated and the three section titles are the builder's; the
+footer Save submits the form outside it and the `PUT /api/coupons/1` body carries the edited value;
+the gift card editor does the same on `PUT /api/gift-cards/1`; a two-row deletion opens an
+`alertdialog` whose glyph is an `svg` with no text and whose `.modal-list` names both codes.
+Full suite: 30 files, 192 tests green. `npx tsc --noEmit`, `npm run i18n:check` (1,703 entries, no new
+keys needed — the section titles were already in the catalogue) and `npm run build` all pass.
+
 # Round 10 — the two admin registries were not built the same way
 
 Date: 2026-11-01. Brief: a screenshot of each registry table, "design review and matching to the system

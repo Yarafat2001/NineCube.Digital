@@ -196,12 +196,21 @@ export function Pager({ page, totalPages, totalCount, pageSize, onPageChange }: 
 
 export interface ModalProps {
   open: boolean;
-  title: string;
+  /** A plain string is translated; JSX is rendered as authored (used for title + record code chips). */
+  title: ReactNode;
   onClose: () => void;
   children: ReactNode;
+  /** The action row. Rendered below a hairline so buttons never read as another field. */
+  footer?: ReactNode;
+  /** lg is the 640px wizard width, md the single-record editors, sm a yes/no question. */
+  size?: 'sm' | 'md' | 'lg';
+  /** Extra class on the footer row, e.g. modal__footer--center for a confirm question. */
+  footerClassName?: string;
+  /** True for destructive confirmations, which are announced as an alertdialog. */
+  alert?: boolean;
 }
 
-export function Modal({ open, title, onClose, children }: ModalProps) {
+export function Modal({ open, title, onClose, children, footer, size = 'lg', footerClassName, alert = false }: ModalProps) {
   useLanguage();
   const titleId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -234,21 +243,22 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
   return (
     <div className="modal-backdrop" onClick={onClose} role="presentation">
       <div
-        className="modal"
-        role="dialog"
+        className={size === 'lg' ? 'modal' : `modal modal--${size}`}
+        role={alert ? 'alertdialog' : 'dialog'}
         aria-modal="true"
         aria-labelledby={titleId}
         ref={containerRef}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="row-between">
-          <h3 id={titleId}>{t(title)}</h3>
+          <h3 id={titleId}>{typeof title === 'string' ? t(title) : title}</h3>
           <button type="button" className="btn btn--ghost btn--sm" onClick={onClose} aria-label={t("Close dialog")}>
             {t("✕")}</button>
         </div>
         <div className="stack" style={{ marginTop: 'var(--space-4)' }}>
           {t(children)}
         </div>
+        {footer ? <div className={footerClassName ? `modal__footer ${footerClassName}` : 'modal__footer'}>{t(footer)}</div> : null}
       </div>
     </div>
   );
