@@ -26,6 +26,7 @@ import {
 import type { Coupon, CouponTargetType, UserRole, GiftCard } from '../api/types';
 import { flattenCategories } from '../components/CategoryFilters';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, useToast } from '../components/ui';
+import { Icon } from '../components/Icon';
 import { formatDateTime, roleLabels, useDebouncedValue } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 
@@ -1392,56 +1393,60 @@ export function AdminPage() {
                   </span>
                 </div>
 
-                {/* Pill Segmented Controls (Matching Image 1) */}
-                <div className="bulk-pill-dock" role="toolbar" aria-label={t("Coupons bulk actions")}>
+                {/* Modern Squircle Icon Actions Dock (Image 2 style) */}
+                <div className="action-icon-group" role="toolbar" aria-label={t("Coupons bulk actions")}>
                   <button
                     type="button"
-                    className={`bulk-pill-btn ${selectedCouponIds.length === 1 ? 'bulk-pill-btn--primary' : ''}`}
-                    disabled={selectedCouponIds.length !== 1}
+                    className={`action-icon-btn ${selectedCouponIds.length === 1 ? 'action-icon-btn--primary action-icon-btn--active' : ''}`}
+                    disabled={selectedCouponIds.length !== 1 || isBulkBusy}
                     onClick={() => {
                       const c = (couponsQuery.data ?? []).find((item) => item.id === selectedCouponIds[0]);
                       if (c) openEditCoupon(c);
                     }}
-                    title={selectedCouponIds.length === 1 ? t("Edit selected coupon") : t("Select exactly 1 coupon to edit")}
+                    data-tooltip={selectedCouponIds.length === 1 ? t("Edit") : t("Select exactly 1 coupon to edit")}
+                    aria-label={t("Edit selected coupon")}
                   >
-                    ✏️ {t("Edit")}
+                    <Icon name="pencil" width="18" height="18" />
                   </button>
                   <button
                     type="button"
-                    className="bulk-pill-btn"
+                    className="action-icon-btn"
                     disabled={selectedCouponIds.length === 0 || isBulkBusy}
                     onClick={() => handleBulkCouponStatus(true)}
-                    title={t("Enable selected coupons")}
+                    data-tooltip={t("Enable")}
+                    aria-label={t("Enable selected coupons")}
                   >
-                    ✓ {t("Enable")}
+                    <Icon name="check" width="18" height="18" />
                   </button>
                   <button
                     type="button"
-                    className="bulk-pill-btn"
+                    className="action-icon-btn"
                     disabled={selectedCouponIds.length === 0 || isBulkBusy}
                     onClick={() => handleBulkCouponStatus(false)}
-                    title={t("Disable selected coupons")}
+                    data-tooltip={t("Disable")}
+                    aria-label={t("Disable selected coupons")}
                   >
-                    ⊘ {t("Disable")}
+                    <Icon name="ban" width="18" height="18" />
                   </button>
                   <button
                     type="button"
-                    className="bulk-pill-btn bulk-pill-btn--danger"
+                    className="action-icon-btn action-icon-btn--danger"
                     disabled={selectedCouponIds.length === 0 || isBulkBusy}
                     onClick={() => setBulkReviewModal({ type: 'coupon', action: 'delete' })}
-                    title={t("Delete selected coupons")}
+                    data-tooltip={t("Delete")}
+                    aria-label={t("Delete selected coupons")}
                   >
-                    🗑️ {t("Delete")}
+                    <Icon name="trash" width="18" height="18" />
                   </button>
                   {selectedCouponIds.length > 0 && (
                     <button
                       type="button"
-                      className="bulk-pill-btn"
+                      className="action-icon-btn"
                       onClick={() => setSelectedCouponIds([])}
-                      title={t("Clear selection")}
-                      style={{ fontSize: '11px', opacity: 0.8 }}
+                      data-tooltip={t("Clear selection")}
+                      aria-label={t("Clear selection")}
                     >
-                      ✕ {t("Clear")}
+                      <Icon name="x" width="16" height="16" />
                     </button>
                   )}
                 </div>
@@ -1834,68 +1839,86 @@ export function AdminPage() {
                   </span>
                 </div>
 
-                {/* Pill Segmented Controls (Matching Image 1) */}
-                <div className="bulk-pill-dock" role="toolbar" aria-label={t("Gift cards bulk actions")}>
+                {/* Modern Squircle Icon Actions Dock (Image 2 style) */}
+                <div className="action-icon-group" role="toolbar" aria-label={t("Gift cards bulk actions")}>
                   <button
                     type="button"
-                    className={`bulk-pill-btn ${selectedGiftCardIds.length === 1 ? 'bulk-pill-btn--primary' : ''}`}
-                    disabled={selectedGiftCardIds.length !== 1}
-                    onClick={() => {
-                      const g = (giftCardsQuery.data ?? []).find((item) => item.id === selectedGiftCardIds[0]);
-                      if (g) openEditGiftCard(g);
-                    }}
-                    title={selectedGiftCardIds.length === 1 ? t("Edit selected gift card") : t("Select exactly 1 gift card to edit")}
-                  >
-                    ✏️ {t("Edit")}
-                  </button>
-                  <button
-                    type="button"
-                    className="bulk-pill-btn"
+                    className={`action-icon-btn ${selectedGiftCardIds.length === 1 ? 'action-icon-btn--active' : ''}`}
                     disabled={selectedGiftCardIds.length !== 1}
                     onClick={() => {
                       const g = (giftCardsQuery.data ?? []).find((item) => item.id === selectedGiftCardIds[0]);
                       if (g) setSelectedCardForModal(g);
                     }}
-                    title={t("View digital certificate")}
+                    data-tooltip={selectedGiftCardIds.length === 1 ? t("View") : t("Select exactly 1 gift card to view")}
+                    aria-label={t("View digital certificate")}
                   >
-                    👁️ {t("View Card")}
+                    <Icon name="eye" width="18" height="18" />
                   </button>
                   <button
                     type="button"
-                    className="bulk-pill-btn"
+                    className={`action-icon-btn ${selectedGiftCardIds.length === 1 ? 'action-icon-btn--primary action-icon-btn--active' : ''}`}
+                    disabled={selectedGiftCardIds.length !== 1}
+                    onClick={() => {
+                      const g = (giftCardsQuery.data ?? []).find((item) => item.id === selectedGiftCardIds[0]);
+                      if (g) openEditGiftCard(g);
+                    }}
+                    data-tooltip={selectedGiftCardIds.length === 1 ? t("Edit") : t("Select exactly 1 gift card to edit")}
+                    aria-label={t("Edit selected gift card")}
+                  >
+                    <Icon name="pencil" width="18" height="18" />
+                  </button>
+                  <button
+                    type="button"
+                    className="action-icon-btn"
+                    disabled={selectedGiftCardIds.length !== 1}
+                    onClick={() => {
+                      const g = (giftCardsQuery.data ?? []).find((item) => item.id === selectedGiftCardIds[0]);
+                      if (g) setAdjustModal({ card: g, newBalance: String(g.currentBalance), reason: '' });
+                    }}
+                    data-tooltip={selectedGiftCardIds.length === 1 ? t("Adjust") : t("Select exactly 1 gift card to adjust")}
+                    aria-label={t("Adjust card balance")}
+                  >
+                    <Icon name="sliders" width="18" height="18" />
+                  </button>
+                  <button
+                    type="button"
+                    className="action-icon-btn"
                     disabled={selectedGiftCardIds.length === 0 || isBulkBusy}
                     onClick={() => handleBulkGiftCardStatus(true)}
-                    title={t("Activate selected gift cards")}
+                    data-tooltip={t("Activate")}
+                    aria-label={t("Activate selected gift cards")}
                   >
-                    ✓ {t("Activate")}
+                    <Icon name="check" width="18" height="18" />
                   </button>
                   <button
                     type="button"
-                    className="bulk-pill-btn"
+                    className="action-icon-btn"
                     disabled={selectedGiftCardIds.length === 0 || isBulkBusy}
                     onClick={() => handleBulkGiftCardStatus(false)}
-                    title={t("Deactivate selected gift cards")}
+                    data-tooltip={t("Deactivate")}
+                    aria-label={t("Deactivate selected gift cards")}
                   >
-                    ⊘ {t("Deactivate")}
+                    <Icon name="ban" width="18" height="18" />
                   </button>
                   <button
                     type="button"
-                    className="bulk-pill-btn bulk-pill-btn--danger"
+                    className="action-icon-btn action-icon-btn--danger"
                     disabled={selectedGiftCardIds.length === 0 || isBulkBusy}
                     onClick={() => setBulkReviewModal({ type: 'giftcard', action: 'delete' })}
-                    title={t("Delete selected gift cards")}
+                    data-tooltip={t("Delete")}
+                    aria-label={t("Delete selected gift cards")}
                   >
-                    🗑️ {t("Delete")}
+                    <Icon name="trash" width="18" height="18" />
                   </button>
                   {selectedGiftCardIds.length > 0 && (
                     <button
                       type="button"
-                      className="bulk-pill-btn"
+                      className="action-icon-btn"
                       onClick={() => setSelectedGiftCardIds([])}
-                      title={t("Clear selection")}
-                      style={{ fontSize: '11px', opacity: 0.8 }}
+                      data-tooltip={t("Clear selection")}
+                      aria-label={t("Clear selection")}
                     >
-                      ✕ {t("Clear")}
+                      <Icon name="x" width="16" height="16" />
                     </button>
                   )}
                 </div>
@@ -1964,7 +1987,7 @@ export function AdminPage() {
                         const maskedDisplay = isRevealed ? g.code : `${g.code.slice(0, 3)}••••-••••-${g.code.slice(-4)}`;
 
                         return (
-                          <tr key={g.id} data-selected={selectedGiftCardIds.includes(g.id)}>
+                          <tr key={g.id} data-selected={selectedGiftCardIds.includes(g.id)} onDoubleClick={() => openEditGiftCard(g)} style={{ cursor: "pointer" }} title={t("Click row to select · Double click to edit")}>
                             <td className="check">
                               <input
                                 type="checkbox"
@@ -2054,41 +2077,7 @@ export function AdminPage() {
                                 <span className="badge badge--ok">{t("Active")}</span>
                               )}
                             </td>
-                            <td className="actions">
-                              <div className="row" style={{ gap: '4px', justifyContent: 'flex-end' }}>
-                                <button
-                                  type="button"
-                                  className="btn btn--sm"
-                                  onClick={() => setSelectedCardForModal(g)}
-                                  title={t("View digital certificate")}
-                                >
-                                  👁️ {t("View Card")}
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn btn--sm"
-                                  onClick={() => setAdjustModal({ card: g, newBalance: String(g.currentBalance), reason: '' })}
-                                  title={t("Adjust card balance")}
-                                >
-                                  ⚙️ {t("Adjust")}
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn btn--sm"
-                                  disabled={toggleGiftCardStatus.isPending}
-                                  onClick={async () => {
-                                    try {
-                                      await toggleGiftCardStatus.mutateAsync({ id: g.id });
-                                      toast.push('success', `${g.code} ${t("status updated.")}`);
-                                    } catch (err) {
-                                      toast.pushError(err);
-                                    }
-                                  }}
-                                >
-                                  {t(g.isActive ? 'Disable' : 'Enable')}
-                                </button>
-                              </div>
-                            </td>
+                            
                           </tr>
                         );
                       })}

@@ -17,6 +17,11 @@ const paths = {
   wallet: 'M3 5h17v15H3zM3 5V3h15M16 11h6v5h-6z', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z',
   cart: 'M2 3h3l3 12h11l3-8H6M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2M18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2',
   heart: 'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z',
+  pencil: 'M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z',
+  trash: 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6',
+  sliders: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
+  ban: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-7.07 7.07L16.93 19.07',
+  x: 'M18 6 6 18M6 6l12 12',
 };
 export type IconName = keyof typeof paths;
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {

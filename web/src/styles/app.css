@@ -2353,6 +2353,117 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   transform: none;
 }
 
+/* -------------------------------- action squircle icon buttons (Image 2 style) ---- */
+.action-icon-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--surface-raised, var(--surface));
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.action-icon-btn:hover:not(:disabled) {
+  border-color: var(--accent, #3b82f6);
+  color: var(--accent, #3b82f6);
+  background: var(--surface-sunken);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.action-icon-btn--active {
+  border-color: var(--accent, #3b82f6) !important;
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: var(--accent, #3b82f6) !important;
+}
+
+.action-icon-btn--primary {
+  border-color: var(--brand, #f59e0b);
+  color: var(--brand, #f59e0b);
+}
+
+.action-icon-btn--primary.action-icon-btn--active {
+  background: var(--selected-bg, rgba(245, 158, 11, 0.15)) !important;
+  border-color: var(--brand, #f59e0b) !important;
+  color: var(--accent-text, #d97706) !important;
+}
+
+.action-icon-btn--danger:hover:not(:disabled) {
+  border-color: var(--danger, #ef4444) !important;
+  color: var(--danger, #ef4444) !important;
+  background: var(--bad-bg, rgba(239, 68, 68, 0.12)) !important;
+}
+
+.action-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Floating tooltip bubble above button (Matching Image 2) */
+.action-icon-btn[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  z-index: var(--z-menu);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+}
+
+.action-icon-btn[data-tooltip]::after {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  border-width: 6px 5px 0 5px;
+  border-style: solid;
+  border-color: #0f172a transparent transparent transparent;
+  pointer-events: none;
+  z-index: var(--z-menu);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+}
+
+.action-icon-btn[data-tooltip]:hover:not(:disabled)::before,
+.action-icon-btn[data-tooltip]:hover:not(:disabled)::after,
+.action-icon-btn[data-tooltip]:focus-visible:not(:disabled)::before,
+.action-icon-btn[data-tooltip]:focus-visible:not(:disabled)::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
 .table tbody tr[data-selected="true"],
 .table-surface tbody tr[data-selected="true"] {
   background: var(--selected-bg, rgba(245, 158, 11, 0.08)) !important;
