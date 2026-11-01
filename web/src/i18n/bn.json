@@ -1699,5 +1699,7 @@
   "Greeting": "শুভেচ্ছা",
   "No personal note": "কোনো ব্যক্তিগত বার্তা নেই",
   "Ready — this issues the card exactly as previewed.": "প্রস্তুত — যেভাবে দেখানো হয়েছে ঠিক সেভাবেই কার্ড ইস্যু হবে।",
-  "Add a card value to continue": "চালিয়ে যেতে কার্ডের মূল্য দিন"
+  "Add a card value to continue": "চালিয়ে যেতে কার্ডের মূল্য দিন",
+  "Promotional coupons and their live state": "প্রচারমূলক কুপন এবং তাদের চলমান অবস্থা",
+  "Issued gift cards and their live state": "ইস্যু করা গিফট কার্ড এবং তাদের চলমান অবস্থা"
 }

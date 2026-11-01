@@ -1,5 +1,88 @@
 # FIX_REPORT
 
+# Round 10 — the two admin registries were not built the same way
+
+Date: 2026-11-01. Brief: a screenshot of each registry table, "design review and matching to the system
+current themes with relevancy state".
+
+## What the review found, measured in the browser first
+
+Both tables were probed at 1440 and 390, dark and light, before anything was changed. Five real
+mismatches came out of it, plus one dead CSS rule that affects the whole app:
+
+1. **Only one of them sits on a plate.** `.table-surface` — the solid, bordered, rounded surface every
+   other table in the app uses (10 of 12 table sites, including the coupon registry two tabs away) —
+   was missing from the gift registry, which instead wrapped its whole panel in `.card-glass`. Measured:
+   coupon `hasSurface: true`, plate `1px border / 22px radius / shadow`; gift `hasSurface: false`.
+2. **The selection counter disappears when you use it.** Both registries switch their "N selected" chip
+   to `badge--primary` once a row is checked, and `badge--primary` is defined in no stylesheet. At 0
+   selected the chip computed to `background rgb(52,59,73), border rgb(224,230,240)`; at 1 selected it
+   computed to `rgba(0,0,0,0)` on both — the pill lost its fill and its edge at the exact moment it
+   matters.
+3. **Colour emoji stood in for the icon system.** The gift rows carried `🔒`/`👁️` and `📋` as the reveal
+   and copy controls (3 cells), and the coupon rows prefixed every scope with `🛒  🏷️ `, marked
+   automatic coupons with `🤖` and banners with `📢` (12 cells). Emoji ignore `currentColor`, so they
+   rendered identically in both themes and did not match the stroke sprite used everywhere else.
+4. **The `🤖 Automatic` chip was not a badge at all.** It carried the base `.badge` class with an inline
+   `background: var(--surface-sunken)` and `font-size: 10px`, so it had no tone and no border while every
+   real badge beside it has both.
+5. **The two tables disagreed about the same word.** `Disabled` was `badge--warn` on a gift card and
+   `badge--neutral` on a coupon. `Expired` and `Depleted` shared one grey, so a card whose time ran out
+   looked identical to one whose balance ran out, and neither looked different enough from a card an
+   operator deliberately switched off. No status badge in either table carried the glyph that
+   `app.css:663` requires ("Status is never conveyed by colour alone").
+6. **`td .num, th .num` matched nothing.** The rule that right-aligns and tabulates money columns was
+   written as a descendant selector while every call site puts the class on the cell itself — so all 44
+   numeric cells across four pages were left-aligned and their digits did not line up.
+
+## What was changed
+
+- The gift panel is now the same shape as the coupon panel: plain `stack` outside, `.table-surface`
+  around the table. Both registries measure `hasSurface: true` with the identical plate at all four
+  width × theme combinations, and both tables are 1374 px wide at 1440 (the gift one was 1342).
+- `.badge--primary` now exists, built from the same amber tokens as the selected nav tab
+  (`--selected-bg`, `--accent-text`, `--selected-bar`). With a row selected the chip computes to
+  `rgba(245,151,38,0.16)` on `rgb(245,151,38)` in dark and `rgb(255,241,214)` on `rgb(217,119,6)` in
+  light.
+- Every emoji in the two tables is a sprite icon that inherits the theme: `eye`/`hidden` and `copy` on
+  the code cell, `folder`/`tag`/`box`/`cart` on the scope line, `bolt` on Automatic, `megaphone` on the
+  banner chip. Gift table emoji cells: 3 → 0. Coupon scope and chip cells: 0.
+- The state vocabulary is now one vocabulary across both tables and reuses the glyphs the order badges
+  already teach: Active `✓` ok, Scheduled `◔` warn, Disabled `⊘` neutral, Expired `✕` danger,
+  Depleted `○` neutral. Every status badge carries a `.badge__glyph`.
+- `td.num, th.num` is a cell selector, so the discount, minimum-order and usage columns right-align, the
+  gift balance column right-aligns with its meter under it, and the 102 numeric cells on the inventory
+  ledger finally align. The cap line under a percentage discount got `.cell-sub` (`display: block;
+  white-space: nowrap`) so right-aligning the column did not break "Cap: BDT 2000" across two lines.
+- Both registry tables got a `visually-hidden` `<caption>` like every other table in the app, and the
+  coupon empty-state row's `colSpan` was corrected from 9 to its actual 8 columns.
+
+## Measured after
+
+At 1440 and 390, dark and light, on the running app: page-level horizontal overflow unchanged at
+**0 px** (1440 and 390 both report `scrollWidth` equal to the viewport; the tables scroll inside their
+own plate at 1141 px and 902 px on a phone). Inline-styled nodes inside the tables: coupon 16 → 9, gift
+33 → 18. The staff order console, the customer order list and the staff product table were re-checked
+because the `.num` fix is global: no new overflow, and the inventory ledger reports `align: right,
+font-variant-numeric: tabular-nums`.
+
+## Tests
+
+`web/src/test/registry-tables.test.tsx` is new, 4 tests: both registries sit on `.table-surface` and not
+inside `.card-glass`; the scope cells contain no pictographic emoji; every status badge carries a glyph
+and the four gift states plus the coupon `Disabled` land on the tones named above; checking a row moves
+the counter from `badge--neutral` to `badge--primary`. `npx tsc --noEmit` clean, `npm run i18n:check`
+clean at 1,703 entries, `npm run build` clean, `npm run test:run` **187 tests in 29 files green**.
+
+## What was deliberately left alone
+
+The campaign titles in the coupon table still contain emoji (`⚡ Flash Sale: …`) because that text is the
+operator's own campaign copy, stored with the coupon and shown to customers on the banner — stripping it
+would change what a shopper sees, not how the table is built. The gift registry's search box and its
+All / Active / Depleted / Disabled filters were kept exactly as they work, and no filter bar was added
+to the coupon registry, since neither was asked for. The bulk-action docks, the row selection
+behaviour, the certificate modal and every API payload are untouched.
+
 # Round 9 — the gift card builder takes the same shape as the coupon builder
 
 Date: 2026-11-01. Brief: "same way gifts card parts also design as like this way", with a screenshot of

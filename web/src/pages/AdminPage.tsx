@@ -730,20 +730,23 @@ export function AdminPage() {
     }
   };
 
+  const scopeIcon: Record<string, IconName> = { Category: 'folder', Brand: 'tag', Product: 'box' };
+
   const resolveTargetLabel = (c: Coupon) => {
+    const glyph = (name: IconName) => <Icon name={name} width={12} height={12} aria-hidden="true" />;
     if (c.targetType === 'Category' && c.targetId) {
       const cat = allCategories.find((x) => x.id === c.targetId);
-      return cat ? `📁 ${cat.name}` : `📁 ${t("Category")} #${c.targetId}`;
+      return <>{glyph(scopeIcon.Category)} {cat ? cat.name : `${t("Category")} #${c.targetId}`}</>;
     }
     if (c.targetType === 'Brand' && c.targetId) {
       const b = allBrands.find((x) => x.id === c.targetId);
-      return b ? `🏷️ ${b.name}` : `🏷️ ${t("Brand")} #${c.targetId}`;
+      return <>{glyph(scopeIcon.Brand)} {b ? b.name : `${t("Brand")} #${c.targetId}`}</>;
     }
     if (c.targetType === 'Product' && c.targetId) {
       const p = allProducts.find((x) => x.id === c.targetId);
-      return p ? `📦 ${p.name}` : `📦 ${t("Product")} #${c.targetId}`;
+      return <>{glyph(scopeIcon.Product)} {p ? p.name : `${t("Product")} #${c.targetId}`}</>;
     }
-    return `🛒 ${t("All products (Order)")}`;
+    return <>{glyph('cart')} {t("All products (Order)")}</>;
   };
 
   return (
@@ -1655,6 +1658,7 @@ export function AdminPage() {
               <div className="table-surface">
               <div className="table-scroll">
                 <table>
+                  <caption className="visually-hidden">{t("Promotional coupons and their live state")}</caption>
                   <thead>
                     <tr>
                       <th scope="col" className="check" style={{ width: '40px' }}>
@@ -1703,29 +1707,30 @@ export function AdminPage() {
                         <td onDoubleClick={() => openEditCoupon(c)} style={{ cursor: "pointer" }} title={t("Click row to select · Double click to edit")}><strong className="mono">{c.code}</strong></td>
                         <td>
                           <div>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}</div>
-                          <small className="muted" style={{ display: 'block', fontSize: 'var(--text-xs)' }}>
-                            {resolveTargetLabel(c)}
-                          </small>
+                          <small className="muted registry-scope">{resolveTargetLabel(c)}</small>
                           {c.isAutomatic ? (
-                            <span className="badge" style={{ fontSize: '10px', background: 'var(--surface-sunken)', marginTop: '2px' }}>
-                              🤖 {t("Automatic")}
+                            <span className="badge badge--neutral" style={{ marginTop: '2px' }}>
+                              <Icon name="bolt" width={11} height={11} aria-hidden="true" /> {t("Automatic")}
                             </span>
                           ) : null}
                         </td>
-                        <td className="num">{c.discountType === 'Percentage' ? `${c.discountValue}%` : `${t("BDT")} ${c.discountValue}`}{c.maxDiscountCap ? <><br /><small className="muted">{t("Cap:")} {t("BDT")} {c.maxDiscountCap}</small></> : null}</td>
+                        <td className="num">{c.discountType === 'Percentage' ? `${c.discountValue}%` : `${t("BDT")} ${c.discountValue}`}{c.maxDiscountCap ? <small className="muted cell-sub">{t("Cap:")} {t("BDT")} {c.maxDiscountCap}</small> : null}</td>
                         <td className="num">{c.minOrderAmount > 0 ? `BDT ${c.minOrderAmount}` : t("None")}</td>
                         <td className="num">{c.usageCount}{c.usageLimit ? ` / ${c.usageLimit}` : ''}</td>
-                        <td>{c.isBannerPromoted ? <span className="badge badge--ok" title={c.campaignTitle ?? ''}>📢 {c.campaignTitle ? t(c.campaignTitle) : t("Banner")}</span> : <span className="muted">—</span>}</td>
+                        <td>{c.isBannerPromoted ? <span className="badge badge--ok" title={c.campaignTitle ?? ''}><Icon name="megaphone" width={11} height={11} aria-hidden="true" /> {c.campaignTitle ? t(c.campaignTitle) : t("Banner")}</span> : <span className="muted">—</span>}</td>
                         <td>
                           <span className={`badge ${c.isActive ? 'badge--ok' : 'badge--neutral'}`}>
+                            <span className="badge__glyph" aria-hidden="true">{t(c.isActive ? '✓' : '⊘')}</span>
                             {t(c.isActive ? 'Active' : 'Disabled')}
                           </span>
                           {c.expiresAt && new Date(c.expiresAt) < new Date() ? (
-                            <span className="badge badge--neutral" style={{ display: 'block', marginTop: '3px', fontSize: '10px' }}>
+                            <span className="badge badge--danger" style={{ display: 'inline-flex', marginTop: '3px' }}>
+                              <span className="badge__glyph" aria-hidden="true">{t("✕")}</span>
                               {t("Expired")}
                             </span>
                           ) : c.startsAt && new Date(c.startsAt) > new Date() ? (
-                            <span className="badge badge--warn" style={{ display: 'block', marginTop: '3px', fontSize: '10px' }}>
+                            <span className="badge badge--warn" style={{ display: 'inline-flex', marginTop: '3px' }}>
+                              <span className="badge__glyph" aria-hidden="true">{t("◔")}</span>
                               {t("Scheduled")}
                             </span>
                           ) : null}
@@ -1735,7 +1740,7 @@ export function AdminPage() {
                     ))}
                     {(couponsQuery.data ?? []).length === 0 && (
                       <tr>
-                        <td colSpan={9} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
+                        <td colSpan={8} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
                           {t("No coupons created yet.")}
                         </td>
                       </tr>
@@ -2129,7 +2134,7 @@ export function AdminPage() {
           ) : giftCardsQuery.isError ? (
             <ErrorState error={giftCardsQuery.error} onRetry={() => giftCardsQuery.refetch()} />
           ) : (
-            <div className="card-glass stack" style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg, 12px)' }}>
+            <div className="stack" style={{ gap: 'var(--space-3)' }}>
               {/* Header with Search, Filters and Segmented Pill Dock (Matching Image 1) */}
               <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center' }}>
                 <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
@@ -2252,8 +2257,10 @@ export function AdminPage() {
               </div>
 
               {/* Table */}
+              <div className="table-surface">
               <div className="table-scroll">
-                <table className="table" aria-label={t("Gift Cards")}>
+                <table>
+                  <caption className="visually-hidden">{t("Issued gift cards and their live state")}</caption>
                   <thead>
                     <tr>
                       <th scope="col" className="check" style={{ width: '40px' }}>
@@ -2304,8 +2311,8 @@ export function AdminPage() {
                                 }}
                               />
                             </td>
-                            <td className="mono" style={{ fontWeight: 600 }}>
-                              <div className="row" style={{ gap: '6px', alignItems: 'center' }}>
+                            <td className="mono">
+                              <div className="registry-code">
                                 <span>{maskedDisplay}</span>
                                 <button
                                   type="button"
@@ -2313,9 +2320,8 @@ export function AdminPage() {
                                   onClick={() => setRevealedCodes(prev => ({ ...prev, [g.id]: !prev[g.id] }))}
                                   title={t(isRevealed ? "Hide code" : "Reveal code")}
                                   aria-label={t(isRevealed ? "Hide code" : "Reveal code")}
-                                  style={{ fontSize: '12px' }}
                                 >
-                                  {isRevealed ? '👁️' : '🔒'}
+                                  <Icon name={isRevealed ? 'eye' : 'hidden'} width={14} height={14} />
                                 </button>
                                 <button
                                   type="button"
@@ -2323,9 +2329,8 @@ export function AdminPage() {
                                   onClick={() => copyToClipboard(g.code)}
                                   title={t("Copy code")}
                                   aria-label={t("Copy code")}
-                                  style={{ fontSize: '12px' }}
                                 >
-                                  📋
+                                  <Icon name="copy" width={14} height={14} />
                                 </button>
                               </div>
                             </td>
@@ -2344,22 +2349,18 @@ export function AdminPage() {
                                 )}
                               </div>
                             </td>
-                            <td>
+                            <td className="num">
                               <div>
-                                <strong style={{ color: isDepleted ? 'var(--muted)' : 'var(--ok, #10b981)' }}>
+                                <strong style={{ color: isDepleted ? 'var(--muted)' : 'var(--ok)' }}>
                                   {t("BDT")} {g.currentBalance.toLocaleString()}
                                 </strong>
-                                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                                <span className="muted" style={{ fontSize: 'var(--text-xs)' }}>
                                   {' '}/ {g.initialBalance.toLocaleString()}
                                 </span>
-                                {/* Progress bar */}
-                                <div style={{ width: '100px', height: '4px', background: 'var(--border)', borderRadius: '2px', marginTop: '4px', overflow: 'hidden' }}>
+                                <div className="balance-meter">
                                   <div
-                                    style={{
-                                      width: `${Math.min(100, (g.currentBalance / (g.initialBalance || 1)) * 100)}%`,
-                                      height: '100%',
-                                      background: isDepleted ? 'var(--muted)' : 'var(--ok, #10b981)'
-                                    }}
+                                    className={`balance-meter__fill ${isDepleted ? 'balance-meter__fill--depleted' : ''}`}
+                                    style={{ width: `${Math.min(100, (g.currentBalance / (g.initialBalance || 1)) * 100)}%` }}
                                   />
                                 </div>
                               </div>
@@ -2370,16 +2371,27 @@ export function AdminPage() {
                             </td>
                             <td>
                               {!g.isActive ? (
-                                <span className="badge badge--warn">{t("Disabled")}</span>
+                                <span className="badge badge--neutral">
+                                  <span className="badge__glyph" aria-hidden="true">{t("⊘")}</span>
+                                  {t("Disabled")}
+                                </span>
                               ) : isExpired ? (
-                                <span className="badge badge--neutral">{t("Expired")}</span>
+                                <span className="badge badge--danger">
+                                  <span className="badge__glyph" aria-hidden="true">{t("✕")}</span>
+                                  {t("Expired")}
+                                </span>
                               ) : isDepleted ? (
-                                <span className="badge badge--neutral">{t("Depleted")}</span>
+                                <span className="badge badge--neutral">
+                                  <span className="badge__glyph" aria-hidden="true">{t("○")}</span>
+                                  {t("Depleted")}
+                                </span>
                               ) : (
-                                <span className="badge badge--ok">{t("Active")}</span>
+                                <span className="badge badge--ok">
+                                  <span className="badge__glyph" aria-hidden="true">{t("✓")}</span>
+                                  {t("Active")}
+                                </span>
                               )}
                             </td>
-                            
                           </tr>
                         );
                       })}
@@ -2392,6 +2404,7 @@ export function AdminPage() {
                     )}
                   </tbody>
                 </table>
+              </div>
               </div>
             </div>
           )}

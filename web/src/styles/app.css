@@ -687,6 +687,13 @@ input[type='file']:focus-visible::file-selector-button {
   color: var(--neutral);
   border-color: currentColor;
 }
+/* Both admin registries put the selection counter in this tone while rows are picked,
+   but the class was never defined, so the chip lost its pill as soon as a row was checked. */
+.badge--primary {
+  background: var(--selected-bg);
+  color: var(--accent-text);
+  border-color: var(--selected-bar);
+}
 
 .badge__glyph {
   font-size: 0.9em;
@@ -895,14 +902,62 @@ tbody tr:last-child td {
   border-bottom: none;
 }
 
-td .num,
-th .num {
+/* The markup puts the class on the cell itself; as a descendant selector this never
+   matched, so every money column in the app was left-aligned. */
+td.num,
+th.num {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
 tr[data-low-stock='true'] {
   background: var(--warn-tint);
+}
+
+/* Admin registry cells: a card code with its reveal/copy controls, a scope line that
+   carries the same glyph as the builder, and the balance meter under the figure. */
+.registry-code {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.registry-code .link-button {
+  display: inline-flex;
+  align-items: center;
+}
+
+.registry-scope {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+}
+
+/* A right-aligned money cell must not break its own qualifier across two lines. */
+.cell-sub {
+  display: block;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+}
+
+.balance-meter {
+  width: 100px;
+  height: 4px;
+  margin: 4px 0 0 auto;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+.balance-meter__fill {
+  height: 100%;
+  background: var(--ok);
+}
+
+.balance-meter__fill--depleted {
+  background: var(--muted);
 }
 
 /* -------------------------------------------------------------- pager ----- */
