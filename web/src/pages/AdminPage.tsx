@@ -284,6 +284,76 @@ export function AdminPage() {
   const [editGcNote, setEditGcNote] = useState('');
   const [editGcExpiresAt, setEditGcExpiresAt] = useState('');
 
+  // Bulk selection states for Coupons & Gift Cards
+  const [selectedCouponIds, setSelectedCouponIds] = useState<number[]>([]);
+  const [selectedGiftCardIds, setSelectedGiftCardIds] = useState<number[]>([]);
+  const [isBulkBusy, setIsBulkBusy] = useState(false);
+  const [bulkReviewModal, setBulkReviewModal] = useState<{ type: 'coupon' | 'giftcard'; action: 'delete' } | null>(null);
+
+  const handleBulkCouponStatus = async (isActive: boolean) => {
+    if (selectedCouponIds.length === 0 || isBulkBusy) return;
+    setIsBulkBusy(true);
+    try {
+      await Promise.all(selectedCouponIds.map((id) => toggleCouponStatus.mutateAsync({ id, isActive })));
+      toast.push('success', `${selectedCouponIds.length} ${t("coupons status updated.")}`);
+      setSelectedCouponIds([]);
+    } catch (err) {
+      toast.pushError(err);
+    } finally {
+      setIsBulkBusy(false);
+    }
+  };
+
+  const handleBulkCouponDelete = async () => {
+    if (selectedCouponIds.length === 0 || isBulkBusy) return;
+    setIsBulkBusy(true);
+    try {
+      await Promise.all(selectedCouponIds.map((id) => deleteCoupon.mutateAsync(id)));
+      toast.push('success', `${selectedCouponIds.length} ${t("coupons deleted.")}`);
+      setSelectedCouponIds([]);
+      setBulkReviewModal(null);
+    } catch (err) {
+      toast.pushError(err);
+    } finally {
+      setIsBulkBusy(false);
+    }
+  };
+
+  const handleBulkGiftCardStatus = async (targetActive: boolean) => {
+    if (selectedGiftCardIds.length === 0 || isBulkBusy) return;
+    setIsBulkBusy(true);
+    try {
+      const allCards = giftCardsQuery.data ?? [];
+      const cardsToToggle = allCards.filter(
+        (g) => selectedGiftCardIds.includes(g.id) && g.isActive !== targetActive
+      );
+      if (cardsToToggle.length > 0) {
+        await Promise.all(cardsToToggle.map((g) => toggleGiftCardStatus.mutateAsync({ id: g.id })));
+      }
+      toast.push('success', `${selectedGiftCardIds.length} ${t("gift cards status updated.")}`);
+      setSelectedGiftCardIds([]);
+    } catch (err) {
+      toast.pushError(err);
+    } finally {
+      setIsBulkBusy(false);
+    }
+  };
+
+  const handleBulkGiftCardDelete = async () => {
+    if (selectedGiftCardIds.length === 0 || isBulkBusy) return;
+    setIsBulkBusy(true);
+    try {
+      await Promise.all(selectedGiftCardIds.map((id) => deleteGiftCard.mutateAsync(id)));
+      toast.push('success', `${selectedGiftCardIds.length} ${t("gift cards deleted.")}`);
+      setSelectedGiftCardIds([]);
+      setBulkReviewModal(null);
+    } catch (err) {
+      toast.pushError(err);
+    } finally {
+      setIsBulkBusy(false);
+    }
+  };
+
   const [couponCode, setCouponCode] = useState('');
   const [discountType, setDiscountType] = useState<'Percentage' | 'FixedAmount'>('Percentage');
   const [discountValue, setDiscountValue] = useState('10');
@@ -318,6 +388,23 @@ export function AdminPage() {
   const [gcExpiresAt, setGcExpiresAt] = useState('');
   const [gcSearch, setGcSearch] = useState('');
   const [gcFilter, setGcFilter] = useState<'all' | 'active' | 'depleted' | 'disabled'>('all');
+
+  const filteredGiftCards = useMemo(() => {
+    return (giftCardsQuery.data ?? [])
+      .filter((g) => {
+        if (gcFilter === 'active') return g.isActive && g.currentBalance > 0 && (!g.expiresAt || new Date(g.expiresAt) > new Date());
+        if (gcFilter === 'depleted') return g.currentBalance <= 0;
+        if (gcFilter === 'disabled') return !g.isActive;
+        return true;
+      })
+      .filter((g) => {
+        if (!gcSearch.trim()) return true;
+        const term = gcSearch.toLowerCase();
+        return g.code.toLowerCase().includes(term) ||
+          (g.recipientName?.toLowerCase().includes(term) ?? false) ||
+          (g.recipientEmail?.toLowerCase().includes(term) ?? false);
+      });
+  }, [giftCardsQuery.data, gcFilter, gcSearch]);
   const [selectedCardForModal, setSelectedCardForModal] = useState<GiftCard | null>(null);
   const [adjustModal, setAdjustModal] = useState<{ card: GiftCard; newBalance: string; reason: string } | null>(null);
   const [revealedCodes, setRevealedCodes] = useState<Record<number, boolean>>({});
@@ -1273,11 +1360,87 @@ export function AdminPage() {
           ) : couponsQuery.isError ? (
             <ErrorState error={couponsQuery.error} onRetry={() => couponsQuery.refetch()} />
           ) : (
-            <div className="table-surface">
+            <div className="stack" style={{ gap: 'var(--space-2)' }}>
+              {/* Coupons Bulk Actions Bar */}
+              {selectedCouponIds.length > 0 && (
+                <div
+                  className="bulk-bar"
+                  data-testid="coupons-bulk-bar"
+                  role="toolbar"
+                  aria-label={t("Bulk actions for selected coupons")}
+                  style={{ marginBottom: 'var(--space-2)' }}
+                >
+                  <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
+                    <span className="badge badge--primary" style={{ fontWeight: 750, fontSize: 'var(--text-xs)' }}>
+                      {selectedCouponIds.length} {t("selected")}
+                    </span>
+                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                      {t("Bulk actions:")}
+                    </span>
+                  </div>
+
+                  <div className="row" style={{ gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      className="btn btn--sm"
+                      disabled={isBulkBusy}
+                      onClick={() => handleBulkCouponStatus(true)}
+                      title={t("Enable selected coupons")}
+                    >
+                      ✓ {t("Enable Selected")}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--sm"
+                      disabled={isBulkBusy}
+                      onClick={() => handleBulkCouponStatus(false)}
+                      title={t("Disable selected coupons")}
+                    >
+                      ⊘ {t("Disable Selected")}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--sm btn--danger"
+                      disabled={isBulkBusy}
+                      onClick={() => setBulkReviewModal({ type: 'coupon', action: 'delete' })}
+                      title={t("Delete selected coupons")}
+                    >
+                      🗑️ {t("Delete Selected")}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--sm btn--outline"
+                      disabled={isBulkBusy}
+                      onClick={() => setSelectedCouponIds([])}
+                    >
+                      {t("Clear selection")}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="table-surface">
               <div className="table-scroll">
                 <table>
                   <thead>
                     <tr>
+                      <th scope="col" className="check" style={{ width: '40px' }}>
+                        <input
+                          type="checkbox"
+                          aria-label={t("Select all coupons on this page")}
+                          checked={
+                            (couponsQuery.data ?? []).length > 0 &&
+                            (couponsQuery.data ?? []).every((c) => selectedCouponIds.includes(c.id))
+                          }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedCouponIds((couponsQuery.data ?? []).map((c) => c.id));
+                            } else {
+                              setSelectedCouponIds([]);
+                            }
+                          }}
+                        />
+                      </th>
                       <th scope="col">{t("Code")}</th>
                       <th scope="col">{t("Type & Scope")}</th>
                       <th scope="col" className="num">{t("Discount")}</th>
@@ -1290,7 +1453,21 @@ export function AdminPage() {
                   </thead>
                   <tbody>
                     {(couponsQuery.data ?? []).map((c) => (
-                      <tr key={c.id}>
+                      <tr key={c.id} data-selected={selectedCouponIds.includes(c.id)}>
+                        <td className="check">
+                          <input
+                            type="checkbox"
+                            aria-label={t(`Select coupon ${c.code}`)}
+                            checked={selectedCouponIds.includes(c.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedCouponIds((prev) => [...prev, c.id]);
+                              } else {
+                                setSelectedCouponIds((prev) => prev.filter((id) => id !== c.id));
+                              }
+                            }}
+                          />
+                        </td>
                         <td><strong>{c.code}</strong></td>
                         <td>
                           <div>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}</div>
@@ -1371,7 +1548,7 @@ export function AdminPage() {
                     ))}
                     {(couponsQuery.data ?? []).length === 0 && (
                       <tr>
-                        <td colSpan={8} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
+                        <td colSpan={9} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
                           {t("No coupons created yet.")}
                         </td>
                       </tr>
@@ -1380,12 +1557,88 @@ export function AdminPage() {
                 </table>
               </div>
             </div>
+            </div>
           )}
         </section>
       ) : null}
 
       {tab === 'giftcards' ? (
         <section role="tabpanel" id="panel-giftcards" aria-labelledby="tab-giftcards" className="stack">
+          {/* Quick Gift Card Presets Bar */}
+          <div className="card-glass" style={{ padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-lg, 12px)', border: '1px solid var(--border)' }}>
+            <div className="row-between" style={{ flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                ✨ {t("Quick Templates (1-Click Fill):")}
+              </span>
+              <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn btn--sm btn--outline"
+                  style={{ fontSize: '11px', padding: '3px 8px' }}
+                  onClick={() => {
+                    setGcInitialBalance('1000');
+                    setGcRecipientName('Valued Friend');
+                    setGcNote('Happy Birthday! Enjoy your shopping.');
+                    const d = new Date();
+                    d.setFullYear(d.getFullYear() + 1);
+                    setGcExpiresAt(d.toISOString().slice(0, 10));
+                    generateNewGiftCardCode();
+                  }}
+                >
+                  🎂 {t("Birthday Gift (BDT 1,000)")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--sm btn--outline"
+                  style={{ fontSize: '11px', padding: '3px 8px' }}
+                  onClick={() => {
+                    setGcInitialBalance('2500');
+                    setGcRecipientName('Eid Celebrant');
+                    setGcNote('Eid Mubarak! May your celebration be filled with joy.');
+                    const d = new Date();
+                    d.setFullYear(d.getFullYear() + 1);
+                    setGcExpiresAt(d.toISOString().slice(0, 10));
+                    generateNewGiftCardCode();
+                  }}
+                >
+                  🌙 {t("Eid Mubarak Gift (BDT 2,500)")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--sm btn--outline"
+                  style={{ fontSize: '11px', padding: '3px 8px' }}
+                  onClick={() => {
+                    setGcInitialBalance('5000');
+                    setGcRecipientName('VIP Customer');
+                    setGcNote('Thank you for being our valued VIP partner.');
+                    const d = new Date();
+                    d.setFullYear(d.getFullYear() + 2);
+                    setGcExpiresAt(d.toISOString().slice(0, 10));
+                    generateNewGiftCardCode();
+                  }}
+                >
+                  👑 {t("VIP Executive Reward (BDT 5,000)")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--sm btn--outline"
+                  style={{ fontSize: '11px', padding: '3px 8px' }}
+                  onClick={() => {
+                    setGcInitialBalance('500');
+                    setGcRecipientName('New Member');
+                    setGcNote('Welcome to NineCube Digital!');
+                    const d = new Date();
+                    d.setMonth(d.getMonth() + 6);
+                    setGcExpiresAt(d.toISOString().slice(0, 10));
+                    generateNewGiftCardCode();
+                  }}
+                >
+                  🎉 {t("Welcome Bonus (BDT 500)")}
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Issue Gift Card Form & Interactive Preview */}
           <div className="card-glass" style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg, 12px)' }}>
             <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-3)', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -1617,11 +1870,86 @@ export function AdminPage() {
                 </div>
               </div>
 
+              {/* Gift Cards Bulk Actions Bar */}
+              {selectedGiftCardIds.length > 0 && (
+                <div
+                  className="bulk-bar"
+                  data-testid="giftcards-bulk-bar"
+                  role="toolbar"
+                  aria-label={t("Bulk actions for selected gift cards")}
+                  style={{ margin: 'var(--space-2) 0' }}
+                >
+                  <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
+                    <span className="badge badge--primary" style={{ fontWeight: 750, fontSize: 'var(--text-xs)' }}>
+                      {selectedGiftCardIds.length} {t("selected")}
+                    </span>
+                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                      {t("Bulk actions:")}
+                    </span>
+                  </div>
+
+                  <div className="row" style={{ gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      className="btn btn--sm"
+                      disabled={isBulkBusy}
+                      onClick={() => handleBulkGiftCardStatus(true)}
+                      title={t("Activate selected gift cards")}
+                    >
+                      ✓ {t("Activate Selected")}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--sm"
+                      disabled={isBulkBusy}
+                      onClick={() => handleBulkGiftCardStatus(false)}
+                      title={t("Deactivate selected gift cards")}
+                    >
+                      ⊘ {t("Deactivate Selected")}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--sm btn--danger"
+                      disabled={isBulkBusy}
+                      onClick={() => setBulkReviewModal({ type: 'giftcard', action: 'delete' })}
+                      title={t("Delete selected gift cards")}
+                    >
+                      🗑️ {t("Delete Selected")}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--sm btn--outline"
+                      disabled={isBulkBusy}
+                      onClick={() => setSelectedGiftCardIds([])}
+                    >
+                      {t("Clear selection")}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Table */}
               <div className="table-wrap">
                 <table className="table" aria-label={t("Gift Cards")}>
                   <thead>
                     <tr>
+                      <th scope="col" className="check" style={{ width: '40px' }}>
+                        <input
+                          type="checkbox"
+                          aria-label={t("Select all gift cards on this page")}
+                          checked={
+                            filteredGiftCards.length > 0 &&
+                            filteredGiftCards.every((g) => selectedGiftCardIds.includes(g.id))
+                          }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedGiftCardIds(filteredGiftCards.map((g) => g.id));
+                            } else {
+                              setSelectedGiftCardIds([]);
+                            }
+                          }}
+                        />
+                      </th>
                       <th scope="col">{t("CARD CODE")}</th>
                       <th scope="col">{t("RECIPIENT")}</th>
                       <th scope="col">{t("BALANCE")}</th>
@@ -1632,28 +1960,28 @@ export function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {(giftCardsQuery.data ?? [])
-                      .filter((g) => {
-                        if (gcFilter === 'active') return g.isActive && g.currentBalance > 0 && (!g.expiresAt || new Date(g.expiresAt) > new Date());
-                        if (gcFilter === 'depleted') return g.currentBalance <= 0;
-                        if (gcFilter === 'disabled') return !g.isActive;
-                        return true;
-                      })
-                      .filter((g) => {
-                        if (!gcSearch.trim()) return true;
-                        const term = gcSearch.toLowerCase();
-                        return g.code.toLowerCase().includes(term) ||
-                          (g.recipientName?.toLowerCase().includes(term) ?? false) ||
-                          (g.recipientEmail?.toLowerCase().includes(term) ?? false);
-                      })
-                      .map((g) => {
+                    {filteredGiftCards.map((g) => {
                         const isExpired = g.expiresAt && new Date(g.expiresAt) < new Date();
                         const isDepleted = g.currentBalance <= 0;
                         const isRevealed = revealedCodes[g.id] ?? false;
                         const maskedDisplay = isRevealed ? g.code : `${g.code.slice(0, 3)}••••-••••-${g.code.slice(-4)}`;
 
                         return (
-                          <tr key={g.id}>
+                          <tr key={g.id} data-selected={selectedGiftCardIds.includes(g.id)}>
+                            <td className="check">
+                              <input
+                                type="checkbox"
+                                aria-label={t(`Select gift card ${g.code}`)}
+                                checked={selectedGiftCardIds.includes(g.id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedGiftCardIds((prev) => [...prev, g.id]);
+                                  } else {
+                                    setSelectedGiftCardIds((prev) => prev.filter((id) => id !== g.id));
+                                  }
+                                }}
+                              />
+                            </td>
                             <td className="mono" style={{ fontWeight: 600 }}>
                               <div className="row" style={{ gap: '6px', alignItems: 'center' }}>
                                 <span>{maskedDisplay}</span>
@@ -2366,6 +2694,101 @@ export function AdminPage() {
         </div>
       )}
 
+            {/* Bulk Delete Review Modal */}
+      {bulkReviewModal && (
+        <div className="sheet-backdrop" onClick={() => !isBulkBusy && setBulkReviewModal(null)} role="presentation" style={{ zIndex: 'var(--z-modal, 1000)' }}>
+          <div
+            className="card-glass stack"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="bulk-review-title"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: 'min(480px, 92vw)',
+              padding: 'var(--space-5)',
+              borderRadius: 'var(--radius-lg, 12px)',
+              border: '1px solid var(--border)',
+              boxShadow: 'var(--shadow-lg)',
+              background: 'var(--surface)',
+              textAlign: 'center'
+            }}
+          >
+            <div style={{ fontSize: '36px', marginBottom: '8px' }}>🗑️</div>
+            <h3 id="bulk-review-title" style={{ margin: '0 0 8px 0', fontSize: 'var(--text-md)', fontWeight: 700 }}>
+              {t("Review Bulk Deletion")}
+            </h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', margin: '0 0 16px 0' }}>
+              {t("Are you sure you want to permanently delete")}{' '}
+              <strong>
+                {bulkReviewModal.type === 'coupon' ? selectedCouponIds.length : selectedGiftCardIds.length}
+              </strong>{' '}
+              {bulkReviewModal.type === 'coupon' ? t("coupons?") : t("gift cards?")}{' '}
+              {t("This action cannot be undone.")}
+            </p>
+
+            <div
+              style={{
+                maxHeight: '160px',
+                overflowY: 'auto',
+                background: 'var(--surface-sunken)',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--border)',
+                marginBottom: '16px',
+                textAlign: 'left',
+                fontSize: 'var(--text-xs)'
+              }}
+            >
+              {bulkReviewModal.type === 'coupon'
+                ? (couponsQuery.data ?? [])
+                    .filter((c) => selectedCouponIds.includes(c.id))
+                    .map((c) => (
+                      <div key={c.id} className="row-between" style={{ padding: '2px 0' }}>
+                        <span className="mono" style={{ fontWeight: 600 }}>{c.code}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>
+                          {c.discountType === 'Percentage' ? `${c.discountValue}%` : `${t('BDT')} ${c.discountValue}`}
+                        </span>
+                      </div>
+                    ))
+                : (giftCardsQuery.data ?? [])
+                    .filter((g) => selectedGiftCardIds.includes(g.id))
+                    .map((g) => (
+                      <div key={g.id} className="row-between" style={{ padding: '2px 0' }}>
+                        <span className="mono" style={{ fontWeight: 600 }}>{g.code}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>
+                          {t('BDT')} {g.currentBalance.toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+            </div>
+
+            <div className="row" style={{ gap: '8px', justifyContent: 'center' }}>
+              <button
+                type="button"
+                className="btn btn--outline"
+                disabled={isBulkBusy}
+                onClick={() => setBulkReviewModal(null)}
+              >
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="btn btn--danger"
+                disabled={isBulkBusy}
+                onClick={bulkReviewModal.type === 'coupon' ? handleBulkCouponDelete : handleBulkGiftCardDelete}
+              >
+                {isBulkBusy ? (
+                  <>
+                    <span className="spinner" aria-hidden="true" /> {t("Deleting…")}
+                  </>
+                ) : (
+                  t("Delete Selected")
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <LiveRegion message={t("")} />
     </div>
   );
