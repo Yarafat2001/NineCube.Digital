@@ -45,8 +45,7 @@ interface CatalogTargetPickerProps {
 
 function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogTargetPickerProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 6;
+  const [showDropdown, setShowDropdown] = useState(!selectedId);
 
   const filtered = useMemo(() => {
     if (!searchTerm.trim()) return items;
@@ -58,12 +57,8 @@ function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogT
     );
   }, [items, searchTerm]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const effectivePage = Math.min(currentPage, totalPages);
-  const startIdx = (effectivePage - 1) * pageSize;
-  const pagedItems = filtered.slice(startIdx, startIdx + pageSize);
-
   const icon = type === 'Category' ? '📁' : type === 'Brand' ? '🏷️' : '📦';
+  const typeLabel = type === 'Category' ? t("Category") : type === 'Brand' ? t("Brand") : t("Product");
   const placeholder =
     type === 'Category'
       ? t("Search category by name…")
@@ -72,9 +67,10 @@ function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogT
       : t("Search product by name or SKU…");
 
   const selectedItem = items.find((i) => i.id === selectedId);
+  const popularItems = useMemo(() => items.slice(0, 6), [items]);
 
   return (
-    <div className="catalog-target-picker stack" style={{ gap: '8px', marginTop: '6px' }}>
+    <div className="catalog-target-combobox" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
       {/* Hidden native select for form accessibility and tests */}
       <select
         id={id}
@@ -92,132 +88,198 @@ function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogT
         ))}
       </select>
 
-      {/* Search Input Bar */}
-      <div className="row" style={{ gap: '8px' }}>
-        <input
-          type="search"
-          placeholder={`🔍 ${placeholder}`}
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1);
-          }}
-          style={{
-            flex: 1,
-            padding: '6px 12px',
-            fontSize: 'var(--text-xs)',
-            borderRadius: '6px',
-            border: '1px solid var(--border)'
-          }}
-        />
-        {selectedId && (
-          <button
-            type="button"
-            className="btn btn--sm btn--outline"
-            onClick={() => onSelect(null)}
-            style={{ fontSize: '11px', padding: '4px 8px' }}
-            title={t("Clear selection")}
-          >
-            ✕ {t("Clear")}
-          </button>
-        )}
-      </div>
-
-      {/* Currently Selected Banner */}
+      {/* Selected Target Card */}
       {selectedItem ? (
         <div
           style={{
-            padding: '6px 10px',
-            background: 'var(--surface-raised)',
-            borderRadius: '6px',
-            border: '1px solid var(--ok, #10b981)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            fontSize: 'var(--text-xs)'
+            padding: '10px 14px',
+            background: 'var(--surface-raised, var(--surface))',
+            border: '1.5px solid var(--ok, #10b981)',
+            borderRadius: '10px',
+            boxShadow: '0 2px 8px rgba(16, 185, 129, 0.1)',
+            gap: '12px',
+            flexWrap: 'wrap'
           }}
         >
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--ok, #10b981)' }}>
-            ✓ {t("Selected")}: {icon} {selectedItem.name} {selectedItem.sku ? `(${selectedItem.sku})` : ''}
-          </span>
-          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-            {type === 'Product' ? t("Discount applies strictly to this product") : t("Applies to all products in this scope")}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '1.4rem' }}>{icon}</span>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--text)' }}>
+                {selectedItem.name} {selectedItem.sku ? `(${selectedItem.sku})` : ''}
+              </div>
+              <div style={{ fontSize: '11px', color: 'var(--ok, #10b981)', fontWeight: 600 }}>
+                ✓ {typeLabel} {t("selected")} · {type === 'Product' ? t("Applies strictly to this product") : t("Applies to all products in this scope")}
+              </div>
+            </div>
+          </div>
+          <div className="row" style={{ gap: '6px' }}>
+            <button
+              type="button"
+              className="btn btn--sm btn--outline"
+              style={{ fontSize: '11px', padding: '4px 10px', borderRadius: 'var(--radius-pill)' }}
+              onClick={() => setShowDropdown((prev) => !prev)}
+            >
+              {showDropdown ? t("Close Search ▲") : t("Change Target 🔍")}
+            </button>
+            <button
+              type="button"
+              className="btn btn--sm"
+              style={{ fontSize: '11px', padding: '4px 10px', borderRadius: 'var(--radius-pill)' }}
+              onClick={() => {
+                onSelect(null);
+                setShowDropdown(true);
+              }}
+              title={t("Clear selection")}
+            >
+              ✕ {t("Clear")}
+            </button>
+          </div>
         </div>
       ) : (
-        <div style={{ fontSize: 'var(--text-xs)', color: 'var(--warn-text, #f59e0b)' }}>
-          ⚠️ {t("Please select an item below to target with this discount rule.")}
+        <div style={{ fontSize: 'var(--text-xs)', color: 'var(--warn-text, #f59e0b)', fontWeight: 600 }}>
+          ⚠️ {t("Please select a target below to apply this discount:")}
         </div>
       )}
 
-      {/* Grid of Choices with Hover Motion */}
-      {pagedItems.length === 0 ? (
-        <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-          {t("No matching items found.")}
-        </div>
-      ) : (
+      {/* Search & Selection Dropdown Menu */}
+      {(showDropdown || !selectedId) && (
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-            gap: '8px',
-            maxHeight: '220px',
-            overflowY: 'auto',
-            padding: '2px'
+            padding: '12px',
+            background: 'var(--surface-sunken)',
+            borderRadius: '10px',
+            border: '1px solid var(--border)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
           }}
         >
-          {pagedItems.map((item: { id: number; name: string; sku?: string; price?: number }) => {
-            const isSelected = selectedId === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                className={`catalog-picker-card ${isSelected ? 'catalog-picker-card--active' : ''}`}
-                onClick={() => onSelect(item.id)}
-              >
-                <span className="catalog-picker-card__icon">{icon}</span>
-                <div className="catalog-picker-card__details">
-                  <div className="catalog-picker-card__name" title={item.name}>{item.name}</div>
-                  {item.sku && <div className="catalog-picker-card__sub">{item.sku}</div>}
-                  {item.price !== undefined && (
-                    <div className="catalog-picker-card__sub">{t("BDT")} {item.price.toLocaleString()}</div>
-                  )}
-                </div>
-                {isSelected && <span className="catalog-picker-card__check">✓</span>}
-              </button>
-            );
-          })}
-        </div>
-      )}
+          {/* Quick Popular Pills */}
+          {popularItems.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                {t("Quick Select:")}
+              </span>
+              {popularItems.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  className={`discount-quick-pill ${selectedId === p.id ? 'discount-quick-pill--active' : ''}`}
+                  onClick={() => {
+                    onSelect(p.id);
+                    setShowDropdown(false);
+                    setSearchTerm('');
+                  }}
+                >
+                  {icon} {p.name}
+                </button>
+              ))}
+            </div>
+          )}
 
-      {/* Pagination Footer */}
-      {totalPages > 1 && (
-        <div className="row-between" style={{ alignItems: 'center', paddingTop: '4px', borderTop: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-          <span>
-            {t("Showing")} {startIdx + 1}–{Math.min(startIdx + pageSize, filtered.length)} {t("of")} {filtered.length}
-          </span>
-          <div className="row" style={{ gap: '4px' }}>
-            <button
-              type="button"
-              className="btn btn--sm"
-              disabled={effectivePage <= 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              style={{ padding: '2px 8px', fontSize: '11px' }}
-            >
-              ‹ {t("Prev")}
-            </button>
-            <span style={{ padding: '2px 6px', fontWeight: 600 }}>
-              {effectivePage} / {totalPages}
-            </span>
-            <button
-              type="button"
-              className="btn btn--sm"
-              disabled={effectivePage >= totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              style={{ padding: '2px 8px', fontSize: '11px' }}
-            >
-              {t("Next")} ›
-            </button>
+          {/* Search Input Bar */}
+          <div className="row" style={{ gap: '8px', alignItems: 'center' }}>
+            <input
+              type="search"
+              placeholder={`🔍 ${placeholder}`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                flex: 1,
+                padding: '7px 12px',
+                fontSize: 'var(--text-xs)',
+                borderRadius: '8px',
+                border: '1px solid var(--border)',
+                background: 'var(--surface)'
+              }}
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                className="btn btn--sm"
+                onClick={() => setSearchTerm('')}
+                style={{ padding: '4px 8px', fontSize: '11px' }}
+              >
+                ✕ {t("Clear")}
+              </button>
+            )}
+          </div>
+
+          {/* Clean Scrollable List of Choices */}
+          <div
+            style={{
+              maxHeight: '180px',
+              overflowY: 'auto',
+              background: 'var(--surface)',
+              borderRadius: '8px',
+              border: '1px solid var(--border)',
+              padding: '4px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '2px'
+            }}
+          >
+            {filtered.length === 0 ? (
+              <div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
+                {t("No matching items found.")}
+              </div>
+            ) : (
+              filtered.map((item) => {
+                const isSelected = selectedId === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      onSelect(item.id);
+                      setShowDropdown(false);
+                      setSearchTerm('');
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      padding: '7px 10px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: isSelected ? 'var(--selected-bg, rgba(245, 158, 11, 0.15))' : 'transparent',
+                      color: isSelected ? 'var(--accent-text, #d97706)' : 'var(--text)',
+                      fontWeight: isSelected ? 700 : 500,
+                      fontSize: 'var(--text-xs)',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'background 0.15s ease'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                      <span>{icon}</span>
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {item.name}
+                      </span>
+                      {item.sku && (
+                        <span style={{ fontSize: '10px', color: 'var(--text-muted)', background: 'var(--surface-sunken)', padding: '1px 5px', borderRadius: '4px' }}>
+                          {item.sku}
+                        </span>
+                      )}
+                      {item.price !== undefined && (
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                          · {t("BDT")} {item.price.toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+                    {isSelected && (
+                      <span style={{ color: 'var(--ok, #10b981)', fontWeight: 750, marginLeft: '8px' }}>
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
       )}
@@ -1207,132 +1269,39 @@ export function AdminPage() {
                 </div>
 
                 {couponTargetType === 'Order' && (
-                  <div style={{ padding: '8px 12px', background: 'var(--surface-sunken)', borderRadius: '6px', border: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                  <div style={{ padding: '10px 14px', background: 'var(--surface-sunken)', borderRadius: '8px', border: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
                     ✅ <strong>{t("Storewide Basket Scope:")}</strong> {t("Discount applies to all eligible products in customer basket when minimum order is met.")}
                   </div>
                 )}
 
                 {couponTargetType === 'Category' && (
-                  <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface-sunken)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                    <div className="row-between" style={{ alignItems: 'center' }}>
-                      <label htmlFor="coupon-target-category" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
-                        📁 {t("Choose Category:")}
-                      </label>
-                      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                        {allCategories.length} {t("categories available")}
-                      </span>
-                    </div>
-
-                    {allCategories.length > 0 && (
-                      <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
-                        {allCategories.slice(0, 8).map((cat) => (
-                          <button
-                            key={cat.id}
-                            type="button"
-                            className={`btn btn--sm ${targetId === cat.id ? 'btn--primary' : ''}`}
-                            style={{
-                              fontSize: '11px',
-                              padding: '3px 8px',
-                              borderColor: targetId === cat.id ? undefined : 'var(--border)'
-                            }}
-                            onClick={() => setTargetId(cat.id)}
-                          >
-                            {cat.name.toLowerCase().includes('footwear') || cat.name.toLowerCase().includes('shoe') ? '👟' : '📁'} {cat.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    <CatalogTargetPicker
-                      type="Category"
-                      items={allCategories}
-                      selectedId={targetId}
-                      onSelect={setTargetId}
-                      id="coupon-target-category"
-                    />
-                  </div>
+                  <CatalogTargetPicker
+                    type="Category"
+                    items={allCategories}
+                    selectedId={targetId}
+                    onSelect={setTargetId}
+                    id="coupon-target-category"
+                  />
                 )}
 
                 {couponTargetType === 'Brand' && (
-                  <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface-sunken)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                    <div className="row-between" style={{ alignItems: 'center' }}>
-                      <label htmlFor="coupon-target-brand" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
-                        🏷️ {t("Choose Brand:")}
-                      </label>
-                      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                        {allBrands.length} {t("brands available")}
-                      </span>
-                    </div>
-
-                    {allBrands.length > 0 && (
-                      <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
-                        {allBrands.slice(0, 8).map((b) => (
-                          <button
-                            key={b.id}
-                            type="button"
-                            className={`btn btn--sm ${targetId === b.id ? 'btn--primary' : ''}`}
-                            style={{
-                              fontSize: '11px',
-                              padding: '3px 8px',
-                              borderColor: targetId === b.id ? undefined : 'var(--border)'
-                            }}
-                            onClick={() => setTargetId(b.id)}
-                          >
-                            🏷️ {b.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    <CatalogTargetPicker
-                      type="Brand"
-                      items={allBrands}
-                      selectedId={targetId}
-                      onSelect={setTargetId}
-                      id="coupon-target-brand"
-                    />
-                  </div>
+                  <CatalogTargetPicker
+                    type="Brand"
+                    items={allBrands}
+                    selectedId={targetId}
+                    onSelect={setTargetId}
+                    id="coupon-target-brand"
+                  />
                 )}
 
                 {couponTargetType === 'Product' && (
-                  <div className="stack" style={{ gap: '8px', padding: '12px', background: 'var(--surface-sunken)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                    <div className="row-between" style={{ alignItems: 'center' }}>
-                      <label htmlFor="coupon-target-product" style={{ fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--text)' }}>
-                        📦 {t("Choose Product:")}
-                      </label>
-                      <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                        {allProducts.length} {t("products in catalogue")}
-                      </span>
-                    </div>
-
-                    {allProducts.length > 0 && (
-                      <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
-                        {allProducts.slice(0, 5).map((p) => (
-                          <button
-                            key={p.id}
-                            type="button"
-                            className={`btn btn--sm ${targetId === p.id ? 'btn--primary' : ''}`}
-                            style={{
-                              fontSize: '11px',
-                              padding: '3px 8px',
-                              borderColor: targetId === p.id ? undefined : 'var(--border)'
-                            }}
-                            onClick={() => setTargetId(p.id)}
-                          >
-                            👟 {p.name.slice(0, 26)}...
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    <CatalogTargetPicker
-                      type="Product"
-                      items={allProducts}
-                      selectedId={targetId}
-                      onSelect={setTargetId}
-                      id="coupon-target-product"
-                    />
-                  </div>
+                  <CatalogTargetPicker
+                    type="Product"
+                    items={allProducts}
+                    selectedId={targetId}
+                    onSelect={setTargetId}
+                    id="coupon-target-product"
+                  />
                 )}
               </div>
 
