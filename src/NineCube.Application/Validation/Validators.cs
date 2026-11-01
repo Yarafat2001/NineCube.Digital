@@ -186,6 +186,9 @@ public sealed class CreateCouponRequestValidator : AbstractValidator<CreateCoupo
         RuleFor(x => x.Code).NotEmpty().MinimumLength(3).MaximumLength(50);
         RuleFor(x => x.DiscountValue).GreaterThan(0);
         RuleFor(x => x.MinOrderAmount).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.MinEligibleAmount).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.ScopeMatch).IsInEnum();
+        RuleFor(x => x.Exclusivity).IsInEnum();
     }
 }
 

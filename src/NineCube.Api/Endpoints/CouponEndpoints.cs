@@ -37,6 +37,11 @@ public sealed class CouponEndpoints : IEndpoint
             .WithName("GetAvailableCoupons")
             .WithSummary("Retrieves all active promotional coupons available to shoppers.");
 
+        group.MapPost("/scope-preview", PreviewScopeAsync)
+            .RequireAuthorization(Policies.AdministratorOnly)
+            .WithName("PreviewCouponScope")
+            .WithSummary("Runs a draft coupon scope against the live catalogue and reports the stock value it reaches.");
+
         group.MapGet("/", ListCouponsAsync)
             .RequireAuthorization(Policies.AdministratorOnly)
             .WithName("ListCoupons")
@@ -78,6 +83,15 @@ public sealed class CouponEndpoints : IEndpoint
     {
         var coupons = await couponService.GetAvailableCouponsAsync(ct);
         return TypedResults.Ok(coupons);
+    }
+
+    public static async Task<Results<Ok<CouponScopePreviewResult>, ProblemHttpResult>> PreviewScopeAsync(
+        CouponScopePreviewRequest request,
+        ICouponService couponService,
+        CancellationToken ct)
+    {
+        var preview = await couponService.PreviewScopeAsync(request, ct);
+        return TypedResults.Ok(preview);
     }
 
     public static async Task<Results<Ok<IReadOnlyList<CouponDto>>, ProblemHttpResult>> GetActiveCampaignsAsync(

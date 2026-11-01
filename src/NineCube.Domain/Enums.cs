@@ -94,6 +94,40 @@ public enum CouponTargetType
     Product = 3
 }
 
+/// <summary>A catalogue attribute a scope rule can test. An order-wide coupon carries no rule at all.</summary>
+public enum ScopeAttribute
+{
+    Category = 0,
+    Brand = 1,
+    ProductLine = 2,
+    Tag = 3,
+    Product = 4
+}
+
+/// <summary>Whether a rule lets products in, or takes them out again.</summary>
+public enum ScopePolarity
+{
+    Is = 0,
+    IsNot = 1
+}
+
+/// <summary>How the included rules combine: at least one of them, or every one of them.</summary>
+public enum ScopeMatch
+{
+    Any = 0,
+    All = 1
+}
+
+public enum DiscountExclusivity
+{
+    /// <summary>Only the largest applicable discount is taken, which is how coupons behaved before this option existed.</summary>
+    BestOnly = 0,
+    /// <summary>May add its own discount on basket lines that no chosen coupon has already discounted.</summary>
+    StackByScope = 1,
+    /// <summary>Never combines with any other coupon on the same order.</summary>
+    Exclusive = 2
+}
+
 public enum PaymentMethod
 {
     CashOnDelivery = 0,

@@ -19,6 +19,10 @@ import type {
   UserRole,
   Coupon,
   CouponValidationResult,
+  CouponScopePreview,
+  CouponScopePreviewRequest,
+  CreateCouponPayload,
+  UpdateCouponPayload,
   PaymentTransaction,
   PaymentMethod,
   ProductReview,
@@ -658,21 +662,7 @@ export function useCreateCoupon() {
   const request = useAuthedRequest();
   const invalidate = useInvalidate();
   return useMutation({
-    mutationFn: (payload: {
-      code: string;
-      discountType: string;
-      discountValue: number;
-      minOrderAmount: number;
-      maxDiscountCap?: number | null;
-      targetType?: string;
-      targetId?: number | null;
-      startsAt?: string | null;
-      expiresAt?: string | null;
-      usageLimit?: number | null;
-      isAutomatic?: boolean;
-      campaignTitle?: string | null;
-      isBannerPromoted?: boolean;
-    }) => request<Coupon>('/api/coupons', { method: 'POST', body: payload }),
+    mutationFn: (payload: CreateCouponPayload) => request<Coupon>('/api/coupons', { method: 'POST', body: payload }),
     onSuccess: () => invalidate([queryKeys.coupons, ['campaigns']])
   });
 }
@@ -681,21 +671,18 @@ export function useUpdateCoupon() {
   const request = useAuthedRequest();
   const invalidate = useInvalidate();
   return useMutation({
-    mutationFn: ({ id, ...body }: {
-      id: number;
-      discountValue: number;
-      minOrderAmount: number;
-      maxDiscountCap?: number | null;
-      targetType?: string;
-      targetId?: number | null;
-      startsAt?: string | null;
-      expiresAt?: string | null;
-      usageLimit?: number | null;
-      isAutomatic?: boolean;
-      campaignTitle?: string | null;
-      isBannerPromoted?: boolean;
-    }) => request<Coupon>(`/api/coupons/${id}`, { method: 'PUT', body }),
+    mutationFn: ({ id, ...body }: UpdateCouponPayload & { id: number }) =>
+      request<Coupon>(`/api/coupons/${id}`, { method: 'PUT', body }),
     onSuccess: () => invalidate([queryKeys.coupons, ['campaigns']])
+  });
+}
+
+/** Read-only: what a scope reaches, before the campaign is saved. */
+export function usePreviewCouponScope() {
+  const request = useAuthedRequest();
+  return useMutation({
+    mutationFn: (payload: CouponScopePreviewRequest) =>
+      request<CouponScopePreview>('/api/coupons/scope-preview', { method: 'POST', body: payload })
   });
 }
 

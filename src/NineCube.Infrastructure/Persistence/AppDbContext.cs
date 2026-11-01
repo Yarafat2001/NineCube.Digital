@@ -41,6 +41,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     public DbSet<Address> Addresses => Set<Address>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<Coupon> Coupons => Set<Coupon>();
+    public DbSet<CouponScopeRule> CouponScopeRules => Set<CouponScopeRule>();
+    public DbSet<CouponScopeRuleValue> CouponScopeRuleValues => Set<CouponScopeRuleValue>();
     public DbSet<GiftCard> GiftCards => Set<GiftCard>();
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
@@ -331,11 +333,33 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(c => c.DiscountType).HasConversion<string>().HasMaxLength(32).IsRequired();
             e.Property(c => c.DiscountValue).HasColumnType("decimal(18,2)");
             e.Property(c => c.MinOrderAmount).HasColumnType("decimal(18,2)");
+            e.Property(c => c.MinEligibleAmount).HasColumnType("decimal(18,2)");
             e.Property(c => c.MaxDiscountCap).HasColumnType("decimal(18,2)");
             e.Property(c => c.TargetType).HasConversion<string>().HasMaxLength(32);
+            e.Property(c => c.ScopeMatch).HasConversion<string>().HasMaxLength(16);
+            e.Property(c => c.Exclusivity).HasConversion<string>().HasMaxLength(24);
             e.Property(c => c.CampaignTitle).HasMaxLength(200);
             e.Property(c => c.CreatedAt);
             e.HasIndex(c => c.Code).IsUnique();
+            e.HasMany(c => c.ScopeRules).WithOne(r => r.Coupon)
+                .HasForeignKey(r => r.CouponId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<CouponScopeRule>(e =>
+        {
+            e.ToTable("CouponScopeRules");
+            e.HasKey(r => r.Id);
+            e.Property(r => r.Attribute).HasConversion<string>().HasMaxLength(24);
+            e.Property(r => r.Polarity).HasConversion<string>().HasMaxLength(16);
+            e.HasIndex(r => r.CouponId);
+            e.HasMany(r => r.Values).WithOne(v => v.Rule)
+                .HasForeignKey(v => v.RuleId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<CouponScopeRuleValue>(e =>
+        {
+            e.ToTable("CouponScopeRuleValues");
+            e.HasKey(v => new { v.RuleId, v.EntityId });
         });
 
         modelBuilder.Entity<GiftCard>(e =>

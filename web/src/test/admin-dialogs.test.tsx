@@ -8,6 +8,16 @@ import { renderApp, seedSession, usersByRole } from './utils';
 
 const EMOJI = /\p{Extended_Pictographic}/u;
 
+/**
+ * The dialog's own wording, minus the live reach panel. Campaign titles are shop data — the storefront
+ * writes them with marketing emoji — so they must not be judged as interface chrome.
+ */
+function chromeText(dialog: HTMLElement) {
+  const clone = dialog.cloneNode(true) as HTMLElement;
+  clone.querySelector('[data-testid="scope-impact"]')?.remove();
+  return clone.textContent ?? '';
+}
+
 const coupon = (over: Record<string, unknown> = {}) => ({
   id: 1, code: 'SAVE10', discountType: 'Percentage', discountValue: 10, minOrderAmount: 0,
   maxDiscountCap: 1500, targetType: 'Order', targetId: null, startsAt: null, expiresAt: null,
@@ -47,7 +57,7 @@ describe('Admin record dialogs', () => {
     expect(dialog.closest('.modal-backdrop')).not.toBeNull();
     expect(dialog.className).toContain('modal');
     expect(dialog.getAttribute('aria-modal')).toBe('true');
-    expect(dialog.textContent).not.toMatch(EMOJI);
+    expect(chromeText(dialog)).not.toMatch(EMOJI);
     expect(dialog.querySelector('.modal__code')?.textContent).toBe('SAVE10');
 
     fireEvent.keyDown(document, { key: 'Escape' });
@@ -72,6 +82,7 @@ describe('Admin record dialogs', () => {
     const titles = [...dialog.querySelectorAll('.discount-card-title')].map(h => h.textContent);
     expect(titles).toEqual([
       'Discount Value & Calculation',
+      'Applies to / Target Scope',
       'Minimum Spend & Usage Limits',
       'Active Dates & Campaign Placement'
     ]);

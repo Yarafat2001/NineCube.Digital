@@ -95,6 +95,10 @@ export let demoCoupons: Array<{
   maxDiscountCap?: number | null;
   targetType?: string;
   targetId?: number | null;
+  minEligibleAmount?: number;
+  scopeMatch?: string;
+  exclusivity?: string;
+  scopeRules?: Array<{ attribute: string; polarity: string; entityIds: number[]; entityNames: string[] }> | null;
   startsAt?: string | null;
   expiresAt: string | null;
   usageLimit: number | null;
@@ -313,6 +317,58 @@ function brandFacet(url: URL): HttpResponse {
   }
   return HttpResponse.json(brands.map(brand => ({ ...brand, productCount: counts.get(brand.slug) ?? 0 })).filter(brand => brand.productCount > 0));
 }
+
+/**
+ * Coupon scope, read the way the API reads it: rule by rule against the catalogue, exclusions last.
+ * The preview endpoint and the stored-scope echo both go through here so a test cannot disagree with
+ * itself about what a scope reaches.
+ */
+type ScopeRuleLike = { attribute: string; polarity?: string; entityIds: number[] };
+
+const money = (value: number) => Number(value.toFixed(2));
+
+const seriesNames = Object.values(brandLines).flatMap(brand => brand.lines);
+
+const scopeName = (attribute: string, id: number): string => {
+  if (attribute === 'Product') return products.find(p => p.id === id)?.name ?? `Product ${id}`;
+  if (attribute === 'Brand') return brands.find(b => b.id === id)?.name ?? `Brand ${id}`;
+  if (attribute === 'Tag') return tags.find(g => g.id === id)?.name ?? `Tag ${id}`;
+  if (attribute === 'ProductLine') return seriesNames.find(l => l.id === id)?.name ?? `Series ${id}`;
+  return products.flatMap(p => p.categories ?? []).find(c => c.id === id)?.name ?? `Category ${id}`;
+};
+
+const withScopeNames = (rules: ScopeRuleLike[] = []) => rules.map(rule => ({
+  attribute: rule.attribute,
+  polarity: rule.polarity ?? 'Is',
+  entityIds: rule.entityIds,
+  entityNames: rule.entityIds.map(id => scopeName(rule.attribute, id))
+}));
+
+const ruleHits = (product: Product, rule: ScopeRuleLike): boolean => {
+  if (rule.attribute === 'Brand') return product.brandId != null && rule.entityIds.includes(product.brandId);
+  if (rule.attribute === 'ProductLine') return product.productLineId != null && rule.entityIds.includes(product.productLineId);
+  if (rule.attribute === 'Tag') {
+    const names = rule.entityIds.map(id => tags.find(g => g.id === id)?.name);
+    return (product.tags ?? []).some(name => names.includes(name));
+  }
+  if (rule.attribute === 'Product') return rule.entityIds.includes(product.id);
+  return (product.categories ?? []).some(c => rule.entityIds.includes(c.id));
+};
+
+const matchScope = (product: Product, rules: ScopeRuleLike[], match: string): boolean => {
+  if (rules.length === 0) return true;
+  if (rules.some(r => r.polarity === 'IsNot' && ruleHits(product, r))) return false;
+  const admits = rules.filter(r => (r.polarity ?? 'Is') === 'Is');
+  if (admits.length === 0) return true;
+  return match === 'All' ? admits.every(r => ruleHits(product, r)) : admits.some(r => ruleHits(product, r));
+};
+
+/** The rules a stored coupon holds, including the pre-rule targetType/targetId columns. */
+const couponRules = (coupon: (typeof demoCoupons)[number]): ScopeRuleLike[] => {
+  if (coupon.scopeRules?.length) return coupon.scopeRules;
+  if (!coupon.targetId || !coupon.targetType || coupon.targetType === 'Order') return [];
+  return [{ attribute: coupon.targetType, entityIds: [coupon.targetId] }];
+};
 
 /**
  * Default handlers describe the signed-out, healthy API. Individual tests override the
@@ -651,6 +707,52 @@ export const handlers = [
   http.get(`${API}/api/coupons/available`, () => HttpResponse.json(demoCoupons.filter(c => c.isActive))),
   http.get(`${API}/api/coupons/campaigns`, () => HttpResponse.json(demoCoupons.filter(c => c.isActive && c.isBannerPromoted))),
 
+  http.post(`${API}/api/coupons/scope-preview`, async ({ request }) => {
+    const body = (await request.json()) as {
+      scopeRules?: ScopeRuleLike[];
+      scopeMatch?: string;
+      discountType: 'Percentage' | 'FixedAmount';
+      discountValue: number;
+      maxDiscountCap?: number | null;
+    };
+
+    const rules = body.scopeRules ?? [];
+    const active = products.filter(p => p.isActive);
+    const matched = active.filter(p => matchScope(p, rules, body.scopeMatch ?? 'Any'));
+
+    const units = matched.reduce((sum, p) => sum + p.stockQuantity, 0);
+    const exposed = matched.reduce((sum, p) => sum + p.price * p.stockQuantity, 0);
+    const average = matched.length ? matched.reduce((sum, p) => sum + p.price, 0) / matched.length : 0;
+    const raw = body.discountType === 'Percentage' ? average * (body.discountValue / 100) : Math.min(average, body.discountValue);
+    const forecast = matched.length === 0
+      ? 0
+      : money(body.maxDiscountCap && body.maxDiscountCap > 0 ? Math.min(raw, body.maxDiscountCap) : raw);
+
+    const conflicts = demoCoupons
+      .filter(c => c.isActive)
+      .map(c => ({
+        code: c.code,
+        campaignTitle: c.campaignTitle ?? null,
+        overlappingProducts: matched.filter(p => matchScope(p, couponRules(c), 'Any')).length,
+        isAutomatic: !!c.isAutomatic
+      }))
+      .filter(c => c.overlappingProducts > 0)
+      .sort((a, b) => b.overlappingProducts - a.overlappingProducts)
+      .slice(0, 5);
+
+    return HttpResponse.json({
+      totalActiveProducts: active.length,
+      matchedProducts: matched.length,
+      matchedUnits: units,
+      exposedStockValue: money(exposed),
+      averageQualifyingValue: money(average),
+      valueBasis: matched.length ? 'AverageProductPrice' : 'NotEstimated',
+      forecastDiscount: forecast,
+      sampleProducts: matched.slice(0, 3).map(p => p.name),
+      conflicts
+    });
+  }),
+
   http.post(`${API}/api/coupons`, async ({ request }) => {
     const payload = (await request.json()) as any;
     const newCoupon = {
@@ -670,6 +772,10 @@ export const handlers = [
       usageLimit: payload.usageLimit ? Number(payload.usageLimit) : null,
       usageCount: 0,
       isActive: true,
+      minEligibleAmount: Number(payload.minEligibleAmount || 0),
+      scopeMatch: payload.scopeMatch || 'Any',
+      exclusivity: payload.exclusivity || 'BestOnly',
+      scopeRules: withScopeNames(payload.scopeRules),
       createdAt: new Date().toISOString()
     };
     demoCoupons.push(newCoupon);
@@ -681,7 +787,11 @@ export const handlers = [
     const body = (await request.json()) as any;
     const idx = demoCoupons.findIndex(c => c.id === id);
     if (idx !== -1) {
-      demoCoupons[idx] = { ...demoCoupons[idx], ...body };
+      demoCoupons[idx] = {
+        ...demoCoupons[idx],
+        ...body,
+        ...(body.scopeRules ? { scopeRules: withScopeNames(body.scopeRules) } : null)
+      };
       return HttpResponse.json(demoCoupons[idx]);
     }
     return new HttpResponse(null, { status: 404 });

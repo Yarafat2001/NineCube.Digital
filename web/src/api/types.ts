@@ -292,6 +292,24 @@ export interface ShortItem {
 
 export type CouponTargetType = 'Order' | 'Category' | 'Brand' | 'Product';
 
+/** What a scope rule can point at. Mirrors the server's ScopeAttribute. */
+export type ScopeAttribute = 'Category' | 'Brand' | 'ProductLine' | 'Tag' | 'Product';
+export type ScopePolarity = 'Is' | 'IsNot';
+export type ScopeMatch = 'Any' | 'All';
+export type DiscountExclusivity = 'BestOnly' | 'StackByScope' | 'Exclusive';
+export type PreviewValueBasis = 'OrderHistory' | 'AverageProductPrice' | 'NotEstimated';
+
+/** A rule exactly as the builder holds it: ids only, names resolved for display. */
+export interface CouponScopeRuleDraft {
+  attribute: ScopeAttribute;
+  polarity: ScopePolarity;
+  entityIds: number[];
+}
+
+export interface CouponScopeRuleView extends CouponScopeRuleDraft {
+  entityNames: string[];
+}
+
 export interface Coupon {
   id: number;
   code: string;
@@ -309,6 +327,10 @@ export interface Coupon {
   isAutomatic?: boolean;
   campaignTitle?: string | null;
   isBannerPromoted?: boolean;
+  minEligibleAmount?: number;
+  scopeMatch?: ScopeMatch;
+  exclusivity?: DiscountExclusivity;
+  scopeRules?: CouponScopeRuleView[];
 }
 
 export interface CouponValidationResult {
@@ -319,6 +341,72 @@ export interface CouponValidationResult {
   campaignTitle?: string | null;
   targetType?: CouponTargetType;
   maxDiscountCap?: number | null;
+  eligibleAmount?: number;
+  scopeSummary?: string | null;
+  exclusivity?: DiscountExclusivity;
+}
+
+export interface ScopeConflict {
+  code: string;
+  campaignTitle?: string | null;
+  overlappingProducts: number;
+  isAutomatic: boolean;
+}
+
+export interface CouponScopePreview {
+  totalActiveProducts: number;
+  matchedProducts: number;
+  matchedUnits: number;
+  exposedStockValue: number;
+  averageQualifyingValue: number;
+  valueBasis: PreviewValueBasis;
+  forecastDiscount: number;
+  sampleProducts: string[];
+  conflicts: ScopeConflict[];
+}
+
+export interface CouponScopePreviewRequest {
+  scopeRules: CouponScopeRuleDraft[];
+  scopeMatch: ScopeMatch;
+  discountType: DiscountType;
+  discountValue: number;
+  maxDiscountCap?: number | null;
+  minEligibleAmount?: number;
+}
+
+export interface CreateCouponPayload {
+  code: string;
+  discountType: DiscountType;
+  discountValue: number;
+  minOrderAmount: number;
+  maxDiscountCap?: number | null;
+  startsAt?: string | null;
+  expiresAt?: string | null;
+  usageLimit?: number | null;
+  isAutomatic?: boolean;
+  campaignTitle?: string | null;
+  isBannerPromoted?: boolean;
+  minEligibleAmount?: number;
+  scopeMatch?: ScopeMatch;
+  exclusivity?: DiscountExclusivity;
+  scopeRules?: CouponScopeRuleDraft[];
+}
+
+/** Scope fields are optional on an edit: leaving them out tells the server to keep what is stored. */
+export interface UpdateCouponPayload {
+  discountValue: number;
+  minOrderAmount: number;
+  maxDiscountCap?: number | null;
+  startsAt?: string | null;
+  expiresAt?: string | null;
+  usageLimit?: number | null;
+  isAutomatic?: boolean;
+  campaignTitle?: string | null;
+  isBannerPromoted?: boolean;
+  minEligibleAmount?: number;
+  scopeMatch?: ScopeMatch;
+  exclusivity?: DiscountExclusivity;
+  scopeRules?: CouponScopeRuleDraft[];
 }
 
 export interface PaymentTransaction {
@@ -420,4 +508,5 @@ export interface CartPromotionsEvaluationResult {
   freeShippingThreshold: number;
   qualifiesForFreeShipping: boolean;
   amountNeededForFreeShipping: number;
+  appliedDiscounts?: CouponValidationResult[] | null;
 }

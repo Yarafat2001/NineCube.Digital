@@ -8,6 +8,20 @@ public sealed record ResetPasswordRequest(string Email, string Token, string New
 public sealed record ForgotPasswordResponse(string Message, string? DemoResetToken = null);
 
 // ---------------------------------------------------------------- Coupons & Discounts
+
+/// <summary>One catalogue test written by the operator: an attribute, whether it admits or excludes, and the ids.</summary>
+public sealed record CouponScopeRuleDto(
+    ScopeAttribute Attribute,
+    ScopePolarity Polarity,
+    IReadOnlyList<int> EntityIds);
+
+/// <summary>A stored rule with the catalogue names resolved, so the registry can print the scope without extra queries.</summary>
+public sealed record CouponScopeRuleView(
+    ScopeAttribute Attribute,
+    ScopePolarity Polarity,
+    IReadOnlyList<int> EntityIds,
+    IReadOnlyList<string> EntityNames);
+
 public sealed record CouponDto(
     int Id,
     string Code,
@@ -24,7 +38,11 @@ public sealed record CouponDto(
     DateTime? StartsAt = null,
     bool IsAutomatic = false,
     string? CampaignTitle = null,
-    bool IsBannerPromoted = false);
+    bool IsBannerPromoted = false,
+    decimal MinEligibleAmount = 0,
+    ScopeMatch ScopeMatch = ScopeMatch.Any,
+    DiscountExclusivity Exclusivity = DiscountExclusivity.BestOnly,
+    IReadOnlyList<CouponScopeRuleView>? ScopeRules = null);
 
 public sealed record CreateCouponRequest(
     string Code,
@@ -39,7 +57,11 @@ public sealed record CreateCouponRequest(
     DateTime? StartsAt = null,
     bool IsAutomatic = false,
     string? CampaignTitle = null,
-    bool IsBannerPromoted = false);
+    bool IsBannerPromoted = false,
+    decimal MinEligibleAmount = 0,
+    ScopeMatch ScopeMatch = ScopeMatch.Any,
+    DiscountExclusivity Exclusivity = DiscountExclusivity.BestOnly,
+    IReadOnlyList<CouponScopeRuleDto>? ScopeRules = null);
 
 public sealed record CartLineItemDto(int ProductId, int Quantity, decimal UnitPrice, int? CategoryId = null, int? BrandId = null);
 
@@ -52,7 +74,10 @@ public sealed record CouponValidationResult(
     string? Code,
     string? CampaignTitle = null,
     CouponTargetType TargetType = CouponTargetType.Order,
-    decimal? MaxDiscountCap = null);
+    decimal? MaxDiscountCap = null,
+    decimal EligibleAmount = 0,
+    string? ScopeSummary = null,
+    DiscountExclusivity Exclusivity = DiscountExclusivity.BestOnly);
 
 public sealed record EvaluateCartPromotionsRequest(
     decimal SubTotal,
@@ -67,7 +92,47 @@ public sealed record CartPromotionsEvaluationResult(
     string? ActiveCampaignHeadline,
     decimal FreeShippingThreshold,
     bool QualifiesForFreeShipping,
-    decimal AmountNeededForFreeShipping);
+    decimal AmountNeededForFreeShipping,
+    IReadOnlyList<CouponValidationResult>? AppliedDiscounts = null);
+
+/// <summary>The scope exactly as the builder holds it, before anything is saved.</summary>
+public sealed record CouponScopePreviewRequest(
+    IReadOnlyList<CouponScopeRuleDto>? ScopeRules = null,
+    ScopeMatch ScopeMatch = ScopeMatch.Any,
+    CouponTargetType TargetType = CouponTargetType.Order,
+    int? TargetId = null,
+    DiscountType DiscountType = DiscountType.Percentage,
+    decimal DiscountValue = 0,
+    decimal? MaxDiscountCap = null,
+    decimal MinEligibleAmount = 0);
+
+public sealed record ScopeConflictDto(
+    string Code,
+    string? CampaignTitle,
+    int OverlappingProducts,
+    bool IsAutomatic);
+
+/// <summary>What the forecast is measured against, so the UI can label the number honestly.</summary>
+public enum PreviewValueBasis
+{
+    /// <summary>A real average order subtotal.</summary>
+    OrderHistory = 0,
+    /// <summary>No orders yet, so a single average-priced qualifying product is used instead.</summary>
+    AverageProductPrice = 1,
+    /// <summary>The scope reaches nothing, so no amount can be estimated.</summary>
+    NotEstimated = 2
+}
+
+public sealed record CouponScopePreviewResult(
+    int TotalActiveProducts,
+    int MatchedProducts,
+    int MatchedUnits,
+    decimal ExposedStockValue,
+    decimal AverageQualifyingValue,
+    PreviewValueBasis ValueBasis,
+    decimal ForecastDiscount,
+    IReadOnlyList<string> SampleProducts,
+    IReadOnlyList<ScopeConflictDto> Conflicts);
 
 
 // ---------------------------------------------------------------- Payments
@@ -152,18 +217,26 @@ public sealed record ValidateGiftCardResponse(
     string? RecipientName,
     string? Reason);
 
+/// <summary>
+/// A coupon edit. The scope fields are nullable because an absent value means "keep what is stored" —
+/// a dialog that only edits the discount must never be able to reset a scoped coupon to storewide.
+/// </summary>
 public sealed record UpdateCouponRequest(
     decimal DiscountValue,
     decimal MinOrderAmount,
     DateTime? ExpiresAt = null,
     int? UsageLimit = null,
     decimal? MaxDiscountCap = null,
-    CouponTargetType TargetType = CouponTargetType.Order,
+    CouponTargetType? TargetType = null,
     int? TargetId = null,
     DateTime? StartsAt = null,
     bool IsAutomatic = false,
     string? CampaignTitle = null,
-    bool IsBannerPromoted = false);
+    bool IsBannerPromoted = false,
+    decimal? MinEligibleAmount = null,
+    ScopeMatch? ScopeMatch = null,
+    DiscountExclusivity? Exclusivity = null,
+    IReadOnlyList<CouponScopeRuleDto>? ScopeRules = null);
 
 public sealed record UpdateGiftCardRequest(
     string? RecipientEmail = null,

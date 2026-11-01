@@ -132,7 +132,11 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
     setCouponCode(code);
     setCouponError(null);
     try {
-      const res = await validateCoupon.mutateAsync({ code, subTotal: cart.total });
+      const res = await validateCoupon.mutateAsync({
+        code,
+        subTotal: cart.total,
+        items: cart.lines.map(l => ({ productId: l.productId, quantity: l.quantity, unitPrice: l.unitPrice }))
+      });
       if (res.isValid) {
         setAppliedCoupon(res);
         toast.push('success', `Coupon ${res.code} applied: save ${formatMoney(res.discountAmount, cart.currency)}!`);
@@ -651,8 +655,11 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
               <span>
                 {isAutoApplied ? `⚡ ${t("Auto-Discount")}` : t("Coupon Discount")}
                 {effectiveDiscount?.code ? ` (${effectiveDiscount.code})` : ''}
+                {effectiveDiscount?.scopeSummary
+                  ? ` · ${t("applies to")} ${effectiveDiscount.scopeSummary}`
+                  : ''}
               </span>
-              <span>-{t(formatMoney(discountAmount, cart.currency))}</span>
+              <span>-{formatMoney(discountAmount, cart.currency)}</span>
             </div>
           )}
 

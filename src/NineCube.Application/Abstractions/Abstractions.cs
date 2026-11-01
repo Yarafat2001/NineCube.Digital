@@ -30,6 +30,8 @@ public interface IAppDbContext
     DbSet<Address> Addresses { get; }
     DbSet<Notification> Notifications { get; }
     DbSet<Coupon> Coupons { get; }
+    DbSet<CouponScopeRule> CouponScopeRules { get; }
+    DbSet<CouponScopeRuleValue> CouponScopeRuleValues { get; }
     DbSet<GiftCard> GiftCards { get; }
     DbSet<PaymentTransaction> PaymentTransactions { get; }
     DbSet<PasswordResetToken> PasswordResetTokens { get; }

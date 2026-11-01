@@ -1,5 +1,5 @@
 import { t, useLanguage } from '../i18n/language';
-import { useState, useMemo, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import {
   useAdminUsers,
   useAuditLogs,
@@ -21,10 +21,24 @@ import {
   useUpdateGiftCard,
   useDeleteGiftCard,
   useToggleGiftCardStatus,
-  useAdjustGiftCardBalance
+  useAdjustGiftCardBalance,
+  useTags
 } from '../api/hooks';
-import type { Coupon, CouponTargetType, UserRole, GiftCard } from '../api/types';
+import type { Coupon, CouponTargetType, ScopeAttribute, UserRole, GiftCard } from '../api/types';
 import { flattenCategories } from '../components/CategoryFilters';
+import { ScopeImpactPanel } from '../components/ScopeImpactPanel';
+import {
+  ATTRIBUTE_ICON,
+  ScopeRuleEditor,
+  describeScopeRules,
+  emptyScope,
+  scopeFromCoupon,
+  scopeIsComplete,
+  scopeNameHints,
+  type ScopeSourceItem,
+  type ScopeSources,
+  type ScopeState
+} from '../components/ScopeRuleEditor';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, Modal, useToast } from '../components/ui';
 import { Icon, type IconName } from '../components/Icon';
 import { formatDateTime, formatMoney, formatMoneyWhole, roleLabels, useDebouncedValue } from '../lib/helpers';
@@ -127,176 +141,6 @@ const GIFT_CARD_TEMPLATES: GiftCardTemplate[] = [
 ];
 
 
-interface CatalogTargetPickerProps {
-  type: 'Category' | 'Brand' | 'Product';
-  items: Array<{ id: number; name: string; sku?: string; price?: number }>;
-  selectedId: number | null;
-  onSelect: (id: number | null) => void;
-  id: string;
-}
-
-const TARGET_ICON: Record<'Category' | 'Brand' | 'Product', IconName> = {
-  Category: 'folder',
-  Brand: 'tag',
-  Product: 'box'
-};
-
-function CatalogTargetPicker({ type, items, selectedId, onSelect, id }: CatalogTargetPickerProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showDropdown, setShowDropdown] = useState(!selectedId);
-
-  const filtered = useMemo(() => {
-    if (!searchTerm.trim()) return items;
-    const term = searchTerm.toLowerCase();
-    return items.filter(
-      (item) =>
-        item.name.toLowerCase().includes(term) ||
-        (item.sku && item.sku.toLowerCase().includes(term))
-    );
-  }, [items, searchTerm]);
-
-  const typeLabel = type === 'Category' ? t("Category") : type === 'Brand' ? t("Brand") : t("Product");
-  const placeholder =
-    type === 'Category'
-      ? t("Search category by name…")
-      : type === 'Brand'
-      ? t("Search brand by name…")
-      : t("Search product by name or SKU…");
-
-  const selectedItem = items.find((i) => i.id === selectedId);
-  const popularItems = useMemo(() => items.slice(0, 6), [items]);
-
-  const choose = (targetId: number) => {
-    onSelect(targetId);
-    setShowDropdown(false);
-    setSearchTerm('');
-  };
-
-  return (
-    <div className="target-picker">
-      {/* Hidden native select keeps the field reachable for forms, tests and assistive tech. */}
-      <select
-        id={id}
-        className="target-picker__native"
-        value={selectedId ?? ''}
-        onChange={(e) => onSelect(e.target.value ? Number(e.target.value) : null)}
-        tabIndex={-1}
-        aria-hidden="true"
-      >
-        <option value="">{t("None")}</option>
-        {items.map((it) => (
-          <option key={it.id} value={it.id}>
-            {it.name}
-          </option>
-        ))}
-      </select>
-
-      {selectedItem ? (
-        <div className="target-chosen">
-          <span className="target-chosen__icon">
-            <Icon name={TARGET_ICON[type]} width={17} height={17} />
-          </span>
-          <div className="target-chosen__text">
-            <span className="target-chosen__name">
-              {selectedItem.name}
-              {selectedItem.sku ? <span className="target-chosen__sku">{selectedItem.sku}</span> : null}
-            </span>
-            <span className="target-chosen__note">
-              <Icon name="check" width={12} height={12} />
-              {typeLabel} {t("selected")} · {type === 'Product' ? t("Applies strictly to this product") : t("Applies to all products in this scope")}
-            </span>
-          </div>
-          <div className="target-chosen__actions">
-            <button
-              type="button"
-              className="btn btn--sm btn--outline"
-              onClick={() => setShowDropdown((prev) => !prev)}
-            >
-              {showDropdown ? t("Close search") : t("Change target")}
-            </button>
-            <button
-              type="button"
-              className="target-chosen__clear"
-              onClick={() => {
-                onSelect(null);
-                setShowDropdown(true);
-              }}
-              title={t("Clear selection")}
-              aria-label={t("Clear selection")}
-            >
-              <Icon name="x" width={13} height={13} />
-            </button>
-          </div>
-        </div>
-      ) : (
-        <p className="target-picker__prompt">
-          <Icon name="target" width={14} height={14} />
-          {t("Please select a target below to apply this discount:")}
-        </p>
-      )}
-
-      {(showDropdown || !selectedId) && (
-        <div className="target-search">
-          {popularItems.length > 0 && (
-            <div className="target-search__quick">
-              <span className="target-search__quick-label">{t("Quick Select:")}</span>
-              {popularItems.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  className={`discount-quick-pill ${selectedId === p.id ? 'discount-quick-pill--active' : ''}`}
-                  onClick={() => choose(p.id)}
-                >
-                  {p.name}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <div className="target-search__bar">
-            <Icon name="search" width={15} height={15} />
-            <input
-              type="search"
-              aria-label={placeholder}
-              placeholder={placeholder}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && (
-              <button type="button" className="target-search__clear" onClick={() => setSearchTerm('')} aria-label={t("Clear")}>
-                <Icon name="x" width={13} height={13} />
-              </button>
-            )}
-          </div>
-
-          <div className="target-list">
-            {filtered.length === 0 ? (
-              <p className="target-list__empty">{t("No matching items found.")}</p>
-            ) : (
-              filtered.map((item) => {
-                const isSelected = selectedId === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className={`target-row ${isSelected ? 'target-row--active' : ''}`}
-                    aria-pressed={isSelected}
-                    onClick={() => choose(item.id)}
-                  >
-                    <span className="target-row__name">{item.name}</span>
-                    {item.sku ? <span className="target-row__sku">{item.sku}</span> : null}
-                    {item.price !== undefined ? <span className="target-row__price">{formatMoney(item.price)}</span> : null}
-                    {isSelected ? <Icon name="check" width={14} height={14} /> : null}
-                  </button>
-                );
-              })
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 export function AdminPage() {
   useLanguage();
@@ -350,6 +194,8 @@ export function AdminPage() {
   const [editExpiresAt, setEditExpiresAt] = useState('');
   const [editIsBanner, setEditIsBanner] = useState(false);
   const [editIsAuto, setEditIsAuto] = useState(false);
+  const [editScope, setEditScope] = useState<ScopeState>(emptyScope);
+  const [editScopeHints, setEditScopeHints] = useState<Record<number, string>>({});
 
   const [editingGiftCard, setEditingGiftCard] = useState<GiftCard | null>(null);
   const [deletingGiftCard, setDeletingGiftCard] = useState<GiftCard | null>(null);
@@ -389,6 +235,8 @@ export function AdminPage() {
     setEditExpiresAt(c.expiresAt ? c.expiresAt.slice(0, 16) : '');
     setEditIsBanner(!!c.isBannerPromoted);
     setEditIsAuto(!!c.isAutomatic);
+    setEditScope(scopeFromCoupon(c));
+    setEditScopeHints(scopeNameHints(c));
   };
 
   const openEditGiftCard = (g: GiftCard) => {
@@ -453,11 +301,10 @@ export function AdminPage() {
   const [discountValue, setDiscountValue] = useState('10');
   const [minOrderAmount, setMinOrderAmount] = useState('0');
   const [usageLimit, setUsageLimit] = useState('');
-  const [couponTargetType, setCouponTargetType] = useState<CouponTargetType>('Order');
+  const [scope, setScope] = useState<ScopeState>(emptyScope);
   const [maxDiscountCap, setMaxDiscountCap] = useState('');
   const [campaignTitle, setCampaignTitle] = useState('');
   const [isBannerPromoted, setIsBannerPromoted] = useState(false);
-  const [targetId, setTargetId] = useState<number | null>(null);
   const [startsAt, setStartsAt] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [isAutomatic, setIsAutomatic] = useState(false);
@@ -588,56 +435,91 @@ export function AdminPage() {
     }
   };
 
-  // Dynamic catalog targeting queries
+  // Scope picking reads the catalogue live: categories and brands arrive whole, products are searched
+  // on the server because the active list is larger than one page.
   const categoriesQuery = useCategories();
   const allCategories = flattenCategories(categoriesQuery.data ?? []);
   const brandsQuery = useBrands({ q: '' });
   const allBrands = brandsQuery.data ?? [];
-  const productsQuery = useProducts({ q: '', page: 1, pageSize: 100 });
-  const allProducts = productsQuery.data?.items ?? [];
+  const tagsQuery = useTags();
+  const allTags = tagsQuery.data ?? [];
 
-  // --- coupon builder derivations: these read the form, they never hold a second copy of it -------
+  const [scopeProductTerm, setScopeProductTerm] = useState('');
+  const scopeProductQuery = useProducts({ q: scopeProductTerm, page: 1, pageSize: 100, isActive: true });
+  // The pool keeps every product the operator has seen this session, so a chip chosen before a new
+  // search keeps its name instead of degrading to an id.
+  const [scopeProductPool, setScopeProductPool] = useState<Record<number, ScopeSourceItem>>({});
+
+  useEffect(() => {
+    const items = scopeProductQuery.data?.items;
+    if (!items?.length) return;
+    setScopeProductPool(previous => ({
+      ...previous,
+      ...Object.fromEntries(items.map(p => [p.id, { id: p.id, name: p.name, sku: p.sku, price: p.price }]))
+    }));
+  }, [scopeProductQuery.data]);
+
+  const scopeSources: ScopeSources = useMemo(() => ({
+    Category: allCategories.map(c => ({ id: c.id, name: c.name })),
+    Brand: allBrands.map(b => ({ id: b.id, name: b.name })),
+    Tag: allTags.map(g => ({ id: g.id, name: g.name })),
+    Product: Object.values(scopeProductPool).sort((a, b) => a.id - b.id)
+  }), [allCategories, allBrands, allTags, scopeProductPool]);
+
+  const searchScopeProducts = (attribute: ScopeAttribute, term: string) => {
+    if (attribute === 'Product') setScopeProductTerm(term.trim());
+  };
+
   const applyCouponTemplate = (template: CouponTemplate) => {
     const values = template.values;
     setCouponCode(values.couponCode);
     setDiscountType(values.discountType);
     setDiscountValue(values.discountValue);
-    setCouponTargetType(values.couponTargetType);
     setMinOrderAmount(values.minOrderAmount);
     setMaxDiscountCap(values.maxDiscountCap);
     setCampaignTitle(values.campaignTitle);
     setIsBannerPromoted(values.isBannerPromoted);
     setIsAutomatic(values.isAutomatic);
+
     if (values.couponTargetType === 'Order') {
-      setTargetId(null);
+      setScope(emptyScope());
       return;
     }
-    const pool = values.couponTargetType === 'Category' ? allCategories : values.couponTargetType === 'Brand' ? allBrands : allProducts;
+    const attribute = values.couponTargetType as ScopeAttribute;
+    const pool = attribute === 'Category' ? scopeSources.Category
+      : attribute === 'Brand' ? scopeSources.Brand
+      : scopeSources.Product;
     const hint = (template.targetHint ?? '').toLowerCase();
-    const picked = pool.find(item => item.name.toLowerCase().includes(hint)) ?? pool[0];
-    setTargetId(picked?.id ?? null);
+    // Only a real name match may prefill a target; guessing the first row would quietly aim a
+    // named campaign at an unrelated product.
+    const picked = pool.find(item => item.name.toLowerCase().includes(hint));
+    if (attribute === 'Product' && !picked) setScopeProductTerm(hint);
+    setScope({ ...emptyScope(), rules: [{ attribute, polarity: 'Is', entityIds: picked ? [picked.id] : [] }] });
   };
 
   // A template reads as applied only while the builder still holds exactly what it wrote.
   const activeTemplateId = COUPON_TEMPLATES.find(template => {
     const values = template.values;
+    const storewide = scope.rules.length === 0;
+    const scopeMatches = values.couponTargetType === 'Order'
+      ? storewide
+      : !storewide && scope.rules.length === 1 && scope.rules[0].attribute === values.couponTargetType;
     return values.couponCode === couponCode.trim().toUpperCase()
       && values.discountType === discountType
       && values.discountValue === discountValue
-      && values.couponTargetType === couponTargetType
+      && scopeMatches
       && values.minOrderAmount === minOrderAmount
       && values.maxDiscountCap === maxDiscountCap
       && values.isAutomatic === isAutomatic
       && values.isBannerPromoted === isBannerPromoted;
   })?.id ?? null;
 
-  const targetedName = couponTargetType === 'Category'
-    ? allCategories.find(item => item.id === targetId)?.name
-    : couponTargetType === 'Brand'
-    ? allBrands.find(item => item.id === targetId)?.name
-    : couponTargetType === 'Product'
-    ? allProducts.find(item => item.id === targetId)?.name
-    : undefined;
+  // The voucher the shopper would meet, written from the rules rather than from a single target.
+  const builderScopeSummary = describeScopeRules(
+    scope.rules,
+    scope.match,
+    (rule, id) => scopeSources[rule.attribute as keyof ScopeSources]?.find(item => item.id === id)?.name
+  );
 
   const valueNumber = Number(discountValue);
   const capNumber = Number(maxDiscountCap);
@@ -691,8 +573,8 @@ export function AdminPage() {
     event.preventDefault();
     if (!couponCode.trim()) return;
 
-    if (couponTargetType !== 'Order' && !targetId) {
-      toast.push('error', 'Please select a specific target (category, brand, or product).');
+    if (!scopeIsComplete(scope)) {
+      toast.push('error', 'Every rule needs at least one category, brand, tag or product chosen.');
       return;
     }
 
@@ -703,14 +585,16 @@ export function AdminPage() {
         discountValue: Number(discountValue),
         minOrderAmount: Number(minOrderAmount || 0),
         usageLimit: usageLimit ? Number(usageLimit) : null,
-        targetType: couponTargetType,
-        targetId: couponTargetType === 'Order' ? null : targetId,
         startsAt: startsAt ? new Date(startsAt).toISOString() : null,
         expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
         isAutomatic,
         maxDiscountCap: maxDiscountCap ? Number(maxDiscountCap) : null,
         campaignTitle: campaignTitle.trim() || null,
-        isBannerPromoted
+        isBannerPromoted,
+        scopeRules: scope.rules,
+        scopeMatch: scope.match,
+        exclusivity: scope.exclusivity,
+        minEligibleAmount: Number(scope.minEligibleAmount) || 0
       });
       toast.push('success', `Coupon ${created.code} created.`);
       setCouponCode('');
@@ -720,8 +604,7 @@ export function AdminPage() {
       setMaxDiscountCap('');
       setCampaignTitle('');
       setIsBannerPromoted(false);
-      setCouponTargetType('Order');
-      setTargetId(null);
+      setScope(emptyScope());
       setStartsAt('');
       setExpiresAt('');
       setIsAutomatic(false);
@@ -730,23 +613,17 @@ export function AdminPage() {
     }
   };
 
-  const scopeIcon: Record<string, IconName> = { Category: 'folder', Brand: 'tag', Product: 'box' };
-
+  /** The registry reads the stored rules, so a coupon with three brands shows all three. */
   const resolveTargetLabel = (c: Coupon) => {
-    const glyph = (name: IconName) => <Icon name={name} width={12} height={12} aria-hidden="true" />;
-    if (c.targetType === 'Category' && c.targetId) {
-      const cat = allCategories.find((x) => x.id === c.targetId);
-      return <>{glyph(scopeIcon.Category)} {cat ? cat.name : `${t("Category")} #${c.targetId}`}</>;
-    }
-    if (c.targetType === 'Brand' && c.targetId) {
-      const b = allBrands.find((x) => x.id === c.targetId);
-      return <>{glyph(scopeIcon.Brand)} {b ? b.name : `${t("Brand")} #${c.targetId}`}</>;
-    }
-    if (c.targetType === 'Product' && c.targetId) {
-      const p = allProducts.find((x) => x.id === c.targetId);
-      return <>{glyph(scopeIcon.Product)} {p ? p.name : `${t("Product")} #${c.targetId}`}</>;
-    }
-    return <>{glyph('cart')} {t("All products (Order)")}</>;
+    const rules = c.scopeRules ?? [];
+    const first = rules.find(r => r.polarity === 'Is') ?? rules[0];
+    const glyphName: IconName = first ? ATTRIBUTE_ICON[first.attribute] : 'cart';
+    return (
+      <>
+        <Icon name={glyphName} width={12} height={12} aria-hidden="true" />
+        {' '}{describeScopeRules(rules, c.scopeMatch ?? 'Any')}
+      </>
+    );
   };
 
   return (
@@ -1015,7 +892,7 @@ export function AdminPage() {
                 const rule = values.discountType === 'Percentage'
                   ? `${values.discountValue}% ${t("off")}`
                   : `${t("BDT")} ${values.discountValue} ${t("off")}`;
-                const scope = values.couponTargetType === 'Order'
+                const scopeLabel = values.couponTargetType === 'Order'
                   ? t("Storewide")
                   : t(values.couponTargetType);
                 const floor = values.minOrderAmount === '0'
@@ -1037,7 +914,7 @@ export function AdminPage() {
                       <span className="coupon-template__code">{values.couponCode}</span>
                     </span>
                     <span className="coupon-template__name">{t(template.name)}</span>
-                    <span className="coupon-template__rule">{rule} · {scope} · {floor}</span>
+                    <span className="coupon-template__rule">{rule} · {scopeLabel} · {floor}</span>
                   </button>
                 );
               })}
@@ -1224,80 +1101,30 @@ export function AdminPage() {
               <div className="discount-config-card" data-testid="discount-step-3">
                 <div className="discount-card-header">
                   <h4 className="discount-card-title">
-                    <span className={`discount-card-step ${couponTargetType === 'Order' || targetId ? 'discount-card-step--done' : ''}`}>
-                      {couponTargetType === 'Order' || targetId ? <Icon name="check" width={12} height={12} /> : '3'}
+                    <span className={`discount-card-step ${scopeIsComplete(scope) ? 'discount-card-step--done' : ''}`}>
+                      {scopeIsComplete(scope) ? <Icon name="check" width={12} height={12} /> : '3'}
                     </span>
                     {t("Applies to / Target Scope")}
                   </h4>
+                  <span className="discount-card-flag">{t("Rules")}</span>
                 </div>
 
-                <div className="discount-scope">
-                  {([
-                    ['Order', 'cart', t("Entire Order / Basket")],
-                    ['Category', 'folder', t("Specific Category (e.g. Footwear)")],
-                    ['Brand', 'tag', t("Specific Brand")],
-                    ['Product', 'box', t("Specific Product")]
-                  ] as Array<[CouponTargetType, IconName, string]>).map(([kind, icon, label]) => (
-                    <button
-                      key={kind}
-                      type="button"
-                      className={`discount-scope__option ${couponTargetType === kind ? 'discount-scope__option--active' : ''}`}
-                      aria-pressed={couponTargetType === kind}
-                      onClick={() => {
-                        setCouponTargetType(kind);
-                        if (kind === 'Order') {
-                          setTargetId(null);
-                          return;
-                        }
-                        const pool = kind === 'Category' ? allCategories : kind === 'Brand' ? allBrands : allProducts;
-                        if (!targetId && pool.length > 0) setTargetId(pool[0].id);
-                      }}
-                    >
-                      <Icon name={icon} width={15} height={15} />
-                      <span>{label}</span>
-                    </button>
-                  ))}
-                </div>
+                <ScopeRuleEditor
+                  value={scope}
+                  onChange={setScope}
+                  sources={scopeSources}
+                  idPrefix="coupon"
+                  remote={['Product']}
+                  onSearch={searchScopeProducts}
+                />
 
-                {couponTargetType === 'Order' && (
-                  <p className="discount-note">
-                    <Icon name="check" width={14} height={14} />
-                    <span>
-                      <strong>{t("Storewide Basket Scope:")}</strong>{' '}
-                      {t("Discount applies to all eligible products in customer basket when minimum order is met.")}
-                    </span>
-                  </p>
-                )}
-
-                {couponTargetType === 'Category' && (
-                  <CatalogTargetPicker
-                    type="Category"
-                    items={allCategories}
-                    selectedId={targetId}
-                    onSelect={setTargetId}
-                    id="coupon-target-category"
-                  />
-                )}
-
-                {couponTargetType === 'Brand' && (
-                  <CatalogTargetPicker
-                    type="Brand"
-                    items={allBrands}
-                    selectedId={targetId}
-                    onSelect={setTargetId}
-                    id="coupon-target-brand"
-                  />
-                )}
-
-                {couponTargetType === 'Product' && (
-                  <CatalogTargetPicker
-                    type="Product"
-                    items={allProducts}
-                    selectedId={targetId}
-                    onSelect={setTargetId}
-                    id="coupon-target-product"
-                  />
-                )}
+                <ScopeImpactPanel
+                  scope={scope}
+                  discountType={discountType}
+                  discountValue={Number(discountValue) || 0}
+                  maxDiscountCap={maxDiscountCap ? Number(maxDiscountCap) : null}
+                  ready={scopeIsComplete(scope)}
+                />
               </div>
 
               <div className="discount-config-card" data-testid="discount-step-4">
@@ -1493,10 +1320,7 @@ export function AdminPage() {
                   <div className="voucher-rule">
                     <Icon name="target" width={14} height={14} />
                     <div>
-                      <strong>{t("Scope")}: </strong>
-                      {couponTargetType === 'Order'
-                        ? t("Entire Order / Basket (Storewide)")
-                        : `${t(couponTargetType)}: ${targetedName ?? t(`Select ${couponTargetType.toLowerCase()}`)}`}
+                      <strong>{t("Scope")}: </strong>{builderScopeSummary}
                     </div>
                   </div>
 
@@ -2597,6 +2421,10 @@ export function AdminPage() {
               id="edit-coupon-form"
               onSubmit={async (e) => {
                 e.preventDefault();
+                if (!scopeIsComplete(editScope)) {
+                  toast.push('error', 'Every rule needs at least one category, brand, tag or product chosen.');
+                  return;
+                }
                 try {
                   await updateCoupon.mutateAsync({
                     id: editingCoupon.id,
@@ -2608,7 +2436,11 @@ export function AdminPage() {
                     startsAt: editStartsAt ? new Date(editStartsAt).toISOString() : null,
                     expiresAt: editExpiresAt ? new Date(editExpiresAt).toISOString() : null,
                     isBannerPromoted: editIsBanner,
-                    isAutomatic: editIsAuto
+                    isAutomatic: editIsAuto,
+                    scopeRules: editScope.rules,
+                    scopeMatch: editScope.match,
+                    exclusivity: editScope.exclusivity,
+                    minEligibleAmount: Number(editScope.minEligibleAmount) || 0
                   });
                   toast.push('success', `Coupon ${editingCoupon.code} updated.`);
                   setEditingCoupon(null);
@@ -2652,6 +2484,31 @@ export function AdminPage() {
                     />
                   </div>
                 </div>
+              </div>
+
+              <div className="modal-section">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">{t("Applies to / Target Scope")}</h4>
+                  <span className="discount-card-flag">{t("Rules")}</span>
+                </div>
+
+                <ScopeRuleEditor
+                  value={editScope}
+                  onChange={setEditScope}
+                  sources={scopeSources}
+                  idPrefix="edit-coupon"
+                  remote={['Product']}
+                  onSearch={searchScopeProducts}
+                  nameHints={editScopeHints}
+                />
+
+                <ScopeImpactPanel
+                  scope={editScope}
+                  discountType={editingCoupon.discountType}
+                  discountValue={Number(editDiscountValue) || 0}
+                  maxDiscountCap={editMaxCap ? Number(editMaxCap) : null}
+                  ready={scopeIsComplete(editScope)}
+                />
               </div>
 
               <div className="modal-section">

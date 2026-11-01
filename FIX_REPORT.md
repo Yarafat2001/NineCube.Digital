@@ -1,5 +1,143 @@
 # FIX_REPORT
 
+# Round 12 — a coupon's scope is now a set of rules the money engine actually reads
+
+Date: 2026-11-02. Brief: the owner asked whether one discount can cover several categories, brands or
+products at once and what AND / OR would mean here, then asked for the version that is "the best one for
+future enhancement as a modern and dynamic e-commerce system" and to "finish the properly".
+
+## What the code did before, read line by line
+
+One coupon could name one thing: `TargetType` (`Order` / `Category` / `Brand` / `Product`) plus one
+`TargetId`. The evaluation in `ValidateSingleCouponEntity` opened with this guard:
+
+```csharp
+decimal eligibleAmount = subTotal;                       // the whole basket, by default
+if (coupon.TargetType != CouponTargetType.Order && coupon.TargetId.HasValue && items != null && items.Count > 0)
+{
+    eligibleItems = ... switch { Product => ..., Category => ..., Brand => ..., _ => items };
+    eligibleAmount = eligibleItems.Sum(...);
+}
+decimal discount = ... eligibleAmount ...
+```
+
+Two live holes, both of them the "storewide by accident" kind:
+
+1. **A scoped coupon with no resolvable id discounted the entire basket.** `TargetId` null (or a
+   `TargetType` the switch did not handle) short-circuited the whole condition, so `eligibleAmount`
+   stayed at `subTotal`. Nothing checked that the id existed in the catalogue, so a template name that
+   matched no row — the builder offered "Footwear", "Apex", "Duramo" against an electronics-led shop —
+   produced a coupon that silently applied to everything.
+2. **Asking without line items did the same.** `items is null || items.Count == 0` also skipped the
+   filter, so the paths that validate on subtotal alone treated a brand coupon as storewide.
+
+And two design limits the owner's question ran straight into: several brands in one campaign was
+impossible, and the minimum order was measured on the whole basket, so BDT 4,000 of phone cases could
+unlock a "spend 5,000 on Apple" deal. Stacking was hard-coded to one discount per order, chosen by
+size (`manual >= bestAuto ? manual : bestAuto`), with no operator control at all.
+
+## What it is now
+
+- `CouponScopeRule` (`src/NineCube.Domain/Entities.cs`) — Attribute (Category / Brand / Series / Tag /
+  Product) × Polarity (Is / IsNot) × many catalogue ids — with `Coupon.ScopeMatch` (Any / All) and
+  `Coupon.Exclusivity` (BestOnly / StackByScope / Exclusive) plus `MinEligibleAmount`. Stored
+  relationally (`CouponScopeRules` → `CouponScopeRuleValues`, both `ON DELETE CASCADE`), not as JSON,
+  so a renamed brand never strands a coupon: names are resolved from the catalogue on every read.
+- `CouponScopeMatcher` resolves each basket line's real category / brand / series / tag ids from the
+  database (`CouponService.cs:217`) and then applies the rules. What a client claims about a product
+  buys nothing — there is a test named for exactly that.
+- The evaluation now fails closed: no rules means storewide and says so (`CouponService.cs:199`), a
+  scoped coupon on an empty basket is refused with the scope named (`:210`), a scope that reaches
+  nothing is refused (`:227`), and a rule that names nothing or points at an id that does not exist is
+  refused at save time (`:329`) rather than becoming a storewide coupon later.
+- `MinEligibleAmount` is measured on the qualifying lines only (`:232`); `MinOrderAmount` keeps its
+  historical whole-basket meaning, so no stored campaign changes behaviour.
+- Stacking is a policy the operator sets: `BestOnly` (the old one-discount rule, still the default),
+  `StackByScope` (adds, but never twice on the same line), `Exclusive` (refuses to share the order).
+- `POST /api/coupons/scope-preview` runs a draft scope against the live catalogue and returns products
+  reached, units, exposed stock value, a forecast saving with the basis it was measured on, and the
+  other live campaigns that already reach the same products.
+- Migration `20261101133918_AddCouponScopeRules` copies every legacy `TargetType`/`TargetId` pair into
+  a real rule, and `EffectiveRules` (`:297`) still reads an old row as one rule, so pre-migration
+  coupons keep working either way.
+- The builder became a guided rule set: dimension chips, search-and-pick multi-select, Include / Exclude
+  per rule, Any / All, a live reach panel, and the digital voucher line that reads "Scope: Apple or
+  Samsung". The registry row prints the stored rule by name and the edit dialog reads it back rather
+  than starting from storewide.
+
+## Numbers from the real shop
+
+Measured on the throwaway verification database (the loaded catalogue: 183 active products), and
+re-checked against the tables with SQL afterwards:
+
+| scope on a 10% coupon | products reached | units | stock value reached | forecast per order |
+| --- | --- | --- | --- | --- |
+| Brand is Apple or Samsung | 5 / 183 | 317 | BDT 13,243,000.00 | BDT 6,510.00 |
+| Brand is not Apple or Samsung | 178 / 183 | — | — | — |
+| no rules (storewide) | 183 / 183 | 11,365 | BDT 223,274,266.42 | — |
+
+The five reached products are iPhone 12, Galaxy S21, iPhone 13, Galaxy A52 and MacBook Air M5 — average
+price BDT 65,100, which is where the BDT 6,510 forecast comes from: that shop's verification database
+has no orders yet, so the panel says plainly that it measured against one average-priced qualifying
+product. With order history it switches to the average basket multiplied by the share of stock the
+scope reaches; both bases have their own test.
+
+The complement is the number that matters for the Include/Exclude switch: 5 reached + 178 = 183, and
+the browser spec asserts exactly that arithmetic against the live catalogue.
+
+## Tests
+
+- Backend: `src/NineCube.Tests/CouponScopeMatcherTests.cs` (12 methods) and `CouponScopeTests.cs`
+  (24 methods) run against a real PostgreSQL 18 container — **45 cases, 0 failed, 50 s**. The old
+  harness could not: it speaks SQL Server and the application speaks Npgsql now, so
+  `Infrastructure/PostgresTestDatabase.cs` (Testcontainers by default, `TEST_POSTGRES_CONNECTION` to
+  reuse an instance) is the template for anything else that needs the real engine.
+- Frontend: `web/src/test/coupon-scope.test.tsx` (7 tests) — the payload the builder sends, Any
+  widening and All narrowing, the refusal to save an empty rule, the exclusion wording on the voucher,
+  the edit dialog reading a stored scope back and keeping it on save, the registry row printing
+  "Apple or Samsung" rather than an id or "All products", and the conflicting-campaign list.
+  Full suite: **31 files, 199 tests green**.
+- Gates after the last edit: `npx tsc --noEmit` clean, `npm run i18n:check` 1,752 entries,
+  `npm run build` fine (`AdminPage` 83.68 kB, the builder got a rule engine and lost 100+ lines of
+  hand-rolled target code).
+- Browser: `web/e2e/coupon-scope-ui.spec.ts` drives the real stack (light, dark, 390 px). It covers the
+  rule chips, the reach figures the server actually answered, the 5 → 178 complement, the restore, the
+  stacking and minimum-in-scope controls, the create, the registry row and the edit dialog, then
+  deletes the coupon through the API and proves the scope rows went with it.
+- Screenshots: `web/artifacts/scope/` — builder at 1440 in both themes, the phone layout, and the
+  390 px run reporting no horizontal overflow.
+
+**Honest status of that last spec:** the two theme scenarios passed every step up to the registry row
+and then timed out waiting for it on this machine, because the coupon list refetch after a create is a
+catalogue-backed page and this box is running about twenty containers. The assertion now waits for the
+`GET /api/coupons` response itself instead of guessing at a budget, and the row text it checks is
+asserted in the Vitest suite that CI runs. It still needs one run with `NINECUBE_SEED_PASSWORD` set to
+be called green end to end:
+`cd web && NINECUBE_SEED_PASSWORD='<demo password>' E2E_API_BASE=http://127.0.0.1:5099 E2E_BASE_URL=http://127.0.0.1:5199 npx playwright test e2e/coupon-scope-ui.spec.ts`.
+
+## Left alone deliberately
+
+- `MinOrderAmount`, the free-shipping threshold, discount types, caps, the whole coupon API surface for
+  existing clients, and `TargetType`/`TargetId` (still written, still read for legacy rows).
+- Every stored campaign keeps `BestOnly`, so nothing about today's discounts changes.
+- The amber selected tab in the navbar, the category / brand / tag / stock / URL filter rules, and
+  stock staying out of bulk edit.
+- The builder's quick templates still suggest footwear and Apex names that this catalogue does not
+  carry. They are now harmless — a template that resolves to nothing cannot be saved — but they are
+  misleading, and rewriting them to match the shop is a separate call.
+
+## Environment gaps found on the way, not fixed here
+
+- CI's `pages.yml` runs the frontend gates and never `dotnet test`, so the backend scope engine has no
+  automated gate. The legacy MSSQL test harness cannot run against Postgres; the new fixture can.
+- `docker-compose.yml`, `.env.example` and the root `.env` still describe SQL Server while the code
+  needs PostgreSQL, and `.env`'s third line is not sourceable from a shell (the quoted connection
+  string breaks it).
+- `render.yaml` carries a committed `NINECUBE_SEED_PASSWORD`. It should come from the environment.
+- The seeded demo coupon `APEX15` points at brand id 1, which in the loaded catalogue is literally
+  named "ching's" (Apex is id 20). The new registry column is what surfaced it: the row now prints the
+  real name instead of the intended one. Not truncation — a hardcoded id in the seeder.
+
 # Round 11 — the admin record dialogs were bottom sheets wearing a modal's clothes
 
 Date: 2026-11-01. Brief: two screenshots of the Edit Coupon and Edit Gift Card dialogs, "both edit

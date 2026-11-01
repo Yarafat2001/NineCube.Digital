@@ -306,6 +306,11 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("DiscountValue")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Exclusivity")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
                     b.Property<DateTime?>("ExpiresAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -321,8 +326,16 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<decimal?>("MaxDiscountCap")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("MinEligibleAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("MinOrderAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ScopeMatch")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
 
                     b.Property<DateTime?>("StartsAt")
                         .HasColumnType("timestamp with time zone");
@@ -347,6 +360,47 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Coupons", (string)null);
+                });
+
+            modelBuilder.Entity("NineCube.Domain.CouponScopeRule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Attribute")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
+                    b.Property<int>("CouponId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Polarity")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CouponId");
+
+                    b.ToTable("CouponScopeRules", (string)null);
+                });
+
+            modelBuilder.Entity("NineCube.Domain.CouponScopeRuleValue", b =>
+                {
+                    b.Property<int>("RuleId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EntityId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RuleId", "EntityId");
+
+                    b.ToTable("CouponScopeRuleValues", (string)null);
                 });
 
             modelBuilder.Entity("NineCube.Domain.Customer", b =>
@@ -1169,6 +1223,28 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("NineCube.Domain.CouponScopeRule", b =>
+                {
+                    b.HasOne("NineCube.Domain.Coupon", "Coupon")
+                        .WithMany("ScopeRules")
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coupon");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.CouponScopeRuleValue", b =>
+                {
+                    b.HasOne("NineCube.Domain.CouponScopeRule", "Rule")
+                        .WithMany("Values")
+                        .HasForeignKey("RuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rule");
+                });
+
             modelBuilder.Entity("NineCube.Domain.InventoryMovement", b =>
                 {
                     b.HasOne("NineCube.Domain.Order", "Order")
@@ -1389,6 +1465,16 @@ namespace NineCube.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("NineCube.Domain.Brand", b =>
                 {
                     b.Navigation("Lines");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.Coupon", b =>
+                {
+                    b.Navigation("ScopeRules");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.CouponScopeRule", b =>
+                {
+                    b.Navigation("Values");
                 });
 
             modelBuilder.Entity("NineCube.Domain.Customer", b =>

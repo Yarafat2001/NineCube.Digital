@@ -189,9 +189,15 @@ public sealed class Coupon
     public DiscountType DiscountType { get; set; }
     public decimal DiscountValue { get; set; }
     public decimal MinOrderAmount { get; set; }
+    /// <summary>Least qualifying (scoped) subtotal the shopper must reach. 0 means the rule does not check it.</summary>
+    public decimal MinEligibleAmount { get; set; }
     public decimal? MaxDiscountCap { get; set; }
+    /// <summary>Summary column kept in step with the first scope rule so older readers still see a scope.</summary>
     public CouponTargetType TargetType { get; set; } = CouponTargetType.Order;
     public int? TargetId { get; set; }
+    public ScopeMatch ScopeMatch { get; set; } = ScopeMatch.Any;
+    public DiscountExclusivity Exclusivity { get; set; } = DiscountExclusivity.BestOnly;
+    public List<CouponScopeRule> ScopeRules { get; set; } = new();
     public DateTime? StartsAt { get; set; }
     public DateTime? ExpiresAt { get; set; }
     public int? UsageLimit { get; set; }
@@ -201,6 +207,28 @@ public sealed class Coupon
     public string? CampaignTitle { get; set; }
     public bool IsBannerPromoted { get; set; } = false;
     public DateTime CreatedAt { get; set; }
+}
+
+/// <summary>
+/// One catalogue test inside a coupon's scope, e.g. "Brand is one of {Apex, Nestor}". A coupon with no
+/// rules is storewide; inclusion rules combine through Coupon.ScopeMatch and exclusion rules always subtract.
+/// </summary>
+public sealed class CouponScopeRule
+{
+    public int Id { get; set; }
+    public int CouponId { get; set; }
+    public Coupon? Coupon { get; set; }
+    public ScopeAttribute Attribute { get; set; }
+    public ScopePolarity Polarity { get; set; } = ScopePolarity.Is;
+    public List<CouponScopeRuleValue> Values { get; set; } = new();
+}
+
+/// <summary>One catalogue entity id admitted by a scope rule. Composite key: a rule is a set, not a list.</summary>
+public sealed class CouponScopeRuleValue
+{
+    public int RuleId { get; set; }
+    public CouponScopeRule? Rule { get; set; }
+    public int EntityId { get; set; }
 }
 
 public sealed class GiftCard
