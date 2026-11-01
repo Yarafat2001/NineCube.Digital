@@ -35,6 +35,10 @@ const paths = {
   folder: 'M3 6h6l2 2h10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z',
   shuffle: 'M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5',
   search: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm10 2-4.35-4.35',
+  gift: 'M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7S9.7 2.7 7.6 4.2 9.3 7 12 7m0 0s2.3-4.3 4.4-2.8S14.7 7 12 7',
+  cake: 'M4 21h16M5 21v-7h14v7M5 15c1.6 0 1.6 1.4 3.2 1.4S9.8 15 11.4 15s1.6 1.4 3.2 1.4S16.2 15 17.8 15H19M12 10V7M8 10V7M16 10V7M12 4.5V3',
+  moon: 'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z',
+  crown: 'M3 19h18M4.5 19 3 8.5l5.5 4L12 5l3.5 7.5L21 8.5 19.5 19',
 };
 export type IconName = keyof typeof paths;
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {

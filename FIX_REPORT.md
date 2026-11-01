@@ -1,5 +1,73 @@
 # FIX_REPORT
 
+# Round 9 — the gift card builder takes the same shape as the coupon builder
+
+Date: 2026-11-01. Brief: "same way gifts card parts also design as like this way", with a screenshot of
+the admin Gift Cards tab.
+
+## What the tab was
+
+Issuing a card meant one long stack of inputs with a preview buried underneath, and four numbers an
+operator had to arrive at themselves: the balance, the recipient string, the greeting, and the date the
+card stops working. Nothing on the screen said what any of those produced until the certificate was
+already drawn. The coupon tab had just been rebuilt into a preset rail, four numbered decision cards and
+a live preview that reads the form back as plain rules; the gift tab now uses that same system, the same
+classes and the same tokens, so the two admin builders are visibly one product.
+
+## What it is now
+
+- A preset rail above the form: Birthday (BDT 1,000), Eid Mubarak (BDT 2,500), VIP Executive (BDT 5,000)
+  and Welcome Bonus (BDT 500). Each card states the balance chip, the recipient name and the validity it
+  writes — `Eid Celebrant · 1 year` — and a click fills all four fields and mints a fresh code. The
+  preset stays lit while the three values it wrote are still on the card, so editing the code or the
+  exact date does not silently deselect it.
+- Four numbered step cards on the left — Card Value, Redemption Code, Recipient, Greeting & Validity —
+  each with a header flag that reads with the content (`BDT 2,500`, `Your own code` vs `Generated on
+  issue`, `Optional`, `Expires 2027-11-01` vs `Never expires`), quick pills for the balances and for
+  6 months / 1 year / 2 years / No expiry, and a "366 days left" line under the date so the operator does
+  not have to do the arithmetic.
+- The certificate itself on the right, unchanged in look, with a Certificate Summary under it that
+  spells out balance, code, recipient, greeting and validity in words, then the amber issue button and
+  one line saying whether the card is ready to issue.
+- The 🎲 emoji that used to sit on the certificate and the raw 🎁 in the rail heading are now sprite
+  icons (`box`, `gift`), matching the coupon ticket; `gift`, `cake`, `moon` and `crown` joined the
+  sprite for the presets.
+
+## The real defect found on the way
+
+The registry table under the form was wrapped in `<div className="table-wrap">`, and `table-wrap` has no
+rule in any stylesheet — the class did nothing. At a 390 px viewport the 924 px table therefore widened
+the document to 953 px, i.e. **563 px of page-level horizontal overflow**, and the whole admin screen
+scrolled sideways. Switched to `.table-scroll`, the scroller every other table in the app already uses.
+
+## Measured, on the running app
+
+Both states (empty form and preset-filled) at 1440 and 390, dark and light, against a locally started
+stack (throwaway Postgres, API on 5081, Vite on 5173):
+
+- Page-level horizontal overflow: **0 px at 1440 and 0 px at 390** (was 563 px at 390).
+- Remaining scrollers at 390 are the two intentional ones: the preset rail (492 px) and the registry
+  table (544 px).
+- Issue button computed background: `linear-gradient(150deg, rgb(255, 195, 107), rgb(255, 171, 77))` —
+  the same amber as the coupon CTA.
+- Exactly one preset reports `aria-pressed=true` after a click; every preset run produced a code of the
+  form `GC-XXXX-XXXX-XXXX`.
+
+## Tests
+
+`web/src/test/gift-card-builder.test.tsx` is new: the four presets state their balance, recipient and
+validity before being applied; clearing the value disables issuing and names what is missing; clicking a
+preset fills value, recipient and greeting, mints a valid code, marks itself pressed and its neighbour
+unpressed, enables the button and swaps the hint to the ready line. `npm run typecheck` clean,
+`npm run test:run` **183 tests in 28 files green**, translation audit clean at 1,701 entries.
+
+## Left alone deliberately
+
+The shared `.gift-card-cert` certificate styling, the registry table and its bulk-action dock, the
+edit/adjust/delete dialogs, and every piece of the create/update gift-card payloads and state setters —
+this round changed how the existing fields are arranged and described, not what is sent. The coupon tab
+was not touched.
+
 # Round 8 — the deck carries the product, and the manual gets a printed form
 
 Date: 2026-10-16. Brief: "update the ppt use more relevant type data give some sample screen image and

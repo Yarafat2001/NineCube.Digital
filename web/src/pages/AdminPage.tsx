@@ -27,7 +27,7 @@ import type { Coupon, CouponTargetType, UserRole, GiftCard } from '../api/types'
 import { flattenCategories } from '../components/CategoryFilters';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, useToast } from '../components/ui';
 import { Icon, type IconName } from '../components/Icon';
-import { formatDateTime, formatMoney, roleLabels, useDebouncedValue } from '../lib/helpers';
+import { formatDateTime, formatMoney, formatMoneyWhole, roleLabels, useDebouncedValue } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 
 const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrator'];
@@ -106,6 +106,24 @@ const COUPON_TEMPLATES: CouponTemplate[] = [
       isBannerPromoted: false, isAutomatic: false
     }
   }
+];
+
+/** The gift-card equivalent of a play: each preset states the value, greeting and validity it writes. */
+type GiftCardTemplate = {
+  id: string;
+  icon: IconName;
+  name: string;
+  balance: string;
+  recipientName: string;
+  note: string;
+  validMonths: number;
+};
+
+const GIFT_CARD_TEMPLATES: GiftCardTemplate[] = [
+  { id: 'birthday-1000', icon: 'cake', name: 'Birthday Gift (BDT 1,000)', balance: '1000', recipientName: 'Valued Friend', note: 'Happy Birthday! Enjoy your shopping.', validMonths: 12 },
+  { id: 'eid-2500', icon: 'moon', name: 'Eid Mubarak Gift (BDT 2,500)', balance: '2500', recipientName: 'Eid Celebrant', note: 'Eid Mubarak! May your celebration be filled with joy.', validMonths: 12 },
+  { id: 'vip-5000', icon: 'crown', name: 'VIP Executive Reward (BDT 5,000)', balance: '5000', recipientName: 'VIP Customer', note: 'Thank you for being our valued VIP partner.', validMonths: 24 },
+  { id: 'welcome-500', icon: 'gift', name: 'Welcome Bonus (BDT 500)', balance: '500', recipientName: 'New Member', note: 'Welcome to NineCube Digital!', validMonths: 6 }
 ];
 
 
@@ -508,6 +526,38 @@ export function AdminPage() {
       toast.push('info', code);
     });
   };
+
+  const giftCardExpiryIn = (months: number | null) => {
+    if (months === null) return '';
+    const date = new Date();
+    date.setMonth(date.getMonth() + months);
+    return date.toISOString().slice(0, 10);
+  };
+
+  const applyGiftCardTemplate = (template: GiftCardTemplate) => {
+    setGcInitialBalance(template.balance);
+    setGcRecipientName(template.recipientName);
+    setGcNote(template.note);
+    setGcExpiresAt(giftCardExpiryIn(template.validMonths));
+    generateNewGiftCardCode();
+  };
+
+  // The preset stays lit while the three values it wrote are still on the card; the code and the
+  // expiry date are allowed to drift, since editing those is the normal next step.
+  const activeGiftCardTemplateId = GIFT_CARD_TEMPLATES.find(template =>
+    template.balance === gcInitialBalance
+    && template.recipientName === gcRecipientName
+    && template.note === gcNote
+  )?.id ?? null;
+
+  const gcBalanceNumber = Number(gcInitialBalance) > 0 ? Number(gcInitialBalance) : 0;
+  const gcValidityLabel = (months: number) =>
+    months % 12 === 0
+      ? months === 12 ? t("1 year") : `${months / 12} ${t("years")}`
+      : `${months} ${t("months")}`;
+  const gcDaysLeft = gcExpiresAt
+    ? Math.ceil((new Date(`${gcExpiresAt}T23:59:59`).getTime() - Date.now()) / 86_400_000)
+    : null;
 
   const submitGiftCard = async (event: FormEvent) => {
     event.preventDefault();
@@ -1701,106 +1751,80 @@ export function AdminPage() {
 
       {tab === 'giftcards' ? (
         <section role="tabpanel" id="panel-giftcards" aria-labelledby="tab-giftcards" className="stack">
-          {/* Quick Gift Card Presets Bar */}
-          <div className="card-glass" style={{ padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-lg, 12px)', border: '1px solid var(--border)' }}>
-            <div className="row-between" style={{ flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
-              <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                ✨ {t("Quick Templates (1-Click Fill):")}
+          {/* Start-from-a-gift rail: each card states the value, recipient and validity it writes. */}
+          <div className="coupon-templates">
+            <div className="coupon-templates__head">
+              <span className="coupon-templates__label">
+                <Icon name="gift" width={14} height={14} />
+                {t("Quick Templates (1-Click Fill):")}
               </span>
-              <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
-                <button
-                  type="button"
-                  className="btn btn--sm btn--outline"
-                  style={{ fontSize: '11px', padding: '3px 8px' }}
-                  onClick={() => {
-                    setGcInitialBalance('1000');
-                    setGcRecipientName('Valued Friend');
-                    setGcNote('Happy Birthday! Enjoy your shopping.');
-                    const d = new Date();
-                    d.setFullYear(d.getFullYear() + 1);
-                    setGcExpiresAt(d.toISOString().slice(0, 10));
-                    generateNewGiftCardCode();
-                  }}
-                >
-                  🎂 {t("Birthday Gift (BDT 1,000)")}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn--sm btn--outline"
-                  style={{ fontSize: '11px', padding: '3px 8px' }}
-                  onClick={() => {
-                    setGcInitialBalance('2500');
-                    setGcRecipientName('Eid Celebrant');
-                    setGcNote('Eid Mubarak! May your celebration be filled with joy.');
-                    const d = new Date();
-                    d.setFullYear(d.getFullYear() + 1);
-                    setGcExpiresAt(d.toISOString().slice(0, 10));
-                    generateNewGiftCardCode();
-                  }}
-                >
-                  🌙 {t("Eid Mubarak Gift (BDT 2,500)")}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn--sm btn--outline"
-                  style={{ fontSize: '11px', padding: '3px 8px' }}
-                  onClick={() => {
-                    setGcInitialBalance('5000');
-                    setGcRecipientName('VIP Customer');
-                    setGcNote('Thank you for being our valued VIP partner.');
-                    const d = new Date();
-                    d.setFullYear(d.getFullYear() + 2);
-                    setGcExpiresAt(d.toISOString().slice(0, 10));
-                    generateNewGiftCardCode();
-                  }}
-                >
-                  👑 {t("VIP Executive Reward (BDT 5,000)")}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn--sm btn--outline"
-                  style={{ fontSize: '11px', padding: '3px 8px' }}
-                  onClick={() => {
-                    setGcInitialBalance('500');
-                    setGcRecipientName('New Member');
-                    setGcNote('Welcome to NineCube Digital!');
-                    const d = new Date();
-                    d.setMonth(d.getMonth() + 6);
-                    setGcExpiresAt(d.toISOString().slice(0, 10));
-                    generateNewGiftCardCode();
-                  }}
-                >
-                  🎉 {t("Welcome Bonus (BDT 500)")}
-                </button>
-              </div>
+              <span className="coupon-templates__hint">
+                {t("Only the card value is required — a fresh code is minted with every preset.")}
+              </span>
+            </div>
+            <div className="coupon-templates__rail">
+              {GIFT_CARD_TEMPLATES.map((template) => {
+                const active = activeGiftCardTemplateId === template.id;
+                return (
+                  <button
+                    key={template.id}
+                    type="button"
+                    className={`coupon-template ${active ? 'coupon-template--active' : ''}`}
+                    onClick={() => applyGiftCardTemplate(template)}
+                    aria-pressed={active}
+                  >
+                    <span className="coupon-template__top">
+                      <span className="coupon-template__icon">
+                        <Icon name={template.icon} width={16} height={16} />
+                      </span>
+                      <span className="coupon-template__code">{t("BDT")} {Number(template.balance).toLocaleString()}</span>
+                    </span>
+                    <span className="coupon-template__name">{t(template.name)}</span>
+                    <span className="coupon-template__rule">
+                      {template.recipientName} · {gcValidityLabel(template.validMonths)}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Issue Gift Card Form & Interactive Preview */}
-          <div className="card-glass" style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg, 12px)' }}>
-            <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-3)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              🎁 {t("Issue Digital Gift Card")}
-            </h2>
+          <form className="discount-builder-layout" onSubmit={submitGiftCard}>
+            {/* Left column: the four choices, read top to bottom */}
+            <div className="discount-rules-column">
+              <div className="discount-config-card" data-testid="giftcard-step-1">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className={`discount-card-step ${gcBalanceNumber > 0 ? 'discount-card-step--done' : ''}`}>
+                      {gcBalanceNumber > 0 ? <Icon name="check" width={12} height={12} /> : '1'}
+                    </span>
+                    {t("Card Value")}
+                  </h4>
+                  <span className="discount-card-flag">{formatMoneyWhole(gcBalanceNumber)}</span>
+                </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-4)', alignItems: 'start' }}>
-              {/* Left Column: Form */}
-              <form className="stack" onSubmit={submitGiftCard} style={{ gap: 'var(--space-3)' }}>
-                {/* Denomination Quick Presets */}
                 <div className="field">
-                  <label>{t("Gift Card Value (BDT)")}</label>
-                  <div className="row" style={{ gap: 'var(--space-2)', flexWrap: 'wrap', marginBottom: 'var(--space-2)' }}>
+                  <span className="field__label-row">{t("Quick Values:")}</span>
+                  <div className="discount-quick-pills">
                     {['500', '1000', '2000', '5000'].map((preset) => (
                       <button
                         key={preset}
                         type="button"
-                        className={`btn btn--sm ${gcInitialBalance === preset ? 'btn--primary' : ''}`}
+                        className={`discount-quick-pill ${gcInitialBalance === preset ? 'discount-quick-pill--active' : ''}`}
                         onClick={() => setGcInitialBalance(preset)}
                       >
                         {t("BDT")} {preset}
                       </button>
                     ))}
                   </div>
+                </div>
+
+                <div className="field">
+                  <label htmlFor="gc-value-input">
+                    {t("Gift Card Value (BDT)")} <span className="field__required">{t("Required")}</span>
+                  </label>
                   <input
+                    id="gc-value-input"
                     type="number"
                     min="1"
                     step="1"
@@ -1810,34 +1834,69 @@ export function AdminPage() {
                     value={gcInitialBalance}
                     onChange={(e) => setGcInitialBalance(e.target.value)}
                   />
+                  <span className="field__hint">{t("This is the balance loaded onto the certificate the moment it is issued.")}</span>
+                </div>
+              </div>
+
+              <div className="discount-config-card" data-testid="giftcard-step-2">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className={`discount-card-step ${gcCode.trim() ? 'discount-card-step--done' : ''}`}>
+                      {gcCode.trim() ? <Icon name="check" width={12} height={12} /> : '2'}
+                    </span>
+                    {t("Redemption Code")}
+                  </h4>
+                  <span className="discount-card-flag">
+                    {gcCode.trim() ? t("Your own code") : t("Generated on issue")}
+                  </span>
                 </div>
 
-                {/* Card Code with Auto-Generator */}
                 <div className="field">
-                  <div className="row-between">
+                  <div className="field__aside">
                     <label htmlFor="gc-code-input">{t("Gift Card Code (leave blank to auto-generate)")}</label>
-                    <button
-                      type="button"
-                      className="link-button"
-                      style={{ fontSize: 'var(--text-xs)' }}
-                      onClick={generateNewGiftCardCode}
-                    >
-                      ⚡ {t("Generate Random Code")}
+                    <button type="button" className="field__action" onClick={generateNewGiftCardCode}>
+                      <Icon name="shuffle" width={13} height={13} />
+                      {t("Generate Random Code")}
                     </button>
                   </div>
-                  <input
-                    id="gc-code-input"
-                    type="text"
-                    placeholder={t("e.g. GC-9K3D-88AF-2E10")}
-                    value={gcCode}
-                    onChange={(e) => setGcCode(e.target.value.toUpperCase())}
-                    style={{ textTransform: 'uppercase', fontFamily: 'monospace', letterSpacing: '1px' }}
-                  />
+                  <div className="field__with-action">
+                    <input
+                      id="gc-code-input"
+                      type="text"
+                      className="coupon-code-input"
+                      placeholder={t("e.g. GC-9K3D-88AF-2E10")}
+                      value={gcCode}
+                      onChange={(e) => setGcCode(e.target.value.toUpperCase())}
+                    />
+                    {gcCode && (
+                      <button
+                        type="button"
+                        className="icon-tile"
+                        onClick={() => copyToClipboard(gcCode)}
+                        title={t("Copy code")}
+                        aria-label={t("Copy code")}
+                      >
+                        <Icon name="copy" width={15} height={15} />
+                      </button>
+                    )}
+                  </div>
+                  <span className="field__hint">{t("Leave it blank and the API mints a unique GC-code for the card.")}</span>
+                </div>
+              </div>
+
+              <div className="discount-config-card" data-testid="giftcard-step-3">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className={`discount-card-step ${gcRecipientName.trim() ? 'discount-card-step--done' : ''}`}>
+                      {gcRecipientName.trim() ? <Icon name="check" width={12} height={12} /> : '3'}
+                    </span>
+                    {t("Recipient")}
+                  </h4>
+                  <span className="discount-card-flag">{t("Optional")}</span>
                 </div>
 
-                {/* Recipient Details */}
-                <div className="row" style={{ gap: 'var(--space-3)', flexWrap: 'wrap' }}>
-                  <div className="field" style={{ flex: '1 1 180px' }}>
+                <div className="discount-field-grid">
+                  <div className="field">
                     <label htmlFor="gc-rec-name">{t("Recipient Name (optional)")}</label>
                     <input
                       id="gc-rec-name"
@@ -1847,7 +1906,7 @@ export function AdminPage() {
                       onChange={(e) => setGcRecipientName(e.target.value)}
                     />
                   </div>
-                  <div className="field" style={{ flex: '1 1 180px' }}>
+                  <div className="field">
                     <label htmlFor="gc-rec-email">{t("Recipient Email (optional)")}</label>
                     <input
                       id="gc-rec-email"
@@ -1858,54 +1917,81 @@ export function AdminPage() {
                     />
                   </div>
                 </div>
+                <p className="discount-note">
+                  <Icon name="user" width={14} height={14} />
+                  <span>{t("The name is printed on the certificate. An anonymous card reads “Valued Customer”.")}</span>
+                </p>
+              </div>
 
-                {/* Greeting Message & Expiration */}
-                <div className="row" style={{ gap: 'var(--space-3)', flexWrap: 'wrap' }}>
-                  <div className="field" style={{ flex: '2 1 240px' }}>
-                    <label htmlFor="gc-note">{t("Personal Note / Greeting (optional)")}</label>
-                    <input
-                      id="gc-note"
-                      type="text"
-                      placeholder={t("Happy Birthday! Enjoy your shopping.")}
-                      value={gcNote}
-                      onChange={(e) => setGcNote(e.target.value)}
-                    />
-                  </div>
-                  <div className="field" style={{ flex: '1 1 180px' }}>
-                    <label htmlFor="gc-expiry">{t("Expiration Date (optional)")}</label>
-                    <input
-                      id="gc-expiry"
-                      type="date"
-                      value={gcExpiresAt}
-                      onChange={(e) => setGcExpiresAt(e.target.value)}
-                    />
+              <div className="discount-config-card" data-testid="giftcard-step-4">
+                <div className="discount-card-header">
+                  <h4 className="discount-card-title">
+                    <span className={`discount-card-step ${gcNote.trim() || gcExpiresAt ? 'discount-card-step--done' : ''}`}>
+                      {gcNote.trim() || gcExpiresAt ? <Icon name="check" width={12} height={12} /> : '4'}
+                    </span>
+                    {t("Greeting & Validity")}
+                  </h4>
+                  <span className="discount-card-flag">
+                    {gcExpiresAt ? `${t("Expires")} ${gcExpiresAt.slice(0, 10)}` : t("Never expires")}
+                  </span>
+                </div>
+
+                <div className="field">
+                  <label htmlFor="gc-note">{t("Personal Note / Greeting (optional)")}</label>
+                  <input
+                    id="gc-note"
+                    type="text"
+                    placeholder={t("Happy Birthday! Enjoy your shopping.")}
+                    value={gcNote}
+                    onChange={(e) => setGcNote(e.target.value)}
+                  />
+                </div>
+
+                <div className="field">
+                  <span className="field__label-row">{t("Valid for:")}</span>
+                  <div className="discount-quick-pills">
+                    {[[6, t("6 months")], [12, t("1 year")], [24, t("2 years")]].map(([months, label]) => (
+                      <button
+                        key={months as number}
+                        type="button"
+                        className={`discount-quick-pill ${gcExpiresAt === giftCardExpiryIn(months as number) ? 'discount-quick-pill--active' : ''}`}
+                        onClick={() => setGcExpiresAt(giftCardExpiryIn(months as number))}
+                      >
+                        {label as string}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      className={`discount-quick-pill ${!gcExpiresAt ? 'discount-quick-pill--active' : ''}`}
+                      onClick={() => setGcExpiresAt('')}
+                    >
+                      {t("No expiry")}
+                    </button>
                   </div>
                 </div>
 
-                <div style={{ paddingTop: 'var(--space-2)' }}>
-                  <button
-                    type="submit"
-                    className="btn btn--primary"
-                    disabled={createGiftCard.isPending}
-                    style={{ minWidth: '180px' }}
-                  >
-                    {createGiftCard.isPending ? (
-                      <>
-                        <span className="spinner" aria-hidden="true" /> {t("Issuing…")}
-                      </>
-                    ) : (
-                      `🎁 ${t("Issue Gift Card")}`
-                    )}
-                  </button>
+                <div className="field">
+                  <label htmlFor="gc-expiry">{t("Expiration Date (optional)")}</label>
+                  <input
+                    id="gc-expiry"
+                    type="date"
+                    value={gcExpiresAt}
+                    onChange={(e) => setGcExpiresAt(e.target.value)}
+                  />
+                  {gcDaysLeft !== null && (
+                    <p className="discount-note">
+                      <Icon name="clock" width={14} height={14} />
+                      <span>{gcDaysLeft > 0 ? `${gcDaysLeft} ${t("days left")}` : t("Expires in the past")}</span>
+                    </p>
+                  )}
                 </div>
-              </form>
+              </div>
+            </div>
 
-              {/* Right Column: Live Interactive Card Preview */}
-              <div className="stack" style={{ gap: 'var(--space-2)' }}>
-                <span style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {t("Digital Card Live Preview")}
-                </span>
-
+            {/* Right column: the certificate as the recipient will meet it */}
+            <div className="voucher-ticket-container">
+              <div className="giftcard-preview">
+                <span className="giftcard-preview__label">{t("Digital Card Live Preview")}</span>
                 <div
                   className="gift-card-cert"
                   style={{
@@ -1919,7 +2005,7 @@ export function AdminPage() {
                   <div className="row-between" style={{ alignItems: 'flex-start' }}>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '20px' }}>🎲</span>
+                        <Icon name="box" width={20} height={20} style={{ color: '#f9e29d' }} />
                         <strong style={{ fontSize: '15px', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#fff' }}>
                           {t("NineCube Digital")}
                         </strong>
@@ -1968,8 +2054,74 @@ export function AdminPage() {
                   )}
                 </div>
               </div>
+
+              <div className="giftcard-summary">
+                <div className="voucher-ticket__rules-head">{t("Certificate Summary")}</div>
+
+                <div className="voucher-rule">
+                  <Icon name="wallet" width={14} height={14} />
+                  <div>
+                    <strong>{t("Balance")}: </strong>{formatMoneyWhole(gcBalanceNumber)}
+                  </div>
+                </div>
+
+                <div className="voucher-rule">
+                  <Icon name="ticket" width={14} height={14} />
+                  <div>
+                    <strong>{t("Code")}: </strong>
+                    {gcCode.trim() ? gcCode.trim() : t("Generated on issue")}
+                  </div>
+                </div>
+
+                <div className="voucher-rule">
+                  <Icon name="user" width={14} height={14} />
+                  <div>
+                    <strong>{t("Recipient")}: </strong>
+                    {gcRecipientName || t("Valued Customer")}
+                    {gcRecipientEmail ? ` · ${gcRecipientEmail}` : ''}
+                  </div>
+                </div>
+
+                <div className="voucher-rule">
+                  <Icon name="heart" width={14} height={14} />
+                  <div>
+                    <strong>{t("Greeting")}: </strong>{gcNote || t("No personal note")}
+                  </div>
+                </div>
+
+                <div className="voucher-rule">
+                  <Icon name="calendar" width={14} height={14} />
+                  <div>
+                    <strong>{t("Validity")}: </strong>
+                    {gcExpiresAt ? `${t("Expires")} ${gcExpiresAt.slice(0, 10)}` : t("Never")}
+                  </div>
+                </div>
+              </div>
+
+              <div className="voucher-action">
+                <button
+                  type="submit"
+                  className="btn btn--primary voucher-action__button"
+                  disabled={createGiftCard.isPending || gcBalanceNumber <= 0}
+                >
+                  {createGiftCard.isPending ? (
+                    <>
+                      <span className="spinner" aria-hidden="true" /> {t("Issuing…")}
+                    </>
+                  ) : (
+                    <>
+                      <Icon name="gift" width={16} height={16} /> {t("Issue Gift Card")}
+                    </>
+                  )}
+                </button>
+                <p className="voucher-action__hint">
+                  {gcBalanceNumber > 0
+                    ? t("Ready — this issues the card exactly as previewed.")
+                    : t("Add a card value to continue")}
+                </p>
+              </div>
             </div>
-          </div>
+          </form>
 
           {/* Gift Cards Management & Ledger Table */}
           {giftCardsQuery.isPending ? (
@@ -2100,7 +2252,7 @@ export function AdminPage() {
               </div>
 
               {/* Table */}
-              <div className="table-wrap">
+              <div className="table-scroll">
                 <table className="table" aria-label={t("Gift Cards")}>
                   <thead>
                     <tr>

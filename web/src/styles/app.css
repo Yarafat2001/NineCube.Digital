@@ -3264,6 +3264,32 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   color: var(--text-muted);
 }
 
+/* Gift card builder: the certificate plus its plain-language summary */
+.giftcard-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.giftcard-preview__label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.giftcard-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
 @media (max-width: 992px) {
   .discount-builder-layout { grid-template-columns: 1fr; }
   .voucher-ticket-container { position: static; }
