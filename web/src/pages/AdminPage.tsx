@@ -1659,6 +1659,32 @@ export function AdminPage() {
             <ErrorState error={couponsQuery.error} onRetry={() => couponsQuery.refetch()} />
           ) : (
             <div className="stack" style={{ gap: 'var(--space-3)' }}>
+              {/* Campaign Performance & Analytics KPI Ribbon */}
+              <div className="coupon-kpi-ribbon grid-tiles" aria-label={t("Coupon Performance Overview")}>
+                <div className="card-glass coupon-kpi-card">
+                  <span className="coupon-kpi-label">{t("Active Campaigns")}</span>
+                  <strong className="coupon-kpi-value">{(couponsQuery.data ?? []).filter((c) => c.isActive).length}</strong>
+                  <span className="coupon-kpi-sub muted">{(couponsQuery.data ?? []).length} {t("total coupons")}</span>
+                </div>
+                <div className="card-glass coupon-kpi-card">
+                  <span className="coupon-kpi-label">{t("Total Redemptions")}</span>
+                  <strong className="coupon-kpi-value">{(couponsQuery.data ?? []).reduce((sum, c) => sum + (c.usageCount || 0), 0)}</strong>
+                  <span className="coupon-kpi-sub muted">{t("orders discounted")}</span>
+                </div>
+                <div className="card-glass coupon-kpi-card">
+                  <span className="coupon-kpi-label">{t("Banner Promoted")}</span>
+                  <strong className="coupon-kpi-value">{(couponsQuery.data ?? []).filter((c) => c.isBannerPromoted).length}</strong>
+                  <span className="coupon-kpi-sub muted">{t("marquee featured")}</span>
+                </div>
+                <div className="card-glass coupon-kpi-card">
+                  <span className="coupon-kpi-label">{t("Pending Review")}</span>
+                  <strong className="coupon-kpi-value" style={{ color: (couponsQuery.data ?? []).filter((c) => c.approvalState === 'Pending').length > 0 ? 'var(--warn)' : 'inherit' }}>
+                    {(couponsQuery.data ?? []).filter((c) => c.approvalState === 'Pending').length}
+                  </strong>
+                  <span className="coupon-kpi-sub muted">{t("awaiting sign-off")}</span>
+                </div>
+              </div>
+
               {/* Everything an operator needs to steer the list stays pinned under the navbar. */}
               <div className="registry-bar">
               <div className="registry-bar__head">

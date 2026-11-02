@@ -6,6 +6,9 @@ import type { Brand, Product } from '../api/types';
 import { ProductImage } from '../components/ProductImage';
 import { Icon } from '../components/Icon';
 import { CompareTray } from '../components/CompareTray';
+import { QuickViewModal } from '../components/QuickViewModal';
+import { RecentlyViewed } from '../components/RecentlyViewed';
+import { StockAlertModal } from '../components/StockAlertModal';
 import { useToast } from '../components/ui';
 import { ApiError } from '../api/client';
 import { CategoryFilters, CategoryBreadcrumb, facetFromParams, flattenCategories, isBrandTag, parseTags, seriesLabel, seriesSlugsOf, writeParams, type ChangeFilters } from '../components/CategoryFilters';
@@ -40,7 +43,9 @@ function ProductCard({
   isWishlisted,
   onToggleWishlist,
   isComparing,
-  onToggleCompare
+  onToggleCompare,
+  onQuickView,
+  onNotifyStock
 }: {
   product: Product;
   threshold: number;
@@ -52,6 +57,8 @@ function ProductCard({
   onToggleWishlist?: () => void;
   isComparing?: boolean;
   onToggleCompare?: () => void;
+  onQuickView?: (product: Product) => void;
+  onNotifyStock?: (product: Product) => void;
 }) {
   useLanguage();
   const [quantity, setQuantity] = useState(1);
@@ -104,6 +111,21 @@ function ProductCard({
             title={t(isWishlisted ? "Saved in wishlist" : "Save to wishlist")}
           >
             <Icon name="heart" width={14} height={14} />
+          </button>
+        ) : null}
+        {onQuickView ? (
+          <button
+            type="button"
+            className="product-card__quick-view-btn"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onQuickView(product);
+            }}
+            aria-label={`${t("Quick view")} ${displayName}`}
+            title={t("Quick view")}
+          >
+            <Icon name="eye" width={14} height={14} />
           </button>
         ) : null}
       </div>
@@ -176,6 +198,16 @@ function ProductCard({
       {outOfStock ? (
         <div className="product-card__out-of-stock-note">
           <p className="muted">{t("Not currently orderable.")}</p>
+          {onNotifyStock ? (
+            <button
+              type="button"
+              className="link-button product-card__notify-btn"
+              onClick={() => onNotifyStock(product)}
+              style={{ fontSize: 'var(--text-xs)', marginTop: '4px' }}
+            >
+              🔔 {t("Notify Me")}
+            </button>
+          ) : null}
         </div>
       ) : canOrder ? (
         <div className="row-between product-card__actions">
@@ -214,6 +246,10 @@ export function ProductsPage() {
   const toggleWishlist = useToggleWishlist();
   const wishlistIds = useMemo(() => new Set((wishlistQuery.data ?? []).map((w) => w.productId)), [wishlistQuery.data]);
   const [compareItems, setCompareItems] = useState<Product[]>([]);
+
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+  const [stockAlertProduct, setStockAlertProduct] = useState<Product | null>(null);
 
   const handleToggleCompare = (p: Product) => {
     setCompareItems((prev) => {
@@ -453,6 +489,8 @@ export function ProductsPage() {
                     onToggleWishlist={canOrder ? () => toggleWishlist.mutate(product.id) : undefined}
                     isComparing={compareItems.some((x) => x.id === product.id)}
                     onToggleCompare={canOrder ? () => handleToggleCompare(product) : undefined}
+                    onQuickView={setQuickViewProduct}
+                    onNotifyStock={setStockAlertProduct}
                   />
                 ))}
               </div>
@@ -477,6 +515,30 @@ export function ProductsPage() {
             </section>
         </aside>}
       </div>
+      <RecentlyViewed style={{ margin: 'var(--space-6) 0 0' }} />
+
+      {quickViewProduct ? (
+        <QuickViewModal
+          product={quickViewProduct}
+          threshold={threshold}
+          onClose={() => setQuickViewProduct(null)}
+          onAdded={(item, quantity) => {
+            cart.add(item, quantity);
+            toast.push('success', `${t("Added")} ${item.name} ${t("to your cart.")}`);
+          }}
+        />
+      ) : null}
+
+      {stockAlertProduct ? (
+        <StockAlertModal
+          product={stockAlertProduct}
+          onClose={() => setStockAlertProduct(null)}
+          onSubscribed={() => {
+            toast.push('success', t("Restock alert registered."));
+          }}
+        />
+      ) : null}
+
       {canOrder ? (
         <CompareTray
           items={compareItems}

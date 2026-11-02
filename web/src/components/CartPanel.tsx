@@ -81,6 +81,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CashOnDelivery');
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+  const [deliveryInstructions, setDeliveryInstructions] = useState('');
 
   useEffect(() => {
     if (profile?.addresses && profile.addresses.length > 0 && selectedAddressId === null) {
@@ -442,6 +443,22 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                 {t("No address saved.")} <Link to="/account/profile" className="link-button">{t("Add delivery address")}</Link>
               </p>
             )}
+          </div>
+
+          {/* Customer Delivery Instructions / Order Notes */}
+          <div className="cart-field">
+            <label htmlFor="cart-delivery-instructions" className="cart-field__label">
+              <span>{t("Delivery instructions / Order notes (optional)")}</span>
+            </label>
+            <textarea
+              id="cart-delivery-instructions"
+              className="cart-input cart-input--notes"
+              rows={2}
+              placeholder={t("e.g. Leave with security guard, call before delivery…")}
+              value={deliveryInstructions}
+              onChange={(e) => setDeliveryInstructions(e.target.value)}
+              style={{ width: '100%', resize: 'vertical' }}
+            />
           </div>
 
           {/* Coupon Code & Auto-Applied Promotions */}

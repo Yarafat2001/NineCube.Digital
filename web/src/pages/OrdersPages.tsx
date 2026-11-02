@@ -40,14 +40,25 @@ export function OrderTimeline({ order }: { order: Order }) {
 
   const reachedIndex = happyPath.indexOf(order.status);
 
+  const createdDate = order.createdAt ? new Date(order.createdAt) : new Date();
+  const estDeliveryMin = new Date(createdDate.getTime() + 2 * 24 * 60 * 60 * 1000);
+  const estDeliveryMax = new Date(createdDate.getTime() + 4 * 24 * 60 * 60 * 1000);
+  const estDateStr = `${estDeliveryMin.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} – ${estDeliveryMax.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
+
   return (
-    <ul className="timeline" aria-label={t("Order status timeline")}>
-      {happyPath.map((status, index) => (
-        <li key={status} data-done={index <= reachedIndex} aria-current={index === reachedIndex ? 'step' : undefined}>
-          <span aria-hidden="true">{t(orderStatusMeta[status].glyph)}</span> {t(status)}
-        </li>
-      ))}
-    </ul>
+    <div className="order-timeline-wrap">
+      <ul className="timeline" aria-label={t("Order status timeline")}>
+        {happyPath.map((status, index) => (
+          <li key={status} data-done={index <= reachedIndex} aria-current={index === reachedIndex ? 'step' : undefined}>
+            <span aria-hidden="true">{t(orderStatusMeta[status].glyph)}</span> {t(status)}
+          </li>
+        ))}
+      </ul>
+      <div className="order-delivery-est card-glass" aria-label={t("Estimated Delivery")}>
+        <span aria-hidden="true">🚚</span>
+        <span>{t("Estimated Delivery:")} <strong>{estDateStr}</strong> ({t("Standard Fulfillment")})</span>
+      </div>
+    </div>
   );
 }
 

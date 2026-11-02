@@ -5330,3 +5330,336 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   border-color: var(--accent);
   font-weight: 600;
 }
+
+
+/* ==========================================================================
+   Recently Viewed Products Strip
+   ========================================================================== */
+.recently-viewed {
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-glass);
+}
+.recently-viewed__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+.recently-viewed__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.recently-viewed__icon {
+  color: var(--brand);
+}
+.recently-viewed__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text);
+}
+.recently-viewed__clear-btn {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+.recently-viewed__clear-btn:hover {
+  color: var(--danger);
+}
+.recently-viewed__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+.recently-viewed__card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.recently-viewed__card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+.recently-viewed__thumb-link {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface);
+  margin-bottom: var(--space-2);
+}
+.recently-viewed__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.recently-viewed__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+.recently-viewed__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.recently-viewed__brand {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.recently-viewed__name {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 2px 0 6px;
+  line-height: 1.35;
+}
+.recently-viewed__name:hover {
+  color: var(--brand);
+}
+.recently-viewed__price-row {
+  margin-top: auto;
+  margin-bottom: var(--space-2);
+}
+.recently-viewed__price {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.recently-viewed__add-btn {
+  width: 100%;
+  font-size: var(--text-xs);
+}
+.recently-viewed__sold-out {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* ==========================================================================
+   Quick-View Modal & Trigger
+   ========================================================================== */
+.product-card__quick-view-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
+}
+.product-card:hover .product-card__quick-view-btn,
+.product-card:focus-within .product-card__quick-view-btn {
+  opacity: 1;
+}
+.product-card__quick-view-btn:hover {
+  transform: scale(1.08);
+  background: var(--surface);
+  color: var(--brand);
+}
+
+.quickview-modal {
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  margin: auto;
+}
+.quickview-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+.quickview-modal__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+.quickview-modal__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+@media (max-width: 640px) {
+  .quickview-modal__grid {
+    grid-template-columns: 1fr;
+  }
+}
+.quickview-modal__media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+}
+.quickview-modal__title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+}
+.quickview-modal__price-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: var(--space-2) 0;
+}
+.quickview-modal__price {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+.quickview-modal__compare-price {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.quickview-modal__desc {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Stock Alert Modal
+   ========================================================================== */
+.stock-alert-modal {
+  width: min(460px, calc(100vw - 32px));
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  margin: auto;
+}
+.stock-alert-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+.stock-alert-modal__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.stock-alert-modal__glyph {
+  font-size: var(--text-lg);
+}
+.stock-alert-modal__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text);
+}
+.stock-alert-modal__desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+}
+
+/* ==========================================================================
+   Order Delivery Milestone Estimator
+   ========================================================================== */
+.order-timeline-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.order-delivery-est {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-sunken);
+  font-size: var(--text-xs);
+  color: var(--text);
+  width: fit-content;
+}
+
+/* ==========================================================================
+   Admin Coupon Performance & Analytics KPI Ribbon
+   ========================================================================== */
+.coupon-kpi-ribbon {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.coupon-kpi-card {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.coupon-kpi-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.coupon-kpi-value {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+.coupon-kpi-sub {
+  font-size: var(--text-xs);
+}

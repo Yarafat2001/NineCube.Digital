@@ -39,6 +39,7 @@ const paths = {
   cake: 'M4 21h16M5 21v-7h14v7M5 15c1.6 0 1.6 1.4 3.2 1.4S9.8 15 11.4 15s1.6 1.4 3.2 1.4S16.2 15 17.8 15H19M12 10V7M8 10V7M16 10V7M12 4.5V3',
   moon: 'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z',
   crown: 'M3 19h18M4.5 19 3 8.5l5.5 4L12 5l3.5 7.5L21 8.5 19.5 19',
+  share: 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8m-4-6-4-4-4 4m4-4v13',
 };
 export type IconName = keyof typeof paths;
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {

@@ -1,9 +1,13 @@
 import { t, useLanguage } from '../i18n/language';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useLowStockThreshold, useProduct, useProductReviews, useAddReview, useWishlist, useToggleWishlist } from '../api/hooks';
 import { formatDateTime } from '../lib/helpers';
-import { EmptyState, ErrorState, LoadingBlock, QuantityStepper, StockBadge } from '../components/ui';
+import { EmptyState, ErrorState, LoadingBlock, QuantityStepper, StockBadge, useToast } from '../components/ui';
+import { RecentlyViewed } from '../components/RecentlyViewed';
+import { StockAlertModal, isStockAlertSubscribed } from '../components/StockAlertModal';
+import { Icon } from '../components/Icon';
+import { recordRecentView } from '../lib/recentViews';
 import { ProductViewer } from '../components/ProductViewer';
 import { cardPresentation } from '../lib/catalog';
 import { formatMoney } from '../lib/helpers';
@@ -20,6 +24,9 @@ export function ProductDetailPage() {
   const productId = Number(id);
   const { hasRole } = useAuth();
   const cart = useCart();
+  const toast = useToast();
+  const [showStockAlert, setShowStockAlert] = useState(false);
+  const [isAlertSubscribed, setIsAlertSubscribed] = useState(() => isStockAlertSubscribed(productId));
   const [quantity, setQuantity] = useState(1);
   const [copied, setCopied] = useState(false);
   const [added, setAdded] = useState(false);
@@ -40,6 +47,34 @@ export function ProductDetailPage() {
   const threshold = thresholdQuery.data?.lowStockThreshold ?? 5;
   const ratingSummary = reviewsQuery.data;
   const isInWishlist = wishlistQuery.data?.some(item => item.productId === productId);
+
+  useEffect(() => {
+    if (product) {
+      recordRecentView(product);
+    }
+  }, [product]);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: product?.name ?? 'NineCube.Digital',
+          text: product?.name,
+          url
+        });
+        return;
+      } catch {
+        // Fallback to clipboard
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.push('success', t("Product link copied to clipboard!"));
+    } catch {
+      toast.push('info', url);
+    }
+  };
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,6 +169,18 @@ export function ProductDetailPage() {
                 <span>{t(isInWishlist ? 'Saved' : 'Wishlist')}</span>
               </button>
             ) : null}
+
+            <button
+              type="button"
+              className="btn btn--sm btn--ghost"
+              onClick={handleShare}
+              aria-label={t("Share product")}
+              title={t("Share or copy link")}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+            >
+              <Icon name="share" width={14} height={14} />
+              <span>{t("Share")}</span>
+            </button>
           </div>
 
           <div className="product-detail__price-row" style={{ display: 'flex', alignItems: 'baseline', gap: '10px', flexWrap: 'wrap' }}>
@@ -166,7 +213,19 @@ export function ProductDetailPage() {
           ) : null}
 
           {outOfStock ? (
-            <p className="muted">{t("Not currently orderable.")}</p>
+            <div className="product-detail__out-of-stock-box stack" style={{ gap: '8px' }}>
+              <p className="muted" style={{ margin: 0 }}>{t("Not currently orderable.")}</p>
+              <button
+                type="button"
+                className="btn btn--sm btn--outline"
+                onClick={() => setShowStockAlert(true)}
+                aria-label={t("Notify me when available")}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <span aria-hidden="true">🔔</span>
+                <span>{isAlertSubscribed ? t("✓ Subscribed to restock alerts") : t("Notify Me When in Stock")}</span>
+              </button>
+            </div>
           ) : hasRole('Customer') ? (
             <div className="product-detail__purchase">
               <QuantityStepper value={quantity} max={product.stockQuantity} onChange={setQuantity} label={t(fullName)} />
@@ -260,6 +319,16 @@ export function ProductDetailPage() {
           </form>
         ) : null}
       </section>
+
+      {showStockAlert && product ? (
+        <StockAlertModal
+          product={product}
+          onClose={() => setShowStockAlert(false)}
+          onSubscribed={() => setIsAlertSubscribed(true)}
+        />
+      ) : null}
+
+      <RecentlyViewed currentProductId={productId} />
     </div>
   );
 }
