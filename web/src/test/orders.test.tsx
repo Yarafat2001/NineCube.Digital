@@ -48,6 +48,21 @@ describe('My orders', () => {
     expect(await screen.findByTestId('empty-state')).toHaveTextContent(/no orders yet/i);
   });
 
+  it('allows 1-click reorder to re-add past items to the cart', async () => {
+    signInCustomer();
+    const user = userEvent.setup();
+    renderApp('/orders');
+
+    const reorderBtn = await screen.findByRole('button', { name: /buy again/i });
+    expect(reorderBtn).toBeInTheDocument();
+    await user.click(reorderBtn);
+
+    // Cart sheet opens automatically with the items
+    const cartDialog = await screen.findByRole('dialog', { name: /your cart/i });
+    expect(cartDialog).toBeInTheDocument();
+    expect(within(cartDialog).getByText('Espresso Machine Pro')).toBeInTheDocument();
+  });
+
   it('shows an error state when the order list fails', async () => {
     signInCustomer();
     server.use(

@@ -4602,14 +4602,16 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   .registry-bar { position: static; top: auto; }
 }
 
-/* ------------------------------------------------------------- spotlight search palette */
+/* ------------------------------------------------------------- spotlight search palette
+   Ctrl+K opens the app's own modal plate with a house input inside it, not a second design:
+   one surface, one edge token, one backdrop treatment, one option vocabulary for the chips. */
 .spotlight-backdrop {
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(20, 17, 19, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -4634,12 +4636,12 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 }
 
 .spotlight-dialog {
-  width: min(640px, 100%);
+  width: min(680px, 100%);
   max-height: calc(86vh - 50px);
   background: var(--surface);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--edge-shell);
   border-radius: var(--radius-lg);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.38), 0 0 0 1px var(--surface-highlight);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -4647,30 +4649,55 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 }
 
 .spotlight-header {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--row-line);
+}
+
+/* The search well is the house input treatment (app.css `input`): same sunken fill,
+   same 3.4:1 edge, so the dialog's field is indistinguishable from the catalogue's. */
+.spotlight-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 46px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.spotlight-field:focus-within {
+  border-color: var(--accent);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .spotlight-search-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
+.spotlight-field:focus-within .spotlight-search-icon {
+  color: var(--accent-text);
+}
+
 .spotlight-input {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
   border: 0;
   background: transparent;
   color: var(--text);
-  font-size: var(--text-base, 15px);
+  font-size: var(--text-base);
   font-weight: 500;
   outline: none;
   padding: 0;
@@ -4678,29 +4705,46 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 
 .spotlight-input::placeholder {
   color: var(--text-muted);
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
+/* The well carries the focus ring, so the bare input inside it must not draw a second one. */
+.spotlight-field .spotlight-input:focus-visible {
+  outline: none;
+}
+
+/* Both controls clear the 30px floor and share the option face. The clear sits inside the
+   well while text is present, the close outside it, so the two ✕ glyphs are never twins. */
 .spotlight-clear-btn,
 .spotlight-close-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   padding: 0;
-  border: 1px solid var(--border);
-  background: var(--surface-sunken);
+  border: 1px solid var(--opt-edge);
+  background: var(--opt-fill);
   color: var(--text-muted);
   border-radius: 50%;
   cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
   flex-shrink: 0;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.spotlight-close-btn {
+  width: 34px;
+  height: 34px;
+}
+
+.spotlight-clear-btn {
+  border-color: transparent;
+  background: transparent;
 }
 
 .spotlight-clear-btn:hover,
 .spotlight-close-btn:hover {
-  background: var(--surface-highlight);
+  background: var(--opt-fill-hover);
   color: var(--text);
   border-color: var(--border-strong);
 }
@@ -4710,16 +4754,13 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 18px;
-  background: var(--surface-sunken);
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: thin;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--row-line);
 }
 
 .spotlight-categories-label {
-  font-size: var(--text-xs);
-  font-weight: 600;
+  font-size: var(--text-label);
+  font-weight: 650;
   color: var(--text-muted);
   white-space: nowrap;
   flex-shrink: 0;
@@ -4729,20 +4770,21 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .spotlight-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  font-size: var(--text-xs);
-  font-weight: 500;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: var(--text-label);
+  font-weight: 650;
+  color: var(--opt-ink);
+  background: var(--opt-fill);
+  border: 1px solid var(--opt-edge);
   border-radius: var(--radius-pill);
   cursor: pointer;
   white-space: nowrap;
@@ -4750,14 +4792,14 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 }
 
 .spotlight-chip:hover {
-  background: var(--surface-highlight);
-  border-color: var(--accent);
+  background: var(--opt-fill-hover);
+  border-color: var(--brand);
   color: var(--accent-text);
   transform: translateY(-1px);
 }
 
 .spotlight-chip-glyph {
-  color: var(--accent);
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -4768,13 +4810,23 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   max-height: calc(65vh - 100px);
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 12px 18px;
+  padding: var(--space-3) var(--space-4) var(--space-4);
 }
 
-.spotlight-hint-box,
-.spotlight-empty-box {
+.spotlight-note {
+  margin: 0;
+  padding: var(--space-5) var(--space-3);
   text-align: center;
-  padding: 24px 12px;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.spotlight-empty__title {
+  margin: 0 0 4px;
+  text-align: center;
+  font-size: var(--text-sm);
+  font-weight: 650;
+  color: var(--text);
 }
 
 .spotlight-results-header {
@@ -4783,10 +4835,10 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   align-items: center;
   padding-bottom: 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-  font-size: var(--text-xs);
+  border-bottom: 1px solid var(--row-line);
+  font-size: var(--text-label);
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: 650;
 }
 
 .spotlight-items {
@@ -4798,34 +4850,37 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 .spotlight-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   padding: 10px 14px;
-  border-radius: var(--radius-md, 8px);
-  background: var(--surface);
-  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--opt-fill);
+  border: 1px solid var(--opt-edge);
   cursor: pointer;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.spotlight-item:hover,
+.spotlight-item:hover {
+  background: var(--opt-fill-hover);
+  border-color: var(--brand);
+  transform: translateY(-1px);
+}
+
 .spotlight-item:focus-visible {
-  background: var(--surface-highlight);
-  border-color: var(--border-strong);
-  outline: none;
-  transform: translateX(2px);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .spotlight-item__media {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--surface-sunken);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--edge-well);
   color: var(--text-muted);
 }
 
@@ -4841,7 +4896,7 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 }
 
 .spotlight-item__name {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
@@ -4850,11 +4905,13 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
 }
 
 .spotlight-item__brand {
   color: var(--accent-text);
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .spotlight-item__meta {
@@ -4863,21 +4920,16 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   gap: 8px;
   font-size: var(--text-xs);
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 4px;
+  min-width: 0;
 }
 
-.spotlight-in-stock {
-  color: var(--ok-text);
-  font-weight: 500;
-}
-
-.spotlight-out-of-stock {
-  color: var(--bad-text);
-  font-weight: 500;
+.spotlight-item__meta .badge {
+  font-size: var(--text-label);
 }
 
 .spotlight-item__price {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: 700;
   color: var(--text);
   font-variant-numeric: tabular-nums;
@@ -4889,9 +4941,9 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 18px;
-  background: var(--surface-sunken);
-  border-top: 1px solid var(--border);
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--row-line);
 }
 
 .spotlight-footer-kbd {
@@ -4899,19 +4951,382 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   align-items: center;
   gap: 8px;
   font-size: var(--text-xs);
+  color: var(--text-muted);
 }
 
 .spotlight-kbd {
-  padding: 2px 7px;
-  font-size: 11px;
+  padding: 3px 8px;
+  font-size: var(--text-micro);
   font-family: var(--font-mono, monospace);
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  color: var(--opt-ink);
+  background: var(--opt-fill);
+  border: 1px solid var(--opt-edge);
+  border-radius: var(--radius-sm);
 }
 
 .spotlight-view-all {
+  font-weight: 600;
+}
+
+/* ------------------------------------------- catalogue page search and its matches
+   The same two objects as the spotlight: a house input and a solid plate that floats
+   above the navbar (--z-menu) instead of colliding with it at an equal 50. */
+.catalogue-search {
+  position: relative;
+  min-width: min(320px, 100%);
+}
+
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-menu);
+  margin-top: 6px;
+  max-height: 360px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--surface);
+  border: 1px solid var(--edge-shell);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.search-suggestions__count {
+  margin: 0;
+  padding: 8px 12px;
+  font-size: var(--text-label);
+  font-weight: 650;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--row-line);
+}
+
+.search-suggestions__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--row-line);
+  color: var(--text);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+}
+
+.search-suggestions__row:last-child {
+  border-bottom: 0;
+}
+
+.search-suggestions__row:hover {
+  background: var(--opt-fill-hover);
+}
+
+.search-suggestions__row:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.search-suggestions__thumb {
+  display: block;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  object-fit: contain;
+  background: var(--surface-sunken);
+  border: 1px solid var(--edge-well);
+  border-radius: var(--radius-sm);
+}
+
+.search-suggestions__info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A catalogue name runs past 40 characters; on one line inside a 320px field it was cut
+   mid-word, so the match takes two lines and the price keeps its own column. */
+.search-suggestions__name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.search-suggestions__sku {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--text-label);
+  color: var(--text-muted);
+}
+
+.search-suggestions__price {
+  flex-shrink: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Floating Compare Dock */
+.compare-dock {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-nav);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  padding: 6px 14px;
+  animation: compare-slide-up 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes compare-slide-up {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.compare-dock__inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.compare-dock__thumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compare-dock__thumb {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compare-dock__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.compare-dock__thumb-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--on-accent);
+  border: 0;
+  font-size: 8px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.compare-dock__thumb:hover .compare-dock__thumb-remove {
+  opacity: 1;
+}
+
+.compare-dock__info {
+  font-size: var(--text-xs);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.compare-dock__open-btn {
+  font-weight: 600;
+}
+
+/* Compare Modal */
+.compare-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  animation: spotlight-fade-in 150ms ease-out;
+}
+
+.compare-modal {
+  width: min(1000px, 100%);
+  max-height: 85vh;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.compare-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.compare-modal__title {
+  margin: 0 0 4px;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.compare-modal__body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 16px 20px;
+}
+
+.compare-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.compare-cell {
+  background: var(--surface);
+  padding: 12px 14px;
+  font-size: var(--text-xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.compare-cell--label {
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+}
+
+.compare-cell--product {
+  text-align: center;
+  align-items: center;
+}
+
+.compare-product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.compare-product-remove {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.compare-product-media {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  background: var(--surface-sunken);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compare-product-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.compare-product-name {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  max-height: 2.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compare-product-cart-btn {
+  width: 100%;
+}
+
+.compare-price {
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.compare-old-price {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-decoration: line-through;
+  margin-left: 6px;
+}
+
+.product-card__compare-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.product-card__compare-btn:hover {
+  background: var(--surface-highlight);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.product-card__compare-btn--active {
+  background: var(--selected-bg);
+  color: var(--accent-text);
+  border-color: var(--accent);
   font-weight: 600;
 }

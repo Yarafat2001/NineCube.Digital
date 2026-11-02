@@ -111,17 +111,22 @@ function catalogSearchParams(params: Partial<ProductFilters>): URLSearchParams {
   return search;
 }
 
-export function useProducts(params: ProductFilters) {
+export function useProducts(params: ProductFilters, options?: { enabled?: boolean; live?: boolean }) {
   const request = useAuthedRequest();
   const search = catalogSearchParams(params);
   search.set('page', String(params.page));
   search.set('pageSize', String(params.pageSize));
+  const enabled = options?.enabled ?? true;
 
   return useQuery({
     queryKey: queryKeys.products(params),
     queryFn: () => request<PagedResult<Product>>(`/api/products?${search.toString()}`),
+    enabled,
     placeholderData: (previous) => previous,
-    refetchInterval: 15_000
+    // The stock poll is for pages that display quantities. A search box that is closed has no
+    // quantity to keep fresh, and measured on the deployed site an always-on caller fired
+    // /api/products 14 times in 229s while sitting in the navbar of the login page.
+    refetchInterval: options?.live === false || !enabled ? false : 15_000
   });
 }
 
@@ -210,11 +215,12 @@ export function useProduct(id: number | null) {
   });
 }
 
-export function useLowStockThreshold() {
+export function useLowStockThreshold(enabled = true) {
   const request = useAuthedRequest();
   return useQuery({
     queryKey: queryKeys.lowStockThreshold,
-    queryFn: () => request<Settings>('/api/products/low-stock-threshold')
+    queryFn: () => request<Settings>('/api/products/low-stock-threshold'),
+    enabled
   });
 }
 
@@ -463,9 +469,9 @@ export function useUpdateDiscountPolicy() {
   });
 }
 
-export function useCategories(includeInactive = false) {
+export function useCategories(includeInactive = false, enabled = true) {
   const request = useAuthedRequest();
-  return useQuery({ queryKey: ['categories', includeInactive], queryFn: () => request<Category[]>(`/api/categories?includeInactive=${includeInactive}`), refetchInterval: 15_000 });
+  return useQuery({ queryKey: ['categories', includeInactive], queryFn: () => request<Category[]>(`/api/categories?includeInactive=${includeInactive}`), enabled, refetchInterval: enabled ? 15_000 : false });
 }
 export function useTags() {
   const request = useAuthedRequest();

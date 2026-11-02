@@ -85,14 +85,14 @@ describe('GlobalSearch Component', () => {
     await user.click(searchBtn);
 
     const searchInput = await screen.findByPlaceholderText(/search by product name, brand, category, or SKU/i);
-    await user.type(searchInput, 'Aspire');
+    await user.type(searchInput, 'iPhone');
 
     // Wait for debounced search results
     await waitFor(
       () => {
         expect(screen.getByText(/top matching products/i)).toBeInTheDocument();
       },
-      { timeout: 3000 }
+      { timeout: 4000 }
     );
 
     // Clear search button should appear

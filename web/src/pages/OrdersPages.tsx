@@ -14,6 +14,7 @@ import {
 } from '../components/ui';
 import { formatDateTime, formatMoney, orderStatusMeta } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
+import { useCart } from '../state/CartContext';
 
 const STATUS_FILTERS: (OrderStatus | '')[] = ['', 'Pending', 'Confirmed', 'Shipped', 'Rejected', 'Cancelled'];
 
@@ -64,6 +65,34 @@ export function canCustomerCancel(order: Order, role: string | undefined, custom
 export function MyOrdersPage() {
   useLanguage();
   const navigate = useNavigate();
+  const cart = useCart();
+  const toast = useToast();
+
+  const handleReorder = (order: Order) => {
+    let count = 0;
+    for (const item of order.items) {
+      cart.add(
+        {
+          id: item.productId,
+          name: item.name,
+          sku: item.sku,
+          price: item.unitPrice,
+          currency: order.currency ?? 'BDT',
+          stockQuantity: 999,
+          isActive: true,
+          description: '',
+          categories: [],
+          tags: [],
+          images: [],
+          imageUrl: null,
+        } as any,
+        item.quantity
+      );
+      count += item.quantity;
+    }
+    toast.push('success', `${t("Added items from Order #")}${order.id} ${t("to your cart.")}`);
+    document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet'));
+  };
   const [status, setStatus] = useState<OrderStatus | ''>('');
   const [page, setPage] = useState(1);
 
@@ -153,6 +182,13 @@ export function MyOrdersPage() {
                           onClick={() => navigate(`/orders/${order.id}`)}
                         >
                           {t("View")}</button>
+                        <button
+                          type="button"
+                          className="btn btn--sm btn--outline"
+                          onClick={() => handleReorder(order)}
+                          title={t("Add all items back to cart")}
+                        >
+                          🔄 {t("Buy again")}</button>
                         <Link className="link-button" to={`/orders/${order.id}/invoice`}>
                           {t("Invoice")}</Link>
                       </div>
@@ -181,7 +217,34 @@ export function OrderDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
+  const cart = useCart();
   const { user, hasRole } = useAuth();
+
+  const handleReorder = (o: Order) => {
+    let count = 0;
+    for (const item of o.items) {
+      cart.add(
+        {
+          id: item.productId,
+          name: item.name,
+          sku: item.sku,
+          price: item.unitPrice,
+          currency: o.currency ?? 'BDT',
+          stockQuantity: 999,
+          isActive: true,
+          description: '',
+          categories: [],
+          tags: [],
+          images: [],
+          imageUrl: null,
+        } as any,
+        item.quantity
+      );
+      count += item.quantity;
+    }
+    toast.push('success', `${t("Added items from Order #")}${o.id} ${t("to your cart.")}`);
+    document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet'));
+  };
   const orderId = Number(id);
   const orderQuery = useOrder(Number.isFinite(orderId) ? orderId : null);
   const action = useOrderAction();
@@ -341,8 +404,18 @@ export function OrderDetailPage() {
           ← {t("Back")}
         </button>
 
-        {cancellable ? (
-          <button type="button" className="btn btn--danger" onClick={cancel} disabled={action.isPending}>
+        <div className="row" style={{ gap: 'var(--space-2)' }}>
+          {hasRole('Customer') ? (
+            <button
+              type="button"
+              className="btn btn--primary"
+              onClick={() => handleReorder(order)}
+            >
+              🔄 {t("Buy again")}
+            </button>
+          ) : null}
+          {cancellable ? (
+            <button type="button" className="btn btn--danger" onClick={cancel} disabled={action.isPending}>
             {t(action.isPending ? 'Cancelling…' : 'Cancel order')}
           </button>
         ) : (hasRole('Customer') || order.status === 'Shipped') ? (
@@ -352,6 +425,7 @@ export function OrderDetailPage() {
               : 'This order cannot be cancelled by you.')}
           </span>
         ) : null}
+        </div>
       </div>
     </div>
   );

@@ -3,13 +3,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ApiError, apiRequest } from '../api/client';
-import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useEvaluateCartPromotions, useAvailableCoupons, useProcessPayment, useProfile } from '../api/hooks';
+import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useEvaluateCartPromotions, useAvailableCoupons, useProcessPayment, useProfile, useProducts } from '../api/hooks';
 import type { Order, Product, ShortItem, CouponValidationResult, ValidateGiftCardResult, PaymentMethod } from '../api/types';
 import { Link } from 'react-router-dom';
 import { createIdempotencyKey, formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
 import { useToast } from './ui';
+import { Icon } from './Icon';
 
 export interface CartPanelProps {
   onPlaced: (order: Order) => void;
@@ -44,6 +45,10 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   const validateGiftCard = useValidateGiftCard();
   const evaluatePromotions = useEvaluateCartPromotions();
   const processPayment = useProcessPayment();
+  const productsQuery = useProducts({ q: '', page: 1, pageSize: 6 });
+  const upsellProducts = (productsQuery.data?.items ?? [])
+    .filter((p) => p.isActive && p.stockQuantity > 0 && !cart.lines.some((l) => l.productId === p.id))
+    .slice(0, 3);
 
   const [autoPromo, setAutoPromo] = useState<CouponValidationResult | null>(null);
   const [showCouponsDrawer, setShowCouponsDrawer] = useState<boolean>(false);
@@ -371,6 +376,42 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
           </div>
           <div className="cart-ship__track">
             <div className="cart-ship__bar" style={{ width: `${freeShippingPercent}%` }} />
+          </div>
+        </div>
+      )}
+
+      {cart.lines.length > 0 && upsellProducts.length > 0 && (
+        <div className="cart-upsell">
+          <div className="cart-upsell__title">
+            <span>✨ {t("Frequently added together")}</span>
+          </div>
+          <div className="cart-upsell__items">
+            {upsellProducts.map((p) => (
+              <div key={p.id} className="cart-upsell__item">
+                <div className="cart-upsell__media">
+                  {p.imageUrl ? (
+                    <img src={p.imageUrl} alt="" />
+                  ) : (
+                    <Icon name="tag" width={16} height={16} />
+                  )}
+                </div>
+                <div className="cart-upsell__info">
+                  <div className="cart-upsell__name">{p.name}</div>
+                  <div className="cart-upsell__price">{formatMoney(p.price, p.currency)}</div>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn--sm btn--outline cart-upsell__btn"
+                  onClick={() => {
+                    cart.add(p, 1);
+                    toast.push('success', `${t("Added")} ${p.name} ${t("to your cart.")}`);
+                  }}
+                  aria-label={`${t("Add")} ${p.name}`}
+                >
+                  + {t("Add")}
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}

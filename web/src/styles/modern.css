@@ -236,6 +236,13 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
   -webkit-backdrop-filter: blur(24px) saturate(145%);
   box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-lg);
 }
+/* Past 8px of scroll the page starts passing behind the pill. The tint is the approved
+   material, so it stays exactly as drawn - it just gets the card colour under it, which
+   covers the row instead of smearing a half-clipped line of text through the blur. */
+.navbar--compact {
+  background-color: var(--surface);
+  background-image: var(--navbar-glass);
+}
 :root .navbar :is(.navbar__link:not([aria-current='page']), .theme-control:not([aria-pressed='true']), .navbar__actions .nav-pop__trigger):is([aria-expanded='true'], :active),
 .nav-pop__portal .nav-pop__item:not(.nav-pop__item--danger):is([aria-current='page']) {
   background: var(--accent-gradient);

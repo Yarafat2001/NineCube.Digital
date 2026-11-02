@@ -1,9 +1,12 @@
 import { t, useLanguage } from '../i18n/language';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { useLowStockThreshold, useProducts, useCategories, useTags, useBrands } from '../api/hooks';
+import { useLowStockThreshold, useProducts, useCategories, useTags, useBrands, useWishlist, useToggleWishlist } from '../api/hooks';
 import type { Brand, Product } from '../api/types';
 import { ProductImage } from '../components/ProductImage';
+import { Icon } from '../components/Icon';
+import { CompareTray } from '../components/CompareTray';
+import { useToast } from '../components/ui';
 import { ApiError } from '../api/client';
 import { CategoryFilters, CategoryBreadcrumb, facetFromParams, flattenCategories, isBrandTag, parseTags, seriesLabel, seriesSlugsOf, writeParams, type ChangeFilters } from '../components/CategoryFilters';
 import { EmptyState, ErrorState, LiveRegion, LoadingBlock, Pager, QuantityStepper, StockBadge } from '../components/ui';
@@ -33,7 +36,11 @@ function ProductCard({
   onAdded,
   canEdit,
   canOrder,
-  queryString
+  queryString,
+  isWishlisted,
+  onToggleWishlist,
+  isComparing,
+  onToggleCompare
 }: {
   product: Product;
   threshold: number;
@@ -41,6 +48,10 @@ function ProductCard({
   canEdit: boolean;
   canOrder: boolean;
   queryString: string;
+  isWishlisted?: boolean;
+  onToggleWishlist?: () => void;
+  isComparing?: boolean;
+  onToggleCompare?: () => void;
 }) {
   useLanguage();
   const [quantity, setQuantity] = useState(1);
@@ -79,6 +90,21 @@ function ProductCard({
           <div className="product-card__badge-overlay product-card__badge-overlay--low">
             <span>⚡ {t("Only")} {product.stockQuantity} {t("left")}</span>
           </div>
+        ) : null}
+        {canOrder && onToggleWishlist ? (
+          <button
+            type="button"
+            className={`product-card__wishlist-btn ${isWishlisted ? 'product-card__wishlist-btn--active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleWishlist();
+            }}
+            aria-label={t(isWishlisted ? "Remove from wishlist" : "Add to wishlist")}
+            title={t(isWishlisted ? "Saved in wishlist" : "Save to wishlist")}
+          >
+            <Icon name="heart" width={14} height={14} />
+          </button>
         ) : null}
       </div>
 
@@ -130,6 +156,21 @@ function ProductCard({
             </span>
           ) : null}
         </div>
+        {canOrder && onToggleCompare ? (
+          <button
+            type="button"
+            className={`product-card__compare-btn ${isComparing ? 'product-card__compare-btn--active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleCompare();
+            }}
+            aria-pressed={isComparing}
+            title={t(isComparing ? "Remove from comparison" : "Compare")}
+          >
+            <span aria-hidden="true">⇄</span> {isComparing ? t("Comparing") : t("Compare")}
+          </button>
+        ) : null}
       </div>
 
       {outOfStock ? (
@@ -168,6 +209,25 @@ export function ProductsPage() {
   useLanguage();
   const { user, hasRole } = useAuth();
   const cart = useCart();
+  const toast = useToast();
+  const wishlistQuery = useWishlist();
+  const toggleWishlist = useToggleWishlist();
+  const wishlistIds = useMemo(() => new Set((wishlistQuery.data ?? []).map((w) => w.productId)), [wishlistQuery.data]);
+  const [compareItems, setCompareItems] = useState<Product[]>([]);
+
+  const handleToggleCompare = (p: Product) => {
+    setCompareItems((prev) => {
+      if (prev.some((x) => x.id === p.id)) {
+        return prev.filter((x) => x.id !== p.id);
+      }
+      if (prev.length >= 4) {
+        toast.push('info', t('You can compare up to 4 products at once.'));
+        return prev;
+      }
+      return [...prev, p];
+    });
+  };
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -273,7 +333,7 @@ export function ProductsPage() {
           <p>{t("Live availability straight from stock. The server is the source of truth for every quantity.")}</p>
         </div>
 
-        <div className="field" style={{ minWidth: 'min(320px, 100%)', position: 'relative' }}>
+        <div className="field catalogue-search">
           <label htmlFor="product-search">{t("Search products")}</label>
           <input id="product-search" type="search" placeholder={t("Name or SKU")} value={search}
             autoComplete="off"
@@ -281,59 +341,23 @@ export function ProductsPage() {
 
           {/* Live Autocomplete Suggestions */}
           {search.trim().length >= 2 && productsQuery.data?.items && productsQuery.data.items.length > 0 ? (
-            <div
-              className="card-glass search-suggestions"
-              style={{
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                right: 0,
-                zIndex: 50,
-                marginTop: '4px',
-                borderRadius: 'var(--radius-md, 8px)',
-                background: 'var(--surface-overlay, #1c1c20)',
-                boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0,0,0,0.5))',
-                maxHeight: '360px',
-                overflowY: 'auto',
-                border: '1px solid var(--border)'
-              }}
-              role="listbox"
-              aria-label={t("Search suggestions")}
-            >
-              <div style={{ padding: '6px 12px', fontSize: 'var(--text-xs)', color: 'var(--muted)', borderBottom: '1px solid var(--border)' }}>
+            <div className="search-suggestions" role="listbox" aria-label={t("Search suggestions")}>
+              <p className="search-suggestions__count">
                 {t("Quick matches")} ({productsQuery.data.items.slice(0, 5).length})
-              </div>
+              </p>
               {productsQuery.data.items.slice(0, 5).map(item => (
-                <Link
-                  key={item.id}
-                  to={`/products/${item.id}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '8px 12px',
-                    borderBottom: '1px solid var(--border)',
-                    textDecoration: 'none',
-                    color: 'inherit'
-                  }}
-                  onClick={() => setSearch('')}
-                >
+                <Link key={item.id} className="search-suggestions__row" to={`/products/${item.id}`}
+                  onClick={() => setSearch('')}>
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt="" style={{ width: '32px', height: '32px', objectFit: 'contain', borderRadius: '4px' }} />
+                    <img className="search-suggestions__thumb" src={item.imageUrl} alt="" />
                   ) : (
-                    <div style={{ width: '32px', height: '32px', background: 'var(--surface-muted, #333)', borderRadius: '4px' }} />
+                    <span className="search-suggestions__thumb" aria-hidden="true" />
                   )}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {item.name}
-                    </div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)' }} className="mono">
-                      {item.sku}
-                    </div>
-                  </div>
-                  <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>
-                    {formatMoney(item.price, item.currency)}
-                  </div>
+                  <span className="search-suggestions__info">
+                    <span className="search-suggestions__name">{item.name}</span>
+                    <span className="search-suggestions__sku mono">{item.sku}</span>
+                  </span>
+                  <span className="search-suggestions__price">{formatMoney(item.price, item.currency)}</span>
                 </Link>
               ))}
             </div>
@@ -425,6 +449,10 @@ export function ProductsPage() {
                     canEdit={canEditProducts}
                     canOrder={canOrder}
                     queryString={params.toString()}
+                    isWishlisted={wishlistIds.has(product.id)}
+                    onToggleWishlist={canOrder ? () => toggleWishlist.mutate(product.id) : undefined}
+                    isComparing={compareItems.some((x) => x.id === product.id)}
+                    onToggleCompare={canOrder ? () => handleToggleCompare(product) : undefined}
                   />
                 ))}
               </div>
@@ -449,6 +477,17 @@ export function ProductsPage() {
             </section>
         </aside>}
       </div>
+      {canOrder ? (
+        <CompareTray
+          items={compareItems}
+          onRemove={(id) => setCompareItems((prev) => prev.filter((x) => x.id !== id))}
+          onClear={() => setCompareItems([])}
+          onAddToCart={(p) => {
+            cart.add(p, 1);
+            toast.push('success', `${t("Added")} ${p.name} ${t("to your cart.")}`);
+          }}
+        />
+      ) : null}
       {canOrder ? <MobileBottomBar filterCount={activeFilterCount(params)} sort={params.get('sort') ?? ''} onFilters={() => document.dispatchEvent(new CustomEvent('ninecube:open-filters'))} /> : null}
     </div>
   );

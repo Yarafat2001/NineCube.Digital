@@ -37,6 +37,7 @@ web/playwright-report/
 web/test-results/
 web/blob-report/
 web/.playwright/
+web/.ui-harness/
 
 # logs
 *.log

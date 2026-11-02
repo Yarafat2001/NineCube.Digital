@@ -2,9 +2,10 @@ import { t, useLanguage } from '../i18n/language';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCategories, useProducts } from '../api/hooks';
+import { useCategories, useLowStockThreshold, useProducts } from '../api/hooks';
 import { formatMoney, useDebouncedValue } from '../lib/helpers';
 import { Icon } from './Icon';
+import { StockBadge } from './ui';
 
 export function GlobalSearch() {
   useLanguage();
@@ -51,15 +52,21 @@ export function GlobalSearch() {
     };
   }, []);
 
-  const categoriesQuery = useCategories();
-  const productsQuery = useProducts({
-    q: debouncedQuery.length >= 2 ? debouncedQuery : '',
-    page: 1,
-    pageSize: 6
-  });
+  // Nothing in this dialog is worth a request before it is on screen, and the result list only
+  // exists from the third character. Measured on the deployed site before this gate: the navbar's
+  // copy of these two queries fired 14 times each in 229s while sitting on the login page with the
+  // dialog closed, because useProducts also carries the 15s stock poll meant for quantity grids.
+  const searching = open && debouncedQuery.length >= 2;
+  const categoriesQuery = useCategories(false, open);
+  const thresholdQuery = useLowStockThreshold(open);
+  const productsQuery = useProducts(
+    { q: searching ? debouncedQuery : '', page: 1, pageSize: 6 },
+    { enabled: searching, live: false }
+  );
 
   const categories = (categoriesQuery.data ?? []).slice(0, 6);
   const results = debouncedQuery.length >= 2 ? (productsQuery.data?.items ?? []) : [];
+  const threshold = thresholdQuery.data?.lowStockThreshold ?? 5;
 
   const handleSelectProduct = (productId: number) => {
     setOpen(false);
@@ -79,7 +86,6 @@ export function GlobalSearch() {
         onClick={() => setOpen(true)}
         aria-label={t("Search catalogue")}
         title={t("Search catalogue (Ctrl+K)")}
-        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
       >
         <Icon name="search" />
       </button>
@@ -99,35 +105,38 @@ export function GlobalSearch() {
                 aria-label={t("Search Catalogue")}
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Search Bar Header */}
+                {/* Search Bar Header: one well, the same edge and fill every other
+                    input in the app uses, with the clear control inside it. */}
                 <div className="spotlight-header">
-                  <span className="spotlight-search-icon" aria-hidden="true">
-                    <Icon name="search" />
-                  </span>
-                  <input
-                    ref={inputRef}
-                    type="search"
-                    className="spotlight-input"
-                    placeholder={t("Search by product name, brand, category, or SKU…")}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    autoComplete="off"
-                    spellCheck={false}
-                  />
-                  {query ? (
-                    <button
-                      type="button"
-                      className="spotlight-clear-btn"
-                      onClick={() => {
-                        setQuery('');
-                        inputRef.current?.focus();
-                      }}
-                      aria-label={t("Clear")}
-                      title={t("Clear")}
-                    >
-                      <Icon name="x" width="14" height="14" />
-                    </button>
-                  ) : null}
+                  <div className="spotlight-field">
+                    <span className="spotlight-search-icon" aria-hidden="true">
+                      <Icon name="search" />
+                    </span>
+                    <input
+                      ref={inputRef}
+                      type="search"
+                      className="spotlight-input"
+                      placeholder={t("Search by product name, brand, category, or SKU…")}
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      autoComplete="off"
+                      spellCheck={false}
+                    />
+                    {query ? (
+                      <button
+                        type="button"
+                        className="spotlight-clear-btn"
+                        onClick={() => {
+                          setQuery('');
+                          inputRef.current?.focus();
+                        }}
+                        aria-label={t("Clear")}
+                        title={t("Clear")}
+                      >
+                        <Icon name="x" width="14" height="14" />
+                      </button>
+                    ) : null}
+                  </div>
                   <button
                     type="button"
                     className="spotlight-close-btn"
@@ -135,7 +144,7 @@ export function GlobalSearch() {
                     aria-label={t("Close dialog")}
                     title={t("Close dialog")}
                   >
-                    <Icon name="x" width="14" height="14" />
+                    <Icon name="x" width="16" height="16" />
                   </button>
                 </div>
 
@@ -160,25 +169,13 @@ export function GlobalSearch() {
                 {/* Search Results Area */}
                 <div className="spotlight-body">
                   {debouncedQuery.length < 2 ? (
-                    <div className="spotlight-hint-box">
-                      <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
-                        {t("Type at least 2 characters to search across products…")}
-                      </p>
-                    </div>
+                    <p className="spotlight-note">{t("Type at least 2 characters to search across products…")}</p>
                   ) : productsQuery.isLoading ? (
-                    <div className="spotlight-hint-box">
-                      <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
-                        {t("Searching products…")}
-                      </p>
-                    </div>
+                    <p className="spotlight-note">{t("Searching products…")}</p>
                   ) : results.length === 0 ? (
-                    <div className="spotlight-empty-box">
-                      <p style={{ fontWeight: 600, margin: '0 0 4px', color: 'var(--text)' }}>
-                        {t("No products matched your search.")}
-                      </p>
-                      <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
-                        {t("Try checking spelling or using a more general keyword.")}
-                      </p>
+                    <div className="spotlight-empty">
+                      <p className="spotlight-empty__title">{t("No products matched your search.")}</p>
+                      <p className="spotlight-note">{t("Try checking spelling or using a more general keyword.")}</p>
                     </div>
                   ) : (
                     <div className="spotlight-results">
@@ -209,19 +206,16 @@ export function GlobalSearch() {
                             </div>
                             <div className="spotlight-item__info">
                               <div className="spotlight-item__name">
-                                {product.brandName ? (
+                                {/* The seeded names already begin with their brand, so a brand
+                                    prefix on top of the name painted "Apple Apple iPhone 16". */}
+                                {product.brandName && !product.name.startsWith(product.brandName) ? (
                                   <strong className="spotlight-item__brand">{product.brandName}</strong>
                                 ) : null}
                                 <span>{product.name}</span>
                               </div>
                               <div className="spotlight-item__meta">
                                 <span className="mono">{product.sku}</span>
-                                <span>•</span>
-                                <span className={product.stockQuantity > 0 ? "spotlight-in-stock" : "spotlight-out-of-stock"}>
-                                  {product.stockQuantity > 0
-                                    ? `✓ ${product.stockQuantity} in stock`
-                                    : t("Out of stock")}
-                                </span>
+                                <StockBadge product={product} threshold={threshold} />
                               </div>
                             </div>
                             <div className="spotlight-item__price">
