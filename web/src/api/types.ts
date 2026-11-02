@@ -299,6 +299,9 @@ export type ScopeMatch = 'Any' | 'All';
 export type DiscountExclusivity = 'BestOnly' | 'StackByScope' | 'Exclusive';
 export type PreviewValueBasis = 'OrderHistory' | 'AverageProductPrice' | 'NotEstimated';
 
+/** Where a coupon sits in the second-signature queue. Mirrors the server's CouponApprovalState. */
+export type CouponApprovalState = 'NotRequired' | 'Pending' | 'Approved' | 'Rejected';
+
 /** A rule exactly as the builder holds it: ids only, names resolved for display. */
 export interface CouponScopeRuleDraft {
   attribute: ScopeAttribute;
@@ -331,6 +334,12 @@ export interface Coupon {
   scopeMatch?: ScopeMatch;
   exclusivity?: DiscountExclusivity;
   scopeRules?: CouponScopeRuleView[];
+  approvalState?: CouponApprovalState;
+  submittedByEmail?: string | null;
+  reviewedByEmail?: string | null;
+  submittedAt?: string | null;
+  reviewedAt?: string | null;
+  rejectionReason?: string | null;
 }
 
 export interface CouponValidationResult {
@@ -407,6 +416,56 @@ export interface UpdateCouponPayload {
   scopeMatch?: ScopeMatch;
   exclusivity?: DiscountExclusivity;
   scopeRules?: CouponScopeRuleDraft[];
+}
+
+/** The store's own limits on giving money away. Every field is 0 when the shop has not set it, meaning "no limit". */
+export interface DiscountPolicy {
+  maxPercentageOff: number;
+  maxAmountPerOrder: number;
+  maxShareOfOrder: number;
+  weeklySpendCap: number;
+  approvalAbovePercentage: number;
+  approvalAboveAmount: number;
+}
+
+/** The limits plus what the giveaway actually cost in the last seven days. */
+export interface DiscountPolicyView {
+  policy: DiscountPolicy;
+  promoSpendLast7Days: number;
+}
+
+/** A coupon's scope and money, sent to be replayed against the shop's own past orders. */
+export interface CouponOrderReplayRequest {
+  scopeRules?: CouponScopeRuleDraft[] | null;
+  scopeMatch: ScopeMatch;
+  targetType?: CouponTargetType;
+  targetId?: number | null;
+  discountType: DiscountType;
+  discountValue: number;
+  maxDiscountCap?: number | null;
+  minOrderAmount: number;
+  minEligibleAmount?: number;
+  days: number;
+}
+
+export interface ReplayProductImpact {
+  productName: string;
+  timesDiscounted: number;
+  units: number;
+  giveaway: number;
+}
+
+export interface CouponOrderReplayResult {
+  daysLookedBack: number;
+  ordersInWindow: number;
+  ordersQualified: number;
+  totalGiveaway: number;
+  averageGiveawayPerOrder: number;
+  shareOfOrderValuePercent: number;
+  actualGiveawayInWindow: number;
+  hasOrders: boolean;
+  topProducts: ReplayProductImpact[];
+  notes: string[];
 }
 
 export interface PaymentTransaction {

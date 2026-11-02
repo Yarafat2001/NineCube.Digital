@@ -114,6 +114,12 @@ public interface IProductStorage
 public static class SettingKeys
 {
     public const string LowStockThreshold = "LowStockThreshold";
+    public const string MaxPercentageOff = "DiscountPolicy.MaxPercentageOff";
+    public const string MaxAmountPerOrder = "DiscountPolicy.MaxAmountPerOrder";
+    public const string MaxShareOfOrder = "DiscountPolicy.MaxShareOfOrder";
+    public const string WeeklySpendCap = "DiscountPolicy.WeeklySpendCap";
+    public const string ApprovalAbovePercentage = "DiscountPolicy.ApprovalAbovePercentage";
+    public const string ApprovalAboveAmount = "DiscountPolicy.ApprovalAboveAmount";
 }
 
 public static class AuditActions
@@ -140,6 +146,10 @@ public static class AuditActions
     public const string OrderShipped = "order.shipped";
     public const string OrderCancelled = "order.cancelled";
     public const string SettingsUpdated = "settings.updated";
+    public const string DiscountPolicyUpdated = "discount.policy.updated";
+    public const string CouponSubmittedForApproval = "coupon.submitted_for_approval";
+    public const string CouponApproved = "coupon.approved";
+    public const string CouponRejected = "coupon.rejected";
 }
 
 public interface IEmailSender

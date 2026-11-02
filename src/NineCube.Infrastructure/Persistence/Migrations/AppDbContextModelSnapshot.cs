@@ -286,6 +286,11 @@ namespace NineCube.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApprovalState")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
                     b.Property<string>("CampaignTitle")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
@@ -332,6 +337,16 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("MinOrderAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ReviewedByUserId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ScopeMatch")
                         .IsRequired()
                         .HasMaxLength(16)
@@ -339,6 +354,12 @@ namespace NineCube.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime?>("StartsAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("SubmittedByUserId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("TargetId")
                         .HasColumnType("integer");
@@ -355,6 +376,8 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApprovalState");
 
                     b.HasIndex("Code")
                         .IsUnique();

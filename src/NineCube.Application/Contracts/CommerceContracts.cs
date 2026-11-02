@@ -42,7 +42,13 @@ public sealed record CouponDto(
     decimal MinEligibleAmount = 0,
     ScopeMatch ScopeMatch = ScopeMatch.Any,
     DiscountExclusivity Exclusivity = DiscountExclusivity.BestOnly,
-    IReadOnlyList<CouponScopeRuleView>? ScopeRules = null);
+    IReadOnlyList<CouponScopeRuleView>? ScopeRules = null,
+    CouponApprovalState ApprovalState = CouponApprovalState.NotRequired,
+    string? SubmittedByEmail = null,
+    string? ReviewedByEmail = null,
+    DateTime? SubmittedAt = null,
+    DateTime? ReviewedAt = null,
+    string? RejectionReason = null);
 
 public sealed record CreateCouponRequest(
     string Code,
@@ -62,6 +68,9 @@ public sealed record CreateCouponRequest(
     ScopeMatch ScopeMatch = ScopeMatch.Any,
     DiscountExclusivity Exclusivity = DiscountExclusivity.BestOnly,
     IReadOnlyList<CouponScopeRuleDto>? ScopeRules = null);
+
+/// <summary>Why a second administrator refused a coupon. Shown to the writer in the registry.</summary>
+public sealed record RejectCouponRequest(string Reason);
 
 public sealed record CartLineItemDto(int ProductId, int Quantity, decimal UnitPrice, int? CategoryId = null, int? BrandId = null);
 
@@ -123,6 +132,27 @@ public enum PreviewValueBasis
     NotEstimated = 2
 }
 
+/// <summary>
+/// What the shop allows its own discounts to do. Every limit is switched off by 0, so a store that never
+/// opens the policy screen keeps behaving exactly as it did before the limits existed.
+/// </summary>
+/// <param name="MaxPercentageOff">The largest rate a coupon may carry.</param>
+/// <param name="MaxAmountPerOrder">The ceiling on what one coupon may take off one order.</param>
+/// <param name="MaxShareOfOrder">How much of a single order one coupon may absorb, as a percentage.</param>
+/// <param name="WeeklySpendCap">The most the shop will give away in a rolling seven days.</param>
+/// <param name="ApprovalAbovePercentage">Rates past this wait for a second administrator to sign them off.</param>
+/// <param name="ApprovalAboveAmount">Discounts past this wait for a second administrator to sign them off.</param>
+public sealed record DiscountPolicy(
+    decimal MaxPercentageOff,
+    decimal MaxAmountPerOrder,
+    decimal MaxShareOfOrder,
+    decimal WeeklySpendCap,
+    decimal ApprovalAbovePercentage = 0,
+    decimal ApprovalAboveAmount = 0);
+
+/// <summary>The policy as the admin screen reads it: the limits, plus what the giveaway actually cost this week.</summary>
+public sealed record DiscountPolicyView(DiscountPolicy Policy, decimal PromoSpendLast7Days);
+
 public sealed record CouponScopePreviewResult(
     int TotalActiveProducts,
     int MatchedProducts,
@@ -134,6 +164,42 @@ public sealed record CouponScopePreviewResult(
     IReadOnlyList<string> SampleProducts,
     IReadOnlyList<ScopeConflictDto> Conflicts);
 
+
+/// <summary>The scope and the money of a coupon, exactly as the builder holds them, for the two read-only forecasts.</summary>
+public sealed record CouponOrderReplayRequest(
+    IReadOnlyList<CouponScopeRuleDto>? ScopeRules = null,
+    ScopeMatch ScopeMatch = ScopeMatch.Any,
+    CouponTargetType TargetType = CouponTargetType.Order,
+    int? TargetId = null,
+    DiscountType DiscountType = DiscountType.Percentage,
+    decimal DiscountValue = 0,
+    decimal? MaxDiscountCap = null,
+    decimal MinOrderAmount = 0,
+    decimal MinEligibleAmount = 0,
+    int Days = 30);
+
+/// <summary>One product the coupon would have discounted, and how much of the giveaway sat on it.</summary>
+public sealed record ReplayProductImpact(
+    string ProductName,
+    int TimesDiscounted,
+    int Units,
+    decimal Giveaway);
+
+/// <summary>
+/// What the coupon would have done to the shop's own past orders. HasOrders is false when the window is empty,
+/// because an operator would rather be told there is nothing to measure than be shown an invented figure.
+/// </summary>
+public sealed record CouponOrderReplayResult(
+    int DaysLookedBack,
+    int OrdersInWindow,
+    int OrdersQualified,
+    decimal TotalGiveaway,
+    decimal AverageGiveawayPerOrder,
+    decimal ShareOfOrderValuePercent,
+    decimal ActualGiveawayInWindow,
+    bool HasOrders,
+    IReadOnlyList<ReplayProductImpact> TopProducts,
+    IReadOnlyList<string> Notes);
 
 // ---------------------------------------------------------------- Payments
 public sealed record ProcessPaymentRequest(int OrderId, PaymentMethod Provider);

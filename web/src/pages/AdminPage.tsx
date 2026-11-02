@@ -8,11 +8,15 @@ import {
   useSetUserActive,
   useSettings,
   useUpdateSettings,
+  useDiscountPolicy,
+  useUpdateDiscountPolicy,
   useCoupons,
   useCreateCoupon,
   useUpdateCoupon,
   useDeleteCoupon,
   useToggleCouponStatus,
+  useApproveCoupon,
+  useRejectCoupon,
   useCategories,
   useBrands,
   useProducts,
@@ -24,9 +28,10 @@ import {
   useAdjustGiftCardBalance,
   useTags
 } from '../api/hooks';
-import type { Coupon, CouponTargetType, ScopeAttribute, UserRole, GiftCard } from '../api/types';
+import type { Coupon, CouponTargetType, DiscountPolicy, ScopeAttribute, UserRole, GiftCard } from '../api/types';
 import { flattenCategories } from '../components/CategoryFilters';
 import { ScopeImpactPanel } from '../components/ScopeImpactPanel';
+import { OrderReplayPanel } from '../components/OrderReplayPanel';
 import {
   ATTRIBUTE_ICON,
   ScopeRuleEditor,
@@ -45,6 +50,34 @@ import { formatDateTime, formatMoney, formatMoneyWhole, roleLabels, useDebounced
 import { useAuth } from '../state/AuthContext';
 
 const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrator'];
+
+/**
+ * The six dials of the store's discount policy. They are declared once so the Settings panel,
+ * the save payload and the refusal hints can never drift apart. `0` on every one of them means
+ * "the shop has not set a limit", which is how a store behaves before it ever opens this panel.
+ */
+const POLICY_FIELDS: Array<{
+  key: keyof DiscountPolicy;
+  label: string;
+  unit: '%' | 'BDT';
+  hint: string;
+  group: 'limit' | 'review';
+}> = [
+  { key: 'maxPercentageOff', label: 'Highest discount rate', unit: '%', group: 'limit', hint: 'A coupon above this rate is refused when it is saved.' },
+  { key: 'maxAmountPerOrder', label: 'Most one coupon may take off an order', unit: 'BDT', group: 'limit', hint: 'Checked against the biggest discount the coupon could ever produce.' },
+  { key: 'maxShareOfOrder', label: 'Biggest share of a single order', unit: '%', group: 'limit', hint: 'Stops one voucher eating most of a basket.' },
+  { key: 'weeklySpendCap', label: 'Promo budget for a rolling week', unit: 'BDT', group: 'limit', hint: 'Once the week has given away this much, no new campaign can be released.' },
+  { key: 'approvalAbovePercentage', label: 'Rates needing a second signature', unit: '%', group: 'review', hint: 'Above this, another administrator has to approve the coupon before it goes live.' },
+  { key: 'approvalAboveAmount', label: 'Amounts needing a second signature', unit: 'BDT', group: 'review', hint: 'A discount past this taka value waits for the same second approval.' }
+];
+
+/** A store that has never opened this panel shows "No limits yet" rather than a wall of zeros. */
+const policyIsOpen = (policy: DiscountPolicy) => Object.values(policy).some((value) => Number(value) > 0);
+
+const meterPercent = (spent: number, cap: number) => (cap > 0 ? (spent / cap) * 100 : 0);
+
+/** Only a coupon still waiting for its second signature belongs in the review queue. */
+const needsReview = (coupon: Coupon) => coupon.approvalState === 'Pending';
 
 type Tab = 'users' | 'audit' | 'settings' | 'coupons' | 'giftcards';
 
@@ -173,6 +206,30 @@ export function AdminPage() {
   const updateSettings = useUpdateSettings();
   const [threshold, setThreshold] = useState<string>('');
 
+  // the shop's own discount limits, read and saved from the Settings panel
+  const policyQuery = useDiscountPolicy(tab === 'settings');
+  const updatePolicy = useUpdateDiscountPolicy();
+  const [policyDraft, setPolicyDraft] = useState<Partial<Record<keyof DiscountPolicy, string>>>({});
+
+  const policyValue = (key: keyof DiscountPolicy) =>
+    policyDraft[key] ?? (policyQuery.data ? String(policyQuery.data.policy[key]) : '');
+
+  const submitPolicy = async (event: FormEvent) => {
+    event.preventDefault();
+    const next = POLICY_FIELDS.reduce(
+      (acc, field) => ({ ...acc, [field.key]: Number(policyValue(field.key)) || 0 }),
+      {} as DiscountPolicy
+    );
+
+    try {
+      const saved = await updatePolicy.mutateAsync(next);
+      setPolicyDraft({});
+      toast.push('success', `${t('Discount policy saved.')} ${t('Given away in the last 7 days')}: ${formatMoney(saved.promoSpendLast7Days)}.`);
+    } catch (err) {
+      toast.pushError(err);
+    }
+  };
+
   // coupons
   const couponsQuery = useCoupons();
   const createCoupon = useCreateCoupon();
@@ -180,6 +237,8 @@ export function AdminPage() {
 
   const updateCoupon = useUpdateCoupon();
   const deleteCoupon = useDeleteCoupon();
+  const approveCoupon = useApproveCoupon();
+  const rejectCoupon = useRejectCoupon();
   const updateGiftCard = useUpdateGiftCard();
   const deleteGiftCard = useDeleteGiftCard();
 
@@ -237,6 +296,42 @@ export function AdminPage() {
     setEditIsAuto(!!c.isAutomatic);
     setEditScope(scopeFromCoupon(c));
     setEditScopeHints(scopeNameHints(c));
+  };
+
+  // The second-signature queue: a coupon over the shop's approval threshold waits here.
+  const [reviewingCoupon, setReviewingCoupon] = useState<Coupon | null>(null);
+  const [reviewReason, setReviewReason] = useState('');
+
+  const openCouponReview = (c: Coupon) => {
+    setReviewingCoupon(c);
+    setReviewReason('');
+  };
+
+  const releaseCoupon = async () => {
+    if (!reviewingCoupon) return;
+    try {
+      await approveCoupon.mutateAsync(reviewingCoupon.id);
+      toast.push('success', `${reviewingCoupon.code} ${t("is approved and live.")}`);
+      setReviewingCoupon(null);
+    } catch (err) {
+      toast.pushError(err);
+    }
+  };
+
+  const refuseCoupon = async () => {
+    if (!reviewingCoupon) return;
+    const reason = reviewReason.trim();
+    if (reason.length < 5) {
+      toast.push('error', t("Say why in a few words, so the writer can act on it."));
+      return;
+    }
+    try {
+      await rejectCoupon.mutateAsync({ id: reviewingCoupon.id, reason });
+      toast.push('success', `${reviewingCoupon.code} ${t("has been refused. The writer sees your reason.")}`);
+      setReviewingCoupon(null);
+    } catch (err) {
+      toast.pushError(err);
+    }
   };
 
   const openEditGiftCard = (g: GiftCard) => {
@@ -359,12 +454,13 @@ export function AdminPage() {
 
   // The coupon list had no way to find a code; the gift card list beside it already had one.
   const [couponSearch, setCouponSearch] = useState('');
-  const [couponFilter, setCouponFilter] = useState<'all' | 'active' | 'disabled' | 'expired'>('all');
+  const [couponFilter, setCouponFilter] = useState<'all' | 'active' | 'review' | 'disabled' | 'expired'>('all');
 
   const filteredCoupons = useMemo(() => (couponsQuery.data ?? [])
     .filter((c) => {
       const now = new Date();
       if (couponFilter === 'active') return c.isActive && (!c.expiresAt || new Date(c.expiresAt) > now);
+      if (couponFilter === 'review') return needsReview(c);
       if (couponFilter === 'disabled') return !c.isActive;
       if (couponFilter === 'expired') return !!c.expiresAt && new Date(c.expiresAt) < now;
       return true;
@@ -376,6 +472,8 @@ export function AdminPage() {
         || (c.campaignTitle?.toLowerCase().includes(term) ?? false)
         || (c.scopeRules ?? []).some((rule) => rule.entityNames.some((name) => name.toLowerCase().includes(term)));
     }), [couponsQuery.data, couponFilter, couponSearch]);
+
+  const reviewCount = useMemo(() => (couponsQuery.data ?? []).filter(needsReview).length, [couponsQuery.data]);
 
   const [selectedCardForModal, setSelectedCardForModal] = useState<GiftCard | null>(null);
   const [adjustModal, setAdjustModal] = useState<{ card: GiftCard; newBalance: string; reason: string } | null>(null);
@@ -617,7 +715,9 @@ export function AdminPage() {
         exclusivity: scope.exclusivity,
         minEligibleAmount: Number(scope.minEligibleAmount) || 0
       });
-      toast.push('success', `Coupon ${created.code} created.`);
+      toast.push('success', created.approvalState === 'Pending'
+        ? `Coupon ${created.code} created. ${t('It waits for a second administrator to approve it before it goes live.')}`
+        : `Coupon ${created.code} created.`);
       setCouponCode('');
       setDiscountValue('');
       setMinOrderAmount('0');
@@ -900,6 +1000,92 @@ export function AdminPage() {
 
               <button type="submit" className="btn btn--primary" disabled={updateSettings.isPending}>
                 {t("Save settings")}</button>
+            </form>
+          ) : null}
+
+          {policyQuery.isLoading ? <LoadingBlock label={t("Loading the discount policy")} variant="line" count={3} /> : null}
+          {policyQuery.isError ? <ErrorState error={policyQuery.error} onRetry={() => policyQuery.refetch()} /> : null}
+
+          {policyQuery.data ? (
+            <form className="card-glass stack policy-card" onSubmit={submitPolicy}>
+              <div className="policy-card__head">
+                <h3 className="policy-card__title">
+                  <Icon name="shield" width={15} height={15} aria-hidden="true" />
+                  {t("Discount policy")}
+                </h3>
+                <span className={`badge ${policyIsOpen(policyQuery.data.policy) ? 'badge--ok' : 'badge--neutral'}`}>
+                  <span className="badge__glyph" aria-hidden="true">{policyIsOpen(policyQuery.data.policy) ? t("✓") : t("—")}</span>
+                  {t(policyIsOpen(policyQuery.data.policy) ? "Limits on" : "No limits yet")}
+                </span>
+              </div>
+
+              <p className="policy-card__lead">
+                {t("These are the shop's own limits on giving money away. Coupons already live keep running exactly as they are — a limit only bites when a coupon is saved from now on.")}
+              </p>
+
+              {(['limit', 'review'] as const).map((group) => (
+                <div className="policy-group" key={group}>
+                  <h4 className="policy-group__title">
+                    {t(group === 'limit' ? "Hard limits — the shop refuses these" : "Second signature — these wait for another administrator")}
+                  </h4>
+                  <div className="policy-grid">
+                    {POLICY_FIELDS.filter((field) => field.group === group).map((field) => (
+                      <div className="field" key={field.key}>
+                        <label htmlFor={`policy-${field.key}`}>{t(field.label)}</label>
+                        <div className="policy-input">
+                          <input
+                            id={`policy-${field.key}`}
+                            type="number"
+                            min={0}
+                            step={field.unit === '%' ? '0.5' : '50'}
+                            inputMode="decimal"
+                            placeholder="0"
+                            value={policyValue(field.key)}
+                            onChange={(event) => setPolicyDraft((prev) => ({ ...prev, [field.key]: event.target.value }))}
+                          />
+                          <span className="policy-input__unit">{t(field.unit)}</span>
+                        </div>
+                        <span className="hint">{t(field.hint)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              <div className="policy-spend">
+                <div className="policy-spend__row">
+                  <span className="policy-spend__label">{t("Given away in the last 7 days")}</span>
+                  <strong className="policy-spend__figure">{formatMoney(policyQuery.data.promoSpendLast7Days)}</strong>
+                </div>
+                {Number(policyValue('weeklySpendCap')) > 0 ? (
+                  <>
+                    <div className="policy-meter" role="img"
+                      aria-label={`${t("Given away in the last 7 days")}: ${Math.round(meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))))}%`}>
+                      <div
+                        className={`policy-meter__fill ${meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))) >= 80 ? 'policy-meter__fill--tight' : ''}`}
+                        style={{ width: `${Math.min(100, meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))))}%` }}
+                      />
+                    </div>
+                    <p className="policy-spend__note">
+                      {t("of a weekly budget of")} {formatMoney(Number(policyValue('weeklySpendCap')))}
+                    </p>
+                  </>
+                ) : (
+                  <p className="policy-spend__note">
+                    {t("No weekly budget is set, so campaigns can be released without a spend check.")}
+                  </p>
+                )}
+              </div>
+
+              <div className="policy-card__actions">
+                <button type="submit" className="btn btn--primary" disabled={updatePolicy.isPending}>
+                  {t(updatePolicy.isPending ? "Saving…" : "Save policy")}</button>
+                {Object.keys(policyDraft).length > 0 ? (
+                  <button type="button" className="btn btn--outline btn--sm" onClick={() => setPolicyDraft({})}>
+                    {t("Discard changes")}
+                  </button>
+                ) : null}
+              </div>
             </form>
           ) : null}
         </section>
@@ -1223,6 +1409,15 @@ export function AdminPage() {
                     </div>
                   </div>
                 </div>
+
+                <OrderReplayPanel
+                  scope={scope}
+                  discountType={discountType}
+                  discountValue={Number(discountValue) || 0}
+                  maxDiscountCap={maxDiscountCap ? Number(maxDiscountCap) : null}
+                  minOrderAmount={Number(minOrderAmount) || 0}
+                  ready={scopeIsComplete(scope) && (Number(discountValue) || 0) > 0}
+                />
               </div>
 
               <div className="discount-config-card" data-testid="discount-step-5">
@@ -1530,7 +1725,7 @@ export function AdminPage() {
                   onChange={(e) => setCouponSearch(e.target.value)}
                 />
                 <div className="segmented" role="group" aria-label={t("Coupon status")}>
-                  {(['all', 'active', 'disabled', 'expired'] as const).map((option) => (
+                  {(['all', 'active', 'review', 'disabled', 'expired'] as const).map((option) => (
                     <button
                       key={option}
                       type="button"
@@ -1538,7 +1733,8 @@ export function AdminPage() {
                       aria-pressed={couponFilter === option}
                       onClick={() => setCouponFilter(option)}
                     >
-                      {t(option === 'all' ? 'All' : option === 'active' ? 'Active' : option === 'disabled' ? 'Disabled' : 'Expired')}
+                      {t(option === 'all' ? 'All' : option === 'active' ? 'Active' : option === 'review' ? 'To approve' : option === 'disabled' ? 'Disabled' : 'Expired')}
+                      {option === 'review' && reviewCount > 0 ? <span className="segmented__count">{reviewCount}</span> : null}
                     </button>
                   ))}
                 </div>
@@ -1630,21 +1826,60 @@ export function AdminPage() {
                         <td className="num">{c.usageCount}{c.usageLimit ? ` / ${c.usageLimit}` : ''}</td>
                         <td>{c.isBannerPromoted ? <span className="badge badge--ok" title={c.campaignTitle ?? ''}><Icon name="megaphone" width={11} height={11} aria-hidden="true" /> {c.campaignTitle ? t(c.campaignTitle) : t("Banner")}</span> : <span className="muted">—</span>}</td>
                         <td>
-                          <span className={`badge ${c.isActive ? 'badge--ok' : 'badge--neutral'}`}>
-                            <span className="badge__glyph" aria-hidden="true">{t(c.isActive ? '✓' : '⊘')}</span>
-                            {t(c.isActive ? 'Active' : 'Disabled')}
-                          </span>
-                          {c.expiresAt && new Date(c.expiresAt) < new Date() ? (
-                            <span className="badge badge--danger" style={{ display: 'inline-flex', marginTop: '3px' }}>
-                              <span className="badge__glyph" aria-hidden="true">{t("✕")}</span>
-                              {t("Expired")}
-                            </span>
-                          ) : c.startsAt && new Date(c.startsAt) > new Date() ? (
-                            <span className="badge badge--warn" style={{ display: 'inline-flex', marginTop: '3px' }}>
-                              <span className="badge__glyph" aria-hidden="true">{t("◔")}</span>
-                              {t("Scheduled")}
-                            </span>
-                          ) : null}
+                          {c.approvalState === 'Pending' ? (
+                            <div className="registry-review">
+                              <span className="badge badge--warn">
+                                <span className="badge__glyph" aria-hidden="true">{t("◔")}</span>
+                                {t("Awaiting approval")}
+                              </span>
+                              <span className="registry-review__who">
+                                {t("Written by")} {c.submittedByEmail ?? t("an administrator who has since left")}
+                                {c.submittedAt ? ` · ${formatDateTime(c.submittedAt)}` : ''}
+                              </span>
+                              <button
+                                type="button"
+                                className="action-icon-btn action-icon-btn--primary"
+                                onClick={(e) => { e.stopPropagation(); openCouponReview(c); }}
+                                data-tooltip={t("Review and sign off")}
+                                aria-label={`${t("Review coupon")} ${c.code}`}
+                              >
+                                <Icon name="shield" width="16" height="16" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <span className={`badge ${c.isActive ? 'badge--ok' : 'badge--neutral'}`}>
+                                <span className="badge__glyph" aria-hidden="true">{t(c.isActive ? '✓' : '⊘')}</span>
+                                {t(c.isActive ? 'Active' : 'Disabled')}
+                              </span>
+                              {c.approvalState === 'Rejected' ? (
+                                <span className="badge badge--danger" style={{ display: 'inline-flex', marginTop: '3px' }}>
+                                  <span className="badge__glyph" aria-hidden="true">{t("✕")}</span>
+                                  {t("Refused")}
+                                </span>
+                              ) : null}
+                              {c.expiresAt && new Date(c.expiresAt) < new Date() ? (
+                                <span className="badge badge--danger" style={{ display: 'inline-flex', marginTop: '3px' }}>
+                                  <span className="badge__glyph" aria-hidden="true">{t("✕")}</span>
+                                  {t("Expired")}
+                                </span>
+                              ) : c.startsAt && new Date(c.startsAt) > new Date() ? (
+                                <span className="badge badge--warn" style={{ display: 'inline-flex', marginTop: '3px' }}>
+                                  <span className="badge__glyph" aria-hidden="true">{t("◔")}</span>
+                                  {t("Scheduled")}
+                                </span>
+                              ) : null}
+                              {c.approvalState === 'Rejected' && c.rejectionReason ? (
+                                <small className="muted cell-sub registry-review__reason">
+                                  {t("Reason:")} {c.rejectionReason}
+                                </small>
+                              ) : c.approvalState === 'Approved' && c.reviewedByEmail ? (
+                                <small className="muted cell-sub">
+                                  {t("Signed off by")} {c.reviewedByEmail}
+                                </small>
+                              ) : null}
+                            </>
+                          )}
                         </td>
 
                       </tr>
@@ -2505,6 +2740,111 @@ export function AdminPage() {
         </section>
       ) : null}
 
+      {/* The second signature: a coupon past the shop's approval threshold waits here. */}
+      {reviewingCoupon && (() => {
+        const c = reviewingCoupon;
+        const writtenByMe = !!user?.email && c.submittedByEmail?.toLowerCase() === user.email.toLowerCase();
+        return (
+          <Modal
+            open
+            onClose={() => setReviewingCoupon(null)}
+            title={(
+              <span className="modal__title">
+                <Icon name="shield" width={15} height={15} />
+                {t("Second signature")}
+                <span className="modal__code mono">{c.code}</span>
+              </span>
+            )}
+            footer={(
+              <>
+                <button type="button" className="btn btn--outline btn--sm" onClick={() => setReviewingCoupon(null)}>
+                  {t("Close")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--outline btn--sm review-refuse"
+                  onClick={refuseCoupon}
+                  disabled={rejectCoupon.isPending}
+                >
+                  {t(rejectCoupon.isPending ? "Saving…" : "Refuse")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn--primary btn--sm"
+                  onClick={releaseCoupon}
+                  disabled={approveCoupon.isPending || writtenByMe}
+                  title={writtenByMe ? t("You wrote this coupon, so another administrator has to sign it off.") : undefined}
+                >
+                  {t(approveCoupon.isPending ? "Saving…" : "Approve and release")}
+                </button>
+              </>
+            )}
+          >
+            <div className="stack" style={{ gap: 'var(--space-4)' }}>
+              <p className="review-lead">
+                {t("This discount is past the limit one administrator may grant alone. Read the figures below, then sign it off or refuse it — either way it is written to the audit log.")}
+              </p>
+
+              <dl className="review-facts">
+                <div>
+                  <dt>{t("Discount")}</dt>
+                  <dd>{c.discountType === 'Percentage' ? `${c.discountValue}% ${t("off")}` : `${t("BDT")} ${c.discountValue} ${t("off")}`}</dd>
+                </div>
+                <div>
+                  <dt>{t("Reaches")}</dt>
+                  <dd>{describeScopeRules(c.scopeRules ?? [], c.scopeMatch ?? 'Any')}</dd>
+                </div>
+                <div>
+                  <dt>{t("Minimum order")}</dt>
+                  <dd>{c.minOrderAmount > 0 ? formatMoney(c.minOrderAmount) : t("None (Any amount)")}</dd>
+                </div>
+                <div>
+                  <dt>{t("Largest a single order pays")}</dt>
+                  <dd>{c.maxDiscountCap ? formatMoney(c.maxDiscountCap) : t("No cap")}</dd>
+                </div>
+              </dl>
+
+              <div className="review-submitter">
+                <Icon name="user" width={13} height={13} aria-hidden="true" />
+                {t("Written by")} {c.submittedByEmail ?? t("an administrator who has since left")}
+                {c.submittedAt ? ` · ${formatDateTime(c.submittedAt)}` : ''}
+              </div>
+
+              {writtenByMe ? (
+                <p className="review-self">
+                  <Icon name="ban" width={13} height={13} aria-hidden="true" />
+                  {t("You wrote this coupon, so another administrator has to sign it off.")}
+                </p>
+              ) : null}
+
+              <OrderReplayPanel
+                scope={scopeFromCoupon(c)}
+                discountType={c.discountType}
+                discountValue={c.discountValue}
+                maxDiscountCap={c.maxDiscountCap ?? null}
+                minOrderAmount={c.minOrderAmount}
+                ready
+              />
+
+              <div className="field">
+                <label htmlFor="review-reason">{t("If you refuse, say why")}</label>
+                <textarea
+                  id="review-reason"
+                  rows={2}
+                  placeholder={t("e.g. too generous for this week's budget")
+                  }
+                  value={reviewReason}
+                  onChange={(e) => setReviewReason(e.target.value)}
+                />
+                <span className="hint">
+                  {t("The writer sees this line on the coupon row, so a few clear words are enough.")}
+                </span>
+              </div>
+            </div>
+          </Modal>
+        );
+      })()}
+
       {/* Edit Coupon */}
       {editingCoupon && (
         <Modal
@@ -2537,7 +2877,7 @@ export function AdminPage() {
                   return;
                 }
                 try {
-                  await updateCoupon.mutateAsync({
+                  const saved = await updateCoupon.mutateAsync({
                     id: editingCoupon.id,
                     discountValue: Number(editDiscountValue),
                     minOrderAmount: Number(editMinOrder) || 0,
@@ -2553,7 +2893,9 @@ export function AdminPage() {
                     exclusivity: editScope.exclusivity,
                     minEligibleAmount: Number(editScope.minEligibleAmount) || 0
                   });
-                  toast.push('success', `Coupon ${editingCoupon.code} updated.`);
+                  toast.push('success', saved.approvalState === 'Pending'
+                    ? `Coupon ${saved.code} updated. ${t('It waits for a second administrator to approve it before it goes live.')}`
+                    : `Coupon ${saved.code} updated.`);
                   setEditingCoupon(null);
                 } catch (err) {
                   toast.pushError(err);
@@ -2651,6 +2993,15 @@ export function AdminPage() {
                     />
                   </div>
                 </div>
+
+                <OrderReplayPanel
+                  scope={editScope}
+                  discountType={editingCoupon.discountType}
+                  discountValue={Number(editDiscountValue) || 0}
+                  maxDiscountCap={editMaxCap ? Number(editMaxCap) : null}
+                  minOrderAmount={Number(editMinOrder) || 0}
+                  ready={scopeIsComplete(editScope) && (Number(editDiscountValue) || 0) > 0}
+                />
               </div>
 
               <div className="modal-section">

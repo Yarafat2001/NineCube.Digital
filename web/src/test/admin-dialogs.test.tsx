@@ -64,6 +64,25 @@ describe('Admin record dialogs', () => {
     expect(await screen.queryByRole('dialog', { name: /edit coupon/i })).toBeNull();
   });
 
+  it('keeps the actions in the dialog itself, so a long record cannot hide them below the fold', async () => {
+    server.use(http.get(`${API}/api/coupons`, () => HttpResponse.json([coupon()])));
+    await openAdmin('Coupons');
+
+    const dialog = await openCouponEditor();
+    const body = dialog.querySelector('.modal__body');
+    const footer = dialog.querySelector('.modal__footer');
+    expect(body).not.toBeNull();
+    expect(footer).not.toBeNull();
+    // The fields scroll inside .modal__body and the footer is the dialog's own row: a footer that
+    // lived inside the scrolling stack sat 303px below the fold on a phone, under the reason field
+    // it is meant to confirm.
+    expect(footer?.parentElement).toBe(dialog);
+    expect(body?.contains(footer as Node)).toBe(false);
+    expect(footer?.querySelectorAll('.btn').length).toBeGreaterThanOrEqual(2);
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+  });
+
   it('labels every editor control and groups it under the builder section titles', async () => {
     server.use(http.get(`${API}/api/coupons`, () => HttpResponse.json([coupon()])));
     await openAdmin('Coupons');

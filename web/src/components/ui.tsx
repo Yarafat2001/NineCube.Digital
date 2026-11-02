@@ -255,7 +255,7 @@ export function Modal({ open, title, onClose, children, footer, size = 'lg', foo
           <button type="button" className="btn btn--ghost btn--sm" onClick={onClose} aria-label={t("Close dialog")}>
             {t("✕")}</button>
         </div>
-        <div className="stack" style={{ marginTop: 'var(--space-4)' }}>
+        <div className="stack modal__body" style={{ marginTop: 'var(--space-4)' }}>
           {t(children)}
         </div>
         {footer ? <div className={footerClassName ? `modal__footer ${footerClassName}` : 'modal__footer'}>{t(footer)}</div> : null}

@@ -46,6 +46,14 @@ public sealed class AdminEndpoints : IEndpoint
         group.MapPut("/settings", UpdateSettingsAsync)
             .WithName("AdminUpdateSettings")
             .WithSummary("Updates global application settings.");
+
+        group.MapGet("/discount-policy", GetDiscountPolicyAsync)
+            .WithName("AdminGetDiscountPolicy")
+            .WithSummary("Reads the store's own discount limits and what the discounts so far this week actually cost.");
+
+        group.MapPut("/discount-policy", UpdateDiscountPolicyAsync)
+            .WithName("AdminUpdateDiscountPolicy")
+            .WithSummary("Saves the store's discount limits. Coupons that break a limit are refused with the number that broke it.");
     }
 
     public static async Task<Results<Ok<PagedResult<AdminUserDto>>, ProblemHttpResult>> ListUsersAsync(
@@ -120,5 +128,21 @@ public sealed class AdminEndpoints : IEndpoint
         await ValidationHelper.ValidateAsync(validator, settings, ct);
         var updated = await admin.UpdateSettingsAsync(settings, ct);
         return TypedResults.Ok(updated);
+    }
+
+    public static async Task<Results<Ok<DiscountPolicyView>, ProblemHttpResult>> GetDiscountPolicyAsync(
+        IDiscountPolicyService discountPolicy,
+        CancellationToken ct)
+    {
+        return TypedResults.Ok(await discountPolicy.GetViewAsync(ct));
+    }
+
+    public static async Task<Results<Ok<DiscountPolicyView>, ProblemHttpResult>> UpdateDiscountPolicyAsync(
+        DiscountPolicy request,
+        IDiscountPolicyService discountPolicy,
+        CancellationToken ct)
+    {
+        await discountPolicy.SaveAsync(request, ct);
+        return TypedResults.Ok(await discountPolicy.GetViewAsync(ct));
     }
 }

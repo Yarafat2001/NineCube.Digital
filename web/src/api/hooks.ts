@@ -19,6 +19,10 @@ import type {
   UserRole,
   Coupon,
   CouponValidationResult,
+  CouponOrderReplayRequest,
+  CouponOrderReplayResult,
+  DiscountPolicy,
+  DiscountPolicyView,
   CouponScopePreview,
   CouponScopePreviewRequest,
   CreateCouponPayload,
@@ -55,6 +59,7 @@ export const queryKeys = {
   adminUsers: (params: { q: string; page: number }) => ['admin-users', params] as const,
   auditLogs: (params: { action: string; page: number }) => ['admin-audit', params] as const,
   settings: ['admin-settings'] as const,
+  discountPolicy: ['admin-discount-policy'] as const,
   profile: ['me-profile'] as const,
   dashboard: ['me-dashboard'] as const,
   unreadCount: ['notifications', 'unread-count'] as const,
@@ -438,6 +443,26 @@ export function useUpdateSettings() {
   });
 }
 
+export function useDiscountPolicy(enabled: boolean) {
+  const request = useAuthedRequest();
+  return useQuery({
+    queryKey: queryKeys.discountPolicy,
+    queryFn: () => request<DiscountPolicyView>('/api/admin/discount-policy'),
+    enabled
+  });
+}
+
+export function useUpdateDiscountPolicy() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+
+  return useMutation({
+    mutationFn: (body: DiscountPolicy) =>
+      request<DiscountPolicyView>('/api/admin/discount-policy', { method: 'PUT', body }),
+    onSuccess: () => invalidate([queryKeys.discountPolicy, queryKeys.coupons, ['admin-audit']])
+  });
+}
+
 export function useCategories(includeInactive = false) {
   const request = useAuthedRequest();
   return useQuery({ queryKey: ['categories', includeInactive], queryFn: () => request<Category[]>(`/api/categories?includeInactive=${includeInactive}`), refetchInterval: 15_000 });
@@ -702,6 +727,34 @@ export function useToggleCouponStatus() {
     mutationFn: ({ id, isActive }: { id: number; isActive: boolean }) =>
       request<{ success: boolean; isActive: boolean }>(`/api/coupons/${id}/status?isActive=${isActive}`, { method: 'PUT' }),
     onSuccess: () => invalidate([queryKeys.coupons])
+  });
+}
+
+/** Read-only: what this coupon would have done to the shop's own past orders. */
+export function useReplayCouponAgainstOrders() {
+  const request = useAuthedRequest();
+  return useMutation({
+    mutationFn: (payload: CouponOrderReplayRequest) =>
+      request<CouponOrderReplayResult>('/api/coupons/order-replay', { method: 'POST', body: payload })
+  });
+}
+
+export function useApproveCoupon() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: (id: number) => request<Coupon>(`/api/coupons/${id}/approve`, { method: 'PUT' }),
+    onSuccess: () => invalidate([queryKeys.coupons, ['campaigns'], queryKeys.discountPolicy])
+  });
+}
+
+export function useRejectCoupon() {
+  const request = useAuthedRequest();
+  const invalidate = useInvalidate();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: number; reason: string }) =>
+      request<Coupon>(`/api/coupons/${id}/reject`, { method: 'PUT', body: { reason } }),
+    onSuccess: () => invalidate([queryKeys.coupons, ['campaigns']])
   });
 }
 

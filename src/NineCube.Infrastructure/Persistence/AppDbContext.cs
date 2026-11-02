@@ -338,9 +338,12 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(c => c.TargetType).HasConversion<string>().HasMaxLength(32);
             e.Property(c => c.ScopeMatch).HasConversion<string>().HasMaxLength(16);
             e.Property(c => c.Exclusivity).HasConversion<string>().HasMaxLength(24);
+            e.Property(c => c.ApprovalState).HasConversion<string>().HasMaxLength(24);
+            e.Property(c => c.RejectionReason).HasMaxLength(500);
             e.Property(c => c.CampaignTitle).HasMaxLength(200);
             e.Property(c => c.CreatedAt);
             e.HasIndex(c => c.Code).IsUnique();
+            e.HasIndex(c => c.ApprovalState);
             e.HasMany(c => c.ScopeRules).WithOne(r => r.Coupon)
                 .HasForeignKey(r => r.CouponId).OnDelete(DeleteBehavior.Cascade);
         });

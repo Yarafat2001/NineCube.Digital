@@ -1,5 +1,149 @@
 # FIX_REPORT
 
+# Round 14 — the shop sets its own discount limits, sees the cost against real orders, and needs a second signature above the line
+
+Date: 2026-11-02. Brief: "you can not suggest any better moderation as modern unique system", then
+"you apply those will make this system unique others existing systems", then "ok apply". Three phases,
+in the order they were approved: the store's own discount policy, a coupon replayed against the last
+30 days of real orders, and a second administrator's signature for anything past the line.
+
+## What the screen could not do before
+
+- Any administrator could release any discount. A 90% voucher, a BDT 5,000 flat cut on a BDT 6,000
+  basket — the API checked the code was unique and the numbers were non-negative, and nothing else.
+- There was no figure anywhere that said what a coupon would cost. The reach preview from Round 12
+  counts stock and products; it never mentioned money.
+- One person wrote a coupon and one person released it, with no trace of who, and no way to say no.
+
+## Phase 1 — the store's limits, refused in its own words
+
+`DiscountPolicyGuard` is a pure class holding the sentences, and `DiscountPolicyService` reads six
+numbers from the `Setting` table — the same place the low stock threshold lives, under the same
+ten-minute cache — so an unset limit is simply `0` and means "no check". The six: highest rate, most
+one coupon may take off an order, biggest share of a single order, a rolling weekly promo budget, and
+the two second-signature thresholds.
+
+The guard is called from four places on purpose — create, edit, switch-on, and approve — so a coupon
+cannot be saved past a limit, then flicked live through the status endpoint. A refusal comes back as a
+400 with the shop's own arithmetic, sentences like:
+
+> A 40% coupon passes your BDT 2,000 ceiling once an order reaches BDT 5,000. Set this coupon's
+> maximum discount to BDT 2,000 or less.
+
+> This gives BDT 500 off a BDT 600 order — 83.3% of it. Your policy allows 30%.
+
+A threshold nobody can reach is refused at save time as well: setting the second-signature line above
+the hard maximum would queue nothing, so the API says so. Coupons already live are untouched until
+somebody saves them — the policy bites on write, not on read.
+
+## Phase 2 — the same coupon against the shop's own order history
+
+`POST /api/coupons/order-replay` runs the scope rules from Round 12 over delivered and shipped order
+rows in the last 30 days and returns the orders it would have hit, the total giveaway, the average per
+order, the share of qualifying value, what the shop actually gave away in that window, the top five
+products by giveaway, and any note the operator needs. A shop with no orders in the window is told
+exactly that instead of being shown a zero — `hasOrders` is measured on the window, not on the
+qualifying subset, which is the distinction between "nothing matched" and "there was nothing to match".
+
+The plate renders in the coupon builder as the numbers are typed, and again inside the review dialog,
+so the person signing has the cost in front of them rather than a percentage to imagine.
+
+## Phase 3 — past the line, two names are needed
+
+Six columns arrived with `AddCouponApprovalTrail`: approval state, the writer and the time they wrote
+it, the reviewer, the review time, and the refusal reason. A coupon over either signature threshold is
+created as `Pending` and stays switched off; the registry row reads "Awaiting approval · Written by
+writer@…" with a shield button, and the status segmented control gains a "To approve" option with the
+count in it. Approving as the same person who wrote it is refused with a 409 and `code: self_approval`
+— "You wrote PEND2, so a second administrator has to approve it" — and the dialog disables Approve and
+says the same thing in plain words before anyone clicks. Both decisions write an audit entry
+(`CouponSubmittedForApproval`, `CouponApproved`, and the refusal with its reason). A refused coupon
+carries the reason on its row, and switching it on by hand is refused until it goes back for approval.
+
+## The numbers off the running screen
+
+The real app at 1440 × 900 and 390 × 844, light and dark, driven by Playwright against the project's
+own MSW fixtures behind a throwaway local port. Every figure below was read out of the DOM with
+`getComputedStyle` and `getBoundingClientRect`.
+
+| Surface | Measured |
+| --- | --- |
+| Page horizontal overflow | 0px at both widths, both themes |
+| Policy panel | badge "✓ Limits on"; six inputs at 16px, none clipped; weekly meter 239/684px light `#F59E0B`, dark `#ffab4d`, 102/290px at 390 — BDT 350 given away of a BDT 1,000 budget |
+| Policy actions | Save 110 × 41; Discard appears only on a dirty draft at 129 × 32 and puts the typed 28 back to 30 |
+| Guardrail refusal | toast reads "Your policy allows at most 30% off. This coupon gives 45%." — the API's sentence, not a paraphrase |
+| Replay plate in the builder | 10% storewide: 4/5 orders, BDT 506.57 total, BDT 126.64 average, 10% share, top line "Apple iPhone 17 Pro 256GB, Black (83170042) · 2 orders · 2 units · BDT 299.80"; plate 780 × 290 at 1440 and 332 × 436 at 390; four figures at 15px, none wrapped |
+| Queue in the registry | "To approve 3" → 2 after a refusal → 1 after an approval; Awaiting-approval badge `rgb(254,243,199)` light / `rgb(73,53,27)` dark; shield 38 × 38 at opacity 1 with no hover needed |
+| After the decision | row reads "Reason: Too deep for a storewide sale." (237 × 22 at 14px) and "Signed off by admin@ninecube.demo" on the approved one |
+| Review dialog | 640 × 792 dead-centre with 400px gutters at 1440; 358 × 743 with 16px gutters at 390; four fact rows; its own replay plate showing BDT 1,510.01 / BDT 377.50 / 29.8%; zero clipped descendants |
+| Toast after refusing | "PEND1 has been refused. The writer sees your reason." |
+
+## One thing this round had to fix on the way: the dialog's buttons were off screen
+
+The review dialog is tall by design — the lead, four facts, the writer, the replay plate and the reason
+field — and `.modal` scrolled as one box. Measured before the change: "Approve and release" sat at
+y = 846 with the screen ending at 900 on a laptop, **32px below the fold**, and at y = 1117 on a phone
+with 844 of viewport, **303px below it**. The one decision the dialog exists for needed a hunt.
+
+The shared `Modal` (`web/src/components/ui.tsx`) is now three parts: the heading, a `.modal__body` that
+scrolls, and the footer as the dialog's own row. Measured after: footer bottom sits 25px above the
+dialog's edge and fully inside the viewport at both widths, with the buttons at 60 / 68 / 156 × 32; the
+heading stays put while its fields scroll. The same numbers were read on the other dialogs that share
+the component — Edit Coupon (792px tall, body scrolls, actions in view), the bulk-delete confirm
+(340px at 1440, 365px at 390, no scroll needed) and Edit Gift Card (495px and 597px, no scroll) — and
+one test in `admin-dialogs.test.tsx` now fails if the footer is ever moved back inside the scrolling
+stack.
+
+## Two readings I want on the record, because one was my mistake
+
+- A real one: the refusal for a switched-on refused coupon came out as "HUGE30 was refused: Too deep
+  for a storewide sale.. Edit it and it goes back for approval." — a full stop twice, because the
+  reviewer's own reason already ended with one. `CouponService` now ends the clause with exactly one
+  sentence mark whether the reason had one or not, and the backend test asserts the whole corrected
+  string so it cannot drift back.
+- My mistake, not the app's: on an early pass the amber selected-row fill measured
+  `rgba(0, 0, 0, 0)`, and I reported it as missing. The row fills over its own 150ms
+  `background-color` transition, and I had read the frame right after the click. Read after the
+  transition it is `rgb(255, 241, 214)` in light and `rgba(245, 151, 38, 0.16)` in dark, with the
+  `inset 3px 0 0 #D97706` bar. Nothing was broken; the measurement was. Every pass in the table above
+  now waits for the transition.
+
+## Gates and suites
+
+Backend: `dotnet build -c Release` clean, 0 warnings and 0 errors. `CouponModerationTests`,
+`DiscountPolicyGuardTests`, `CouponScopeTests` and `CouponScopeMatcherTests` pass 83 tests with 0
+failures — the first and the third against a real `postgres:18-alpine` Testcontainer, the other two as
+pure unit tests. Frontend: `npx tsc --noEmit` clean, `npm run i18n:check` clean at 1,821 entries,
+`npx vitest run` 221 tests in 32 files (16 of them new this round — the fifteen moderation cases plus
+the dialog structure guard), `npm run build` clean with `AdminPage-*.js` at 98.89 kB / 21.90 kB gzip.
+
+## How this was verified, and what it does not prove
+
+The browser pass ran the real app against a stub of the API, not the .NET API: no seeded Postgres was
+involved, and the replay figures in the table above come from the fixture order history — six orders,
+four of them storewide-qualifying — while the money maths itself is proven by the container tests. The
+stub's refusal sentences were rewritten branch-for-branch against `DiscountPolicyGuard` so the UI is
+shown the server's actual words; that is what makes those readings worth anything. One caveat about
+the stub itself: the harness answers as one identity, so the queue had to be seeded as
+writer@ninecube.demo and reviewed as admin@ninecube.demo through a switch the harness exposes — the
+live shop gets that from the JWT subject, which is where it belongs.
+
+The live end-to-end spec `web/e2e/coupon-scope-ui.spec.ts` still needs the owner to run it with
+`NINECUBE_SEED_PASSWORD` set. Nothing about the harness survives the run: the config and its scripts
+lived in `web/.ui-harness/` and are deleted, and `git status` is clean of them.
+
+Loose ends on this machine, none of them the project's: stale dev/stub servers are still listening on
+127.0.0.1:5178, 5199, 5221 and 5241 (the last two are this round's harness, the first is Round 13's).
+Killing arbitrary processes is blocked here, so they need to be ended by hand; the repo points at none
+of them. The verification container `ninecube-verify-pg` on port 5433 is also still up.
+
+## Left alone deliberately
+
+The navbar's amber selected tab and the amber selected-row fill — this round touched the shared dialog,
+not either of them. The scope rule engine, the stacking policy and the Round 12 reach preview are
+untouched; the replay plate reads the same scope rules, it does not reinterpret them. Stock is still
+not editable from any bulk path, including the new policy and queue screens.
+
 # Round 13 — the Coupons & Discounts screen now does what its own tooltips promise
 
 Date: 2026-11-02. Brief: "Coupons & Discount page design & make more user-friendly possible to handle it

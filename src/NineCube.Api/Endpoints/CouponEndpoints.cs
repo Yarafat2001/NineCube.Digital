@@ -42,6 +42,11 @@ public sealed class CouponEndpoints : IEndpoint
             .WithName("PreviewCouponScope")
             .WithSummary("Runs a draft coupon scope against the live catalogue and reports the stock value it reaches.");
 
+        group.MapPost("/order-replay", ReplayOrdersAsync)
+            .RequireAuthorization(Policies.AdministratorOnly)
+            .WithName("ReplayCouponAgainstOrders")
+            .WithSummary("Runs a coupon's scope and rate over the shop's own past orders and reports what it would have cost.");
+
         group.MapGet("/", ListCouponsAsync)
             .RequireAuthorization(Policies.AdministratorOnly)
             .WithName("ListCoupons")
@@ -56,6 +61,16 @@ public sealed class CouponEndpoints : IEndpoint
             .RequireAuthorization(Policies.AdministratorOnly)
             .WithName("ToggleCouponStatus")
             .WithSummary("Enables or disables an existing coupon.");
+
+        group.MapPut("/{id:int}/approve", ApproveCouponAsync)
+            .RequireAuthorization(Policies.AdministratorOnly)
+            .WithName("ApproveCoupon")
+            .WithSummary("Releases a coupon waiting on approval. Only a second administrator may do it.");
+
+        group.MapPut("/{id:int}/reject", RejectCouponAsync)
+            .RequireAuthorization(Policies.AdministratorOnly)
+            .WithName("RejectCoupon")
+            .WithSummary("Refuses a coupon waiting on approval and records why, in the reviewer's own words.");
 
         group.MapPut("/{id:int}", UpdateCouponAsync)
             .RequireAuthorization(Policies.AdministratorOnly)
@@ -92,6 +107,15 @@ public sealed class CouponEndpoints : IEndpoint
     {
         var preview = await couponService.PreviewScopeAsync(request, ct);
         return TypedResults.Ok(preview);
+    }
+
+    public static async Task<Results<Ok<CouponOrderReplayResult>, ProblemHttpResult>> ReplayOrdersAsync(
+        CouponOrderReplayRequest request,
+        ICouponService couponService,
+        CancellationToken ct)
+    {
+        var replay = await couponService.ReplayAgainstOrdersAsync(request, ct);
+        return TypedResults.Ok(replay);
     }
 
     public static async Task<Results<Ok<IReadOnlyList<CouponDto>>, ProblemHttpResult>> GetActiveCampaignsAsync(
@@ -149,6 +173,25 @@ public sealed class CouponEndpoints : IEndpoint
         CancellationToken ct)
     {
         var coupon = await couponService.UpdateCouponAsync(id, request, ct);
+        return TypedResults.Ok(coupon);
+    }
+
+    public static async Task<Results<Ok<CouponDto>, ProblemHttpResult>> ApproveCouponAsync(
+        int id,
+        ICouponService couponService,
+        CancellationToken ct)
+    {
+        var coupon = await couponService.ApproveCouponAsync(id, ct);
+        return TypedResults.Ok(coupon);
+    }
+
+    public static async Task<Results<Ok<CouponDto>, ProblemHttpResult>> RejectCouponAsync(
+        int id,
+        RejectCouponRequest request,
+        ICouponService couponService,
+        CancellationToken ct)
+    {
+        var coupon = await couponService.RejectCouponAsync(id, request, ct);
         return TypedResults.Ok(coupon);
     }
 

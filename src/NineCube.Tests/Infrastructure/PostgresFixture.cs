@@ -41,6 +41,11 @@ public sealed class PostgresFixture : IAsyncLifetime
     {
         await using var db = NewDbContext();
 
+        // The store's discount limits are rows in Settings, so a leftover cap from one test would silently
+        // refuse a coupon in the next one. Audit rows and administrators are cleared for the same reason.
+        await db.AuditLogs.ExecuteDeleteAsync();
+        await db.Settings.ExecuteDeleteAsync();
+        await db.Users.ExecuteDeleteAsync();
         // Coupons cascade their rules; the catalogue rows have no coupon dependency.
         await db.Coupons.ExecuteDeleteAsync();
         await db.Orders.ExecuteDeleteAsync();

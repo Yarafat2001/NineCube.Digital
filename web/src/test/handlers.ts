@@ -107,6 +107,12 @@ export let demoCoupons: Array<{
   isAutomatic?: boolean;
   campaignTitle?: string | null;
   isBannerPromoted?: boolean;
+  approvalState?: 'NotRequired' | 'Pending' | 'Approved' | 'Rejected';
+  submittedByEmail?: string | null;
+  reviewedByEmail?: string | null;
+  submittedAt?: string | null;
+  reviewedAt?: string | null;
+  rejectionReason?: string | null;
   createdAt: string;
 }> = [
   { id: 1, code: 'SAVE10', discountType: 'Percentage', discountValue: 10, minOrderAmount: 0, maxDiscountCap: 1500, targetType: 'Order', expiresAt: null, usageLimit: null, usageCount: 2, isActive: true, isBannerPromoted: true, campaignTitle: '⚡ Welcome Deal: 10% OFF Storewide with code SAVE10', createdAt: '2026-10-15T08:00:00Z' },
@@ -117,6 +123,95 @@ export let demoCoupons: Array<{
 { id: 6, code: 'APEX15', discountType: 'Percentage', discountValue: 15, minOrderAmount: 500, maxDiscountCap: 1500, targetType: 'Brand', targetId: 1, expiresAt: null, usageLimit: null, usageCount: 0, isActive: true, isBannerPromoted: true, campaignTitle: '🏷️ Apex Exclusive: 15% OFF All Apex Shoes with code APEX15', createdAt: '2026-10-15T08:00:00Z' },
   { id: 5, code: 'AUTO2000', discountType: 'Percentage', discountValue: 10, minOrderAmount: 2000, maxDiscountCap: 2000, targetType: 'Order', isAutomatic: true, isActive: true, isBannerPromoted: true, campaignTitle: '⚡ Auto-Promo: 10% OFF on BDT 2,000+ orders', createdAt: '2026-10-15T08:00:00Z', usageLimit: null, usageCount: 0, expiresAt: null }
 ];
+
+/** The registry as the fixtures declare it, so a test that creates or signs off a coupon can undo it. */
+const baseCoupons = structuredClone(demoCoupons);
+
+/**
+ * The shop's own discount limits and the giveaway they have already paid for. The stub keeps them in
+ * module state so a test can save a policy and watch the builder refuse or queue the next coupon;
+ * `resetCommerceFixtures` puts them back, because Vitest reuses this module across a file.
+ */
+const emptyPolicy = {
+  maxPercentageOff: 0,
+  maxAmountPerOrder: 0,
+  maxShareOfOrder: 0,
+  weeklySpendCap: 0,
+  approvalAbovePercentage: 0,
+  approvalAboveAmount: 0
+};
+
+export let demoDiscountPolicy = { ...emptyPolicy };
+
+export let demoPromoSpendLast7Days = 350;
+
+/** Who is at the keyboard in a stubbed run: the review dialog compares this with a coupon's writer. */
+export let demoSessionEmail = 'writer@ninecube.demo';
+
+const daysAgo = (days: number) => new Date(Date.now() - days * 86_400_000).toISOString();
+
+/**
+ * Past orders the replay endpoint measures. Line prices are snapshots, exactly as the real rows store
+ * them, so a scoped coupon can be checked against products the catalogue has since moved on from.
+ */
+type ReplayOrder = {
+  createdAt: string;
+  subTotal: number;
+  status: string;
+  discountAmount: number;
+  lines: Array<{ productId: number; quantity: number; unitPrice: number }>;
+};
+
+const baseOrderHistory: ReplayOrder[] = [
+  { createdAt: daysAgo(3), subTotal: 1499, status: 'Delivered', discountAmount: 150, lines: [{ productId: 5, quantity: 1, unitPrice: 1499 }] },
+  { createdAt: daysAgo(5), subTotal: 1578.8, status: 'Delivered', discountAmount: 0, lines: [{ productId: 5, quantity: 1, unitPrice: 1499 }, { productId: 2, quantity: 2, unitPrice: 39.9 }] },
+  { createdAt: daysAgo(9), subTotal: 288.9, status: 'Shipped', discountAmount: 0, lines: [{ productId: 1, quantity: 1, unitPrice: 249 }, { productId: 2, quantity: 1, unitPrice: 39.9 }] },
+  { createdAt: daysAgo(12), subTotal: 1699, status: 'Delivered', discountAmount: 200, lines: [{ productId: 6, quantity: 1, unitPrice: 1699 }] },
+  { createdAt: daysAgo(20), subTotal: 1088.5, status: 'Cancelled', discountAmount: 0, lines: [{ productId: 7, quantity: 1, unitPrice: 999 }, { productId: 3, quantity: 1, unitPrice: 89.5 }] },
+  { createdAt: daysAgo(45), subTotal: 1499, status: 'Delivered', discountAmount: 0, lines: [{ productId: 5, quantity: 1, unitPrice: 1499 }] }
+];
+
+export let demoOrderHistory: ReplayOrder[] = [...baseOrderHistory];
+
+/**
+ * Sign the stub API in as another administrator. The real server takes the second signature from the
+ * caller's token, so a test that swaps the session it sends to /api/auth/me has to move this too.
+ */
+export function setDemoSessionEmail(email: string) {
+  demoSessionEmail = email;
+}
+
+/** Back to "no limits, nothing queued, the shop has orders" between tests in one file. */
+export function resetCommerceFixtures() {
+  demoDiscountPolicy = { ...emptyPolicy };
+  demoPromoSpendLast7Days = 350;
+  demoSessionEmail = 'writer@ninecube.demo';
+  demoOrderHistory = [...baseOrderHistory];
+  demoCoupons = structuredClone(baseCoupons);
+}
+
+/** A shop with no order history at all: the replay must say so instead of showing a figure. */
+export function clearDemoOrderHistory() {
+  demoOrderHistory = [];
+}
+
+/** A shop that has already written its own limits, so a test can start from a guarded store. */
+export function seedDiscountPolicy(over: Partial<typeof emptyPolicy> = {}) {
+  demoDiscountPolicy = { ...emptyPolicy, ...over };
+}
+
+/** Queue one coupon by hand, the way a policy over the approval threshold would. */
+export function seedPendingCoupon(over: Record<string, unknown> = {}) {
+  demoCoupons.push({
+    id: 20, code: 'BOLD40', discountType: 'Percentage', discountValue: 40, minOrderAmount: 0,
+    maxDiscountCap: null, targetType: 'Order', expiresAt: null, usageLimit: null, usageCount: 0,
+    isActive: false, campaignTitle: null, isBannerPromoted: false, minEligibleAmount: 0,
+    scopeMatch: 'Any', exclusivity: 'BestOnly', scopeRules: [],
+    approvalState: 'Pending', submittedByEmail: 'writer@ninecube.demo', submittedAt: daysAgo(1),
+    reviewedByEmail: null, reviewedAt: null, rejectionReason: null,
+    createdAt: daysAgo(1), ...over
+  } as (typeof demoCoupons)[number]);
+}
 
 export let demoGiftCards: Array<{
   id: number;
@@ -370,6 +465,114 @@ const couponRules = (coupon: (typeof demoCoupons)[number]): ScopeRuleLike[] => {
   return [{ attribute: coupon.targetType, entityIds: [coupon.targetId] }];
 };
 
+type CouponMoney = {
+  discountType?: 'Percentage' | 'FixedAmount';
+  discountValue?: number;
+  maxDiscountCap?: number | null;
+  minOrderAmount?: number;
+};
+
+/** The biggest taka one coupon could ever take off a single order. */
+const worstPerOrder = (body: CouponMoney): number => {
+  const value = Number(body.discountValue ?? 0);
+  const cap = body.maxDiscountCap ? Number(body.maxDiscountCap) : null;
+  if (body.discountType === 'FixedAmount') return Math.min(value, cap ?? value);
+  return cap ?? Number.MAX_SAFE_INTEGER;
+};
+
+const taka = (value: number) => `BDT ${Math.round(value).toLocaleString('en-US')}`;
+const pct = (value: number) => `${Number(value.toFixed(2))}%`;
+
+/**
+ * The save-time refusal the API returns when a coupon breaks one of the shop's limits. The sentences are
+ * copied from `DiscountPolicyGuard.RefusalFor` in the same order it checks them, because the operator has
+ * to read the same refusal in a stubbed run as on the live shop.
+ */
+const policyRefusal = (body: CouponMoney): string | null => {
+  const policy = demoDiscountPolicy;
+  const value = Number(body.discountValue ?? 0);
+  const isRate = (body.discountType ?? 'Percentage') === 'Percentage';
+  const minOrder = Number(body.minOrderAmount ?? 0);
+
+  if (policy.maxPercentageOff > 0 && isRate && value > policy.maxPercentageOff) {
+    return `Your policy allows at most ${pct(policy.maxPercentageOff)} off. This coupon gives ${pct(value)}.`;
+  }
+
+  const ceiling = policy.maxAmountPerOrder;
+  if (ceiling > 0) {
+    if (isRate && !body.maxDiscountCap) {
+      if (value > 0) {
+        const breachingOrder = Math.ceil(ceiling / (value / 100));
+        if (minOrder >= breachingOrder) {
+          return `At this coupon's own minimum order of ${taka(minOrder)}, ${pct(value)} off is ` +
+                 `${taka((value * minOrder) / 100)}. Your policy caps one discount at ${taka(ceiling)}.`;
+        }
+
+        return `A ${pct(value)} coupon passes your ${taka(ceiling)} ceiling once an order reaches ` +
+               `${taka(breachingOrder)}. Set this coupon's maximum discount to ${taka(ceiling)} or less.`;
+      }
+    } else if (worstPerOrder(body) > ceiling) {
+      return isRate
+        ? `This coupon's maximum discount of ${taka(Number(body.maxDiscountCap))} is above your policy ceiling of ${taka(ceiling)}.`
+        : `This coupon takes ${taka(worstPerOrder(body))} off one order. Your policy caps one discount at ${taka(ceiling)}.`;
+    }
+  }
+
+  const share = policy.maxShareOfOrder;
+  if (share > 0) {
+    if (isRate) {
+      return value > share
+        ? `A ${pct(value)} coupon takes ${pct(value)} of the order it applies to. Your policy allows ${pct(share)}.`
+        : null;
+    }
+
+    const worst = worstPerOrder(body);
+    if (worst > 0) {
+      if (minOrder > 0) {
+        const taken = Math.round((worst / minOrder) * 1000) / 10;
+        return taken > share
+          ? `This gives ${taka(worst)} off a ${taka(minOrder)} order — ${pct(taken)} of it. Your policy allows ${pct(share)}.`
+          : null;
+      }
+
+      const floor = Math.ceil(worst / (share / 100));
+      return `${taka(worst)} off is more than ${pct(share)} of any order under ${taka(floor)}. ` +
+             `Give the coupon a minimum order of at least ${taka(floor)}, or lower the amount.`;
+    }
+  }
+
+  return null;
+};
+
+/** The refusal that blocks a new campaign while the week's giveaway already sits at or above the budget. */
+const campaignCapRefusal = (): string | null => {
+  const cap = demoDiscountPolicy.weeklySpendCap;
+  if (cap <= 0 || demoPromoSpendLast7Days < cap) return null;
+
+  return `Orders in the last 7 days already used ${taka(demoPromoSpendLast7Days)} of discounts, and your policy ` +
+         `allows ${taka(cap)} a week. No campaign can go live until that figure falls under the cap, so an older ` +
+         `day drops out of the window.`;
+};
+
+
+/** The refusal's reason clause, with one sentence mark however the reviewer wrote it (as on the server). */
+const refusalClause = (reason: string | null | undefined): string =>
+  !reason || !reason.trim() ? '. ' : `: ${reason.trim().replace(/[.!?]+$/, '')}. `;
+
+/** Past either approval threshold the coupon waits for a different administrator to sign it off. */
+const needsSecondSignature = (body: CouponMoney): boolean => {
+  const value = Number(body.discountValue ?? 0);
+  const isRate = (body.discountType ?? 'Percentage') === 'Percentage';
+
+  if (isRate) {
+    if (demoDiscountPolicy.approvalAbovePercentage > 0 && value > demoDiscountPolicy.approvalAbovePercentage) return true;
+    return demoDiscountPolicy.approvalAboveAmount > 0 &&
+      !!body.maxDiscountCap && Number(body.maxDiscountCap) > demoDiscountPolicy.approvalAboveAmount;
+  }
+
+  return demoDiscountPolicy.approvalAboveAmount > 0 && worstPerOrder(body) > demoDiscountPolicy.approvalAboveAmount;
+};
+
 /**
  * Default handlers describe the signed-out, healthy API. Individual tests override the
  * interesting endpoints with server.use(...).
@@ -609,6 +812,35 @@ export const handlers = [
   http.get(`${API}/api/admin/audit-logs`, () => HttpResponse.json(paged([]))),
   http.get(`${API}/api/admin/settings`, () => HttpResponse.json({ lowStockThreshold: 5 })),
 
+  http.get(`${API}/api/admin/discount-policy`, () =>
+    HttpResponse.json({ policy: demoDiscountPolicy, promoSpendLast7Days: demoPromoSpendLast7Days })),
+
+  http.put(`${API}/api/admin/discount-policy`, async ({ request }) => {
+    const body = (await request.json()) as Record<string, number>;
+    const next = { ...demoDiscountPolicy };
+    for (const key of Object.keys(next) as Array<keyof typeof next>) {
+      if (body[key] !== undefined) next[key] = Number(body[key]) || 0;
+    }
+
+    // Mirrors the server's own guard: a threshold above the hard limit could never be reached.
+    if (next.approvalAbovePercentage > 0 && next.maxPercentageOff > 0 && next.approvalAbovePercentage > next.maxPercentageOff) {
+      return HttpResponse.json({
+        title: 'Bad Request',
+        detail: `The approval threshold of ${pct(next.approvalAbovePercentage)} is above the maximum rate of ${pct(next.maxPercentageOff)}, so no coupon could ever reach it. Set the threshold at or below the maximum.`
+      }, { status: 400 });
+    }
+
+    if (next.approvalAboveAmount > 0 && next.maxAmountPerOrder > 0 && next.approvalAboveAmount > next.maxAmountPerOrder) {
+      return HttpResponse.json({
+        title: 'Bad Request',
+        detail: `The approval threshold of ${taka(next.approvalAboveAmount)} is above the maximum discount of ${taka(next.maxAmountPerOrder)}, so no coupon could ever reach it. Set the threshold at or below the maximum.`
+      }, { status: 400 });
+    }
+
+    demoDiscountPolicy = next;
+    return HttpResponse.json({ policy: next, promoSpendLast7Days: demoPromoSpendLast7Days });
+  }),
+
   // Enterprise endpoints
   http.post(`${API}/api/coupons/validate`, async ({ request }) => {
     const body = (await request.json()) as { code: string; subTotal: number };
@@ -755,6 +987,11 @@ export const handlers = [
 
   http.post(`${API}/api/coupons`, async ({ request }) => {
     const payload = (await request.json()) as any;
+
+    const refusal = policyRefusal(payload) ?? campaignCapRefusal();
+    if (refusal) return HttpResponse.json({ title: 'Bad Request', detail: refusal }, { status: 400 });
+
+    const queued = needsSecondSignature(payload);
     const newCoupon = {
       id: demoCoupons.length + 1,
       code: String(payload.code).toUpperCase(),
@@ -771,30 +1008,219 @@ export const handlers = [
       isBannerPromoted: payload.isBannerPromoted || false,
       usageLimit: payload.usageLimit ? Number(payload.usageLimit) : null,
       usageCount: 0,
-      isActive: true,
+      isActive: !queued,
       minEligibleAmount: Number(payload.minEligibleAmount || 0),
       scopeMatch: payload.scopeMatch || 'Any',
       exclusivity: payload.exclusivity || 'BestOnly',
       scopeRules: withScopeNames(payload.scopeRules),
+      approvalState: (queued ? 'Pending' : 'NotRequired') as 'Pending' | 'NotRequired',
+      submittedByEmail: queued ? demoSessionEmail : null,
+      submittedAt: queued ? new Date().toISOString() : null,
+      reviewedByEmail: null,
+      reviewedAt: null,
+      rejectionReason: null,
       createdAt: new Date().toISOString()
     };
     demoCoupons.push(newCoupon);
     return HttpResponse.json(newCoupon, { status: 201 });
   }),
 
+  /** The coupon run against the shop's own order history, the way the replay endpoint measures it. */
+  http.post(`${API}/api/coupons/order-replay`, async ({ request }) => {
+    const body = (await request.json()) as {
+      scopeRules?: ScopeRuleLike[];
+      scopeMatch?: string;
+      discountType: 'Percentage' | 'FixedAmount';
+      discountValue: number;
+      maxDiscountCap?: number | null;
+      minOrderAmount?: number;
+      minEligibleAmount?: number;
+      days?: number;
+    };
+
+    const days = Number(body.days ?? 30);
+    const since = Date.now() - days * 86_400_000;
+    const inWindow = demoOrderHistory.filter(o => new Date(o.createdAt).getTime() >= since);
+    const released = (status: string) => status === 'Cancelled' || status === 'Rejected';
+    const standing = inWindow.filter(o => !released(o.status));
+    const actualGiveaway = standing.reduce((sum, o) => sum + o.discountAmount, 0);
+    const rules = body.scopeRules ?? [];
+    const notes: string[] = [];
+
+    if (standing.length < inWindow.length) {
+      notes.push(`${inWindow.length - standing.length} of those orders were cancelled or rejected, so their discounts were never given and are left out of this replay.`);
+    }
+
+    if (standing.length === 0) {
+      notes.push(inWindow.length === 0
+        ? `There are no orders at all in the last ${days} days, so there is nothing here to measure.`
+        : `Every order in the last ${days} days was cancelled or rejected.`);
+
+      return HttpResponse.json({
+        daysLookedBack: days,
+        ordersInWindow: inWindow.length,
+        ordersQualified: 0,
+        totalGiveaway: 0,
+        averageGiveawayPerOrder: 0,
+        shareOfOrderValuePercent: 0,
+        actualGiveawayInWindow: money(actualGiveaway),
+        hasOrders: false,
+        topProducts: [],
+        notes
+      });
+    }
+
+    const minOrder = Number(body.minOrderAmount ?? 0);
+    const scopeFloor = Number(body.minEligibleAmount ?? 0);
+    const perProduct = new Map<number, { times: number; units: number; giveaway: number }>();
+    let total = 0, qualifyingRevenue = 0, belowMinimum = 0, outOfScope = 0, belowFloor = 0, qualified = 0;
+
+    for (const order of standing) {
+      if (order.subTotal < minOrder) { belowMinimum++; continue; }
+
+      const lines = order.lines.filter(l => {
+        const product = products.find(p => p.id === l.productId);
+        return product ? matchScope(product, rules, body.scopeMatch ?? 'Any') : rules.length === 0;
+      });
+      const eligible = lines.reduce((sum, l) => sum + l.quantity * l.unitPrice, 0);
+
+      if (eligible <= 0) { outOfScope++; continue; }
+      if (scopeFloor > 0 && eligible < scopeFloor) { belowFloor++; continue; }
+
+      const raw = body.discountType === 'Percentage'
+        ? eligible * (Number(body.discountValue) / 100)
+        : Math.min(Number(body.discountValue), eligible);
+      const giveaway = Math.min(body.maxDiscountCap ? Math.min(raw, Number(body.maxDiscountCap)) : raw, order.subTotal);
+      if (giveaway <= 0) continue;
+
+      total += giveaway;
+      qualifyingRevenue += order.subTotal;
+      qualified++;
+
+      for (const line of lines) {
+        const share = giveaway * (line.quantity * line.unitPrice) / eligible;
+        const current = perProduct.get(line.productId) ?? { times: 0, units: 0, giveaway: 0 };
+        perProduct.set(line.productId, { times: current.times + 1, units: current.units + line.quantity, giveaway: current.giveaway + share });
+      }
+    }
+
+    if (qualified === 0) {
+      if (belowMinimum === standing.length) {
+        notes.push(`Every order in the window is under this coupon's own minimum order of ${taka(minOrder)}.`);
+      } else if (outOfScope > 0) {
+        notes.push(`None of the ${outOfScope} order(s) whose size qualifies carry a product this scope reaches.`);
+      } else if (belowFloor > 0) {
+        notes.push(`${belowFloor} order(s) reached the scope but not its in-scope spend of ${taka(scopeFloor)}.`);
+      }
+    }
+
+    const topProducts = [...perProduct.entries()]
+      .sort((a, b) => b[1].giveaway - a[1].giveaway)
+      .slice(0, 5)
+      .map(([productId, impact]) => ({
+        productName: products.find(p => p.id === productId)?.name ?? `Product ${productId}`,
+        timesDiscounted: impact.times,
+        units: impact.units,
+        giveaway: money(impact.giveaway)
+      }));
+
+    return HttpResponse.json({
+      daysLookedBack: days,
+      ordersInWindow: inWindow.length,
+      ordersQualified: qualified,
+      totalGiveaway: money(total),
+      averageGiveawayPerOrder: qualified ? money(total / qualified) : 0,
+      shareOfOrderValuePercent: qualifyingRevenue ? Math.round(((total / qualifyingRevenue) * 100) * 10) / 10 : 0,
+      actualGiveawayInWindow: money(actualGiveaway),
+      // The window had orders to measure, even when none of them qualified — the panel then shows zeros
+      // beside the note that says why, rather than claiming the shop has no history.
+      hasOrders: standing.length > 0,
+      topProducts,
+      notes
+    });
+  }),
+
   http.put(`${API}/api/coupons/:id`, async ({ params, request }) => {
     const id = Number(params.id);
     const body = (await request.json()) as any;
     const idx = demoCoupons.findIndex(c => c.id === id);
-    if (idx !== -1) {
-      demoCoupons[idx] = {
-        ...demoCoupons[idx],
-        ...body,
-        ...(body.scopeRules ? { scopeRules: withScopeNames(body.scopeRules) } : null)
-      };
-      return HttpResponse.json(demoCoupons[idx]);
+    if (idx === -1) return new HttpResponse(null, { status: 404 });
+
+    const stored = demoCoupons[idx];
+    const money = { ...stored, ...body };
+    const refusal = policyRefusal(money);
+    if (refusal) return HttpResponse.json({ title: 'Bad Request', detail: refusal }, { status: 400 });
+
+    // An edit that crosses the approval threshold sends the coupon back for a second signature;
+    // an edit that comes back under it releases it again. A coupon that never needed approval keeps
+    // whatever switch position it already had.
+    const queued = needsSecondSignature(money);
+    const released = !queued && stored.approvalState !== 'NotRequired';
+
+    demoCoupons[idx] = {
+      ...stored,
+      ...body,
+      ...(body.scopeRules ? { scopeRules: withScopeNames(body.scopeRules) } : null),
+      approvalState: (queued ? 'Pending' : 'NotRequired') as 'Pending' | 'NotRequired',
+      isActive: queued ? false : released ? true : stored.isActive,
+      ...(queued && stored.approvalState !== 'Pending'
+        ? { submittedByEmail: demoSessionEmail, submittedAt: new Date().toISOString(), reviewedByEmail: null, reviewedAt: null }
+        : null),
+      ...(!queued ? { rejectionReason: null } : null)
+    };
+    return HttpResponse.json(demoCoupons[idx]);
+  }),
+
+  http.put(`${API}/api/coupons/:id/approve`, ({ params }) => {
+    const found = demoCoupons.find(c => c.id === Number(params.id));
+    if (!found) return new HttpResponse(null, { status: 404 });
+
+    if (found.approvalState !== 'Pending') {
+      return HttpResponse.json({ title: 'Conflict', detail: `${found.code} is not waiting for approval.` }, { status: 409 });
     }
-    return new HttpResponse(null, { status: 404 });
+
+    if (found.submittedByEmail?.toLowerCase() === demoSessionEmail.toLowerCase()) {
+      return HttpResponse.json({
+        title: 'Conflict',
+        code: 'self_approval',
+        detail: `You wrote ${found.code}, so a second administrator has to approve it.`
+      }, { status: 409 });
+    }
+
+    const capped = campaignCapRefusal();
+    if (capped) return HttpResponse.json({ title: 'Bad Request', detail: capped }, { status: 400 });
+
+    found.approvalState = 'Approved';
+    found.isActive = true;
+    found.reviewedByEmail = demoSessionEmail;
+    found.reviewedAt = new Date().toISOString();
+    found.rejectionReason = null;
+    return HttpResponse.json(found);
+  }),
+
+  http.put(`${API}/api/coupons/:id/reject`, async ({ params, request }) => {
+    const found = demoCoupons.find(c => c.id === Number(params.id));
+    if (!found) return new HttpResponse(null, { status: 404 });
+
+    if (found.approvalState !== 'Pending') {
+      return HttpResponse.json({ title: 'Conflict', detail: `${found.code} is not waiting for approval.` }, { status: 409 });
+    }
+
+    const body = (await request.json()) as { reason?: string };
+    const reason = String(body.reason ?? '').trim();
+    if (reason.length < 5) {
+      return HttpResponse.json({
+        title: 'Bad Request',
+        detail: 'Say why in a few words, so the writer can act on it.'
+      }, { status: 400 });
+    }
+
+    found.approvalState = 'Rejected';
+    found.isActive = false;
+    found.rejectionReason = reason;
+    found.reviewedByEmail = demoSessionEmail;
+    found.reviewedAt = new Date().toISOString();
+    return HttpResponse.json(found);
   }),
   http.delete(`${API}/api/coupons/:id`, ({ params }) => {
     const id = Number(params.id);
@@ -821,7 +1247,28 @@ export const handlers = [
     const url = new URL(request.url);
     const isActive = url.searchParams.get('isActive') !== 'false';
     const found = demoCoupons.find((c) => c.id === Number(params.id));
-    if (found) found.isActive = isActive;
+    if (!found) return new HttpResponse(null, { status: 404 });
+
+    if (isActive && found.approvalState === 'Pending') {
+      return HttpResponse.json({
+        title: 'Bad Request',
+        detail: `${found.code} is waiting for a second administrator to approve it, so it cannot go live yet.`
+      }, { status: 400 });
+    }
+
+    if (isActive && found.approvalState === 'Rejected') {
+      return HttpResponse.json({
+        title: 'Bad Request',
+        detail: `${found.code} was refused${refusalClause(found.rejectionReason)}Edit it and it goes back for approval.`
+      }, { status: 400 });
+    }
+
+    if (isActive) {
+      const capped = campaignCapRefusal();
+      if (capped) return HttpResponse.json({ title: 'Bad Request', detail: capped }, { status: 400 });
+    }
+
+    found.isActive = isActive;
     return HttpResponse.json({ success: true, isActive });
   }),
 

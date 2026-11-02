@@ -128,6 +128,20 @@ public enum DiscountExclusivity
     Exclusive = 2
 }
 
+/// <summary>
+/// Where a coupon stands with the store's own second-signature rule. The state is set by the server from
+/// the discount policy, so an operator cannot mark their own large discount as approved.
+/// </summary>
+public enum CouponApprovalState
+{
+    /// <summary>Inside the limits the shop allows one administrator to grant alone.</summary>
+    NotRequired = 0,
+    /// <summary>Over the approval threshold and inactive until a different administrator signs it off.</summary>
+    Pending = 1,
+    Approved = 2,
+    Rejected = 3
+}
+
 public enum PaymentMethod
 {
     CashOnDelivery = 0,

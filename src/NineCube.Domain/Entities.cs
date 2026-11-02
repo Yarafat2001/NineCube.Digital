@@ -206,6 +206,14 @@ public sealed class Coupon
     public bool IsAutomatic { get; set; } = false;
     public string? CampaignTitle { get; set; }
     public bool IsBannerPromoted { get; set; } = false;
+    /// <summary>Where the coupon stands against the store's second-signature rule. Set by the server, never by the writer.</summary>
+    public CouponApprovalState ApprovalState { get; set; } = CouponApprovalState.NotRequired;
+    public int? SubmittedByUserId { get; set; }
+    public DateTime? SubmittedAt { get; set; }
+    public int? ReviewedByUserId { get; set; }
+    public DateTime? ReviewedAt { get; set; }
+    /// <summary>Why a second administrator refused this coupon, in their own words.</summary>
+    public string? RejectionReason { get; set; }
     public DateTime CreatedAt { get; set; }
 }
 

@@ -16,22 +16,31 @@ public interface ICouponService
     Task<bool> ToggleCouponStatusAsync(int id, bool isActive, CancellationToken ct = default);
     Task ConsumeCouponAsync(string code, CancellationToken ct = default);
     Task<CouponDto> UpdateCouponAsync(int id, UpdateCouponRequest request, CancellationToken ct = default);
+    Task<CouponDto> ApproveCouponAsync(int id, CancellationToken ct = default);
+    Task<CouponDto> RejectCouponAsync(int id, RejectCouponRequest request, CancellationToken ct = default);
     Task<bool> DeleteCouponAsync(int id, CancellationToken ct = default);
     Task<CouponScopePreviewResult> PreviewScopeAsync(CouponScopePreviewRequest request, CancellationToken ct = default);
+    Task<CouponOrderReplayResult> ReplayAgainstOrdersAsync(CouponOrderReplayRequest request, CancellationToken ct = default);
 }
 
 public sealed class CouponService : ICouponService
 {
     private readonly IAppDbContext _db;
     private readonly IClock _clock;
+    private readonly IDiscountPolicyService _policy;
+    private readonly ICurrentUser _currentUser;
+    private readonly IAuditWriter _audit;
 
     /// <summary>Catalogue names are looked up once per request and reused across rules and coupons.</summary>
     private readonly Dictionary<string, string> _nameCache = new();
 
-    public CouponService(IAppDbContext db, IClock clock)
+    public CouponService(IAppDbContext db, IClock clock, IDiscountPolicyService policy, ICurrentUser currentUser, IAuditWriter audit)
     {
         _db = db;
         _clock = clock;
+        _policy = policy;
+        _currentUser = currentUser;
+        _audit = audit;
     }
 
     /// <summary>An evaluated coupon plus the basket products it actually discounted.</summary>
@@ -539,6 +548,22 @@ public sealed class CouponService : ICouponService
             ? new Dictionary<ScopeAttribute, Dictionary<int, string>>()
             : await LoadNamesAsync(pairs, ct);
 
+        // The registry has to say whose coupon this is and who signed it off, or an approval is just a lock.
+        var reviewerIds = coupons
+            .SelectMany(c => new[] { c.SubmittedByUserId, c.ReviewedByUserId })
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToList();
+
+        var emails = reviewerIds.Count == 0
+            ? new Dictionary<int, string>()
+            : await _db.Users.AsNoTracking()
+                .Where(u => reviewerIds.Contains(u.Id))
+                .ToDictionaryAsync(u => u.Id, u => u.Email, ct);
+
+        string? EmailOf(int? id) => id.HasValue && emails.TryGetValue(id.Value, out var email) ? email : null;
+
         return coupons.Select(c =>
         {
             var views = EffectiveRules(c)
@@ -556,7 +581,9 @@ public sealed class CouponService : ICouponService
             return new CouponDto(
                 c.Id, c.Code, c.DiscountType, c.DiscountValue, c.MinOrderAmount, c.ExpiresAt, c.UsageLimit,
                 c.UsageCount, c.IsActive, c.MaxDiscountCap, c.TargetType, c.TargetId, c.StartsAt, c.IsAutomatic,
-                c.CampaignTitle, c.IsBannerPromoted, c.MinEligibleAmount, c.ScopeMatch, c.Exclusivity, views);
+                c.CampaignTitle, c.IsBannerPromoted, c.MinEligibleAmount, c.ScopeMatch, c.Exclusivity, views,
+                c.ApprovalState, EmailOf(c.SubmittedByUserId), EmailOf(c.ReviewedByUserId),
+                c.SubmittedAt, c.ReviewedAt, c.RejectionReason);
         }).ToList();
     }
 
@@ -601,7 +628,17 @@ public sealed class CouponService : ICouponService
             throw new ResourceConflictException($"Coupon with code '{code}' already exists.", "duplicate_coupon");
         }
 
+        // The store's own limits are checked before anything is written, so a coupon that cannot be allowed
+        // never reaches the registry as a half-built row.
+        await _policy.GuardCouponAsync(request.DiscountType, request.DiscountValue, request.MaxDiscountCap, request.MinOrderAmount, ct);
+        await _policy.GuardNewCampaignAsync(ct);
+
         var rules = await NormalizeRulesAsync(request.ScopeRules, request.TargetType, request.TargetId, ct);
+
+        // Above the store's approval threshold a coupon is written but not released, so the second signature
+        // is on the money rather than on a live campaign that is already spending.
+        var needsApproval = await _policy.NeedsApprovalAsync(request.DiscountType, request.DiscountValue, request.MaxDiscountCap, ct);
+        var now = _clock.UtcNow;
 
         var coupon = new Coupon
         {
@@ -620,15 +657,25 @@ public sealed class CouponService : ICouponService
             ExpiresAt = request.ExpiresAt,
             UsageLimit = request.UsageLimit,
             UsageCount = 0,
-            IsActive = true,
+            IsActive = !needsApproval,
             IsAutomatic = request.IsAutomatic,
             CampaignTitle = request.CampaignTitle?.Trim(),
             IsBannerPromoted = request.IsBannerPromoted,
-            CreatedAt = _clock.UtcNow
+            ApprovalState = needsApproval ? CouponApprovalState.Pending : CouponApprovalState.NotRequired,
+            SubmittedByUserId = needsApproval ? _currentUser.UserId : null,
+            SubmittedAt = needsApproval ? now : null,
+            CreatedAt = now
         };
 
         _db.Coupons.Add(coupon);
         await _db.SaveChangesAsync(ct);
+
+        if (needsApproval)
+        {
+            await _audit.WriteAsync(
+                AuditActions.CouponSubmittedForApproval, nameof(Coupon), coupon.Id.ToString(),
+                $"code={coupon.Code}; {DescribeMoney(coupon)}; submitted_by={_currentUser.Email}", ct);
+        }
 
         return (await ToDtosAsync([coupon], ct)).First();
     }
@@ -637,6 +684,25 @@ public sealed class CouponService : ICouponService
     {
         var coupon = await _db.Coupons.FirstOrDefaultAsync(c => c.Id == id, ct)
             ?? throw new NotFoundException($"Coupon {id} was not found.");
+
+        // Switching a campaign on is spending money again, so the weekly cap is re-read at that moment.
+        if (isActive)
+        {
+            if (coupon.ApprovalState == CouponApprovalState.Pending)
+            {
+                throw new BusinessValidationException(
+                    $"{coupon.Code} is waiting for a second administrator to approve it, so it cannot go live yet.");
+            }
+
+            if (coupon.ApprovalState == CouponApprovalState.Rejected)
+            {
+                throw new BusinessValidationException(
+                    $"{coupon.Code} was refused{BecauseOfRefusal(coupon.RejectionReason)}" +
+                    "Edit it and it goes back for approval.");
+            }
+
+            await _policy.GuardNewCampaignAsync(ct);
+        }
 
         coupon.IsActive = isActive;
         await _db.SaveChangesAsync(ct);
@@ -649,6 +715,9 @@ public sealed class CouponService : ICouponService
             .Include(c => c.ScopeRules).ThenInclude(r => r.Values)
             .FirstOrDefaultAsync(c => c.Id == id, ct)
             ?? throw new NotFoundException($"Coupon {id} was not found.");
+
+        // An edit can raise a coupon above the store limits, so the resulting numbers are guarded, not the delta.
+        await _policy.GuardCouponAsync(coupon.DiscountType, request.DiscountValue, request.MaxDiscountCap, request.MinOrderAmount, ct);
 
         coupon.DiscountValue = request.DiscountValue;
         coupon.MinOrderAmount = request.MinOrderAmount;
@@ -674,10 +743,149 @@ public sealed class CouponService : ICouponService
             coupon.TargetId = SummaryTargetId(rules);
         }
 
+        var needsApproval = await _policy.NeedsApprovalAsync(coupon.DiscountType, request.DiscountValue, request.MaxDiscountCap, ct);
+        var wentBackForReview = ApplyApprovalChange(coupon, needsApproval);
+
         await _db.SaveChangesAsync(ct);
+
+        if (wentBackForReview)
+        {
+            await _audit.WriteAsync(
+                AuditActions.CouponSubmittedForApproval, nameof(Coupon), coupon.Id.ToString(),
+                $"code={coupon.Code}; {DescribeMoney(coupon)}; edited_by={_currentUser.Email}", ct);
+        }
 
         return (await ToDtosAsync([coupon], ct)).First();
     }
+
+    /// <summary>
+    /// Moves the coupon to whatever review state its new numbers demand. Above the threshold an edit is a new
+    /// ask, so it goes back to Pending; below it, one administrator has sole authority again and the coupon is
+    /// released. A coupon that was already switched off by hand stays switched off.
+    /// </summary>
+    private bool ApplyApprovalChange(Coupon coupon, bool needsApproval)
+    {
+        var now = _clock.UtcNow;
+
+        if (needsApproval)
+        {
+            var wasPending = coupon.ApprovalState == CouponApprovalState.Pending;
+
+            coupon.ApprovalState = CouponApprovalState.Pending;
+            coupon.IsActive = false;
+            coupon.SubmittedByUserId = _currentUser.UserId;
+            coupon.SubmittedAt = now;
+            coupon.ReviewedByUserId = null;
+            coupon.ReviewedAt = null;
+            coupon.RejectionReason = null;
+
+            return !wasPending;
+        }
+
+        if (coupon.ApprovalState == CouponApprovalState.NotRequired) return false;
+
+        coupon.ApprovalState = CouponApprovalState.NotRequired;
+        coupon.RejectionReason = null;
+        coupon.IsActive = true;
+        return false;
+    }
+
+    /// <summary>
+    /// Releases a coupon that is over the approval threshold. The numbers a reviewer signed off stop being
+    /// those numbers the moment one of them changes, so this only ever applies to a coupon still Pending.
+    /// </summary>
+    public async Task<CouponDto> ApproveCouponAsync(int id, CancellationToken ct = default)
+    {
+        var coupon = await FindTrackedAsync(id, ct);
+
+        if (coupon.ApprovalState != CouponApprovalState.Pending)
+        {
+            throw new BusinessValidationException($"{coupon.Code} is not waiting for approval.");
+        }
+
+        GuardSecondSignature(coupon, "approve");
+        await _policy.GuardNewCampaignAsync(ct);
+
+        coupon.ApprovalState = CouponApprovalState.Approved;
+        coupon.ReviewedByUserId = _currentUser.UserId;
+        coupon.ReviewedAt = _clock.UtcNow;
+        coupon.RejectionReason = null;
+        coupon.IsActive = true;
+        await _db.SaveChangesAsync(ct);
+
+        await _audit.WriteAsync(
+            AuditActions.CouponApproved, nameof(Coupon), coupon.Id.ToString(),
+            $"code={coupon.Code}; {DescribeMoney(coupon)}; approved_by={_currentUser.Email}; submitted_by={await EmailOfAsync(coupon.SubmittedByUserId, ct)}", ct);
+
+        return (await ToDtosAsync([coupon], ct)).First();
+    }
+
+    public async Task<CouponDto> RejectCouponAsync(int id, RejectCouponRequest request, CancellationToken ct = default)
+    {
+        var reason = request.Reason?.Trim() ?? string.Empty;
+        if (reason.Length < 5)
+        {
+            throw new BusinessValidationException("Say why in a few words, so the writer can act on it.");
+        }
+
+        if (reason.Length > 500)
+        {
+            throw new BusinessValidationException("The reason must be 500 characters or less.");
+        }
+
+        var coupon = await FindTrackedAsync(id, ct);
+
+        if (coupon.ApprovalState != CouponApprovalState.Pending)
+        {
+            throw new BusinessValidationException($"{coupon.Code} is not waiting for approval.");
+        }
+
+        GuardSecondSignature(coupon, "reject");
+
+        coupon.ApprovalState = CouponApprovalState.Rejected;
+        coupon.ReviewedByUserId = _currentUser.UserId;
+        coupon.ReviewedAt = _clock.UtcNow;
+        coupon.RejectionReason = reason;
+        coupon.IsActive = false;
+        await _db.SaveChangesAsync(ct);
+
+        await _audit.WriteAsync(
+            AuditActions.CouponRejected, nameof(Coupon), coupon.Id.ToString(),
+            $"code={coupon.Code}; {DescribeMoney(coupon)}; refused_by={_currentUser.Email}; reason={reason}", ct);
+
+        return (await ToDtosAsync([coupon], ct)).First();
+    }
+
+    private async Task<Coupon> FindTrackedAsync(int id, CancellationToken ct) =>
+        await _db.Coupons
+            .Include(c => c.ScopeRules).ThenInclude(r => r.Values)
+            .FirstOrDefaultAsync(c => c.Id == id, ct)
+        ?? throw new NotFoundException($"Coupon {id} was not found.");
+
+    /// <summary>The whole point of the review: whoever wrote the coupon cannot be whoever releases it.</summary>
+    private void GuardSecondSignature(Coupon coupon, string verb)
+    {
+        if (_currentUser.UserId is null)
+        {
+            throw new BusinessValidationException($"Sign in before you {verb} a coupon.");
+        }
+
+        if (coupon.SubmittedByUserId == _currentUser.UserId)
+        {
+            throw new ResourceConflictException(
+                $"You wrote {coupon.Code}, so a second administrator has to {verb} it.", "self_approval");
+        }
+    }
+
+    private async Task<string?> EmailOfAsync(int? userId, CancellationToken ct) =>
+        userId is null
+            ? null
+            : await _db.Users.Where(u => u.Id == userId.Value).Select(u => u.Email).FirstOrDefaultAsync(ct);
+
+    private static string DescribeMoney(Coupon coupon) =>
+        coupon.DiscountType == DiscountType.Percentage
+            ? $"{coupon.DiscountValue:0.##}% off" + (coupon.MaxDiscountCap is null ? "" : $" max {coupon.MaxDiscountCap:0.##}")
+            : $"BDT {coupon.DiscountValue:0.##} off";
 
     public async Task<bool> DeleteCouponAsync(int id, CancellationToken ct = default)
     {
@@ -810,4 +1018,163 @@ public sealed class CouponService : ICouponService
             .OrderBy(r => r.Attribute)
             .ThenBy(r => r.Polarity)
             .Select(r => $"{r.Attribute}:{r.Polarity}:{string.Join(",", r.Values.Select(v => v.EntityId).OrderBy(id => id))}"));
+
+    // ------------------------------------------------------------------ order replay
+
+    /// <summary>
+    /// Runs the coupon over the shop's own past orders at the prices customers actually paid. The reach
+    /// preview says how many products a scope touches; this says what the same scope would have cost.
+    /// </summary>
+    public async Task<CouponOrderReplayResult> ReplayAgainstOrdersAsync(CouponOrderReplayRequest request, CancellationToken ct = default)
+    {
+        var days = Math.Clamp(request.Days <= 0 ? 30 : request.Days, 1, 365);
+        var rules = await NormalizeRulesAsync(request.ScopeRules, request.TargetType, request.TargetId, ct);
+        var compiled = CouponScopeMatcher.Compile(rules);
+        var since = _clock.UtcNow.AddDays(-days);
+
+        var orders = await _db.Orders.AsNoTracking()
+            .Where(o => o.CreatedAt >= since)
+            .Select(o => new
+            {
+                o.SubTotal,
+                o.Status,
+                o.DiscountAmount,
+                Lines = o.Items.Select(i => new { i.ProductId, i.Quantity, i.UnitPrice }).ToList()
+            })
+            .ToListAsync(ct);
+
+        var notes = new List<string>();
+        var actualGiveaway = orders
+            .Where(o => !OrderStatusRules.ReservationsReleased(o.Status))
+            .Sum(o => o.DiscountAmount);
+
+        var standing = orders.Where(o => !OrderStatusRules.ReservationsReleased(o.Status)).ToList();
+        if (standing.Count < orders.Count)
+        {
+            notes.Add($"{orders.Count - standing.Count} of those orders were cancelled or rejected, so their " +
+                      "discounts were never given and are left out of this replay.");
+        }
+
+        if (standing.Count == 0)
+        {
+            notes.Add(orders.Count == 0
+                ? $"There are no orders at all in the last {days} days, so there is nothing here to measure."
+                : $"Every order in the last {days} days was cancelled or rejected.");
+
+            return new CouponOrderReplayResult(days, orders.Count, 0, 0m, 0m, 0m, actualGiveaway, false, [], notes);
+        }
+
+        var facts = await LoadFactsAsync(standing.SelectMany(o => o.Lines.Select(l => l.ProductId)).Distinct().ToList(), ct);
+
+        // A storewide coupon reaches lines the catalogue no longer knows about, so an unknown product only
+        // blocks a scoped rule.
+        bool Admits(int productId) =>
+            compiled.Count == 0 ||
+            (facts.TryGetValue(productId, out var fact) && CouponScopeMatcher.Matches(fact, compiled, request.ScopeMatch));
+
+        decimal total = 0m, qualifyingRevenue = 0m;
+        var qualifiedOrders = 0;
+        var belowMinimumOrder = 0;
+        var outOfScope = 0;
+        var belowScopeFloor = 0;
+        var perProduct = new Dictionary<int, (int Times, int Units, decimal Giveaway)>();
+
+        foreach (var order in standing)
+        {
+            if (order.SubTotal < request.MinOrderAmount)
+            {
+                belowMinimumOrder++;
+                continue;
+            }
+
+            var lines = order.Lines.Where(l => Admits(l.ProductId)).ToList();
+            var eligible = lines.Sum(l => l.Quantity * l.UnitPrice);
+
+            if (eligible <= 0)
+            {
+                outOfScope++;
+                continue;
+            }
+
+            if (request.MinEligibleAmount > 0 && eligible < request.MinEligibleAmount)
+            {
+                belowScopeFloor++;
+                continue;
+            }
+
+            // A discount can never exceed the order it is written against.
+            var giveaway = Math.Min(
+                DiscountFor(request.DiscountType, request.DiscountValue, request.MaxDiscountCap, eligible),
+                order.SubTotal);
+
+            if (giveaway <= 0) continue;
+
+            total += giveaway;
+            qualifyingRevenue += order.SubTotal;
+            qualifiedOrders++;
+
+            foreach (var line in lines)
+            {
+                var share = giveaway * (line.Quantity * line.UnitPrice) / eligible;
+                perProduct.TryGetValue(line.ProductId, out var current);
+                perProduct[line.ProductId] = (current.Times + 1, current.Units + line.Quantity, current.Giveaway + share);
+            }
+        }
+
+        if (qualifiedOrders == 0)
+        {
+            if (belowMinimumOrder == standing.Count)
+            {
+                notes.Add($"Every order in the window is under this coupon's own minimum order of " +
+                          $"{DiscountPolicyGuard.Taka(request.MinOrderAmount)}.");
+            }
+            else if (outOfScope > 0)
+            {
+                notes.Add($"None of the {outOfScope} order(s) whose size qualifies carry a product this scope reaches.");
+            }
+            else if (belowScopeFloor > 0)
+            {
+                notes.Add($"{belowScopeFloor} order(s) reached the scope but not its in-scope spend of " +
+                          $"{DiscountPolicyGuard.Taka(request.MinEligibleAmount)}.");
+            }
+        }
+
+        IReadOnlyList<ReplayProductImpact> topProducts = [];
+        if (perProduct.Count > 0)
+        {
+            var names = await LoadNamesAsync(
+                perProduct.Keys.Select(id => (ScopeAttribute.Product, id)).ToList(), ct);
+
+            topProducts = perProduct
+                .OrderByDescending(p => p.Value.Giveaway)
+                .Take(5)
+                .Select(p => new ReplayProductImpact(
+                    names[ScopeAttribute.Product][p.Key], p.Value.Times, p.Value.Units,
+                    decimal.Round(p.Value.Giveaway, 2, MidpointRounding.AwayFromZero)))
+                .ToList();
+        }
+
+        return new CouponOrderReplayResult(
+            days,
+            orders.Count,
+            qualifiedOrders,
+            Round(total),
+            qualifiedOrders == 0 ? 0m : Round(total / qualifiedOrders),
+            qualifyingRevenue == 0 ? 0m : decimal.Round(total / qualifyingRevenue * 100m, 1, MidpointRounding.AwayFromZero),
+            Round(actualGiveaway),
+            true,
+            topProducts,
+            notes);
+    }
+
+    private static decimal Round(decimal value) => decimal.Round(value, 2, MidpointRounding.AwayFromZero);
+
+    /// <summary>
+    /// The refusal's reason clause. A reviewer who typed a full stop should not get one twice, and a
+    /// refusal with no reason still has to read as a sentence.
+    /// </summary>
+    private static string BecauseOfRefusal(string? reason) =>
+        string.IsNullOrWhiteSpace(reason)
+            ? ". "
+            : $": {reason.TrimEnd('.', ' ', '!', '?')}. ";
 }

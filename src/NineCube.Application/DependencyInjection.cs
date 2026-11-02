@@ -10,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IAuditWriter, AuditWriter>();
         services.AddScoped<ISettingsService, SettingsService>();
+        services.AddScoped<IDiscountPolicyService, DiscountPolicyService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IPasswordResetService, PasswordResetService>();
         services.AddScoped<ICouponService, CouponService>();

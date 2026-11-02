@@ -1168,7 +1168,9 @@ tr[data-low-stock='true'] {
 .modal {
   width: min(640px, 100%);
   max-height: 88vh;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
@@ -1176,10 +1178,19 @@ tr[data-low-stock='true'] {
   box-shadow: var(--shadow-lg);
 }
 
+/* The fields scroll, the heading and the actions do not. */
+.modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 /* A modal title can be a 60-character SKU. As an unshrinkable flex item it refused to fit, pushed
    the dialog past its own width and wrapped the close button under the title, so the title takes only
    the space left to it and breaks anywhere while the button keeps its place at the right edge. */
 .modal > .row-between {
+  flex: 0 0 auto;
   align-items: flex-start;
 }
 
@@ -1203,9 +1214,13 @@ tr[data-low-stock='true'] {
 }
 
 /* Actions belong below a hairline, not in the field column, so a footer can never be
-   mistaken for another row of the form above it. */
+   mistaken for another row of the form above it. The dialog is a header, a scrolling body and this
+   footer row, so on a short screen the buttons are the part that stays on screen: the review dialog's
+   "Approve and release" sat 32px below the fold on a laptop and 303px below it on a phone when the
+   whole dialog scrolled, which turns the one decision the dialog exists for into a hunt. */
 .modal__footer {
   display: flex;
+  flex: 0 0 auto;
   justify-content: flex-end;
   gap: var(--space-2);
   margin-top: var(--space-4);
@@ -3209,6 +3224,261 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 
 .scope-impact__conflicts li strong { color: var(--text); }
 .scope-impact__overlap { margin-left: auto; font-weight: 650; }
+
+/* Read-only rehearsal against the shop's own past orders — same plate as the reach report. */
+.order-replay {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 11px 12px;
+  margin-top: 10px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+}
+
+.order-replay__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+.order-replay__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.order-replay__title svg { color: var(--brand); }
+.order-replay__busy { font-size: 11px; color: var(--text-muted); }
+
+.order-replay__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.order-replay__grid div {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.order-replay__grid dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.order-replay__grid dd {
+  margin: 3px 0 0;
+  font-size: var(--text-sm);
+  font-weight: 750;
+  color: var(--text);
+}
+
+.order-replay__grid dd small { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+
+.order-replay__empty,
+.order-replay__against,
+.order-replay__idle,
+.order-replay__error,
+.order-replay__note {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.order-replay__empty,
+.order-replay__error { display: flex; align-items: center; gap: 6px; }
+.order-replay__error { color: var(--warn-text, var(--text)); }
+.order-replay__note { padding-left: 14px; position: relative; }
+.order-replay__note::before { content: "·"; position: absolute; left: 4px; font-weight: 800; }
+.order-replay__against { font-weight: 650; color: var(--text); }
+
+.order-replay__products {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.order-replay__products-label {
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--warn-text, var(--text-muted));
+}
+
+.order-replay__products ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+.order-replay__products li {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.order-replay__product { color: var(--text); font-weight: 650; }
+.order-replay__counts { margin-left: auto; }
+.order-replay__giveaway { color: var(--warn-text, var(--text)); min-width: 74px; text-align: right; }
+
+/* Discount policy: the shop's own limits, on the same plate as the rest of Settings. */
+.policy-card { max-width: 760px; }
+
+.policy-card__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.policy-card__title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 750;
+}
+
+.policy-card__title svg { color: var(--brand); }
+
+.policy-card__lead {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.policy-group { display: flex; flex-direction: column; gap: 10px; }
+
+.policy-group__title {
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.policy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+
+.policy-input { position: relative; display: flex; align-items: center; }
+
+.policy-input input { width: 100%; padding-right: 44px; }
+
+.policy-input__unit {
+  position: absolute;
+  right: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.policy-spend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+}
+
+.policy-spend__row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.policy-spend__label { font-size: 11px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--text-muted); }
+.policy-spend__figure { font-size: var(--text-base); font-weight: 800; }
+.policy-spend__note { margin: 0; font-size: 11px; color: var(--text-muted); }
+
+.policy-meter {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  overflow: hidden;
+}
+
+.policy-meter__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+}
+
+.policy-meter__fill--tight { background: var(--warn-text, var(--danger)); }
+
+.policy-card__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* The second-signature queue inside the coupon registry */
+.segmented__count {
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--selected-wash);
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.registry-review { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.registry-review__who { font-size: 10px; color: var(--text-muted); }
+.registry-review__reason { display: block; max-width: 240px; }
+
+.review-lead { margin: 0; font-size: var(--text-sm); line-height: 1.5; color: var(--text-muted); }
+
+.review-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.review-facts div {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+}
+
+.review-facts dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.review-facts dd { margin: 3px 0 0; font-size: var(--text-sm); font-weight: 700; color: var(--text); }
+
+.review-submitter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.review-self {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--warn-text, var(--text));
+  background: var(--warn-tint);
+  box-shadow: inset 0 0 0 1px var(--warn-border, var(--border));
+}
+
+.review-refuse { color: var(--danger); border-color: var(--danger); }
 
 /* Quick value pills */
 .discount-quick-pills {

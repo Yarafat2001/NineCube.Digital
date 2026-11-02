@@ -1,8 +1,11 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using NineCube.Application.Abstractions;
 using NineCube.Application.Contracts;
 using NineCube.Application.Services;
 using NineCube.Domain;
+using NineCube.Infrastructure.Caching;
 using NineCube.Infrastructure.Identity;
 using NineCube.Infrastructure.Persistence;
 using NineCube.Tests.Infrastructure;
@@ -20,6 +23,8 @@ public sealed class CouponScopeTests(PostgresFixture fixture, ITestOutputHelper 
 {
     private AppDbContext _db = null!;
     private CouponService _coupons = null!;
+    private DiscountPolicyService _policies = null!;
+    private TestCurrentUser _user = null!;
 
     private int _phones;
     private int _audio;
@@ -39,9 +44,18 @@ public sealed class CouponScopeTests(PostgresFixture fixture, ITestOutputHelper 
         output.WriteLine($"[CouponScopeTests] database: {fixture.Mode}");
 
         _db = fixture.NewDbContext();
-        _coupons = new CouponService(_db, new SystemClock());
+        _user = new TestCurrentUser();
+        _policies = NewPolicyService(_db, _user);
+        _coupons = new CouponService(_db, new SystemClock(), _policies, _user, new AuditWriter(_db, _user, new SystemClock()));
         await SeedCatalogueAsync();
     }
+
+    /// <summary>The policy service with a cache of its own, so no test can read another test's limits.</summary>
+    private static DiscountPolicyService NewPolicyService(AppDbContext db, ICurrentUser user) =>
+        new(db,
+            new MemoryCacheService(new MemoryCache(new MemoryCacheOptions())),
+            new AuditWriter(db, user, new SystemClock()),
+            new SystemClock());
 
     public async Task DisposeAsync()
     {
