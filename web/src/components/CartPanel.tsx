@@ -13,6 +13,7 @@ import { useToast } from './ui';
 
 export interface CartPanelProps {
   onPlaced: (order: Order) => void;
+  onClose?: () => void;
 }
 
 /**
@@ -26,7 +27,7 @@ export interface CartPanelProps {
  * server error so an explicit retry is still idempotent. It is only cleared after the order is
  * accepted or the request is rejected for a client reason.
  */
-export function CartPanel({ onPlaced }: CartPanelProps) {
+export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   useLanguage();
   const cart = useCart();
   const { token } = useAuth();
@@ -296,13 +297,17 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
   const busy = placeOrder.isPending;
 
   return (
-    <section className="card-glass cart-panel" aria-labelledby="cart-heading">
-      <div className="row-between">
-        <h2 id="cart-heading" style={{ fontSize: 'var(--text-lg)' }}>
-          {t("Your cart")}</h2>
+    <section className="cart-panel" aria-labelledby="cart-heading">
+      <div className="cart-panel__head">
+        <h2 id="cart-heading">{t("Your cart")}</h2>
         <span className="badge badge--neutral" data-testid="cart-count">
           {t(cart.itemCount)} {t(" item")}{t(cart.itemCount === 1 ? '' : 's')}
         </span>
+        {onClose ? (
+          <button type="button" className="cart-sheet__close" aria-label={t("Close cart")} onClick={onClose}>
+            <span aria-hidden="true">✕</span> {t("Close")}
+          </button>
+        ) : null}
       </div>
 
       {cart.lines.length === 0 ? (
@@ -318,7 +323,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                 <div className="cart-line__meta">
                   {t(formatMoney(line.unitPrice, line.currency))} {t(" each · ")}{t(line.available)} {t(" available")}</div>
               </div>
-              <div className="stack" style={{ alignItems: 'flex-end' }}>
+              <div className="cart-line__side">
                 <div className="stepper" role="group" aria-label={t(`Quantity for ${line.name}`)}>
                   <button
                     type="button"
@@ -338,13 +343,12 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                   >
                     {t("+")}</button>
                 </div>
-                <span className="nowrap">{t(formatMoney(line.unitPrice * line.quantity, line.currency))}</span>
+                <span className="cart-line__price">{t(formatMoney(line.unitPrice * line.quantity, line.currency))}</span>
                 <button
                   type="button"
-                  className="link-button cart-line-remove-btn"
+                  className="link-button cart-line-remove"
                   onClick={() => cart.remove(line.productId)}
                   aria-label={t(`Remove ${line.name} from the cart`)}
-                  style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}
                 >
                   🗑️ {t("Remove")}</button>
               </div>
@@ -354,46 +358,37 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
       )}
 
       {cart.lines.length > 0 && (
-        <div style={{ padding: '10px 14px', background: 'var(--surface-muted, rgba(255,255,255,0.04))', borderRadius: '8px', border: '1px solid var(--border)', margin: 'var(--space-2) 0' }}>
-          <div className="row-between" style={{ fontSize: 'var(--text-xs)', marginBottom: '6px' }}>
-            <span style={{ fontWeight: 650, display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className={`cart-ship ${qualifiesForFreeShipping ? 'cart-ship--locked' : ''}`}>
+          <div className="cart-ship__row">
+            <span>
               {qualifiesForFreeShipping ? (
-                <span style={{ color: 'var(--ok, #10b981)' }}>🎉 {t("You've unlocked FREE Delivery!")}</span>
+                <>🎉 {t("You've unlocked FREE Delivery!")}</>
               ) : (
-                <span>🚚 {t("Add")} <strong style={{ color: 'var(--accent, #6366f1)' }}>{formatMoney(amountNeededForFreeShipping, cart.currency)}</strong> {t("more for FREE Delivery!")}</span>
+                <>🚚 {t("Add")} <strong>{formatMoney(amountNeededForFreeShipping, cart.currency)}</strong> {t("more for FREE Delivery!")}</>
               )}
             </span>
-            <span style={{ color: 'var(--muted)', fontVariantNumeric: 'tabular-nums' }}>
-              {freeShippingPercent}%
-            </span>
+            <span className="cart-ship__pct">{freeShippingPercent}%</span>
           </div>
-          <div style={{ height: '6px', background: 'var(--border)', borderRadius: '3px', overflow: 'hidden' }}>
-            <div
-              style={{
-                width: `${freeShippingPercent}%`,
-                height: '100%',
-                background: qualifiesForFreeShipping ? 'var(--ok, #10b981)' : 'linear-gradient(90deg, #6366f1, #10b981)',
-                transition: 'width 0.4s ease'
-              }}
-            />
+          <div className="cart-ship__track">
+            <div className="cart-ship__bar" style={{ width: `${freeShippingPercent}%` }} />
           </div>
         </div>
       )}
 
       {cart.lines.length > 0 && (
-        <div className="cart-checkout-extras stack" style={{ gap: 'var(--space-3)', margin: 'var(--space-3) 0', padding: 'var(--space-3)', background: 'var(--surface-muted, rgba(255,255,255,0.05))', borderRadius: 'var(--radius-md, 8px)' }}>
+        <div className="cart-checkout-extras">
           {/* Address selection */}
-          <div className="cart-address-block">
-            <div className="row-between" style={{ marginBottom: 'var(--space-1)' }}>
-              <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>{t("Delivery address")}</span>
-              <Link to="/account/profile" className="link-button" style={{ fontSize: 'var(--text-xs)' }}>{t("Manage addresses")}</Link>
+          <div className="cart-field">
+            <div className="cart-field__label">
+              <span>{t("Delivery address")}</span>
+              <Link to="/account/profile" className="link-button">{t("Manage addresses")}</Link>
             </div>
             {profile?.addresses && profile.addresses.length > 0 ? (
               <select
+                className="cart-select"
                 aria-label={t("Select delivery address")}
                 value={selectedAddressId ?? ''}
                 onChange={e => setSelectedAddressId(Number(e.target.value))}
-                style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--border)' }}
               >
                 {profile.addresses.map(a => (
                   <option key={a.id} value={a.id}>
@@ -402,56 +397,45 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                 ))}
               </select>
             ) : (
-              <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
+              <p className="cart-field__hint">
                 {t("No address saved.")} <Link to="/account/profile" className="link-button">{t("Add delivery address")}</Link>
               </p>
             )}
           </div>
 
           {/* Coupon Code & Auto-Applied Promotions */}
-          <div className="cart-coupon-block">
-            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>{t("Promotions & Discounts")}</span>
+          <div className="cart-field">
+            <span className="cart-field__label"><span>{t("Promotions & Discounts")}</span></span>
 
             {/* Auto-applied promotion chip when active without typing code */}
             {isAutoApplied && autoPromo && (
-              <div style={{ padding: '8px 12px', background: 'var(--warn-bg, rgba(245, 158, 11, 0.12))', border: '1px solid var(--warn-border, rgba(245, 158, 11, 0.4))', borderRadius: '6px', marginBottom: 'var(--space-2)' }}>
-                <div className="row-between">
-                  <span style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--warn-text, #f59e0b)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    ⚡ {t("Auto-Applied Promotion:")} {autoPromo.campaignTitle || autoPromo.code}
-                  </span>
-                  <strong style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)' }}>
-                    -{formatMoney(autoPromo.discountAmount, cart.currency)}
-                  </strong>
+              <div className="cart-note cart-note--promo">
+                <div className="cart-note__head">
+                  <span>{t("Auto-Applied Promotion:")} {autoPromo.campaignTitle || autoPromo.code}</span>
+                  <strong>-{formatMoney(autoPromo.discountAmount, cart.currency)}</strong>
                 </div>
-                <span style={{ display: 'block', fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                <span className="cart-note__body">
                   {t("No code needed. Automatically applied to your basket.")}
                 </span>
               </div>
             )}
             {appliedCoupon?.isValid ? (
-              <div className="row-between" style={{ padding: '8px 12px', background: 'var(--surface-ok, rgba(16,185,129,0.1))', borderRadius: '6px', border: '1px solid var(--ok, #10b981)' }}>
-                <div>
-                  <span style={{ color: 'var(--ok, #10b981)', fontWeight: 700, fontSize: 'var(--text-sm)', display: 'block' }}>
-                    ✓ {appliedCoupon.code} (-{formatMoney(appliedCoupon.discountAmount, cart.currency)})
-                  </span>
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                    {t("Coupon applied to this basket")}
-                  </span>
+              <div className="cart-note cart-note--ok">
+                <div className="cart-note__head">
+                  <span>✓ {appliedCoupon.code} (-{formatMoney(appliedCoupon.discountAmount, cart.currency)})</span>
+                  <button type="button" className="link-button" onClick={removeCoupon}>{t("Remove")}</button>
                 </div>
-                <button type="button" className="link-button" onClick={removeCoupon} style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
-                  {t("Remove")}
-                </button>
+                <span className="cart-note__body">{t("Coupon applied to this basket")}</span>
               </div>
             ) : (
-              <div className="row" style={{ gap: 'var(--space-2)' }}>
+              <div className="cart-field__row">
                 <input
                   type="text"
-                  className="cart-input"
+                  className="cart-input cart-input--code"
                   placeholder={t("Enter coupon code")}
                   value={couponCode}
                   onChange={e => setCouponCode(e.target.value.toUpperCase())}
                   aria-label={t("Coupon code")}
-                  style={{ textTransform: 'uppercase' }}
                 />
                 <button
                   type="button"
@@ -463,7 +447,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                 </button>
               </div>
             )}
-            {couponError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: '4px 0 0 0' }}>{t(couponError)}</p>}
+            {couponError && <p className="cart-field__error">{t(couponError)}</p>}
 
             {/* Interactive Available Coupons & Offers Accordion */}
             <div className="cart-coupons-container">
@@ -474,7 +458,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                 aria-expanded={showCouponsDrawer}
               >
                 <span>🏷️ {t("Available Coupons & Offers")} ({availableCoupons.length})</span>
-                <span>{showCouponsDrawer ? '▲ ' + t("Hide Available Coupons") : '▼ ' + t("View Available Coupons")}</span>
+                <span className="cart-toggle-coupons-btn__state">{showCouponsDrawer ? t("Hide") : t("View")}</span>
               </button>
 
               {showCouponsDrawer && (
@@ -487,7 +471,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                     return (
                       <div key={c.code} className={`cart-coupon-card ${isCurrentlyApplied ? 'cart-coupon-card--active' : ''}`}>
                         <div className="cart-coupon-info">
-                          <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
+                          <div className="cart-coupon-line">
                             <span className="cart-coupon-badge">{c.code}</span>
                             <span className="cart-coupon-title">{c.title}</span>
                           </div>
@@ -503,16 +487,13 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
 
                         <div>
                           {isCurrentlyApplied ? (
-                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)', fontWeight: 700 }}>
-                              ✓ {t("Applied")}
-                            </span>
+                            <span className="cart-coupon-applied">✓ {t("Applied")}</span>
                           ) : (
                             <button
                               type="button"
                               className="btn btn--sm"
                               disabled={!isEligible || validateCoupon.isPending}
                               onClick={() => applyCoupon(c.code)}
-                              style={{ padding: '4px 10px', fontSize: '11px' }}
                             >
                               {t("Apply")}
                             </button>
@@ -527,34 +508,29 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
           </div>
 
           {/* Gift Card Code */}
-          <div className="cart-giftcard-block">
-            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>🎁 {t("Gift card")}</span>
+          <div className="cart-field">
+            <span className="cart-field__label"><span>🎁 {t("Gift card")}</span></span>
             {appliedGiftCard?.isValid ? (
-              <div className="stack" style={{ gap: '4px', padding: '8px 12px', background: 'var(--surface-raised, rgba(99, 102, 241, 0.1))', borderRadius: '6px', border: '1px solid var(--accent, #6366f1)' }}>
-                <div className="row-between">
-                  <span style={{ color: 'var(--accent-text, var(--accent))', fontWeight: 700, fontSize: 'var(--text-sm)', fontFamily: 'monospace' }}>
-                    🎁 {appliedGiftCard.code}
-                  </span>
-                  <button type="button" className="link-button" onClick={removeGiftCard} style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
-                    {t("Remove")}
-                  </button>
+              <div className="cart-note cart-note--gift">
+                <div className="cart-note__head">
+                  <span className="mono">{appliedGiftCard.code}</span>
+                  <button type="button" className="link-button" onClick={removeGiftCard}>{t("Remove")}</button>
                 </div>
-                <div className="row-between" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                <div className="cart-note__body row-between">
                   <span>{t("Applied to order:")} -{formatMoney(giftCardDeduction, cart.currency)}</span>
                   <span>{t("Remaining balance:")} {formatMoney(remainingGiftCardBalance, cart.currency)}</span>
                 </div>
               </div>
             ) : (
               <div>
-                <div className="row" style={{ gap: 'var(--space-2)' }}>
+                <div className="cart-field__row">
                   <input
                     type="text"
-                    className="cart-input"
+                    className="cart-input cart-input--code"
                     placeholder={t("Enter gift card code (e.g. GC-...)")}
                     value={giftCardCode}
                     onChange={e => setGiftCardCode(e.target.value.toUpperCase())}
                     aria-label={t("Gift card code")}
-                    style={{ textTransform: 'uppercase', fontFamily: 'monospace' }}
                   />
                   <button
                     type="button"
@@ -568,7 +544,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
 
                 {/* Quick Test Demo Chips for Gift Cards */}
                 <div className="cart-quick-chips">
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t("Try test gift card:")}</span>
+                  <span className="cart-field__hint">{t("Try test gift card:")}</span>
                   {['GC-WELCOME-1000', 'GC-EID2026-2500', 'GC-VIP-5000'].map((code) => (
                     <button
                       key={code}
@@ -579,20 +555,20 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                       {code}
                     </button>
                   ))}
-                  <Link to="/gift-cards" className="link-button" style={{ fontSize: '11px', marginLeft: 'auto' }}>
+                  <Link to="/gift-cards" className="link-button cart-quick-chips__hub">
                     {t("Gift Cards Hub")} →
                   </Link>
                 </div>
               </div>
             )}
-            {giftCardError && <p style={{ color: 'var(--danger)', fontSize: 'var(--text-xs)', margin: '4px 0 0 0' }}>{t(giftCardError)}</p>}
+            {giftCardError && <p className="cart-field__error">{t(giftCardError)}</p>}
           </div>
 
           {/* Payment Method */}
-          <div className="cart-payment-block">
-            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', display: 'block', marginBottom: 'var(--space-1)' }}>{t("Payment method")}</span>
-            <div className="row" style={{ gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)', cursor: 'pointer' }}>
+          <div className="cart-field">
+            <span className="cart-field__label"><span>{t("Payment method")}</span></span>
+            <div className="cart-pay-grid">
+              <label className="cart-pay">
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -600,9 +576,9 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                   checked={paymentMethod === 'CashOnDelivery'}
                   onChange={() => setPaymentMethod('CashOnDelivery')}
                 />
-                <span>💵 {t("Cash on Delivery")}</span>
+                <span><span className="cart-pay__glyph" aria-hidden="true">💵</span> {t("Cash on Delivery")}</span>
               </label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)', cursor: 'pointer' }}>
+              <label className="cart-pay">
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -610,9 +586,9 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                   checked={paymentMethod === 'Card'}
                   onChange={() => setPaymentMethod('Card')}
                 />
-                <span>💳 {t("Card (Visa/Mastercard)")}</span>
+                <span><span className="cart-pay__glyph" aria-hidden="true">💳</span> {t("Card (Visa/Mastercard)")}</span>
               </label>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)', cursor: 'pointer' }}>
+              <label className="cart-pay">
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -620,7 +596,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
                   checked={paymentMethod === 'MobileFinancialService'}
                   onChange={() => setPaymentMethod('MobileFinancialService')}
                 />
-                <span>📱 {t("Mobile Banking (bKash/Nagad)")}</span>
+                <span><span className="cart-pay__glyph" aria-hidden="true">📱</span> {t("Mobile Banking (bKash/Nagad)")}</span>
               </label>
             </div>
           </div>
@@ -629,12 +605,10 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
 
       {cart.lines.length > 0 && (
         <div className="cart-summary-box">
-          <div className="row-between" style={{ marginBottom: '8px' }}>
-            <span style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>{t("Order Summary")}</span>
+          <div className="cart-summary-box__head">
+            <span>{t("Order Summary")}</span>
             {qualifiesForFreeShipping && (
-              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)', fontWeight: 600 }}>
-                ✓ {t("Free Delivery")}
-              </span>
+              <span className="cart-summary-box__free">✓ {t("Free Delivery")}</span>
             )}
           </div>
 
@@ -645,7 +619,7 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
 
           <div className="cart-summary-row">
             <span>{t("Delivery Fee")}</span>
-            <span style={{ color: qualifiesForFreeShipping ? 'var(--ok, #10b981)' : undefined, fontWeight: qualifiesForFreeShipping ? 600 : undefined }}>
+            <span className={qualifiesForFreeShipping ? 'cart-summary-row--highlight' : undefined}>
               {qualifiesForFreeShipping ? t("Free Delivery") : t(formatMoney(60, cart.currency))}
             </span>
           </div>
@@ -670,16 +644,9 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
             </div>
           )}
 
-          <div className="cart-summary-row cart-summary-row--total">
-            <span>{t("Order Total")}</span>
-            <strong style={{ fontSize: 'var(--text-md)', color: 'var(--text)' }}>
-              {t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}
-            </strong>
-          </div>
-
           {finalTotal === 0 && giftCardDeduction > 0 && (
-            <div style={{ marginTop: '8px', padding: '6px 10px', background: 'var(--surface-ok, rgba(16, 185, 129, 0.1))', border: '1px solid var(--ok, #10b981)', borderRadius: '6px', fontSize: 'var(--text-xs)', color: 'var(--ok, #10b981)' }}>
-              ✓ {t("Your entire order is covered by this Gift Card!")}
+            <div className="cart-note cart-note--ok" style={{ marginTop: '8px' }}>
+              <span className="cart-note__body">✓ {t("Your entire order is covered by this Gift Card!")}</span>
             </div>
           )}
         </div>
@@ -713,41 +680,40 @@ export function CartPanel({ onPlaced }: CartPanelProps) {
         </div>
       ) : null}
 
-      {cart.mixedCurrencies ? <p role="alert">{t("Place BDT and legacy-currency products in separate orders. Remove one currency to continue.")}</p> : null}
+      {cart.mixedCurrencies ? <p className="cart-field__error" role="alert">{t("Place BDT and legacy-currency products in separate orders. Remove one currency to continue.")}</p> : null}
       {inlineError ? (
-        <p role="alert" data-testid="cart-error" style={{ color: 'var(--danger)', fontWeight: 600 }}>
+        <p role="alert" data-testid="cart-error" className="cart-field__error">
           {t(inlineError)}
         </p>
       ) : null}
 
       {notice ? (
-        <p role="status" data-testid="cart-notice" style={{ color: 'var(--ok)', fontWeight: 600 }}>
+        <p role="status" data-testid="cart-notice" className="cart-note cart-note--ok">
           {t(notice)}
         </p>
       ) : null}
 
       {cart.lines.length > 0 && (
-        <div className="cart-sticky-dock stack" style={{ gap: 'var(--space-2)' }}>
+        <div className="cart-sticky-dock">
           <div className="cart-summary-row cart-summary-row--total">
             <span>{t("Total")}</span>
-            <strong data-testid="cart-total" style={{ fontSize: 'var(--text-lg)', color: 'var(--text)' }}>
+            <strong className="cart-sticky-dock__total" data-testid="cart-total">
               {t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}
             </strong>
           </div>
 
           <button
             type="button"
-            className="btn btn--primary"
+            className="btn btn--primary cart-sticky-dock__cta"
             onClick={submit}
             disabled={busy || cart.lines.length === 0 || cart.mixedCurrencies}
             data-testid="place-order"
-            style={{ width: '100%', padding: '12px', fontSize: 'var(--text-md)', fontWeight: 700 }}
           >
             {busy ? (
               <>
                 <span className="spinner" aria-hidden="true" /> {t(" Placing order…")}</>
             ) : (
-              'Place order'
+              t("Place order")
             )}
           </button>
         </div>
@@ -822,8 +788,7 @@ export function CartSheet({ onPlaced, onOpenChange }: CartPanelProps & { onOpenC
           if (start !== null && end !== null && end - start > 80) setOpen(false);
         }}>
         <div className="sheet__handle" aria-hidden="true" />
-        <button type="button" className="btn cart-sheet__close" aria-label={t("Close cart")} onClick={() => setOpen(false)}>{t("Close")}</button>
-        <CartPanel onPlaced={(order) => { setOpen(false); onPlaced(order); }} />
+        <CartPanel onClose={() => setOpen(false)} onPlaced={(order) => { setOpen(false); onPlaced(order); }} />
       </div>
     </div>,
     document.body

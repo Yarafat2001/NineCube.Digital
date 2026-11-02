@@ -6,7 +6,10 @@
   font-size: var(--text-xs, 0.8125rem);
   line-height: 1.4;
   position: relative;
-  z-index: 100;
+  /* Measured live 2026-11-02: 100 sat above --z-modal (70), so on a phone the
+     strip painted over the top of the cart sheet and hid its Close button.
+     The banner is in normal flow and needs nothing but page-level priority. */
+  z-index: var(--z-sticky);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 

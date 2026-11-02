@@ -27,7 +27,7 @@ a { color: var(--accent-text); text-decoration: none; }
 a:hover { text-decoration: none; }
 .link-button { color: var(--accent-text); text-decoration: none; cursor: pointer; }
 a:not(.btn):not(.filter-chip):focus-visible { outline: var(--focus-ring); outline-offset: 3px; border-radius: var(--radius-sm); }
-.card-glass, .category-filter-panel, .cart-panel, .navbar {
+.card-glass, .category-filter-panel, .navbar {
   background: var(--surface-glass); border: 1px solid var(--border);
   backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%);
   box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-md);
@@ -159,7 +159,7 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
   .notif-list--page .notif-item--row { grid-template-columns: 20px 24px minmax(0, 1fr); padding: 16px; gap: 12px; }
   .notif-list--page .notif-item--row > .row { grid-column: 3; flex-wrap: wrap; }
 }
-@supports not (backdrop-filter: blur(16px)) { .card-glass, .navbar, .nav-control, .category-filter-panel, .cart-panel, .nav-pop__panel.nav-pop__portal { background: var(--surface); } }
+@supports not (backdrop-filter: blur(16px)) { .card-glass, .navbar, .nav-control, .category-filter-panel, .nav-pop__panel.nav-pop__portal { background: var(--surface); } }
 @media (prefers-reduced-motion: reduce) { .product-card, .product-card::after, .account-chevron, :is(.dashboard-stats, .sales-stats) .stat-tile, .sales-chart { transition: none; } .product-card:hover, .product-card:focus-within, :is(.dashboard-stats, .sales-stats) .stat-tile:hover, .sales-chart:hover { transform: none; } .product-card__media, .product-card .badge { transform: none; } }
 
 /* Keep the same material at rest, during hover and after route changes. */
@@ -240,7 +240,7 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
 }
 
 /* Shared page surfaces: catalogue, account, authentication and staff tools. */
-:root :is(.card, .card-glass, .category-filter-panel, .cart-panel, .address-card, .table-surface, .notif-list--page .notif-item--row) {
+:root :is(.card, .card-glass, .category-filter-panel, .address-card, .table-surface, .notif-list--page .notif-item--row) {
   background: var(--product-card-glass);
   border-color: var(--nav-glass-edge);
   box-shadow: inset 0 1px 0 var(--surface-highlight), var(--card-shadow);

@@ -74,6 +74,16 @@
   --warn-ring: rgba(120, 53, 15, .28);
   --bad-ring: rgba(127, 29, 29, .26);
 
+  /* ---- options: an unselected choice still has to read as a control --------
+     Measured live on the coupon builder (2026-11-02): an option with a
+     transparent fill inside a --well-fill tray resolved to 1.00:1 against that
+     tray, i.e. it painted as plain text. These give every segmented option,
+     quick pill and chip a raised face and the same 3.75:1 edge the inputs use. */
+  --opt-fill: #FFFFFF;
+  --opt-fill-hover: #F1F4F9;
+  --opt-edge: #77859A;
+  --opt-ink: var(--text);
+
   /* ---- glass: Level 1 panels (aliases; --surface-glass is canonical) ----- */
   --glass-tint: var(--surface-glass);
   --glass-tint-strong: var(--surface-glass);
@@ -198,6 +208,14 @@
     --ok-ring: transparent;
     --warn-ring: transparent;
     --bad-ring: transparent;
+
+    /* Dark had the same defect: an unselected option was 1.00:1 against its own
+       tray and chips sat on a 1.64:1 edge. The raised surface plus the strong
+       border give 4.3:1 edges without touching the amber selected fill. */
+    --opt-fill: var(--surface-raised);
+    --opt-fill-hover: #2c282a;
+    --opt-edge: var(--border-strong);
+    --opt-ink: var(--text);
 
     /* ---- spec aliases for dark ---------------------------------------- */
     --bg-page: #141113;

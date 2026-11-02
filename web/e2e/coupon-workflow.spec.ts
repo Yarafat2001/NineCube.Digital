@@ -1,5 +1,6 @@
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
 import { seedPassword, seedPasswordMissing } from './seed-password';
+import { COLOUR_PROBE } from './colour-probe';
 
 /**
  * The coupon workflow length and the light-theme edges, asked of the live DOM rather than read out of
@@ -11,14 +12,6 @@ import { seedPassword, seedPasswordMissing } from './seed-password';
  */
 const API = process.env.E2E_API_BASE ?? 'http://127.0.0.1:5080';
 const LOADED = { timeout: 90_000 };
-
-type Edge = { width: number; edge: string; own: string; vsOwn: number; vsParent: number };
-
-declare global {
-  interface Window {
-    __edge: (selector: string) => Edge | null;
-  }
-}
 
 async function openCoupons(page: Page, request: APIRequestContext, theme: 'light' | 'dark') {
   const response = await request.post(`${API}/api/auth/login`, {
@@ -37,30 +30,6 @@ async function openCoupons(page: Page, request: APIRequestContext, theme: 'light
   await page.getByRole('tab', { name: /coupons/i }).click();
   await expect(page.getByTestId('discount-step-1')).toBeVisible(LOADED);
 }
-
-/** Blend a translucent colour down to the opaque pixels it paints, then take the WCAG ratio. */
-const COLOUR_PROBE = `
-  const lum = (c) => { const [r,g,b] = c.map(v => { const s = v/255; return s <= 0.03928 ? s/12.92 : Math.pow((s+0.055)/1.055, 2.4); }); return 0.2126*r + 0.7152*g + 0.0722*b; };
-  const parse = (c) => (c.match(/[\\d.]+/g) || [0,0,0,0]).slice(0,4).map(Number);
-  const alpha = (c) => { const p = parse(c); return p.length > 3 ? p[3] : 1; };
-  const over = (fg, bg, a) => fg.slice(0,3).map((v, i) => Math.round(v*a + bg[i]*(1-a)));
-  const ratio = (a, b) => { const l1 = lum(a), l2 = lum(b); return Math.round(((Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05))*100)/100; };
-  window.__edge = (selector) => {
-    const el = document.querySelector(selector);
-    if (!el) return null;
-    const cs = getComputedStyle(el);
-    let node = el.parentElement; let parent = [255,255,255];
-    while (node) {
-      const pc = getComputedStyle(node); const a = alpha(pc.backgroundColor);
-      if (a > 0) { parent = over(parse(pc.backgroundColor), parent, a); if (a > 0.99) break; }
-      node = node.parentElement;
-    }
-    const ownAlpha = alpha(cs.backgroundColor);
-    const own = ownAlpha > 0 ? over(parse(cs.backgroundColor), parent, ownAlpha) : parent;
-    const edge = over(parse(cs.borderTopColor), own, alpha(cs.borderTopColor));
-    return { width: parseFloat(cs.borderTopWidth), edge: 'rgb(' + edge.join(',') + ')', own: 'rgb(' + own.join(',') + ')', vsOwn: ratio(edge, own), vsParent: ratio(edge, parent) };
-  };
-`;
 
 test.describe('coupon workflow length and light edges', () => {
   test.skip(!seedPassword, seedPasswordMissing);
@@ -206,5 +175,31 @@ test.describe('coupon workflow length and light edges', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
       'the gift card tab scrolls sideways on a phone').toBe(0);
     await page.screenshot({ path: 'artifacts/coupons-light-phone.png', fullPage: true });
+  });
+
+  test('a choice you can click paints a face and an edge in both themes', async ({ page }) => {
+    for (const [width, height] of [[1440, 900], [390, 844]] as const) {
+      for (const theme of ['light', 'dark'] as const) {
+        await page.setViewportSize({ width, height });
+        await openCoupons(page, page.request, theme);
+
+        const step = page.locator('.discount-config-card', { hasText: /Discount Value/i }).first();
+        const toggle = step.locator('.discount-card-toggle');
+        if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
+        await expect(step.locator('.discount-card-body')).toBeVisible(LOADED);
+
+        await page.evaluate(COLOUR_PROBE);
+        const options = await page.evaluate(() => window.__edges('.segmented__option, .discount-quick-pill, .scope-add__chip'));
+        expect(options.length, `${width}/${theme}: no choices rendered`).toBeGreaterThan(6);
+        for (const option of options) {
+          expect(option.px, `${width}/${theme}: "${option.text}" sets type at ${option.px}px`).toBeGreaterThanOrEqual(13);
+          expect(option.width, `${width}/${theme}: "${option.text}" has no border to click`).toBeGreaterThanOrEqual(1);
+          expect(Math.max(option.vsOwn, option.vsParent),
+            `${width}/${theme}: "${option.text}" edge ${option.edge} is invisible on ${option.own}`).toBeGreaterThanOrEqual(3);
+        }
+        await page.locator('.segmented').first().scrollIntoViewIfNeeded();
+        await page.screenshot({ path: `artifacts/options-${width}-${theme}.png` });
+      }
+    }
   });
 });

@@ -1,5 +1,150 @@
 # FIX_REPORT
 
+# Round 16 — the option you circled in red is a control now, and the cart sheet stops hiding
+
+Date: 2026-11-02. Brief: "here red marked button not visible and also consider font size. Please you
+review all as apges as live and also check the Your card page give the modern e-comemrce type better
+unique design", with a screenshot and two red pen marks sitting under **Percentage (%)** and **Fixed
+Amount (BDT)** in the "Discount Value & Calculation" step.
+
+One thing to say up front: **this app has no `/cart` route.** When you picked "Cart page (/cart)" I
+went looking, and the only cart in the codebase is the **navbar "Your cart" sheet** — `CartSheet`
+opening `CartPanel` (`web/src/components/CartPanel.tsx`). That is the surface I redesigned, because it
+is the surface a customer actually uses. If you meant something else, tell me which screen and I will
+redo it there.
+
+## What the red mark actually was
+
+The two options are one `segmented` control. The selected one gets the amber fill; the other one was
+declared as:
+
+```css
+.segmented__option { background: transparent; border: none; font-size: var(--text-micro); }
+```
+
+No border, no face, and sitting on a `--well-fill` tray. I measured it in the browser rather than
+arguing about it: **edge contrast 1.00:1 against its own tray, at 12px** (`--text-micro`). That is not
+a dim control, that is no control — it paints as plain text, which is exactly what your pen marked.
+The same pattern was repeated on every pill and chip in the builder.
+
+The cause is that the theme had no token for "a thing you can click that is not currently chosen".
+Every one of these surfaces reached for `transparent` because nothing else said "clickable".
+
+## The fix: one option vocabulary, applied everywhere it was used
+
+Five additive alias tokens in `web/src/styles/tokens.css` — `--opt-fill`, `--opt-fill-hover`,
+`--opt-edge`, `--opt-ink` — defined separately for light and dark. Additive only: no existing
+token was redefined, because the light-theme palette is pinned by `web/src/test/light-theme.test.tsx`.
+Nothing in this round touched the amber selected fill or the amber selected row.
+
+Then the five control families that had the transparent-body defect were routed through it: the
+segmented option, the discount quick pills, the scope-add chips, the filter chips, and the cart's
+voucher chips, quick chips and code input. All of them now paint a face and an edge, 13px type, at
+least 30px tall.
+
+Measured after the change, in a browser, both themes, both widths:
+
+| control | before | after (light) | after (dark) |
+| --- | --- | --- | --- |
+| "Fixed Amount (BDT)" edge on its tray | **1.00:1** | **3.19:1** | **4.55:1** |
+| its type size / declared border | 12px (`--text-micro`), no border | **13px / 30px tall** | 13px / 30px |
+| ink on its own face | 17.85:1 | 17.85:1 | 14.51:1 |
+| "Percentage (%)" — selected, amber | edge 1.05 | edge 2.71, ink 6.1 | edge 8.36, ink 9.1 |
+
+Selected keeps winning visually (amber fill, 2.71:1 / 8.36:1 edge), unselected stops disappearing. The
+"Whole basket" chip reads 1.94:1 light / 1.64:1 dark because it *is* the selected one — it uses the
+same amber selected state (`scope-add__chip--active`, app.css:3239) with 6.87:1 / 12.67:1 ink. I left
+that alone deliberately.
+
+A dead rule family turned up in the audit: `.bulk-pill-btn` was styled off two variables
+(`--text-bright`, `--text-on-brand`) that are **not declared anywhere in the project** — so those
+buttons resolved to the initial values. They now sit on the same option tokens, and there is a test
+that fails if any `var(--x)` in app.css stops being declared.
+
+## The cart sheet: three defects, one of them mine
+
+The sheet was the flex-collapse class of bug I have now seen twice. It had `position: sticky` plus
+`max-height` plus `overflow-y: auto` on `.cart-panel`, and inside a flex column that shrinks children
+to nothing: **the product line list measured `height: 0px` while `scrollHeight` reported 282px.** Three
+items in the cart, zero items on screen. Removing the nested scroller (the sheet itself scrolls) gives
+the list its natural height and pins the totals as a bottom dock instead.
+
+| | before | after |
+| --- | --- | --- |
+| `.cart-lines` (the item list) | **0px tall** | **337px, 3 rows, first row 112px** |
+| Place-order dock | in flow, off-screen | `position: sticky`, 116px at 1440 / 109px at 390, bottom edge at 841 / 832 — inside the viewport |
+| Summary vs dock | overlapped | summary ends 697, dock starts 713 (1440); 695 vs 711 (390) |
+| Close button on a phone | **not painted** | top at 54px, `elementFromPoint` hits the button itself |
+
+The Close button had a second, separate cause. `CampaignBanner.css` had the page's campaign strip at
+`z-index: 100`. The modal layer is `--z-modal: 70`. So on a phone the in-flow marketing strip drew
+itself **over the top of the cart dialog** and covered exactly the row where the dismiss control lived.
+An in-flow page strip has no business sitting above the dialog layer; it is now `var(--z-sticky)` (40).
+The dismiss control also moved where it belongs — onto the "Your cart" title row instead of a full-width
+`.btn` stranded above the heading.
+
+Then a regression I introduced and then measured: making the options raised and 13px pushed the five
+status filters to **401px on a 390px phone** — the admin coupons tab scrolled sideways by 11px. The
+segmented row now wraps (`flex-wrap: wrap; max-width: 100%`) so every option stays reachable instead
+of one hiding behind a horizontal scroll. Same tab measures `scrollWidth 390 === clientWidth 390`.
+
+## Live review of every route
+
+You asked me to look at all pages live rather than reason about them. I ran every route at 1440 and
+390, in light and dark, and asked each page what it actually resolved — 52 page renders (13 routes × 4
+combinations) and 215 control readings off those pages, in one run. **Sideways overflow: none on any
+route, any width, any theme** (`overflow rows: []`).
+
+| route | laptop 1440 | phone 390 |
+| --- | --- | --- |
+| home | 1,732px | 4,819px |
+| products | 1,732px | 4,819px |
+| product detail | 1,879px | 2,690px |
+| account | 1,594px | 3,037px |
+| profile | 1,711px | 2,742px |
+| notifications | 1,296px | 1,935px |
+| inventory | 1,199px | 1,841px |
+| gift cards | 1,062px | 1,775px |
+| admin (coupons) | 3,005px | 4,839px |
+
+Four routes (orders, wishlist, staff, sales) came back at exactly 900px — one laptop screen. That is
+their empty state against the fixtures, so read those four as a floor, not as proof the real list fits.
+
+Two readings came out of that run. On the route sweep, every control renders at **13px or larger** with
+ink between **6.1:1 and 17.85:1** on its own face. And in the focused probe over the builder options and
+the cart sheet — the surfaces your pen marked — every unselected choice sits at **3.19:1 (light) /
+4.55:1 (dark) or better** against its tray. Two flagged numbers turned out to be measurement artefacts, and
+I am reporting them instead of quietly dropping them: a 503 on a product image (the harness serves no
+`/uploads`), and the Place-order button reading 1.06 ink-on-fill in dark — its background is a
+`linear-gradient`, so `background-color` is `rgba(0,0,0,0)` and the probe has nothing to blend against.
+The real paint is `rgb(255,195,107)` → `rgb(255,171,77)` under `rgb(26,17,0)` ink, which is fine.
+
+## Tests
+
+- `web/src/test/option-and-cart.test.ts` — 11 new CSS/markup contract tests: every control class in the
+  option family carries `--opt-fill` and `--opt-edge`; the amber selected states still exist; the
+  `--opt-*` tokens are defined and non-transparent in **both** theme blocks; `.cart-panel` is free of
+  `sticky`/`max-height`/`overflow` and the TSX still renders the section; the cart rules use no raw hex
+  and no undeclared token; the campaign banner sits at `--z-sticky` and `--z-sticky < --z-modal`; and a
+  whole-file sweep that every `var(--x)` in app.css resolves.
+- `web/e2e/cart-sheet.spec.ts` — new. Says in its own header that the cart is the navbar sheet, not a
+  route. Opens the sheet, then asks the DOM: is the list taller than 60px, is every line at least 40px,
+  does `elementFromPoint` at the Close button's centre return the button, is the dock sticky and inside
+  the viewport, does the summary stop above the dock.
+- `web/e2e/coupon-workflow.spec.ts` — new option-legibility test across 1440/390 × light/dark, and the
+  colour probe was lifted out of this spec into a shared `web/e2e/colour-probe.ts` so both specs ask the
+  page the same question.
+
+Gates after the last edit: `tsc --noEmit` clean, `i18n:check` 1822 entries, `vitest run` 240 tests / 34
+files passing, `npm run build` clean.
+
+## Limits
+
+I still cannot sign in to your live stack — no password — so every number above comes from a throwaway
+stub harness that mounts the real components with fixtures, not from the deployed admin. The harness and
+its scripts are deleted before this commit. The browser specs are written and typecheck, but they need
+`NINECUBE_SEED_PASSWORD` to run, which only you can do.
+
 # Round 15 — the coupon screen fits a working day, and light mode stops apologising
 
 Date: 2026-11-02. Brief: "this pages becomes longs not very user friendly , is user uese it
