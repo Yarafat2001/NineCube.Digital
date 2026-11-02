@@ -1,5 +1,111 @@
 # FIX_REPORT
 
+# Round 13 — the Coupons & Discounts screen now does what its own tooltips promise
+
+Date: 2026-11-02. Brief: "Coupons & Discount page design & make more user-friendly possible to handle it
+more effectively such hover style as like this - is it possible?" with two screenshots of the live dark
+admin screen. Asked which hover look and how far to go, the answer was "no preference" to both, so this
+round did the hover affordances and the flow fixes underneath them.
+
+## What the code did before, read line by line
+
+- **Both registry tables told a lie.** Every row carried the native tooltip "Click row to select ·
+  Double click to edit", but no `<tr>` had an `onClick` at all. Selection only ever happened through the
+  checkbox, and only the coupon *code cell* (not the row) had the double-click to edit. The gift card
+  row did have one, so the two tables on the same screen behaved differently.
+- **The coupon list had no way to find a code.** The gift card list beside it already had a search box
+  and four state buttons, hand-styled with inline `style` attributes and `btn btn--sm` pills instead of
+  the segmented control the rest of the admin uses.
+- **Both empty states looked at the wrong array.** The "no rows" test read `couponsQuery.data`, not the
+  filtered list, so a search that matched nothing rendered an empty table with no message.
+- **Discount type was a native `<select>`** in a builder where every other either-or choice is the
+  amber segmented pill.
+- **The preset rail hid five of its six cards.** `.coupon-templates__rail` was
+  `grid-auto-flow: column; overflow-x: auto`, so at laptop width about two and a half presets were
+  visible and the rest sat behind a sideways scroll with no affordance.
+- **The preview column could not be reached.** `.voucher-ticket-container` already had
+  `position: sticky` — I said last round that it did not, that was wrong — but it had no `max-height`,
+  so on a short window the ticket ran past the bottom of the screen and the Create Coupon button, which
+  lives under it, went with it.
+- Two labels were jargon: "Quick Templates (1-Click Fill):" and "Quick Values:".
+
+## What it is now, with the numbers read off the running screen
+
+Registry rows (`web/src/pages/AdminPage.tsx`, `.registry-row` in `app.css`):
+
+| Measured | Result |
+| --- | --- |
+| Hovered coupon row, computed background | `rgba(245, 151, 38, 0.07)` — a new `--selected-wash` token, deliberately softer than the `0.16` selected fill so a hovered row never reads as a selected one |
+| Pencil glyph beside the code | opacity `0` at rest, `1` on `:hover` / `:focus-within`, `0.4` under `@media (hover: none)` where no hover state exists |
+| Single click on a row | `data-selected="true"`, checkbox now checked, no dialog opened |
+| Double click on a row | the Edit Coupon dialog opens |
+| Click that lands on a checkbox or button inside the row | left to that control (`toggleRowSelection` bails on `button, input, label, select, a`) |
+
+Finding a coupon (`registry-filterbar` + the shared `segmented`):
+
+| Action | Screen says |
+| --- | --- |
+| Type `apex` in the coupon search | heading reads `Promotional Coupons & Discounts (1 / 5)`, table holds `APEX15` only |
+| Type `Mega` | matches the campaign title, not just the code |
+| Press `Disabled` | `OFFLINE` only |
+| Type `zzz` | "No coupon matches that search." instead of a silent empty table |
+| Press Clear | search and state both reset, count back to `(5)` |
+| Gift cards tab | the same bar, same control, same behaviour (its own empty state now distinguishes "none issued" from "none matched") |
+
+Builder flow:
+
+- Discount type is `role="group"` "Discount type" with two `aria-pressed` options; the `<select>` is gone.
+- Labels are now "Start from a preset (1-click fill):" and "Suggested amounts:".
+- Preset rail at 1440: 6 cards, 5 tracks, **2 rows**, `overflow-x: visible`. At 390 the `auto-fill`
+  `minmax(228px, 1fr)` collapses to one column, so nothing is off-screen at either width.
+
+The preview column and the Create button:
+
+| Window | Cap computed | Ticket | Create dock bottom |
+| --- | --- | --- | --- |
+| 1440 × 460, long ticket | `351px` | client 351 / scroll 691 → scrolls internally | 336 at rest, 444 after scrolling 900px — both on screen |
+| 1440 × 760, long ticket | `651px` | client 651 / scroll 691 → scrolls internally | 487 at rest, 744 after scrolling — both on screen |
+
+**The cap alone was not the fix, and measuring it is what found that.** With `max-height` and
+`overflow: auto` on the container, `scrollHeight` equalled `clientHeight` (351 / 351) — a flex column
+shrinks its children, so the ticket was being *squashed* to the cap rather than scrolled inside it, and
+the bottom of it was simply clipped. `.voucher-ticket-container > * { flex: 0 0 auto }` is what turned
+351/351 into 351/691. The dock itself is `position: sticky; bottom: 0` with the navbar's glass treatment
+so ticket text sliding under it reads as depth, and both are lifted back to static at ≤992px where the
+column is no longer sticky.
+
+## Tests
+
+Six new cases, all in the existing suites: `registry-tables.test.tsx` (row click selects, double click
+edits, a click on a row control stays the control's, search by code and campaign title with the `1 / 2`
+count and the no-match message, the state segmented narrowing to Disabled / Expired / All, and the gift
+card registry on the same bar) and `coupon-builder.test.tsx` (discount type is a segmented group, not a
+select). 205 tests in 31 files green. `npx tsc --noEmit` clean, `npm run i18n:check` clean (1,759
+entries, no duplicate keys), `npm run build` clean.
+
+## How this was actually verified, and what it does not prove
+
+The agent cannot sign in to the live admin screen, so the browser pass ran the **real app** against a
+throwaway stub API on port 5178 — fixture coupons and gift cards shaped like the API's own DTOs, the
+session written into `sessionStorage` the way `AuthContext` writes it. 1440 × 900 and 390 × 844, light
+and dark, and every number above was read out of the DOM with `getComputedStyle` and
+`getBoundingClientRect`, not estimated. The harness config and its scripts were deleted after the run.
+
+That means these are layout and behaviour numbers, not catalogue numbers: no .NET API and no seeded
+Postgres were involved, and the reach-preview figures still come from Round 12's real database run. The
+live end-to-end spec `web/e2e/coupon-scope-ui.spec.ts` still needs the owner to run it with
+`NINECUBE_SEED_PASSWORD` set. Page horizontal overflow at 390 is 0px on both registries.
+
+One loose end on this machine: the stub server is still listening on 127.0.0.1:5178 (PID 5388). Killing
+arbitrary processes is blocked here, so it needs to be ended by hand — it is not this project's API and
+nothing in the repo points at it.
+
+## Left alone deliberately
+
+The navbar's amber selected tab, and the amber selected-row fill — the hover wash is a separate token
+precisely so it sits *under* both of them. The scope rule engine, the stacking policy and the reach
+preview are untouched. Stock is still not editable from any bulk path.
+
 # Round 12 — a coupon's scope is now a set of rules the money engine actually reads
 
 Date: 2026-11-02. Brief: the owner asked whether one discount can cover several categories, brands or

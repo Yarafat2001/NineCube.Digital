@@ -27,6 +27,7 @@
   --accent-text: #9A3F00;
   --on-accent: #1A1100;
   --selected-bg: #FFF1D6;
+  --selected-wash: #FFF8EC;
   --selected-bar: #D97706;
   --ok-bg: #DCFCE7; --ok-text: #14532D; --ok-border: #86EFAC;
   --warn-bg: #FEF3C7; --warn-text: #78350F; --warn-border: #FCD34D;
@@ -176,6 +177,7 @@
       radial-gradient(900px 600px at 96% 4%, rgba(120, 86, 255, 0.3), transparent 60%);
     --surface-glass: rgba(28, 25, 27, 0.62);
     --selected-bg: rgba(245, 151, 38, 0.16);
+    --selected-wash: rgba(245, 151, 38, 0.07);
     --selected-bar: #f59726;
     --ok-bg: rgba(87, 211, 160, 0.16); --ok-text: #57d3a0; --ok-border: rgba(87, 211, 160, 0.45);
     --warn-bg: rgba(255, 195, 107, 0.16); --warn-text: #ffc36b; --warn-border: rgba(255, 195, 107, 0.45);

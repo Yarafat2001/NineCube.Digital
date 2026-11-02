@@ -1,4 +1,4 @@
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, within } from '@testing-library/react';
 import { screen } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
@@ -51,5 +51,17 @@ describe('Coupon & discount builder', () => {
     expect(storewide).toHaveAttribute('aria-pressed', 'false');
     expect(screen.getByRole('button', { name: /create coupon/i })).toBeEnabled();
     expect(screen.getByText('Ready — this creates the coupon exactly as previewed.')).toBeInTheDocument();
+  });
+
+  it('asks for the discount type with the shared segmented control, not a native select', async () => {
+    await openCouponBuilder();
+
+    const group = screen.getByRole('group', { name: /discount type/i });
+    expect(group.className).toContain('segmented');
+
+    fireEvent.click(within(group).getByRole('button', { name: /fixed amount/i }));
+    expect(within(group).getByRole('button', { name: /fixed amount/i })).toHaveAttribute('aria-pressed', 'true');
+    expect(within(group).getByRole('button', { name: /percentage/i })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByLabelText(/discount amount \(bdt\)/i)).toBeInTheDocument();
   });
 });

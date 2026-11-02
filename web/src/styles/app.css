@@ -935,6 +935,60 @@ tr[data-low-stock='true'] {
   font-size: var(--text-xs);
 }
 
+/* Registry rows are clickable: one click selects, a double click opens the editor. The
+   hover wash is deliberately softer than the selected fill so a hovered row can never be
+   mistaken for a selected one. */
+.registry-row {
+  cursor: pointer;
+}
+
+.registry-row:hover {
+  background: var(--selected-wash);
+}
+
+/* The edit affordance stays hidden until the pointer (or keyboard focus) is on the row,
+   and on touch devices where no hover state exists it is shown dimmed instead. */
+.registry-row__edit {
+  opacity: 0;
+  color: var(--text-muted);
+  transition: opacity var(--transition-fast);
+}
+
+.registry-row:hover .registry-row__edit,
+.registry-row:focus-within .registry-row__edit {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .registry-row__edit {
+    opacity: 0.4;
+  }
+}
+
+/* Shared sub-bar under a registry header: find a record, then narrow by state. */
+.registry-filterbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.registry-filterbar__search {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 6px 12px;
+  font-size: var(--text-xs);
+}
+
+/* The clear link carries a glyph, and a bare inline button drops it onto its own line. */
+.registry-filterbar .link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
 /* A right-aligned money cell must not break its own qualifier across two lines. */
 .cell-sub {
   display: block;
@@ -2647,16 +2701,11 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 
 .coupon-templates__rail {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(228px, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
   gap: var(--space-2);
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scroll-snap-type: x proximity;
 }
 
 .coupon-template {
-  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -3440,6 +3489,17 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  /* A long ticket on a short window used to push the Create button below the pinned
+     column; the column now scrolls internally instead. */
+  max-height: calc(100dvh - var(--sticky-top) - var(--space-4));
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+/* Without this the flex column squashes the ticket to the cap instead of overflowing
+   it, so the preview was clipped and the column reported nothing to scroll. */
+.voucher-ticket-container > * {
+  flex: 0 0 auto;
 }
 
 .voucher-ticket {
@@ -3638,6 +3698,25 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 
 .voucher-ticket__foot--soon { background: var(--warn-bg); color: var(--warn-text); }
 
+/* The submit dock stays at the foot of the preview column while the ticket scrolls.
+   It uses the same glass treatment as the navbar so text sliding under it reads as
+   depth rather than a hard seam. */
+.voucher-action {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding-top: var(--space-2);
+  background: var(--surface-glass);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .voucher-action { background: rgba(255, 255, 255, .92); }
+  :root[data-theme="dark"] .voucher-action { background: #1b181a; }
+}
+
 .voucher-action__button {
   width: 100%;
   display: flex;
@@ -3684,13 +3763,13 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 
 @media (max-width: 992px) {
   .discount-builder-layout { grid-template-columns: 1fr; }
-  .voucher-ticket-container { position: static; }
+  .voucher-ticket-container { position: static; max-height: none; overflow: visible; }
+  .voucher-action { position: static; border-top: 0; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
 @media (max-width: 640px) {
   .discount-config-card { padding-left: var(--space-4); }
   .discount-config-card::before,
   .discount-card-step { display: none; }
-  .coupon-templates__rail { grid-auto-columns: minmax(200px, 86%); }
   .voucher-ticket__value { font-size: 1.8rem; }
 }

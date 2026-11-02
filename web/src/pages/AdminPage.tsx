@@ -356,6 +356,27 @@ export function AdminPage() {
           (g.recipientEmail?.toLowerCase().includes(term) ?? false);
       });
   }, [giftCardsQuery.data, gcFilter, gcSearch]);
+
+  // The coupon list had no way to find a code; the gift card list beside it already had one.
+  const [couponSearch, setCouponSearch] = useState('');
+  const [couponFilter, setCouponFilter] = useState<'all' | 'active' | 'disabled' | 'expired'>('all');
+
+  const filteredCoupons = useMemo(() => (couponsQuery.data ?? [])
+    .filter((c) => {
+      const now = new Date();
+      if (couponFilter === 'active') return c.isActive && (!c.expiresAt || new Date(c.expiresAt) > now);
+      if (couponFilter === 'disabled') return !c.isActive;
+      if (couponFilter === 'expired') return !!c.expiresAt && new Date(c.expiresAt) < now;
+      return true;
+    })
+    .filter((c) => {
+      if (!couponSearch.trim()) return true;
+      const term = couponSearch.toLowerCase();
+      return c.code.toLowerCase().includes(term)
+        || (c.campaignTitle?.toLowerCase().includes(term) ?? false)
+        || (c.scopeRules ?? []).some((rule) => rule.entityNames.some((name) => name.toLowerCase().includes(term)));
+    }), [couponsQuery.data, couponFilter, couponSearch]);
+
   const [selectedCardForModal, setSelectedCardForModal] = useState<GiftCard | null>(null);
   const [adjustModal, setAdjustModal] = useState<{ card: GiftCard; newBalance: string; reason: string } | null>(null);
   const [revealedCodes, setRevealedCodes] = useState<Record<number, boolean>>({});
@@ -626,6 +647,17 @@ export function AdminPage() {
     );
   };
 
+  /** A row click selects and a row double-click edits; a click that lands on a control inside the row belongs to that control. */
+  const toggleRowSelection = (
+    id: number,
+    selected: number[],
+    apply: (ids: number[]) => void,
+    target: EventTarget | null
+  ) => {
+    if ((target as HTMLElement | null)?.closest?.('button, input, label, select, a')) return;
+    apply(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
+  };
+
   return (
     <div className="page container">
       <header className="page-header">
@@ -880,7 +912,7 @@ export function AdminPage() {
             <div className="coupon-templates__head">
               <span className="coupon-templates__label">
                 <Icon name="spark" width={14} height={14} />
-                {t("Quick Templates (1-Click Fill):")}
+                {t("Start from a preset (1-click fill):")}
               </span>
               <span className="coupon-templates__hint">
                 {t("Only Code & Discount are required — all other metadata below is optional.")}
@@ -1024,15 +1056,20 @@ export function AdminPage() {
 
                 <div className="discount-field-grid">
                   <div className="field">
-                    <label htmlFor="coupon-type">{t("Discount type")}</label>
-                    <select
-                      id="coupon-type"
-                      value={discountType}
-                      onChange={(e) => setDiscountType(e.target.value as 'Percentage' | 'FixedAmount')}
-                    >
-                      <option value="Percentage">{t("Percentage (%)")}</option>
-                      <option value="FixedAmount">{t("Fixed Amount (BDT)")}</option>
-                    </select>
+                    <span className="field__label-row" id="coupon-type-label">{t("Discount type")}</span>
+                    <div className="segmented" role="group" aria-labelledby="coupon-type-label">
+                      {(['Percentage', 'FixedAmount'] as const).map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          className={`segmented__option ${discountType === option ? 'segmented__option--active' : ''}`}
+                          aria-pressed={discountType === option}
+                          onClick={() => setDiscountType(option)}
+                        >
+                          {t(option === 'Percentage' ? 'Percentage (%)' : 'Fixed Amount (BDT)')}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="field">
@@ -1055,7 +1092,7 @@ export function AdminPage() {
                 </div>
 
                 <div className="field">
-                  <span className="field__label-row">{t("Quick Values:")}</span>
+                  <span className="field__label-row">{t("Suggested amounts:")}</span>
                   <div className="discount-quick-pills">
                     {discountType === 'Percentage'
                       ? ['5', '10', '15', '20', '25', '30', '50'].map((val) => (
@@ -1413,7 +1450,9 @@ export function AdminPage() {
               <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center' }}>
                 <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
                   <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0 }}>
-                    {t("Promotional Coupons & Discounts")} ({(couponsQuery.data ?? []).length})
+                    {t("Promotional Coupons & Discounts")} ({filteredCoupons.length === (couponsQuery.data ?? []).length
+                      ? filteredCoupons.length
+                      : `${filteredCoupons.length} / ${(couponsQuery.data ?? []).length}`})
                   </h3>
                   <span className={`badge ${selectedCouponIds.length > 0 ? 'badge--primary' : 'badge--neutral'}`} style={{ fontWeight: 700 }}>
                     {selectedCouponIds.length} {t("selected")}
@@ -1479,6 +1518,42 @@ export function AdminPage() {
                 </div>
               </div>
 
+              {/* Sub-bar: find a code, then narrow by state — the gift card list beside this one already had it. */}
+              <div className="registry-filterbar">
+                <input
+                  type="search"
+                  id="coupon-search"
+                  className="registry-filterbar__search"
+                  placeholder={t("Search by code, campaign or scope…")}
+                  aria-label={t("Search coupons")}
+                  value={couponSearch}
+                  onChange={(e) => setCouponSearch(e.target.value)}
+                />
+                <div className="segmented" role="group" aria-label={t("Coupon status")}>
+                  {(['all', 'active', 'disabled', 'expired'] as const).map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      className={`segmented__option ${couponFilter === option ? 'segmented__option--active' : ''}`}
+                      aria-pressed={couponFilter === option}
+                      onClick={() => setCouponFilter(option)}
+                    >
+                      {t(option === 'all' ? 'All' : option === 'active' ? 'Active' : option === 'disabled' ? 'Disabled' : 'Expired')}
+                    </button>
+                  ))}
+                </div>
+                {(couponSearch.trim() || couponFilter !== 'all') && (
+                  <button
+                    type="button"
+                    className="link-button"
+                    onClick={() => { setCouponSearch(''); setCouponFilter('all'); }}
+                  >
+                    <Icon name="x" width={12} height={12} aria-hidden="true" />
+                    {t("Clear")}
+                  </button>
+                )}
+              </div>
+
               <div className="table-surface">
               <div className="table-scroll">
                 <table>
@@ -1490,12 +1565,12 @@ export function AdminPage() {
                           type="checkbox"
                           aria-label={t("Select all coupons on this page")}
                           checked={
-                            (couponsQuery.data ?? []).length > 0 &&
-                            (couponsQuery.data ?? []).every((c) => selectedCouponIds.includes(c.id))
+                            filteredCoupons.length > 0 &&
+                            filteredCoupons.every((c) => selectedCouponIds.includes(c.id))
                           }
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedCouponIds((couponsQuery.data ?? []).map((c) => c.id));
+                              setSelectedCouponIds(filteredCoupons.map((c) => c.id));
                             } else {
                               setSelectedCouponIds([]);
                             }
@@ -1512,8 +1587,15 @@ export function AdminPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {(couponsQuery.data ?? []).map((c) => (
-                      <tr key={c.id} data-selected={selectedCouponIds.includes(c.id)}>
+                    {filteredCoupons.map((c) => (
+                      <tr
+                        key={c.id}
+                        className="registry-row"
+                        data-selected={selectedCouponIds.includes(c.id)}
+                        onClick={(e) => toggleRowSelection(c.id, selectedCouponIds, setSelectedCouponIds, e.target)}
+                        onDoubleClick={() => openEditCoupon(c)}
+                        title={t("Click row to select · Double click to edit")}
+                      >
                         <td className="check">
                           <input
                             type="checkbox"
@@ -1528,7 +1610,12 @@ export function AdminPage() {
                             }}
                           />
                         </td>
-                        <td onDoubleClick={() => openEditCoupon(c)} style={{ cursor: "pointer" }} title={t("Click row to select · Double click to edit")}><strong className="mono">{c.code}</strong></td>
+                        <td>
+                          <span className="registry-code">
+                            <strong className="mono">{c.code}</strong>
+                            <Icon className="registry-row__edit" name="pencil" width={13} height={13} aria-hidden="true" />
+                          </span>
+                        </td>
                         <td>
                           <div>{c.discountType === 'Percentage' ? t("Percentage") : t("Fixed Amount")}</div>
                           <small className="muted registry-scope">{resolveTargetLabel(c)}</small>
@@ -1562,10 +1649,12 @@ export function AdminPage() {
 
                       </tr>
                     ))}
-                    {(couponsQuery.data ?? []).length === 0 && (
+                    {filteredCoupons.length === 0 && (
                       <tr>
                         <td colSpan={8} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
-                          {t("No coupons created yet.")}
+                          {(couponsQuery.data ?? []).length === 0
+                            ? t("No coupons created yet.")
+                            : t("No coupon matches that search.")}
                         </td>
                       </tr>
                     )}
@@ -1585,7 +1674,7 @@ export function AdminPage() {
             <div className="coupon-templates__head">
               <span className="coupon-templates__label">
                 <Icon name="gift" width={14} height={14} />
-                {t("Quick Templates (1-Click Fill):")}
+                {t("Start from a preset (1-click fill):")}
               </span>
               <span className="coupon-templates__hint">
                 {t("Only the card value is required — a fresh code is minted with every preset.")}
@@ -1633,7 +1722,7 @@ export function AdminPage() {
                 </div>
 
                 <div className="field">
-                  <span className="field__label-row">{t("Quick Values:")}</span>
+                  <span className="field__label-row">{t("Suggested amounts:")}</span>
                   <div className="discount-quick-pills">
                     {['500', '1000', '2000', '5000'].map((preset) => (
                       <button
@@ -2055,29 +2144,42 @@ export function AdminPage() {
                 </div>
               </div>
 
-              {/* Sub-bar: Search & Filter Tabs */}
-              <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
+              {/* Sub-bar: the same find-then-narrow pattern the coupon registry uses. */}
+              <div className="registry-filterbar">
                 <input
                   type="search"
+                  id="gift-card-search"
+                  className="registry-filterbar__search"
                   placeholder={t("Search by code or recipient…")}
+                  aria-label={t("Search gift cards")}
                   value={gcSearch}
                   onChange={(e) => setGcSearch(e.target.value)}
-                  style={{ padding: '4px 10px', fontSize: 'var(--text-xs)', minWidth: '220px' }}
                 />
 
-                <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
+                <div className="segmented" role="group" aria-label={t("Gift card status")}>
                   {(['all', 'active', 'depleted', 'disabled'] as const).map((filterOpt) => (
                     <button
                       key={filterOpt}
                       type="button"
-                      className={`btn btn--sm ${gcFilter === filterOpt ? 'btn--primary' : ''}`}
+                      className={`segmented__option ${gcFilter === filterOpt ? 'segmented__option--active' : ''}`}
+                      aria-pressed={gcFilter === filterOpt}
                       onClick={() => setGcFilter(filterOpt)}
-                      style={{ textTransform: 'capitalize', fontSize: 'var(--text-xs)' }}
                     >
                       {t(filterOpt === 'all' ? 'All' : filterOpt === 'active' ? 'Active' : filterOpt === 'depleted' ? 'Depleted' : 'Disabled')}
                     </button>
                   ))}
                 </div>
+
+                {(gcSearch.trim() || gcFilter !== 'all') && (
+                  <button
+                    type="button"
+                    className="link-button"
+                    onClick={() => { setGcSearch(''); setGcFilter('all'); }}
+                  >
+                    <Icon name="x" width={12} height={12} aria-hidden="true" />
+                    {t("Clear")}
+                  </button>
+                )}
               </div>
 
               {/* Table */}
@@ -2120,7 +2222,14 @@ export function AdminPage() {
                         const maskedDisplay = isRevealed ? g.code : `${g.code.slice(0, 3)}••••-••••-${g.code.slice(-4)}`;
 
                         return (
-                          <tr key={g.id} data-selected={selectedGiftCardIds.includes(g.id)} onDoubleClick={() => openEditGiftCard(g)} style={{ cursor: "pointer" }} title={t("Click row to select · Double click to edit")}>
+                          <tr
+                            key={g.id}
+                            className="registry-row"
+                            data-selected={selectedGiftCardIds.includes(g.id)}
+                            onClick={(e) => toggleRowSelection(g.id, selectedGiftCardIds, setSelectedGiftCardIds, e.target)}
+                            onDoubleClick={() => openEditGiftCard(g)}
+                            title={t("Click row to select · Double click to edit")}
+                          >
                             <td className="check">
                               <input
                                 type="checkbox"
@@ -2219,10 +2328,12 @@ export function AdminPage() {
                           </tr>
                         );
                       })}
-                    {(giftCardsQuery.data ?? []).length === 0 && (
+                    {filteredGiftCards.length === 0 && (
                       <tr>
                         <td colSpan={7} className="muted" style={{ textAlign: 'center', padding: 'var(--space-4)' }}>
-                          {t("No gift cards issued yet.")}
+                          {(giftCardsQuery.data ?? []).length === 0
+                            ? t("No gift cards issued yet.")
+                            : t("No gift card matches that search.")}
                         </td>
                       </tr>
                     )}

@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { API } from './handlers';
@@ -100,5 +100,110 @@ describe('Admin registry tables', () => {
 
     fireEvent.click(await screen.findByRole('checkbox', { name: /Select gift card GC-AAAA-BBBB-1000/i }));
     expect(chip.className).toContain('badge--primary');
+  });
+
+  it('selects a coupon row on click and opens the editor on double click', async () => {
+    server.use(http.get(`${API}/api/coupons`, () => HttpResponse.json([coupon({})])));
+    await openRegistry('Coupons');
+
+    const row = within(await screen.findByRole('table')).getByText('SAVE10').closest('tr') as HTMLElement;
+    expect(row.className).toContain('registry-row');
+
+    fireEvent.click(row);
+    expect(row).toHaveAttribute('data-selected', 'true');
+    expect(screen.queryByRole('heading', { name: /edit coupon/i })).toBeNull();
+
+    fireEvent.doubleClick(row);
+    expect(await screen.findByRole('heading', { name: /edit coupon/i })).toBeInTheDocument();
+  });
+
+  it('leaves a click on a row control to that control instead of selecting the row', async () => {
+    server.use(http.get(`${API}/api/coupons`, () => HttpResponse.json([coupon({})])));
+    await openRegistry('Coupons');
+
+    const checkbox = await screen.findByRole('checkbox', { name: /Select coupon SAVE10/i });
+    fireEvent.click(checkbox);
+
+    const row = checkbox.closest('tr') as HTMLElement;
+    expect(row).toHaveAttribute('data-selected', 'true');
+    expect(checkbox).toBeChecked();
+  });
+
+  it('finds a coupon by code without emptying the registry', async () => {
+    server.use(http.get(`${API}/api/coupons`, () => HttpResponse.json([
+      coupon({ id: 1, code: 'SAVE10' }),
+      coupon({ id: 2, code: 'EID2026', campaignTitle: 'Eid Mega Sale' })
+    ])));
+    await openRegistry('Coupons');
+
+    const table = await screen.findByRole('table');
+    expect(within(table).getByText('EID2026')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole('searchbox', { name: /search coupons/i }), { target: { value: 'eid' } });
+    expect(within(table).queryByText('SAVE10')).toBeNull();
+    expect(within(table).getByText('EID2026')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /1 \/ 2/ })).toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole('searchbox', { name: /search coupons/i }), { target: { value: 'Mega' } });
+    expect(within(table).getByText('EID2026')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole('searchbox', { name: /search coupons/i }), { target: { value: 'zzzz' } });
+    expect(await screen.findByText('No coupon matches that search.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /0 \/ 2/ })).toBeInTheDocument();
+  });
+
+  it('narrows the coupon registry by state with the same segmented control as the builder', async () => {
+    server.use(http.get(`${API}/api/coupons`, () => HttpResponse.json([
+      coupon({ id: 1, code: 'SAVE10' }),
+      coupon({ id: 2, code: 'OFFLINE', isActive: false }),
+      coupon({ id: 3, code: 'LAPSED', expiresAt: '2020-01-01T00:00:00Z' })
+    ])));
+    await openRegistry('Coupons');
+
+    const group = screen.getByRole('group', { name: /coupon status/i });
+    expect(group.className).toContain('segmented');
+
+    const table = await screen.findByRole('table');
+    const press = (name: string) => {
+      const option = within(group).getByRole('button', { name });
+      fireEvent.click(option);
+      expect(option).toHaveAttribute('aria-pressed', 'true');
+      return option;
+    };
+
+    press('Disabled');
+    expect(within(table).getByText('OFFLINE')).toBeInTheDocument();
+    expect(within(table).queryByText('SAVE10')).toBeNull();
+
+    press('Expired');
+    expect(within(table).getByText('LAPSED')).toBeInTheDocument();
+
+    press('All');
+    expect(within(table).getByText('SAVE10')).toBeInTheDocument();
+  });
+
+  it('brings the gift card registry onto the same search and state bar', async () => {
+    server.use(http.get(`${API}/api/gift-cards`, () => HttpResponse.json([
+      giftCard({ id: 1, code: 'GC-LIVE-0000-1000', recipientName: 'Ayesha Rahman' }),
+      giftCard({ id: 2, code: 'GC-OFF-0000-1000', recipientName: 'Bilal Hossain', isActive: false })
+    ])));
+    await openRegistry('Gift Cards');
+
+    const group = screen.getByRole('group', { name: /gift card status/i });
+    expect(group.className).toContain('segmented');
+
+    const table = await screen.findByRole('table');
+    const search = screen.getByRole('searchbox', { name: /search gift cards/i });
+
+    // The registry masks the code on screen, so match on the recipient the row shows.
+    fireEvent.change(search, { target: { value: 'GC-OFF' } });
+    expect(within(table).getByText('Bilal Hossain')).toBeInTheDocument();
+    expect(within(table).queryByText('Ayesha Rahman')).toBeNull();
+
+    fireEvent.change(search, { target: { value: 'zzzz' } });
+    expect(await screen.findByText('No gift card matches that search.')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^clear$/i }));
+    expect(within(table).getByText('Ayesha Rahman')).toBeInTheDocument();
   });
 });
