@@ -5,6 +5,7 @@ import type { UserRole } from '../api/types';
 import { ThemeControls } from './ThemeControls';
 import { Brand } from './Brand';
 import { AccountMenu, NotificationBell } from './AccountMenu';
+import { GlobalSearch } from './GlobalSearch';
 import { Icon } from './Icon';
 import { roleShortLabels } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -185,6 +186,7 @@ export function Navbar() {
           {/* Right cluster order: theme, user chip, then one pill holding
               cart + bell + account — same container effect as Products/My Orders. */}
           <span className="navbar__actions" role="group" aria-label={t("Cart, notifications and account")}>
+            <GlobalSearch />
             {user.role === 'Customer' ? <CartButton /> : null}
             <NotificationBell />
             <AccountMenu />

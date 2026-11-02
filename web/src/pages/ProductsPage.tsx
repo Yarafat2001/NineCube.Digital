@@ -149,8 +149,8 @@ function ProductCard({
               setQuantity(1);
             }}
           >
-            <span aria-hidden="true">{justAdded ? '✓' : '🛒'}</span>
-            <span>{justAdded ? t("Added!") : t("Add to cart")}</span>
+            <span className="product-card__btn-icon" aria-hidden="true">{justAdded ? '✓' : '🛒'}</span>
+            <span className="product-card__btn-text">{justAdded ? t("Added!") : t("Add to cart")}</span>
           </button>
         </div>
       ) : null}

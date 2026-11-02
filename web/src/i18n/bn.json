@@ -1825,5 +1825,18 @@
   "left": "টি বাকি",
   "Catalogue controls": "ক্যাটালগ নিয়ন্ত্রণ",
   "Featured / Default": "বিশেষ / ডিফল্ট",
-  "Added!": "যোগ হয়েছে!"
+  "Added!": "যোগ হয়েছে!",
+  "Search catalogue": "ক্যাটালগ অনুসন্ধান",
+  "Search catalogue (Ctrl+K)": "ক্যাটালগ অনুসন্ধান (Ctrl+K)",
+  "Search Catalogue": "ক্যাটালগ অনুসন্ধান",
+  "Search by product name, brand, category, or SKU…": "পণ্যের নাম, ব্র্যান্ড, ক্যাটাগরি বা SKU দিয়ে খুঁজুন…",
+  "Esc": "এস্কেপ",
+  "Quick Categories:": "দ্রুত ক্যাটাগরি:",
+  "Type at least 2 characters to search across products…": "পণ্য খুঁজতে অন্তত ২টি অক্ষর লিখুন…",
+  "Searching products…": "পণ্য খোঁজা হচ্ছে…",
+  "No products matched your search.": "আপনার অনুসন্ধানের সাথে কোনো পণ্য মেলেনি।",
+  "Try checking spelling or using a more general keyword.": "বানান পরীক্ষা করুন বা সাধারণ শব্দ ব্যবহার করে দেখুন।",
+  "Top matching products": "শীর্ষ ফলাফল",
+  "found": "টি পাওয়া গেছে",
+  "results in catalogue ›": "টি ফলাফল ক্যাটালগে দেখুন ›"
 }

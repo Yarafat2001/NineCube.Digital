@@ -158,7 +158,7 @@
   gap: var(--space-2);
   min-width: 0;
   height: 100%;
-  padding: var(--space-4);
+  padding: 12px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -314,21 +314,91 @@
   gap: 8px;
   margin-top: auto;
   padding-top: var(--space-2);
+  width: 100%;
 }
 
-.product-card__actions .quantity-stepper {
+/* Compact, unified pill instrument for the card stepper */
+.product-card__actions .stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill, 999px);
+  background: var(--surface-sunken);
   flex: 0 0 auto;
+  height: 32px;
+  box-sizing: border-box;
+}
+
+.product-card__actions .stepper button {
+  width: 26px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.product-card__actions .stepper button:hover:not(:disabled) {
+  background: var(--surface-highlight);
+}
+
+.product-card__actions .stepper button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.product-card__actions .stepper__value {
+  min-width: 20px;
+  padding: 0 4px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
 }
 
 .product-card__btn-add {
   flex: 1;
   min-width: 0;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill, 999px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  font-size: 12px;
+  font-weight: 650;
   white-space: nowrap;
   transition: transform var(--transition-fast), background-color var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
+}
+
+.product-card__btn-icon {
+  font-size: 13px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.product-card__btn-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .product-card__btn-add--success {
@@ -4530,4 +4600,111 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   .voucher-ticket__value { font-size: 1.8rem; }
   /* The bar would eat most of a phone viewport before the list itself appeared. */
   .registry-bar { position: static; top: auto; }
+}
+
+/* ------------------------------------------------------------- global search modal */
+.global-search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md, 8px);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+}
+
+.global-search-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.global-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: var(--text-sm);
+  outline: none;
+}
+
+.global-search-kbd {
+  padding: 2px 6px;
+  font-size: 10px;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.global-search-categories {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.global-search-categories-title {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.global-search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md, 8px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.global-search-item:hover,
+.global-search-item:focus-visible {
+  background: var(--surface-highlight);
+  border-color: var(--border-strong);
+  outline: none;
+}
+
+.global-search-item__media {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-sunken);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.global-search-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.global-search-item__name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.global-search-item__price {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
 }
