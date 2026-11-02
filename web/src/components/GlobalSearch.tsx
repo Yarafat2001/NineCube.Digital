@@ -1,39 +1,55 @@
 import { t, useLanguage } from '../i18n/language';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCategories, useProducts } from '../api/hooks';
 import { formatMoney, useDebouncedValue } from '../lib/helpers';
 import { Icon } from './Icon';
-import { Modal } from './ui';
 
 export function GlobalSearch() {
   useLanguage();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const debouncedQuery = useDebouncedValue(query.trim(), 280);
+  const debouncedQuery = useDebouncedValue(query.trim(), 250);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
-  // Global hotkey: Ctrl+K or Cmd+K
+  // Global hotkey: Ctrl+K or Cmd+K to toggle, Esc to close
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setOpen((prev) => !prev);
+        return;
+      }
+      if (e.key === 'Escape' && open) {
+        e.preventDefault();
+        setOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [open]);
 
-  // Auto focus input when opened
+  // Handle open state, auto focus, and scroll lock
   useEffect(() => {
     if (open) {
-      setTimeout(() => inputRef.current?.focus(), 80);
+      document.documentElement.setAttribute('data-overlay-open', 'true');
+      const timer = setTimeout(() => inputRef.current?.focus(), 60);
+      return () => clearTimeout(timer);
     } else {
+      document.documentElement.removeAttribute('data-overlay-open');
       setQuery('');
     }
   }, [open]);
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      document.documentElement.removeAttribute('data-overlay-open');
+    };
+  }, []);
 
   const categoriesQuery = useCategories();
   const productsQuery = useProducts({
@@ -42,7 +58,7 @@ export function GlobalSearch() {
     pageSize: 6
   });
 
-  const categories = (categoriesQuery.data ?? []).slice(0, 5);
+  const categories = (categoriesQuery.data ?? []).slice(0, 6);
   const results = debouncedQuery.length >= 2 ? (productsQuery.data?.items ?? []) : [];
 
   const handleSelectProduct = (productId: number) => {
@@ -59,7 +75,7 @@ export function GlobalSearch() {
     <>
       <button
         type="button"
-        className="nav-control nav-pop__trigger"
+        className="nav-control"
         onClick={() => setOpen(true)}
         aria-label={t("Search catalogue")}
         title={t("Search catalogue (Ctrl+K)")}
@@ -68,127 +84,177 @@ export function GlobalSearch() {
         <Icon name="search" />
       </button>
 
-      <Modal open={open} title={t("Search Catalogue")} onClose={() => setOpen(false)}>
-        <div className="global-search-dialog stack" style={{ gap: 'var(--space-3)' }}>
-          <div className="global-search-input-wrap">
-            <span className="global-search-icon" aria-hidden="true">
-              <Icon name="search" />
-            </span>
-            <input
-              ref={inputRef}
-              type="search"
-              className="global-search-input"
-              placeholder={t("Search by product name, brand, category, or SKU…")}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              autoComplete="off"
-            />
-            {query ? (
-              <button
-                type="button"
-                className="btn btn--sm btn--ghost"
-                onClick={() => setQuery('')}
-                aria-label={t("Clear")}
-                style={{ padding: '4px 8px' }}
+      {open && typeof document !== 'undefined'
+        ? createPortal(
+            <div
+              className="spotlight-backdrop"
+              onClick={() => setOpen(false)}
+              role="presentation"
+            >
+              <div
+                ref={dialogRef}
+                className="spotlight-dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-label={t("Search Catalogue")}
+                onClick={(e) => e.stopPropagation()}
               >
-                ✕
-              </button>
-            ) : (
-              <kbd className="global-search-kbd">{t("Esc")}</kbd>
-            )}
-          </div>
-
-          {/* Quick Category Suggestions */}
-          <div className="global-search-categories">
-            <span className="global-search-categories-title">{t("Quick Categories:")}</span>
-            <div className="row" style={{ gap: '6px', flexWrap: 'wrap' }}>
-              {categories.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  className="filter-chip"
-                  onClick={() => handleSelectCategory(c.slug)}
-                >
-                  📁 {t(c.name)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Search Results Area */}
-          <div className="global-search-results">
-            {debouncedQuery.length < 2 ? (
-              <p className="muted" style={{ fontSize: 'var(--text-xs)', textAlign: 'center', padding: '16px 0' }}>
-                {t("Type at least 2 characters to search across products…")}
-              </p>
-            ) : productsQuery.isLoading ? (
-              <p className="muted" style={{ fontSize: 'var(--text-xs)', textAlign: 'center', padding: '16px 0' }}>
-                {t("Searching products…")}
-              </p>
-            ) : results.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                <p style={{ fontWeight: 600, margin: '0 0 4px' }}>{t("No products matched your search.")}</p>
-                <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
-                  {t("Try checking spelling or using a more general keyword.")}
-                </p>
-              </div>
-            ) : (
-              <div className="stack" style={{ gap: '6px' }}>
-                <div className="row-between" style={{ padding: '0 4px 6px', borderBottom: '1px solid var(--border)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                  <span>{t("Top matching products")}</span>
-                  <span>{productsQuery.data?.totalCount ?? 0} {t("found")}</span>
-                </div>
-                {results.map((product) => (
-                  <div
-                    key={product.id}
-                    className="global-search-item"
-                    onClick={() => handleSelectProduct(product.id)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleSelectProduct(product.id);
-                    }}
+                {/* Search Bar Header */}
+                <div className="spotlight-header">
+                  <span className="spotlight-search-icon" aria-hidden="true">
+                    <Icon name="search" />
+                  </span>
+                  <input
+                    ref={inputRef}
+                    type="search"
+                    className="spotlight-input"
+                    placeholder={t("Search by product name, brand, category, or SKU…")}
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  {query ? (
+                    <button
+                      type="button"
+                      className="spotlight-clear-btn"
+                      onClick={() => {
+                        setQuery('');
+                        inputRef.current?.focus();
+                      }}
+                      aria-label={t("Clear")}
+                      title={t("Clear")}
+                    >
+                      <Icon name="x" width="14" height="14" />
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="spotlight-close-btn"
+                    onClick={() => setOpen(false)}
+                    aria-label={t("Close dialog")}
+                    title={t("Close dialog")}
                   >
-                    <div className="global-search-item__media">
-                      {product.imageUrl ? (
-                        <img src={product.imageUrl} alt="" style={{ width: '38px', height: '38px', objectFit: 'contain' }} />
-                      ) : (
-                        <div style={{ width: '38px', height: '38px', background: 'var(--surface-sunken)', borderRadius: '4px' }} />
-                      )}
-                    </div>
-                    <div className="global-search-item__info">
-                      <div className="global-search-item__name">
-                        {product.brandName ? <strong style={{ color: 'var(--accent-text)', marginRight: '4px' }}>{product.brandName}</strong> : null}
-                        <span>{product.name}</span>
-                      </div>
-                      <div className="row" style={{ gap: '8px', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-                        <span className="mono">{product.sku}</span>
-                        <span>•</span>
-                        <span>{product.stockQuantity > 0 ? `✓ ${product.stockQuantity} in stock` : t("Out of stock")}</span>
-                      </div>
-                    </div>
-                    <div className="global-search-item__price">
-                      {formatMoney(product.price, product.currency)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                    <Icon name="x" width="14" height="14" />
+                  </button>
+                </div>
 
-          {debouncedQuery.length >= 2 && (productsQuery.data?.totalCount ?? 0) > 6 ? (
-            <div style={{ textAlign: 'center', paddingTop: '8px', borderTop: '1px solid var(--border)' }}>
-              <Link
-                to={`/products?q=${encodeURIComponent(debouncedQuery)}`}
-                className="btn btn--sm btn--primary"
-                onClick={() => setOpen(false)}
-              >
-                {t("View all")} {productsQuery.data?.totalCount} {t("results in catalogue ›")}
-              </Link>
-            </div>
-          ) : null}
-        </div>
-      </Modal>
+                {/* Quick Category Chips */}
+                <div className="spotlight-categories">
+                  <span className="spotlight-categories-label">{t("Quick Categories:")}</span>
+                  <div className="spotlight-categories-list">
+                    {categories.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        className="spotlight-chip"
+                        onClick={() => handleSelectCategory(c.slug)}
+                      >
+                        <Icon name="folder" width="13" height="13" className="spotlight-chip-glyph" />
+                        <span>{t(c.name)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Search Results Area */}
+                <div className="spotlight-body">
+                  {debouncedQuery.length < 2 ? (
+                    <div className="spotlight-hint-box">
+                      <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
+                        {t("Type at least 2 characters to search across products…")}
+                      </p>
+                    </div>
+                  ) : productsQuery.isLoading ? (
+                    <div className="spotlight-hint-box">
+                      <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
+                        {t("Searching products…")}
+                      </p>
+                    </div>
+                  ) : results.length === 0 ? (
+                    <div className="spotlight-empty-box">
+                      <p style={{ fontWeight: 600, margin: '0 0 4px', color: 'var(--text)' }}>
+                        {t("No products matched your search.")}
+                      </p>
+                      <p className="muted" style={{ fontSize: 'var(--text-xs)', margin: 0 }}>
+                        {t("Try checking spelling or using a more general keyword.")}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="spotlight-results">
+                      <div className="spotlight-results-header">
+                        <span>{t("Top matching products")}</span>
+                        <span>
+                          {productsQuery.data?.totalCount ?? 0} {t("found")}
+                        </span>
+                      </div>
+                      <div className="spotlight-items">
+                        {results.map((product) => (
+                          <div
+                            key={product.id}
+                            className="spotlight-item"
+                            onClick={() => handleSelectProduct(product.id)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleSelectProduct(product.id);
+                            }}
+                          >
+                            <div className="spotlight-item__media">
+                              {product.imageUrl ? (
+                                <img src={product.imageUrl} alt="" />
+                              ) : (
+                                <Icon name="tag" width="20" height="20" />
+                              )}
+                            </div>
+                            <div className="spotlight-item__info">
+                              <div className="spotlight-item__name">
+                                {product.brandName ? (
+                                  <strong className="spotlight-item__brand">{product.brandName}</strong>
+                                ) : null}
+                                <span>{product.name}</span>
+                              </div>
+                              <div className="spotlight-item__meta">
+                                <span className="mono">{product.sku}</span>
+                                <span>•</span>
+                                <span className={product.stockQuantity > 0 ? "spotlight-in-stock" : "spotlight-out-of-stock"}>
+                                  {product.stockQuantity > 0
+                                    ? `✓ ${product.stockQuantity} in stock`
+                                    : t("Out of stock")}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="spotlight-item__price">
+                              {formatMoney(product.price, product.currency)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer Hotkeys / View All Link */}
+                <div className="spotlight-footer">
+                  <div className="spotlight-footer-kbd">
+                    <kbd className="spotlight-kbd">{t("Esc")}</kbd>
+                    <span className="muted">{t("Close dialog")}</span>
+                  </div>
+                  {debouncedQuery.length >= 2 && (productsQuery.data?.totalCount ?? 0) > 6 ? (
+                    <Link
+                      to={`/products?q=${encodeURIComponent(debouncedQuery)}`}
+                      className="btn btn--sm btn--primary spotlight-view-all"
+                      onClick={() => setOpen(false)}
+                    >
+                      {t("View all")} {productsQuery.data?.totalCount} {t("results in catalogue ›")}
+                    </Link>
+                  ) : null}
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </>
   );
 }

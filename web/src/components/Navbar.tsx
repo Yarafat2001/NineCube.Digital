@@ -193,8 +193,11 @@ export function Navbar() {
           </span>
         </>
       ) : (
-        <Link className="btn btn--primary navbar__cta" to="/login">
-          {t("Sign in")}</Link>
+        <span className="navbar__actions" role="group" aria-label={t("Cart, notifications and account")}>
+          <GlobalSearch />
+          <Link className="btn btn--primary navbar__cta" to="/login">
+            {t("Sign in")}</Link>
+        </span>
       )}
     </nav>
   );
