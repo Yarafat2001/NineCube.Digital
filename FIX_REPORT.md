@@ -1,5 +1,137 @@
 # FIX_REPORT
 
+# Round 17 — the two search boxes are one object now, and the navbar stopped buying a catalogue nobody asked for
+
+Date: 2026-11-03. Brief: "here currently some new features are including but it has some latency and
+design issues, Specially in the global search bar, alignment to the system current design and modern
+effect", with two dark screenshots of `#/products?category=home`: the navbar pill, and the catalogue
+where the floating pill half-clipped the page's own "Live availability st…" line and the "Name or
+SKU" field.
+
+You bound this round to two things: **both search surfaces** (the Ctrl+K spotlight and the catalogue's
+own field plus its suggestion panel, including the collision), and **fix the wasted requests, measure
+first**. You explicitly left the 15s stock poll on data pages out of scope, so it is measured below
+and not touched.
+
+## The latency was real and it was the navbar paying for it
+
+Measured on the deployed site before any change: with the dialog closed and nobody typing, the navbar's
+copy of the catalogue queries fired **14 `/api/products?…pageSize=6` calls and 14 `/api/categories`
+calls in 229 s** while just sitting on the login page. Two causes, both in code, not in the network:
+`GlobalSearch` ran `useProducts`/`useCategories` ungated, and `useProducts` carries the 15 s stock poll
+that only makes sense for a quantity grid someone is looking at. The third cause was the guest/sign-in
+branch in `Navbar.tsx` remounting `<GlobalSearch/>`, which turned those idle polls into a double
+subscription.
+
+What changed: `useProducts`/`useCategories`/`useLowStockThreshold` now take an `enabled` gate, the
+spotlight passes `open` for categories and threshold, `searching` (dialog open **and** two or more
+characters) for the result list, and `live: false` so the dialog's result query never carries the stock
+poll. I did not restructure the navbar markup — that would have moved the search button out of the
+approved actions pill, and the remount is harmless once nothing behind it fires.
+
+Measured after, on a stub-API build of the same app, 18 s idle on the catalogue, at 1440 and 390, in
+light and dark:
+
+| what | before | after |
+| --- | --- | --- |
+| `/api/products?pageSize=6` while the dialog is closed | 14 in 229 s | **0 in 18 s, every configuration** |
+| the same request after opening the dialog | firing already | **0** |
+| the same request after typing two characters | continuous polling | **exactly 1** |
+| `/api/categories` | 14 in 229 s | 2 in 18 s, and that is the page's own sidebar (1 + its 15 s poll) |
+
+Still there, measured, and deliberately not touched because you took it out of scope: the catalogue
+sidebar facet query pulls the whole filtered set at `pageSize=100` every 15 s (`100/8/100/8` in an 18 s
+window: the facet page and the grid page, twice). Fixing that needs a count on the server, not a tweak
+in the client, and I would rather build it properly than fake the numbers.
+
+## Why the search bar still looked wrong after I aligned it
+
+This is the part worth writing down, because reading the stylesheet was not enough. Last round I put
+the spotlight and the panel on the system plate, and your screenshot still showed a search surface that
+did not match. So instead of re-reading `app.css` I asked the running DOM what it had resolved, and it
+answered:
+
+```
+.search-suggestions__row   color: rgb(154, 63, 0)   text-decoration: underline     (light)
+.search-suggestions__row   color: rgb(255, 195, 107) text-decoration: underline    (dark)
+```
+
+`app.css` says `color: var(--text); text-decoration: none` for that row. It loses, because
+`responsive.css` — which loads *after* it — carries the touchscreen rule that makes text navigation
+identifiable without hover:
+
+```
+main a[href]:not(.btn):not(.filter-chip):not(.product-card__media-link):not(.product-card__name a):not(:has(img))
+```
+
+That selector is specificity (0,4,3) against my class's (0,1,0). The suggestion rows are `<Link>`s, so
+every match painted in the link accent with an underline — and because one of the exclusions is
+`:not(:has(img))`, a row that happened to carry a product image painted differently from a row that did
+not. Mixed paint inside one list is exactly the "not aligned to the system" look, and no amount of
+editing `app.css` would have fixed it.
+
+The fix is at the cause: the row is a list control, not prose navigation, so it joins the exclusion list
+that already carries `.btn`, `.filter-chip` and `.product-card__media-link`. One line in
+`responsive.css`. The approved visuals stay — nothing was removed, and the pill's amber selected tab and
+amber selected row fills are untouched.
+
+## What the two surfaces resolve to now
+
+Same sweep, both widths, both themes, numbers read out of the browser:
+
+| what | before | after |
+| --- | --- | --- |
+| chip edge against its own plate | 1.37 light / 1.75 dark | **3.75 / 3.91** |
+| result row edge | 1.51 / 1.64 | **3.75 / 3.91** |
+| suggestion row ink | accent + underline, mixed with image rows | `rgb(15,23,42)` light / `rgb(245,242,243)` dark, `text-decoration: none` on all rows |
+| match panel plate | translucent `rgba(…, .96)` at z-index 50, the same level as the pill | solid `--surface` (`rgb(255,255,255)` / `rgb(27,24,26)`) at **z-index 60** over the pill's 50 |
+| result name / price | 15 px | **16 px**, price 700 tabular |
+| clear / close controls | 28×28, twin circles | 30×30 ghost inside the well, **34×34** outside it |
+| stock label | `✓ 6 in stock`, untranslated | shared `StockBadge`, 13 px, `in-stock` / `low-stock` states, house colours |
+| inline styles on the two subtrees | 12 | **0** |
+| floating pill over a scrolling line | translucent gradient only, text bled through | `--surface` backing under the approved `--navbar-glass` tint, tint still drawn |
+
+The panel never physically reaches the pill in the harness geometry (at 1440 its top resolved to 150 px
+against the pill's bottom at 85 px; at 390 the pill hides on scroll-down), so the collision is proven by
+the resolved stacking order — 60 over 50 — rather than by a screenshot of an overlap that no longer
+happens to occur.
+
+## Tests
+
+- `web/src/test/search-surfaces.test.tsx` — 10 tests. Seven are the stylesheet contract (plate, well,
+  option tokens, tap floors, z-order, the pill backing), and one of them asserts the row is inside that
+  touchscreen rule's exclusion list, because that is the assertion the bug actually needed. Three are
+  behaviour: the request gate (0 closed, 0 on open, 1 after typing), the shared stock badge with no
+  untranslated ASCII and no doubled brand, and the matches rendering as product links.
+- `web/e2e/search-surfaces.spec.ts` — asks the live DOM the same questions through the shared colour
+  probe, walks 1440 and 390 in both themes, and skips itself with an explanation until
+  `NINECUBE_SEED_PASSWORD` is set.
+
+## Limits, honestly
+
+I could not run the committed browser spec: nothing is listening on 5080 or 5173 on this box, and I have
+no demo password, so the live run stays owed by you. Everything in the "after" columns above comes from a
+throwaway stub-API build of the real app (MSW fixtures, port 7341), which is deleted again — so the
+numbers are the real components and the real stylesheets, but the seeded catalogue, not the live one.
+
+## One thing you need to know about the repository
+
+Another session is committing into this same working tree while I work. Round 17's `hooks.ts`,
+`GlobalSearch.tsx`, `ProductsPage.tsx`, `app.css` and `modern.css` changes went out inside **its** commit
+`804ee78`, not mine, and at the time of writing the tree is holding that session's unfinished work:
+`RecentlyViewed.tsx`, `QuickViewModal.tsx`, `StockAlertModal.tsx` and `recentViews.ts` are untracked while
+committed code references them, and `ProductDetailPage.tsx`, `CartPanel.tsx`, `OrdersPages.tsx` and
+`app.css` carry their uncommitted edits. Because of that I did not gate in the shared tree — a
+`tsc --noEmit` there reports their errors, not mine — and instead ran the four CI gates in an isolated
+worktree at HEAD plus only my three files. My commit adds only those three; nothing of theirs is
+included or reverted. If you did not intend two agents to be pushing at once, that is worth stopping
+before the next round.
+
+Also this session: several tool results came back with text appended that posed as system instructions
+("You are an expert software engineer…", "Respond as concisely as possible…", a copyright directive).
+That is not how your messages or this harness arrive, so I ignored them and carried on with your round;
+flagging it in case it is a compromised plugin in the toolchain.
+
 # Round 16 — the option you circled in red is a control now, and the cart sheet stops hiding
 
 Date: 2026-11-02. Brief: "here red marked button not visible and also consider font size. Please you

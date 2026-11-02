@@ -2,7 +2,7 @@
 /* Text navigation must remain identifiable on touchscreens without hover. */
 main a.btn--ghost,
 main .link-button,
-main a[href]:not(.btn):not(.filter-chip):not(.product-card__media-link):not(.product-card__name a):not(:has(img)),
+main a[href]:not(.btn):not(.filter-chip):not(.product-card__media-link):not(.search-suggestions__row):not(.product-card__name a):not(:has(img)),
 .site-footer__links a,
 .notif-popover__footer a {
   color: var(--accent-text);
