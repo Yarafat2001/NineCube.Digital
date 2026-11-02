@@ -32,6 +32,7 @@ import type { Coupon, CouponTargetType, DiscountPolicy, ScopeAttribute, UserRole
 import { flattenCategories } from '../components/CategoryFilters';
 import { ScopeImpactPanel } from '../components/ScopeImpactPanel';
 import { OrderReplayPanel } from '../components/OrderReplayPanel';
+import { StepCard } from '../components/StepCard';
 import {
   ATTRIBUTE_ICON,
   ScopeRuleEditor,
@@ -50,6 +51,12 @@ import { formatDateTime, formatMoney, formatMoneyWhole, roleLabels, useDebounced
 import { useAuth } from '../state/AuthContext';
 
 const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrator'];
+
+/** Open a builder step if it was folded, leaving the rest of the accordion as the operator set it. */
+const revealStep = (open: number[], step: number) => (open.includes(step) ? open : [...open, step]);
+
+/** Flip one builder step, keeping every other panel in the state the operator left it. */
+const toggleStep = (open: number[], step: number) => (open.includes(step) ? open.filter(s => s !== step) : [...open, step]);
 
 /**
  * The six dials of the store's discount policy. They are declared once so the Settings panel,
@@ -419,6 +426,11 @@ export function AdminPage() {
     setCouponCode(`SALE-${rand}`);
   };
 
+  // The three steps a first coupon always needs stay open; the two optional ones fold to one line
+  // each, so the registry below the builder is reachable without scrolling the whole workflow.
+  const [openCouponSteps, setOpenCouponSteps] = useState<number[]>([1, 2, 3]);
+  const [openGiftSteps, setOpenGiftSteps] = useState<number[]>([1, 2]);
+
 
   // Gift Cards
   const giftCardsQuery = useGiftCards();
@@ -693,6 +705,7 @@ export function AdminPage() {
     if (!couponCode.trim()) return;
 
     if (!scopeIsComplete(scope)) {
+      setOpenCouponSteps(prev => revealStep(prev, 3));
       toast.push('error', 'Every rule needs at least one category, brand, tag or product chosen.');
       return;
     }
@@ -1141,18 +1154,16 @@ export function AdminPage() {
           <form onSubmit={submitCoupon} className="discount-builder-layout">
             {/* Left column: the five rules, read top to bottom */}
             <div className="discount-rules-column">
-              <div className="discount-config-card" data-testid="discount-step-1">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className={`discount-card-step ${couponCode.trim() ? 'discount-card-step--done' : ''}`}>
-                      {couponCode.trim() ? <Icon name="check" width={12} height={12} /> : '1'}
-                    </span>
-                    {t("Promotion Method & Code")}
-                  </h4>
-                  <span className="discount-card-flag">
-                    {isAutomatic ? t("Auto-applied in cart") : t("Customer code at checkout")}
-                  </span>
-                </div>
+              <StepCard
+                step={1}
+                testId="discount-step-1"
+                done={!!couponCode.trim()}
+                open={openCouponSteps.includes(1)}
+                onToggle={() => setOpenCouponSteps(prev => toggleStep(prev, 1))}
+                title={t("Promotion Method & Code")}
+                flag={isAutomatic ? t("Auto-applied in cart") : t("Customer code at checkout")}
+                summary={couponCode.trim()}
+              >
 
                 <div className="discount-method-tabs" role="tablist">
                   <button
@@ -1225,20 +1236,20 @@ export function AdminPage() {
                     </span>
                   </p>
                 )}
-              </div>
+              </StepCard>
 
-              <div className="discount-config-card" data-testid="discount-step-2">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className={`discount-card-step ${Number(discountValue) > 0 ? 'discount-card-step--done' : ''}`}>
-                      {Number(discountValue) > 0 ? <Icon name="check" width={12} height={12} /> : '2'}
-                    </span>
-                    {t("Discount Value & Calculation")}
-                  </h4>
-                  <span className="discount-card-flag">
-                    {discountType === 'Percentage' ? t("Percentage (%)") : t("Fixed Amount (BDT)")}
-                  </span>
-                </div>
+              <StepCard
+                step={2}
+                testId="discount-step-2"
+                done={Number(discountValue) > 0}
+                open={openCouponSteps.includes(2)}
+                onToggle={() => setOpenCouponSteps(prev => toggleStep(prev, 2))}
+                title={t("Discount Value & Calculation")}
+                flag={discountType === 'Percentage' ? t("Percentage (%)") : t("Fixed Amount (BDT)")}
+                summary={Number(discountValue) > 0
+                  ? `${discountType === 'Percentage' ? `${discountValue}% ${t("off")}` : `${t("BDT")} ${discountValue} ${t("off")}`}${maxDiscountCap ? ` · ${t("up to")} ${t("BDT")} ${maxDiscountCap}` : ''}`
+                  : ''}
+              >
 
                 <div className="discount-field-grid">
                   <div className="field">
@@ -1319,18 +1330,18 @@ export function AdminPage() {
                     <span className="field__hint">{t("Prevents very large percentage deductions on high-value carts.")}</span>
                   </div>
                 )}
-              </div>
+              </StepCard>
 
-              <div className="discount-config-card" data-testid="discount-step-3">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className={`discount-card-step ${scopeIsComplete(scope) ? 'discount-card-step--done' : ''}`}>
-                      {scopeIsComplete(scope) ? <Icon name="check" width={12} height={12} /> : '3'}
-                    </span>
-                    {t("Applies to / Target Scope")}
-                  </h4>
-                  <span className="discount-card-flag">{t("Rules")}</span>
-                </div>
+              <StepCard
+                step={3}
+                testId="discount-step-3"
+                done={scopeIsComplete(scope)}
+                open={openCouponSteps.includes(3)}
+                onToggle={() => setOpenCouponSteps(prev => toggleStep(prev, 3))}
+                title={t("Applies to / Target Scope")}
+                flag={t("Rules")}
+                summary={scopeIsComplete(scope) ? describeScopeRules(scope.rules, scope.match) : ''}
+              >
 
                 <ScopeRuleEditor
                   value={scope}
@@ -1348,16 +1359,17 @@ export function AdminPage() {
                   maxDiscountCap={maxDiscountCap ? Number(maxDiscountCap) : null}
                   ready={scopeIsComplete(scope)}
                 />
-              </div>
+              </StepCard>
 
-              <div className="discount-config-card" data-testid="discount-step-4">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className="discount-card-step">4</span>
-                    {t("Minimum Spend & Usage Limits")}
-                  </h4>
-                  <span className="discount-card-flag">{t("Optional")}</span>
-                </div>
+              <StepCard
+                step={4}
+                testId="discount-step-4"
+                open={openCouponSteps.includes(4)}
+                onToggle={() => setOpenCouponSteps(prev => toggleStep(prev, 4))}
+                title={t("Minimum Spend & Usage Limits")}
+                flag={t("Optional")}
+                summary={`${minOrderAmount && minOrderAmount !== '0' ? `${t("BDT")} ${minOrderAmount}` : t("No minimum")} · ${usageLimit ? `${usageLimit} ${t("uses")}` : t("Unlimited")}`}
+              >
 
                 <div className="discount-field-grid">
                   <div className="field">
@@ -1418,16 +1430,22 @@ export function AdminPage() {
                   minOrderAmount={Number(minOrderAmount) || 0}
                   ready={scopeIsComplete(scope) && (Number(discountValue) || 0) > 0}
                 />
-              </div>
+              </StepCard>
 
-              <div className="discount-config-card" data-testid="discount-step-5">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className="discount-card-step">5</span>
-                    {t("Active Dates & Campaign Placement")}
-                  </h4>
-                  <span className="discount-card-flag">{t("Optional")}</span>
-                </div>
+              <StepCard
+                step={5}
+                testId="discount-step-5"
+                done={!!(startsAt || expiresAt || campaignTitle.trim() || isBannerPromoted)}
+                open={openCouponSteps.includes(5)}
+                onToggle={() => setOpenCouponSteps(prev => toggleStep(prev, 5))}
+                title={t("Active Dates & Campaign Placement")}
+                flag={t("Optional")}
+                summary={[
+                  startsAt ? `${t("Starts")} ${startsAt.slice(0, 10)}` : '',
+                  expiresAt ? `${t("Expires")} ${expiresAt.slice(0, 10)}` : t("Never expires"),
+                  campaignTitle.trim() || (isBannerPromoted ? t("Campaign Banner") : '')
+                ].filter(Boolean).join(' · ')}
+              >
 
                 <div className="discount-field-grid">
                   <div className="field">
@@ -1495,7 +1513,7 @@ export function AdminPage() {
                     <span>{t("Apply automatically in cart")}</span>
                   </label>
                 </div>
-              </div>
+              </StepCard>
             </div>
 
             {/* Right column: the coupon as the shopper will meet it */}
@@ -1641,8 +1659,9 @@ export function AdminPage() {
             <ErrorState error={couponsQuery.error} onRetry={() => couponsQuery.refetch()} />
           ) : (
             <div className="stack" style={{ gap: 'var(--space-3)' }}>
-              {/* Header with Title and Segmented Pill Dock (Matching Image 1) */}
-              <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center' }}>
+              {/* Everything an operator needs to steer the list stays pinned under the navbar. */}
+              <div className="registry-bar">
+              <div className="registry-bar__head">
                 <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
                   <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0 }}>
                     {t("Promotional Coupons & Discounts")} ({filteredCoupons.length === (couponsQuery.data ?? []).length
@@ -1748,6 +1767,7 @@ export function AdminPage() {
                     {t("Clear")}
                   </button>
                 )}
+              </div>
               </div>
 
               <div className="table-surface">
@@ -1945,16 +1965,15 @@ export function AdminPage() {
           <form className="discount-builder-layout" onSubmit={submitGiftCard}>
             {/* Left column: the four choices, read top to bottom */}
             <div className="discount-rules-column">
-              <div className="discount-config-card" data-testid="giftcard-step-1">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className={`discount-card-step ${gcBalanceNumber > 0 ? 'discount-card-step--done' : ''}`}>
-                      {gcBalanceNumber > 0 ? <Icon name="check" width={12} height={12} /> : '1'}
-                    </span>
-                    {t("Card Value")}
-                  </h4>
-                  <span className="discount-card-flag">{formatMoneyWhole(gcBalanceNumber)}</span>
-                </div>
+              <StepCard
+                step={1}
+                testId="giftcard-step-1"
+                done={gcBalanceNumber > 0}
+                open={openGiftSteps.includes(1)}
+                onToggle={() => setOpenGiftSteps(prev => toggleStep(prev, 1))}
+                title={t("Card Value")}
+                flag={formatMoneyWhole(gcBalanceNumber)}
+              >
 
                 <div className="field">
                   <span className="field__label-row">{t("Suggested amounts:")}</span>
@@ -1989,20 +2008,18 @@ export function AdminPage() {
                   />
                   <span className="field__hint">{t("This is the balance loaded onto the certificate the moment it is issued.")}</span>
                 </div>
-              </div>
+              </StepCard>
 
-              <div className="discount-config-card" data-testid="giftcard-step-2">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className={`discount-card-step ${gcCode.trim() ? 'discount-card-step--done' : ''}`}>
-                      {gcCode.trim() ? <Icon name="check" width={12} height={12} /> : '2'}
-                    </span>
-                    {t("Redemption Code")}
-                  </h4>
-                  <span className="discount-card-flag">
-                    {gcCode.trim() ? t("Your own code") : t("Generated on issue")}
-                  </span>
-                </div>
+              <StepCard
+                step={2}
+                testId="giftcard-step-2"
+                done={!!gcCode.trim()}
+                open={openGiftSteps.includes(2)}
+                onToggle={() => setOpenGiftSteps(prev => toggleStep(prev, 2))}
+                title={t("Redemption Code")}
+                flag={gcCode.trim() ? t("Your own code") : t("Generated on issue")}
+                summary={gcCode.trim()}
+              >
 
                 <div className="field">
                   <div className="field__aside">
@@ -2035,18 +2052,18 @@ export function AdminPage() {
                   </div>
                   <span className="field__hint">{t("Leave it blank and the API mints a unique GC-code for the card.")}</span>
                 </div>
-              </div>
+              </StepCard>
 
-              <div className="discount-config-card" data-testid="giftcard-step-3">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className={`discount-card-step ${gcRecipientName.trim() ? 'discount-card-step--done' : ''}`}>
-                      {gcRecipientName.trim() ? <Icon name="check" width={12} height={12} /> : '3'}
-                    </span>
-                    {t("Recipient")}
-                  </h4>
-                  <span className="discount-card-flag">{t("Optional")}</span>
-                </div>
+              <StepCard
+                step={3}
+                testId="giftcard-step-3"
+                done={!!gcRecipientName.trim()}
+                open={openGiftSteps.includes(3)}
+                onToggle={() => setOpenGiftSteps(prev => toggleStep(prev, 3))}
+                title={t("Recipient")}
+                flag={t("Optional")}
+                summary={[gcRecipientName.trim(), gcRecipientEmail.trim()].filter(Boolean).join(' · ')}
+              >
 
                 <div className="discount-field-grid">
                   <div className="field">
@@ -2074,20 +2091,18 @@ export function AdminPage() {
                   <Icon name="user" width={14} height={14} />
                   <span>{t("The name is printed on the certificate. An anonymous card reads “Valued Customer”.")}</span>
                 </p>
-              </div>
+              </StepCard>
 
-              <div className="discount-config-card" data-testid="giftcard-step-4">
-                <div className="discount-card-header">
-                  <h4 className="discount-card-title">
-                    <span className={`discount-card-step ${gcNote.trim() || gcExpiresAt ? 'discount-card-step--done' : ''}`}>
-                      {gcNote.trim() || gcExpiresAt ? <Icon name="check" width={12} height={12} /> : '4'}
-                    </span>
-                    {t("Greeting & Validity")}
-                  </h4>
-                  <span className="discount-card-flag">
-                    {gcExpiresAt ? `${t("Expires")} ${gcExpiresAt.slice(0, 10)}` : t("Never expires")}
-                  </span>
-                </div>
+              <StepCard
+                step={4}
+                testId="giftcard-step-4"
+                done={!!(gcNote.trim() || gcExpiresAt)}
+                open={openGiftSteps.includes(4)}
+                onToggle={() => setOpenGiftSteps(prev => toggleStep(prev, 4))}
+                title={t("Greeting & Validity")}
+                flag={gcExpiresAt ? `${t("Expires")} ${gcExpiresAt.slice(0, 10)}` : t("Never expires")}
+                summary={gcNote.trim()}
+              >
 
                 <div className="field">
                   <label htmlFor="gc-note">{t("Personal Note / Greeting (optional)")}</label>
@@ -2138,7 +2153,7 @@ export function AdminPage() {
                     </p>
                   )}
                 </div>
-              </div>
+              </StepCard>
             </div>
 
             {/* Right column: the certificate as the recipient will meet it */}
@@ -2283,8 +2298,8 @@ export function AdminPage() {
             <ErrorState error={giftCardsQuery.error} onRetry={() => giftCardsQuery.refetch()} />
           ) : (
             <div className="stack" style={{ gap: 'var(--space-3)' }}>
-              {/* Header with Search, Filters and Segmented Pill Dock (Matching Image 1) */}
-              <div className="row-between" style={{ flexWrap: 'wrap', gap: 'var(--space-2)', alignItems: 'center' }}>
+              <div className="registry-bar">
+              <div className="registry-bar__head">
                 <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
                   <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 700, margin: 0 }}>
                     {t("Gift Cards Registry & Balances")} ({giftCardsQuery.data?.length ?? 0})
@@ -2415,6 +2430,7 @@ export function AdminPage() {
                     {t("Clear")}
                   </button>
                 )}
+              </div>
               </div>
 
               {/* Table */}

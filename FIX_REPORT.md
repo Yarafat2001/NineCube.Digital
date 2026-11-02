@@ -1,5 +1,148 @@
 # FIX_REPORT
 
+# Round 15 — the coupon screen fits a working day, and light mode stops apologising
+
+Date: 2026-11-02. Brief: "this pages becomes longs not very user friendly , is user uese it
+frequently. also problem in the light theme it's not give very ggod looks and visbility". Two
+complaints, both about the screen an operator lives in: the Coupons & Discounts tab had grown too
+tall to work in, and light mode had gone flat.
+
+## What the screen was doing
+
+The tab now carries a preset rail, a five-step builder, a live reach panel, an order replay plate, a
+voucher, a review queue and a registry — all of it open at once. Measured at 1440 × 900 the builder
+column alone was 2,091px, the registry table did not start until y = 2,820 (3.1 screens of scrolling),
+and the whole document ran to 4,272px: **4.7 screens to get from the first field to the list of
+coupons**. On a phone at 390 × 844 it was 6,644px, **7.9 screens**. Someone who uses this ten times a
+day spends most of that time scrolling past work they have already done.
+
+And in light mode every panel sat on the page with no visible line under it, so a card, a table and
+the background were three shades of the same near-white.
+
+## The length: a step is a row until you open it
+
+`StepCard` (`web/src/components/StepCard.tsx`) is one new component, used by both builders — five
+steps on Coupons, four on Gift Cards. The header row is a real `<button aria-expanded>`; the body
+stays mounted and is switched off with the `hidden` attribute, so folding step 3 does not throw away
+the scope search you typed, and the reach preview and replay plate do not refetch when you reopen it.
+
+What decides which steps start open: the three that cost money — method and code, value, scope — stay
+open; the two optional ones (limits, dates and placement) start folded. A folded step is a **61px row
+that still states its value**: "No minimum · Unlimited", "15% off · up to BDT 500", "All products
+(Order)", "Never expires", so nothing has to be opened just to be checked.
+
+The preset rail went from two stacked tiers to one scrolling row of fixed-width cards, and the
+registry's own controls — heading, selection count, bulk buttons, search, state filter — now travel
+down the list together as `.registry-bar`.
+
+| | before | after |
+| --- | --- | --- |
+| Preset rail (laptop) | 294px, two tiers | **201px, one row** |
+| Builder column (laptop) | 2,091px | **1,421px** |
+| Registry table starts at | y = 2,820 (3.1 screens) | **y = 2,183 (2.4 screens)** |
+| Whole tab, laptop | 4,272px = 4.7 screens | **3,551px = 3.9 screens** |
+| Whole tab, phone | 6,644px = 7.9 screens | **5,276px = 6.3 screens** |
+| A folded step | — | **61px** (step 3 folds 726 → 61, step 5 opens 61 → 326) |
+| Gift card registry starts at | — | y = 1,331 laptop, y = 2,293 phone |
+
+The sticky bar was checked by asking the page, not by reading the CSS: it pins at viewport y = 93 with
+the navbar ending at 85, sits at `z-index: 40` under the navbar's 50, and `document.elementFromPoint`
+at its centre returns a node inside the bar — the rows slide under it, they do not show through it.
+Below 640px it goes back to `position: static`, because a pinned bar on a phone eats the screen before
+the list appears.
+
+Two geometry traps showed up only at 390: the builder's grid track was a bare `1fr`, which floors at
+its content's min-content width and pushed **122px of sideways scroll** onto the page, and the step
+header's nowrap text made the same floor under flex. Both are fixed at the cause (`minmax(0, 1fr)`,
+`flex: 1; min-width: 0` with an ellipsis), and the tab now measures `scrollWidth === clientWidth`.
+
+## The light theme: the palette's border is 1.51:1 against white
+
+The spec §1 light palette pins `--border` at `#CBD3E1`, and `web/src/test/light-theme.test.tsx`
+asserts that value verbatim, so redlining it was never an option. Instead the load-bearing edges moved
+onto new aliases that light defines and dark simply re-aliases to what it already used — dark
+rendering is unchanged, byte for byte:
+
+- **Shells** (`.registry-bar`, `.discount-config-card`, the preset tray, the builder cards):
+  `--edge-shell: #77859A` plus the card shadow — **3.75:1 against their own surface, 3.19:1 against
+  the page**.
+- **Wells** (inputs, the segmented control, preset chips, the 19 inset pairs across the screen):
+  `--well-fill` + `--edge-well` + an inset shadow, so a field reads as pressed into the card rather
+  than drawn on it.
+- **Row lines** (`--row-line`) and **badge rings** (`--ok-ring`, `--warn-ring`, `--bad-ring`) so a
+  status pill has an edge of its own on a translucent card.
+- **Type tail**: 55 declarations moved onto `--text-micro` (12px) and `--text-label` (13px). The
+  smallest text an operator reads on these screens is now 12px; the only 11px and sub-10px hits left
+  are the campaign banner's "Copy" pill and the two letters of the logo wordmark.
+
+The last one, and the biggest single lever, was the glass. `modern.css` paints every translucent
+surface in the app — the navbar, `.card`, `.table-surface`, the product cards, the cart panel, the
+filter panel, address cards, notification rows, the language panel, the staff order queues — from one
+token, `--nav-glass-edge`, and in light that token was `rgba(119, 133, 154, .64)`. Blended over the
+card it borders, that resolves to **2.0:1**: a line nobody could see. It is now the same opaque
+`#77859A` the solid shells use, which lifts all of them at once — measured on the running screen:
+
+| Surface, light | edge before | edge after |
+| --- | --- | --- |
+| `.navbar` | 2.0:1 | **3.19:1** |
+| `.coupon-templates` tray | 2.0:1 | **3.75:1 / 3.19:1** |
+| `.discount-config-card` | 2.0:1 | **3.75:1 / 3.19:1** |
+| `.registry-bar` | 2.0:1 | **3.75:1 / 3.19:1** |
+| `.table-surface` | 2.0:1 | **3.75:1 / 3.19:1** |
+
+Dark keeps its own `rgba(216, 229, 250, .46)` edge, and the spec §1 tokens are untouched.
+
+## Sweep
+
+Eleven routes (home, catalogue, cart, gift cards, account, login, admin users / coupons / settings,
+staff, inventory) × light and dark × 1440 and 390 — 44 loads. **Horizontal overflow: 0px on every
+one.** Every card, tray, table, panel and navbar on those routes now borders at 3:1 or better in
+light. What is still soft is soft on purpose and unchanged from before: the spec's own status badge
+borders (`--ok-border` and friends, 1.2–1.6:1 tints that carry a dot and a word as well as a ring),
+the footer's top rule, inset wells at 1.65:1, and one divider above the pager.
+
+## Gates and suites
+
+Frontend, all after the last edit: `npx tsc --noEmit` clean, `npm run i18n:check` clean at 1,822
+entries (one new key, "up to", for the folded value line), `npx vitest run` **229 tests in 33 files,
+0 failures** — `src/test/coupon-workflow.test.tsx` is new and holds the eight contracts this round
+depends on: the `[hidden]` rule that has to beat the author `display: flex`, the ellipsis pair that
+keeps a folded row to one line, the one-row rail, the sticky offsets and the z-order against the
+navbar, the `minmax(0, 1fr)` track, the raised light glass edge, and which steps start open.
+`npm run build` clean with `AdminPage-*.js` at 98.11 kB / 22.35 kB gzip. No backend file changed, so
+the .NET build and tests were not re-run.
+
+The browser side is `web/e2e/coupon-workflow.spec.ts`: it signs in, then asks the live DOM the five
+questions above — folded row height and its summary text, the rail's row count and scroll, where the
+registry bar actually lands and what paints over what, the resolved contrast of five glass surfaces
+in light plus the proof the raise did not leak into dark, and page width at 390. It needs
+`NINECUBE_SEED_PASSWORD` like every other spec here, so it has not been run against the real API yet;
+what was verified in this session is the same code path against the project's own MSW fixtures — a
+dry run of that spec's exact selectors and assertions passed in both themes at both widths.
+
+## Left alone deliberately
+
+The navbar's amber selected tab and the amber selected-row fill — both still there, both re-measured.
+The scope rule engine, the stacking policy, the reach preview and the replay plate are untouched; this
+round only decided when their panels are on screen. Stock is still not editable from any bulk path.
+The builder gained no new fields, buttons or badges — the same controls, fewer of them visible at once.
+
+One measured thing I did not change: the campaign banner's white text on the amber gradient works out
+at roughly 2:1 in both themes. It is a marketing strip that predates this round and its palette is its
+own, so it is flagged rather than repainted — say the word and it goes to the accent ink the rest of
+the amber surfaces use.
+
+## What this does not prove
+
+The browser pass ran the real app against a stub of the API on a throwaway port, so the figures above
+are layout, paint and geometry, not catalogue data — the coupon counts and reach numbers on screen
+come from the fixture set. The harness lived in `web/.ui-harness/` and is deleted; the repo points at
+none of it. The stub servers on 127.0.0.1:5178, 5199, 5221, 5241, 5311 and 5322 are still listening
+because killing processes is blocked here, and `ninecube-verify-pg` is still up on 5433 — all of them
+need ending by hand.
+
+---
+
 # Round 14 — the shop sets its own discount limits, sees the cost against real orders, and needs a second signature above the line
 
 Date: 2026-11-02. Brief: "you can not suggest any better moderation as modern unique system", then
