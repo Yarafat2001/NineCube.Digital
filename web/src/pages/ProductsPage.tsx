@@ -44,8 +44,10 @@ function ProductCard({
 }) {
   useLanguage();
   const [quantity, setQuantity] = useState(1);
+  const [justAdded, setJustAdded] = useState(false);
   const tilt = useCardTilt();
   const outOfStock = !product.isActive || product.stockQuantity <= 0;
+  const isLowStock = !outOfStock && product.stockQuantity <= threshold;
   const { brand, displayName, fullName, variant } = cardPresentation(product);
   const detail = `/products/${product.id}`;
 
@@ -54,57 +56,110 @@ function ProductCard({
   const tags = (product.tags ?? []).filter(tag => !isBrandTag(tag));
   const shownTags = tags.slice(0, MAX_TAG_CHIPS);
   const hiddenTags = tags.slice(MAX_TAG_CHIPS);
+  const discountPercent = product.compareAtPrice && product.compareAtPrice > product.price
+    ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+    : 0;
 
   return (
     <article {...tilt} className="product-card" data-inactive={!product.isActive} data-testid={`product-${product.id}`}>
-      <Link className="product-card__media-link" to={detail} aria-label={t(`Open ${fullName}`)}>
-        <ProductImage product={product} />
-      </Link>
+      <div className="product-card__media-wrap">
+        <Link className="product-card__media-link" to={detail} aria-label={t(`Open ${fullName}`)}>
+          <ProductImage product={product} />
+        </Link>
+        {discountPercent > 0 && (
+          <div className="product-card__badge-overlay product-card__badge-overlay--discount" aria-label={t(`-${discountPercent}%`)}>
+            <span>-{discountPercent}%</span>
+          </div>
+        )}
+        {outOfStock ? (
+          <div className="product-card__badge-overlay product-card__badge-overlay--stock">
+            <span>{t("Out of stock")}</span>
+          </div>
+        ) : isLowStock ? (
+          <div className="product-card__badge-overlay product-card__badge-overlay--low">
+            <span>⚡ {t("Only")} {product.stockQuantity} {t("left")}</span>
+          </div>
+        ) : null}
+      </div>
 
       <div className="product-card__body">
-        {brand ? <p className="product-card__brand">{t(brand)}</p> : null}
+        <div className="product-card__brand-row">
+          {brand ? <p className="product-card__brand">{t(brand)}</p> : <span />}
+          <StockBadge product={product} threshold={threshold} />
+        </div>
+
         <h3 className="product-card__name" title={t(fullName)}>
           <Link to={detail}>{t(displayName)}</Link>
         </h3>
         {variant ? <p className="product-card__variant">{t(variant)}</p> : null}
 
         <div className="product-category-chips">
-          {primary ? <Link className="filter-chip" to={`/products${mergeSearchParams(new URLSearchParams(queryString), { category: primary.slug, includeDescendants: null })}`} title={t(primary.name)}>{t(primary.name)}</Link> : null}
-          {shownTags.map(tag => <Link className="filter-chip" key={tag} to={`/products${mergeSearchParams(new URLSearchParams(queryString), { tag })}`} title={t(tag)}>{t(tag)}</Link>)}
-          {hiddenTags.length > 0 ? <span className="filter-chip filter-chip--extra" title={t(hiddenTags.join(', '))}>{t("+")}{t(hiddenTags.length)}</span> : null}
+          {primary ? (
+            <Link
+              className="filter-chip"
+              to={`/products${mergeSearchParams(new URLSearchParams(queryString), { category: primary.slug, includeDescendants: null })}`}
+              title={t(primary.name)}
+            >
+              {t(primary.name)}
+            </Link>
+          ) : null}
+          {shownTags.map(tag => (
+            <Link
+              className="filter-chip"
+              key={tag}
+              to={`/products${mergeSearchParams(new URLSearchParams(queryString), { tag })}`}
+              title={t(tag)}
+            >
+              {t(tag)}
+            </Link>
+          ))}
+          {hiddenTags.length > 0 ? (
+            <span className="filter-chip filter-chip--extra" title={t(hiddenTags.join(', '))}>
+              {t("+")}{t(hiddenTags.length)}
+            </span>
+          ) : null}
         </div>
       </div>
 
       <div className="product-card__footer">
-        <div>
+        <div className="product-card__pricing">
+          <span className="product-card__price">{t(formatMoney(product.price, product.currency))}</span>
           {product.compareAtPrice && product.compareAtPrice > product.price ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-              <span className="product-card__price">{t(formatMoney(product.price, product.currency))}</span>
-              <span style={{ textDecoration: 'line-through', opacity: 0.6, fontSize: 'var(--text-xs)' }}>
-                {t(formatMoney(product.compareAtPrice, product.currency))}
-              </span>
-              <span style={{ fontSize: '10px', padding: '1px 5px', borderRadius: '4px', background: 'var(--ok-bg, #dcfce7)', color: 'var(--ok-text, #14532d)', fontWeight: 700 }}>
-                -{Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}%
-              </span>
-            </div>
-          ) : (
-            <p className="product-card__price">{t(formatMoney(product.price, product.currency))}</p>
-          )}
+            <span className="product-card__compare-price">
+              {t(formatMoney(product.compareAtPrice, product.currency))}
+            </span>
+          ) : null}
         </div>
-        <StockBadge product={product} threshold={threshold} />
       </div>
 
       {outOfStock ? (
-        <p className="muted">{t("Not currently orderable.")}</p>
+        <div className="product-card__out-of-stock-note">
+          <p className="muted">{t("Not currently orderable.")}</p>
+        </div>
       ) : canOrder ? (
-        <div className="row-between">
+        <div className="row-between product-card__actions">
           <QuantityStepper value={quantity} max={product.stockQuantity} onChange={setQuantity} label={t(fullName)} />
-          <button type="button" className="btn btn--primary btn--sm" onClick={() => { onAdded(product, quantity); setQuantity(1); }}>
-            {t("Add to cart")}</button>
+          <button
+            type="button"
+            className={`btn btn--primary btn--sm product-card__btn-add ${justAdded ? 'product-card__btn-add--success' : ''}`}
+            onClick={() => {
+              onAdded(product, quantity);
+              setJustAdded(true);
+              setTimeout(() => setJustAdded(false), 1400);
+              setQuantity(1);
+            }}
+          >
+            <span aria-hidden="true">{justAdded ? '✓' : '🛒'}</span>
+            <span>{justAdded ? t("Added!") : t("Add to cart")}</span>
+          </button>
         </div>
       ) : null}
 
-      {canEdit ? <Link className="link-button" to="/inventory" state={{ editProductId: product.id }}>{t("Edit in Inventory")}</Link> : null}
+      {canEdit ? (
+        <Link className="link-button" to="/inventory" state={{ editProductId: product.id }}>
+          {t("Edit in Inventory")}
+        </Link>
+      ) : null}
     </article>
   );
 }
@@ -292,9 +347,10 @@ export function ProductsPage() {
           {t("You do not have access to ")}{t(deniedNotice)}{t(".")}</p>
       ) : null}
 
-      <LiveRegion message={t(resultMessage)} />
-
-      <CategoryBreadcrumb category={category} select={slug => changeFilters({ category: slug })} />
+      <div className="catalogue-pre-header">
+        <CategoryBreadcrumb category={category} select={slug => changeFilters({ category: slug })} />
+        <LiveRegion message={t(resultMessage)} className="muted catalogue-live-message" />
+      </div>
       {categoryNotice || brandNotice ? <p role="status">{t([categoryNotice, brandNotice].filter(Boolean).join(' '))}</p> : null}
 
       <div className="filter-chips filter-chips--active" aria-label={t("Active filters")} hidden={chips.length === 0}>
@@ -308,6 +364,41 @@ export function ProductsPage() {
         <CategoryFilters tree={tree} tags={tagsQuery.data ?? []} loading={categoriesQuery.isLoading} params={params} change={changeFilters} />
 
         <div className="catalogue-main">
+          {/* Modern Catalogue Utility Toolbar */}
+          <div className="catalogue-toolbar card-glass" role="toolbar" aria-label={t("Catalogue controls")}>
+            <div className="catalogue-toolbar__left">
+              <div className="catalogue-toolbar__badge">
+                <span className="catalogue-toolbar__count-num">{productsQuery.data?.totalCount ?? 0}</span>
+                <span className="catalogue-toolbar__count-label">{t("Products")}</span>
+              </div>
+              {category ? (
+                <div className="catalogue-toolbar__pill" title={category.name}>
+                  <span aria-hidden="true">📁</span> <strong>{t(category.name)}</strong>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="catalogue-toolbar__right">
+              <div className="catalogue-toolbar__sort-wrap">
+                <label htmlFor="catalogue-sort-select" className="catalogue-toolbar__sort-label">
+                  <span aria-hidden="true">⇅</span> {t("Sort by")}
+                </label>
+                <select
+                  id="catalogue-sort-select"
+                  className="catalogue-toolbar__sort-select"
+                  value={params.get('sort') ?? ''}
+                  onChange={e => changeFilters({ sort: e.target.value || null })}
+                  aria-label={t("Sort by")}
+                >
+                  <option value="">{t("Featured / Default")}</option>
+                  <option value="price">{t("Price low to high")}</option>
+                  <option value="stock">{t("Stock high to low")}</option>
+                  <option value="newest">{t("Newest")}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           {gridPending ? <LoadingBlock label={t("Loading products")} variant="card" count={6} /> : null}
 
           {productsQuery.isError && !gridPending ? (

@@ -1820,5 +1820,10 @@
   "The writer sees this line on the coupon row, so a few clear words are enough.": "এই লাইনটি কুপনের সারিতে লেখক দেখতে পান, তাই স্পষ্ট কয়েক শব্দই যথেষ্ট।",
   "Approve and release": "অনুমোদন করে চালু করুন",
   "Refuse": "বাতিল করুন",
-  "It waits for a second administrator to approve it before it goes live.": "লাইভ হওয়ার আগে এটি আরেকজন প্রশাসকের অনুমোদনের অপেক্ষায় থাকবে।"
+  "It waits for a second administrator to approve it before it goes live.": "লাইভ হওয়ার আগে এটি আরেকজন প্রশাসকের অনুমোদনের অপেক্ষায় থাকবে।",
+  "Only": "মাত্র",
+  "left": "টি বাকি",
+  "Catalogue controls": "ক্যাটালগ নিয়ন্ত্রণ",
+  "Featured / Default": "বিশেষ / ডিফল্ট",
+  "Added!": "যোগ হয়েছে!"
 }
