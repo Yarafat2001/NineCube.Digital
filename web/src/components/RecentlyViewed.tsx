@@ -7,7 +7,7 @@ import { formatMoney } from '../lib/helpers';
 import { useCart } from '../state/CartContext';
 import { useToast } from './ui';
 import { Icon } from './Icon';
-import { ProductThumbnail } from './ProductImage';
+import { ProductThumbnail, primaryImage } from './ProductImage';
 
 export interface RecentlyViewedProps {
   currentProductId?: number;
@@ -77,7 +77,7 @@ export function RecentlyViewed({ currentProductId, className = '', style }: Rece
               >
                 <ProductThumbnail
                   product={product}
-                  url={product.imageUrl}
+                  url={product.imageUrl || primaryImage(product)}
                   alt={product.name}
                   className="recently-viewed__img"
                   iconSize={22}

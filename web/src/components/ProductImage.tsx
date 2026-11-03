@@ -97,14 +97,32 @@ export function ProductThumbnail({
     setBroken(false);
   }, [src]);
 
+  const category = (product?.categories?.find(c => c.isPrimary)?.slug ?? product?.categories?.[0]?.slug ?? '').toLowerCase();
+  const iconName = /phone|tablet/.test(category)
+    ? 'phone'
+    : /coffee|tea|beverage/.test(category)
+      ? 'coffee'
+      : /bag|wallet/.test(category)
+        ? 'wallet'
+        : /shoe|footwear/.test(category)
+          ? 'shoe'
+          : /chair|bed|furniture/.test(category)
+            ? 'chair'
+            : /refriger/.test(category)
+              ? 'fridge'
+              : /lighting|led/.test(category)
+                ? 'spark'
+                : 'box';
+
   if (!src || broken) {
     return (
       <span
         className={`thumb-placeholder ${className}`}
-        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', ...style }}
+        style={{ ...style, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
         aria-hidden="true"
+        data-testid="thumb-placeholder"
       >
-        <Icon name="box" width={iconSize} height={iconSize} />
+        <Icon name={iconName} width={iconSize} height={iconSize} />
       </span>
     );
   }

@@ -6,7 +6,7 @@ import { useCategories, useLowStockThreshold, useProducts } from '../api/hooks';
 import { formatMoney, useDebouncedValue } from '../lib/helpers';
 import { Icon } from './Icon';
 import { StockBadge } from './ui';
-import { ProductThumbnail } from './ProductImage';
+import { ProductThumbnail, primaryImage } from './ProductImage';
 
 export function GlobalSearch() {
   useLanguage();
@@ -201,7 +201,7 @@ export function GlobalSearch() {
                             <div className="spotlight-item__media">
                               <ProductThumbnail
                                 product={product}
-                                url={product.imageUrl}
+                                url={product.imageUrl || primaryImage(product)}
                                 alt={product.name}
                                 iconSize={18}
                               />

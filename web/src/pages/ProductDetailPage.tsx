@@ -10,6 +10,7 @@ import { useRestockSubscriptions } from '../api/hooks';
 import { Icon } from '../components/Icon';
 import { recordRecentView } from '../lib/recentViews';
 import { ProductViewer } from '../components/ProductViewer';
+import { primaryImage } from '../components/ProductImage';
 import { cardPresentation } from '../lib/catalog';
 import { formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -53,7 +54,10 @@ export function ProductDetailPage() {
 
   useEffect(() => {
     if (!product) return;
-    recordRecentView(product);
+    recordRecentView({
+      ...product,
+      imageUrl: product.imageUrl || primaryImage(product) || undefined
+    });
 
     // Dynamic Title & OpenGraph SEO Metadata
     document.title = `${product.name} | NineCube Digital`;

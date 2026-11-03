@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, within, render, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
@@ -8,6 +8,7 @@ import { server } from './server';
 import { renderApp, seedSession, usersByRole } from './utils';
 import { recordRecentView, getRecentViews, clearRecentViews } from '../lib/recentViews';
 import { resolveAssetUrl } from '../api/client';
+import { ProductThumbnail } from '../components/ProductImage';
 
 async function signIn(role: UserRole = 'Customer') {
   seedSession(role);
@@ -120,5 +121,24 @@ it('resolves product asset URLs robustly across GitHub Pages and API hosts', () 
     } finally {
       (window as any).location = originalLocation;
     }
+  });
+
+  it('renders ProductThumbnail with fallback placeholder when image URL fails or is missing', () => {
+    // Missing URL falls back to placeholder with shoe icon for shoe category
+    const shoeProduct = {
+      ...products[0],
+      imageUrl: null,
+      images: [],
+      categories: [{ id: 1, name: 'Shoes', slug: 'shoes', isPrimary: true }]
+    };
+    const { rerender } = render(<ProductThumbnail product={shoeProduct} />);
+    const placeholder = screen.getByTestId('thumb-placeholder');
+    expect(placeholder).toBeInTheDocument();
+
+    // Broken image triggers onError and displays fallback
+    rerender(<ProductThumbnail product={shoeProduct} url="https://example.com/broken.jpg" alt="Running Shoe" />);
+    const img = screen.getByRole('img', { name: /running shoe/i });
+    fireEvent.error(img);
+    expect(screen.getByTestId('thumb-placeholder')).toBeInTheDocument();
   });
 });

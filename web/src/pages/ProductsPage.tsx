@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLowStockThreshold, useProducts, useCategories, useTags, useBrands, useWishlist, useToggleWishlist } from '../api/hooks';
 import type { Brand, Product } from '../api/types';
-import { ProductImage, ProductThumbnail } from '../components/ProductImage';
+import { ProductImage, ProductThumbnail, primaryImage } from '../components/ProductImage';
 import { Icon } from '../components/Icon';
 import { CompareTray } from '../components/CompareTray';
 import { QuickViewModal } from '../components/QuickViewModal';
@@ -513,7 +513,10 @@ export function ProductsPage() {
                     isComparing={compareItems.some((x) => x.id === product.id)}
                     onToggleCompare={canOrder ? () => handleToggleCompare(product) : undefined}
                     onQuickView={(p) => {
-                      recordRecentView(p);
+                      recordRecentView({
+                        ...p,
+                        imageUrl: p.imageUrl || primaryImage(p) || undefined
+                      });
                       setQuickViewProduct(p);
                     }}
                     onNotifyStock={setStockAlertProduct}

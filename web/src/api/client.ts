@@ -190,14 +190,16 @@ export function resolveAssetUrl(url: string | null | undefined): string | undefi
   }
 
   // App-owned static file (e.g. /products/...):
-  // When running on GitHub Pages (e.g. user.github.io/NineCube.Digital/),
+  // When running on GitHub Pages (e.g. user.github.io/NineCube.Digital/) or any subpath,
   // a root-relative path like "/products/..." resolves against the domain root (404).
   // Prefix the subpath so assets reliably resolve under the repository path.
   if (typeof window !== 'undefined' && window.location) {
-    const hostname = window.location.hostname.toLowerCase();
-    const pathname = window.location.pathname;
+    const rawPath = window.location.pathname || '';
+    const cleanPath = rawPath.replace(/#.*$/, '');
+    const hostname = (window.location.hostname || '').toLowerCase();
+
     if (hostname.endsWith('github.io')) {
-      const segments = pathname.split('/').filter(Boolean);
+      const segments = cleanPath.split('/').filter(Boolean);
       if (segments.length > 0 && !segments[0].endsWith('.html') && !segments[0].endsWith('.htm')) {
         const repo = segments[0];
         if (normalized === `/${repo}` || normalized.startsWith(`/${repo}/`)) {
@@ -205,6 +207,14 @@ export function resolveAssetUrl(url: string | null | undefined): string | undefi
         }
         return `/${repo}${normalized}`;
       }
+    }
+
+    const baseDir = cleanPath.replace(/\/[^/]+\.[^/]+$/, '').replace(/\/+$/, '');
+    if (baseDir && baseDir !== '/') {
+      if (normalized === baseDir || normalized.startsWith(`${baseDir}/`)) {
+        return normalized;
+      }
+      return `${baseDir}${normalized}`;
     }
   }
 
