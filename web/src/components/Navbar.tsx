@@ -71,8 +71,8 @@ export function Navbar() {
   const [hidden, setHidden] = useState(false);
 
   const role = user?.role;
-  const items = useMemo(() => role ? navItemsFor(role) : location.pathname === '/'
-    ? [{ to: '/', label: 'Home' }, { to: '/products', label: 'Collection' }] : [], [role, location.pathname]);
+  const items = useMemo(() => role ? navItemsFor(role)
+    : [{ to: '/', label: 'Home' }, { to: '/products', label: 'Collection' }], [role]);
 
   // Only the most specific match is "current". A plain prefix test marked both "Orders" (/staff)
   // and "Sales" (/staff/sales) as active on the sales page, which lit two links at once and drew
@@ -195,6 +195,7 @@ export function Navbar() {
       ) : (
         <span className="navbar__actions" role="group" aria-label={t("Cart, notifications and account")}>
           <GlobalSearch />
+          <CartButton />
           <Link className="btn btn--primary navbar__cta" to="/login">
             {t("Sign in")}</Link>
         </span>
@@ -206,6 +207,7 @@ export function Navbar() {
 /** Cart stays available from every customer page. */
 function CartButton() {
   useLanguage();
+  const { user } = useAuth();
   const { itemCount } = useCart();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -222,6 +224,6 @@ function CartButton() {
       <Icon name="cart" />
       {itemCount > 0 ? <span className="nav-pop__badge" data-testid="cart-count">{t(itemCount > 9 ? '9+' : itemCount)}</span> : null}
     </button>
-    <CartSheet onOpenChange={setOpen} onPlaced={order => navigate(`/orders/${order.id}`)} />
+    <CartSheet onOpenChange={setOpen} onPlaced={order => navigate(`${user ? '/orders' : '/guest/orders'}/${order.id}`)} />
   </>;
 }

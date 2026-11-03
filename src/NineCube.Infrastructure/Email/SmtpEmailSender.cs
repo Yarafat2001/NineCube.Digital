@@ -62,6 +62,7 @@ public sealed class SmtpEmailSender : IEmailSender
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send email to {To}: {Subject}", toEmail, subject);
+            throw;
         }
     }
 }

@@ -58,22 +58,24 @@ public sealed class AuthEndpoints : IEndpoint
         RegisterRequest request,
         IAuthService auth,
         IValidator<RegisterRequest> validator,
+        HttpContext http,
         CancellationToken ct)
     {
         await ValidationHelper.ValidateAsync(validator, request, ct);
         var response = await auth.RegisterAsync(request, ct);
-        return TypedResults.Created("/api/auth/me", response);
+        return TypedResults.Created("/api/auth/me", BrowserSession(http, response));
     }
 
     public static async Task<Results<Ok<AuthResponse>, ProblemHttpResult>> LoginAsync(
         LoginRequest request,
         IAuthService auth,
         IValidator<LoginRequest> validator,
+        HttpContext http,
         CancellationToken ct)
     {
         await ValidationHelper.ValidateAsync(validator, request, ct);
         var response = await auth.LoginAsync(request, ct);
-        return TypedResults.Ok(response);
+        return TypedResults.Ok(BrowserSession(http, response));
     }
 
     public static async Task<Results<Ok<UserSummaryDto>, ProblemHttpResult>> MeAsync(
@@ -109,19 +111,41 @@ public sealed class AuthEndpoints : IEndpoint
     public static async Task<Results<Ok<AuthResponse>, ProblemHttpResult>> RefreshAsync(
         RefreshTokenRequest request,
         IAuthService auth,
+        HttpContext http,
         CancellationToken ct)
     {
-        var response = await auth.RefreshTokenAsync(request.RefreshToken, ct);
-        return TypedResults.Ok(response);
+        var token = IsBrowser(http) ? http.Request.Cookies["ninecube.refresh"] : request.RefreshToken;
+        var response = await auth.RefreshTokenAsync(token ?? "", ct);
+        return TypedResults.Ok(BrowserSession(http, response));
     }
 
     public static async Task<Results<Ok<object>, ProblemHttpResult>> LogoutAsync(
         RefreshTokenRequest request,
         IAuthService auth,
+        HttpContext http,
         CancellationToken ct)
     {
-        await auth.RevokeTokenAsync(request.RefreshToken, ct);
+        var token = IsBrowser(http) ? http.Request.Cookies["ninecube.refresh"] : request.RefreshToken;
+        await auth.RevokeTokenAsync(token ?? "", ct);
+        http.Response.Cookies.Delete("ninecube.refresh", CookieOptions(http));
         return TypedResults.Ok<object>(new { success = true, message = "Session successfully logged out." });
+    }
+
+    // A non-simple request header requires a CORS preflight; foreign sites cannot submit these
+    // cookie-authenticated operations through an HTML form. Native clients retain bearer-token JSON.
+    private static bool IsBrowser(HttpContext http) => http.Request.Headers["X-NineCube-Client"] == "web";
+    private static CookieOptions CookieOptions(HttpContext http) => new()
+    {
+        HttpOnly = true, Secure = !http.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment() || http.Request.IsHttps, Path = "/api/auth",
+        SameSite = !http.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment() || http.Request.IsHttps ? SameSiteMode.None : SameSiteMode.Lax,
+        MaxAge = TimeSpan.FromDays(14), IsEssential = true
+    };
+    private static AuthResponse BrowserSession(HttpContext http, AuthResponse response)
+    {
+        if (!IsBrowser(http)) return response;
+        if (!string.IsNullOrWhiteSpace(response.RefreshToken))
+            http.Response.Cookies.Append("ninecube.refresh", response.RefreshToken, CookieOptions(http));
+        return response with { RefreshToken = null };
     }
 
 }

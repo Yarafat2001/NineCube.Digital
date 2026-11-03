@@ -315,6 +315,7 @@
   margin-top: auto;
   padding-top: var(--space-2);
   width: 100%;
+  flex-wrap: nowrap;
 }
 
 /* Compact, unified pill instrument for the card stepper */
@@ -4668,8 +4669,15 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: clamp(40px, 11vh, 90px) 16px 24px;
+  padding: max(24px, 8vh) 16px 24px;
+  overflow-y: auto;
+  box-sizing: border-box;
   animation: spotlight-fade-in 140ms ease-out;
+}
+
+html[data-overlay-open='true'],
+body[data-overlay-open='true'] {
+  overflow: hidden;
 }
 
 @keyframes spotlight-fade-in {
@@ -4707,6 +4715,7 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   gap: var(--space-3);
   padding: var(--space-4);
   border-bottom: 1px solid var(--row-line);
+  flex-shrink: 0;
 }
 
 /* The search well is the house input treatment (app.css `input`): same sunken fill,
@@ -4812,6 +4821,7 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   gap: 10px;
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--row-line);
+  flex-shrink: 0;
 }
 
 .spotlight-categories-label {
@@ -5000,6 +5010,7 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   border-top: 1px solid var(--row-line);
+  flex-shrink: 0;
 }
 
 .spotlight-footer-kbd {

@@ -278,6 +278,10 @@ export function useInvoice(id: number | null, enabled = true) {
 }
 
 export interface PlaceOrderInput {
+  expectedTotal?: number;
+  addressId?: number;
+  deliveryInstructions?: string;
+  guestToken?: string;
   items: { productId: number; quantity: number }[];
   couponCode?: string;
   paymentMethod?: PaymentMethod;
@@ -296,14 +300,14 @@ export function usePlaceOrder() {
 
   return useMutation({
     mutationFn: (input: PlaceOrderInput) => {
-      const body: { items: { productId: number; quantity: number }[]; couponCode?: string; paymentMethod?: PaymentMethod; giftCardCode?: string } = {
-        items: input.items
-      };
+      const { idempotencyKey, guestToken, ...body } = input;
       if (input.couponCode) body.couponCode = input.couponCode;
       if (input.paymentMethod) body.paymentMethod = input.paymentMethod;
       if (input.giftCardCode) body.giftCardCode = input.giftCardCode;
 
-      return request<Order>('/api/orders', { method: 'POST', body, idempotencyKey: input.idempotencyKey });
+      return guestToken
+        ? apiRequest<Order>('/api/guest/orders', { method: 'POST', body, idempotencyKey, guestToken })
+        : request<Order>('/api/orders', { method: 'POST', body, idempotencyKey });
     },
     onSuccess: () => invalidate([queryKeys.orders({ page: 1, pageSize: 20 }), ['products']])
   });
@@ -802,10 +806,41 @@ export function useAddReview(productId: number) {
 }
 
 export function useWishlist() {
+  const { hasRole } = useAuth();
   const request = useAuthedRequest();
   return useQuery({
     queryKey: queryKeys.wishlist,
-    queryFn: () => request<WishlistItem[]>('/api/wishlist')
+      queryFn: () => request<WishlistItem[]>('/api/wishlist'),
+      enabled: hasRole('Customer')
+  });
+}
+
+export function useRestockSubscriptions() {
+  const { user, hasRole } = useAuth();
+  const request = useAuthedRequest();
+  return useQuery({ queryKey: ['restock-subscriptions', user?.id],
+    queryFn: () => request<number[]>('/api/restock-subscriptions'), enabled: hasRole('Customer') });
+}
+
+export interface CheckoutQuote {
+  subTotal: number; discountAmount: number; shippingAmount: number;
+  giftCardAmount: number; totalAmount: number; currency: string;
+  freeShippingThreshold: number; couponCode: string | null;
+}
+
+export function useCheckoutOptions() {
+  return useQuery({ queryKey: ['checkout-options'], queryFn: () => apiRequest<{ onlinePaymentsEnabled: boolean }>('/api/checkout/options') });
+}
+
+export function useCheckoutQuote(items: { productId: number; quantity: number }[], couponCode?: string, giftCardCode?: string) {
+  return useQuery({
+    queryKey: ['checkout-quote', items.map(i => `${i.productId}:${i.quantity}`).join(','), couponCode, giftCardCode],
+    queryFn: ({ signal }) => apiRequest<CheckoutQuote>('/api/checkout/quote', {
+      method: 'POST', body: { items, couponCode, giftCardCode }, signal
+    }),
+    enabled: items.length > 0,
+    staleTime: 15_000,
+    retry: false
   });
 }
 

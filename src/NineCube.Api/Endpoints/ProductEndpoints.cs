@@ -23,12 +23,12 @@ public sealed class ProductEndpoints : IEndpoint
             .RequireAuthorization();
 
         group.MapGet("/", SearchAsync)
-            .RequireAuthorization(Policies.AnyAuthenticated)
+            .AllowAnonymous()
             .WithName("SearchProducts")
             .WithSummary("Live catalogue with current stock. Available to every authenticated role.");
 
         group.MapGet("/low-stock-threshold", GetLowStockThresholdAsync)
-            .RequireAuthorization(Policies.AnyAuthenticated)
+            .AllowAnonymous()
             .WithName("GetLowStockThreshold")
             .WithSummary("The configured low stock threshold.");
 
@@ -38,7 +38,7 @@ public sealed class ProductEndpoints : IEndpoint
             .WithSummary("Products at or below the configured low stock threshold.");
 
         group.MapGet("/{id:int}", GetByIdAsync)
-            .RequireAuthorization(Policies.AnyAuthenticated)
+            .AllowAnonymous()
             .WithName("GetProductById")
             .WithSummary("Retrieves product details by id.");
 
@@ -73,7 +73,7 @@ public sealed class ProductEndpoints : IEndpoint
             .WithSummary("Atomic conditional stock adjustment with mandatory reason audit.");
 
         group.MapGet("/{id:int}/images", GetImagesAsync)
-            .RequireAuthorization(Policies.AnyAuthenticated)
+            .AllowAnonymous()
             .WithName("GetProductImages")
             .WithSummary("Product gallery, primary image first, projected with AsNoTracking.");
 
@@ -212,9 +212,11 @@ public sealed class ProductEndpoints : IEndpoint
     public static async Task<Results<Ok<IReadOnlyList<ProductImageDto>>, ProblemHttpResult>> GetImagesAsync(
         int id,
         IAppDbContext db,
+        ICurrentUser user,
         CancellationToken ct)
     {
-        if (!await db.Products.AsNoTracking().AnyAsync(p => p.Id == id, ct))
+        var canManage = user.IsInRole(UserRole.Staff, UserRole.InventoryManager, UserRole.Administrator);
+        if (!await db.Products.AsNoTracking().AnyAsync(p => p.Id == id && (p.IsActive || canManage), ct))
             throw new NotFoundException($"Product {id} was not found.");
 
         var images = await db.ProductImages.AsNoTracking()

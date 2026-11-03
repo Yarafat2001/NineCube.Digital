@@ -63,6 +63,7 @@ var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get
 builder.Services.AddCors(options => options.AddPolicy("spa", policy => policy
     .WithOrigins(allowedOrigins)
     .AllowAnyHeader()
+    .AllowCredentials()
     .AllowAnyMethod()));
 
 // ---------------------------------------------------------------- rate limiting

@@ -18,10 +18,12 @@ public sealed class BrandEndpoints : IEndpoint
             .RequireAuthorization(Policies.AnyAuthenticated);
 
         group.MapGet("/", GetBrandsAsync)
+            .AllowAnonymous()
             .WithName("GetBrands")
             .WithSummary("Brand and series facets for the catalogue.");
 
         group.MapGet("/{slug}/lines", GetBrandLinesAsync)
+            .AllowAnonymous()
             .WithName("GetBrandLines")
             .WithSummary("The series of one brand, with facet counting rules.");
     }

@@ -18,11 +18,13 @@ public sealed class CatalogService : ICatalogService
 {
     private readonly IAppDbContext _db;
     private readonly ISettingsService _settings;
+    private readonly ICurrentUser? _currentUser;
 
-    public CatalogService(IAppDbContext db, ISettingsService settings)
+    public CatalogService(IAppDbContext db, ISettingsService settings, ICurrentUser? currentUser = null)
     {
         _db = db;
         _settings = settings;
+        _currentUser = currentUser;
     }
 
     public async Task<PagedResult<ProductDto>> SearchAsync(string? search, bool? isActive, int page, int pageSize, CancellationToken ct = default, CatalogFilters? filters = null)
@@ -116,7 +118,9 @@ public sealed class CatalogService : ICatalogService
             query = query.Where(p => p.Name.Contains(term) || p.Sku.Contains(term));
         }
 
-        if (isActive is not null) query = query.Where(p => p.IsActive == isActive);
+        if (_currentUser is not null && !_currentUser.IsInRole(UserRole.Staff, UserRole.InventoryManager, UserRole.Administrator))
+            query = query.Where(p => p.IsActive);
+        else if (isActive is not null) query = query.Where(p => p.IsActive == isActive);
 
         if (filters.MinPrice < 0 || filters.MaxPrice < 0 || (filters.MinPrice != null && filters.MaxPrice != null && filters.MinPrice > filters.MaxPrice))
             throw new BusinessValidationException("Use a nonnegative price range with minimum no greater than maximum.");
@@ -176,7 +180,7 @@ public sealed class CatalogService : ICatalogService
     public async Task<ProductDto> GetAsync(int id, CancellationToken ct = default)
     {
         var product = await _db.Products.AsNoTracking()
-            .Where(p => p.Id == id)
+            .Where(p => p.Id == id && (p.IsActive || _currentUser == null || _currentUser.IsInRole(UserRole.Staff, UserRole.InventoryManager, UserRole.Administrator)))
             .Select(Projection)
             .FirstOrDefaultAsync(ct);
 

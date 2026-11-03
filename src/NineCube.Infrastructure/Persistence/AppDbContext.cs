@@ -49,9 +49,52 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
     public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<RestockSubscription> RestockSubscriptions => Set<RestockSubscription>();
+    public DbSet<GuestCheckoutSession> GuestCheckoutSessions => Set<GuestCheckoutSession>();
+    public DbSet<ServiceCase> ServiceCases => Set<ServiceCase>();
+    public DbSet<EmailDelivery> EmailDeliveries => Set<EmailDelivery>();
+    public DbSet<GiftCardPurchase> GiftCardPurchases => Set<GiftCardPurchase>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<EmailDelivery>(e =>
+        {
+            e.Property(m => m.Key).HasMaxLength(128);
+            e.Property(m => m.Recipient).HasMaxLength(256);
+            e.Property(m => m.Subject).HasMaxLength(200);
+            e.HasIndex(m => m.Key).IsUnique();
+        });
+        modelBuilder.Entity<GiftCardPurchase>(e =>
+        {
+            e.Property(p => p.RecipientEmail).HasMaxLength(256);
+            e.Property(p => p.RecipientName).HasMaxLength(200);
+            e.Property(p => p.Note).HasMaxLength(1000);
+            e.HasIndex(p => p.OrderId).IsUnique();
+            e.HasOne(p => p.Order).WithMany().HasForeignKey(p => p.OrderId).OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<ServiceCase>(e =>
+        {
+            e.Property(s => s.Kind).HasConversion<string>().HasMaxLength(24);
+            e.Property(s => s.Status).HasConversion<string>().HasMaxLength(24);
+            e.Property(s => s.Message).HasMaxLength(2000).IsRequired();
+            e.Property(s => s.Response).HasMaxLength(2000);
+            e.HasIndex(s => new { s.CustomerId, s.CreatedAt });
+            e.HasOne(s => s.Order).WithMany().HasForeignKey(s => s.OrderId).OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<GuestCheckoutSession>(e =>
+        {
+            e.Property(s => s.TokenHash).HasMaxLength(64).IsRequired();
+            e.HasIndex(s => s.TokenHash).IsUnique();
+            e.HasOne(s => s.Customer).WithMany().HasForeignKey(s => s.CustomerId).OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<Order>().Property(o => o.DeliveryAddressJson).HasMaxLength(2000);
+        modelBuilder.Entity<Order>().Property(o => o.DeliveryInstructions).HasMaxLength(1000);
+        modelBuilder.Entity<RestockSubscription>(e =>
+        {
+            e.HasIndex(s => new { s.ProductId, s.UserId }).IsUnique();
+            e.HasOne(s => s.Product).WithMany().HasForeignKey(s => s.ProductId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(s => s.User).WithMany().HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
         // ---------------------------------------------------------------- Catalog
         modelBuilder.Entity<Category>(e =>
         {

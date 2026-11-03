@@ -14,7 +14,7 @@ public sealed class TestCurrentUser : ICurrentUser
     public UserRole? Role { get; set; } = UserRole.Administrator;
 
     public bool IsAuthenticated => UserId.HasValue;
-    public int? CustomerId => null;
+    public int? CustomerId { get; set; }
 
     public bool IsInRole(params UserRole[] roles) => Role.HasValue && roles.Contains(Role.Value);
 }

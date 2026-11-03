@@ -38,6 +38,11 @@ public interface IAppDbContext
     DbSet<ProductReview> ProductReviews { get; }
     DbSet<WishlistItem> WishlistItems { get; }
     DbSet<RefreshToken> RefreshTokens { get; }
+    DbSet<RestockSubscription> RestockSubscriptions { get; }
+    DbSet<GuestCheckoutSession> GuestCheckoutSessions { get; }
+    DbSet<ServiceCase> ServiceCases { get; }
+    DbSet<EmailDelivery> EmailDeliveries { get; }
+    DbSet<GiftCardPurchase> GiftCardPurchases { get; }
 
     DatabaseFacade Database { get; }
     Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker ChangeTracker { get; }
@@ -155,4 +160,15 @@ public static class AuditActions
 public interface IEmailSender
 {
     Task SendEmailAsync(string toEmail, string subject, string htmlBody, CancellationToken ct = default);
+}
+
+public sealed record GatewaySession(string RedirectUrl);
+public sealed record VerifiedPayment(string Reference, decimal Amount, string Currency, bool IsPaid, bool NeedsReview, string? ProviderTransactionId = null);
+
+/// <summary>Only server-to-server verification may establish that money was received.</summary>
+public interface IPaymentGateway
+{
+    bool IsConfigured { get; }
+    Task<GatewaySession> CreateSessionAsync(Order order, string reference, CancellationToken ct);
+    Task<VerifiedPayment> VerifyAsync(string validationId, CancellationToken ct);
 }

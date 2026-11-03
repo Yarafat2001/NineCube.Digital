@@ -203,7 +203,7 @@ public sealed record CouponOrderReplayResult(
 
 // ---------------------------------------------------------------- Payments
 public sealed record ProcessPaymentRequest(int OrderId, PaymentMethod Provider);
-public sealed record PaymentCallbackRequest(int OrderId, string TransactionReference, bool Success, string? ProviderPayload);
+public sealed record PaymentCallbackRequest(string ValidationId);
 
 public sealed record PaymentTransactionDto(
     int Id,
@@ -213,7 +213,8 @@ public sealed record PaymentTransactionDto(
     PaymentMethod Provider,
     string TransactionReference,
     PaymentStatus Status,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    string? RedirectUrl = null);
 
 // ---------------------------------------------------------------- Reviews
 public sealed record CreateReviewRequest(int Rating, string? Comment);

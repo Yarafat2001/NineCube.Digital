@@ -53,6 +53,7 @@ this manual never prints it.
 | `/` | public showcase | nothing |
 | `/login`, `/register` | sign in, create account | nothing |
 | `/products`, `/products/:id` | catalogue and product detail | login |
+| `/help` | customer care, delivery, return & warranty policies | nothing |
 | `/orders`, `/orders/:id`, `/orders/:id/invoice` | order history, one order, printable invoice | login |
 | `/account`, `/account/profile`, `/notifications` | dashboard, profile, inbox | login |
 | `/staff`, `/staff/sales` | order console, and the category manager beside it; sales report | Sales Manager or Administrator |
@@ -264,6 +265,30 @@ The address book checkout offers, on the same profile page below the password ca
 An address that is missing a line cannot leave the browser: the fields that need filling are named
 one by one. Exactly one address is the default, and choosing another moves the flag rather than
 leaving two.
+
+### 2.5 Customer Care, Delivery, Returns & Warranty Policies
+
+NineCube Digital provides transparent store policies and end-to-end customer care workflows accessible via `/help` and the site footer:
+
+1. **Delivery & Shipping Rules**:
+   - For BDT orders, standard delivery fee is **BDT 60** for merchandise subtotals below BDT 2,500.
+   - **Free Delivery** automatically applies to all orders with merchandise subtotals of **BDT 2,500 or higher**.
+   - Standard fulfillment window is **2–4 business days** from order creation.
+   - Courier tracking references are dynamically linked under *My Orders* once dispatched.
+   - Reverse courier pickup for approved warranty claims or verified store errors is provided free of charge.
+
+2. **Return & Exchange Windows**:
+   - **Footwear & Lifestyle Gear (Apex, Bata, Nino Rossi)**: 7-day return or exchange window from delivery date. Items must be unworn, in original box packaging with intact tags. One complimentary size exchange is included per order. In addition, a 30-day warranty covers verified manufacturing defects (sole detachment, stitching tears, or adhesive failure).
+   - **Electronics & Laptops (Acer, Asus, Apple)**: 7-day transit damage or Dead on Arrival (DOA) replacement window via `/help`. Covered by 1–2 year official brand manufacturer warranty through authorized service centers in Bangladesh.
+   - **Furniture (Hatil)**: 3-day damage reporting window from delivery date; 1-year limited structural warranty against manufacturing joinery defects.
+   - **Grocery & Consumables (Bisk Club, Bombay Sweets, Cadbury)**: Damaged packaging or expired deliveries must be reported within 24 hours of delivery. Sealed food items are non-returnable once opened.
+   - **Hygiene & Personal Care Items**: Non-returnable once opened or factory seal broken.
+
+3. **Customer Support Channels & SLA**:
+   - Primary support email: `support@ninecube.digital`
+   - Executive escalations: `care@ninecube.digital`
+   - In-app claim submission: `/help` with order reference and issue description.
+   - Response SLA: Store staff review all tickets and service cases within **24 business hours**. Staff review every return or exchange before issuing refunds or adjustments.
 
 ---
 

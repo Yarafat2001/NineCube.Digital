@@ -16,6 +16,11 @@ export function Footer() {
         <nav aria-label={t("Footer")} className="site-footer__links">
           <Link to={user ? workspace : '/'}>{t(user ? 'Workspace' : 'Home')}</Link><Link to="/products">{t("Catalogue")}</Link><Link to="/gift-cards">{t("Gift Cards")}</Link>
         </nav>
+        <nav aria-label={t('Customer service')} className="site-footer__links">
+          <Link to="/help">{t('Help & contact')}</Link><Link to="/policies/delivery">{t('Delivery')}</Link>
+          <Link to="/policies/returns">{t('Returns & warranty')}</Link><Link to="/policies/privacy">{t('Privacy')}</Link>
+          <Link to="/policies/terms">{t('Terms')}</Link>
+        </nav>
         <div className="site-footer__bottom">
           <p>{t("© ")}{t(new Date().getFullYear())} {t(" NineCube.Digital")}</p>
           <p>{t("Order Processing ")}<span aria-hidden="true">{t("·")}</span> {t(" Built by Yeasin Arafat")}</p>

@@ -1,11 +1,12 @@
 import { t, useLanguage } from '../i18n/language';
 import { useQueryClient } from '@tanstack/react-query';
+import { useCheckoutQuote, useCheckoutOptions } from '../api/hooks';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ApiError, apiRequest } from '../api/client';
 import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useEvaluateCartPromotions, useAvailableCoupons, useProcessPayment, useProfile, useProducts } from '../api/hooks';
 import type { Order, Product, ShortItem, CouponValidationResult, ValidateGiftCardResult, PaymentMethod } from '../api/types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createIdempotencyKey, formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
@@ -30,7 +31,8 @@ export interface CartPanelProps {
 export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   useLanguage();
   const cart = useCart();
-  const { token } = useAuth();
+  const navigate = useNavigate();
+  const { token, user } = useAuth();
   const toast = useToast();
   const queryClient = useQueryClient();
   const placeOrder = usePlaceOrder();
@@ -39,11 +41,15 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   const [inlineError, setInlineError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const { data: profile } = useProfile();
+  const { data: profile } = useProfile(!!user);
+  const [guestDetails, setGuestDetails] = useState({ name: '', email: '', phone: '', division: '', district: '', upazila: '', addressLine: '' });
+  const [guestSession, setGuestSession] = useState<{ token: string; addressId: number } | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const validateCoupon = useValidateCoupon();
   const validateGiftCard = useValidateGiftCard();
   const evaluatePromotions = useEvaluateCartPromotions();
   const processPayment = useProcessPayment();
+  const checkoutOptions = useCheckoutOptions();
   const productsQuery = useProducts({ q: '', page: 1, pageSize: 6 });
   const upsellProducts = (productsQuery.data?.items ?? [])
     .filter((p) => p.isActive && p.stockQuantity > 0 && !cart.lines.some((l) => l.productId === p.id))
@@ -121,12 +127,19 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   // Promotional discount resolution: manual coupon takes precedence if applied, else auto-promo
   const effectiveDiscount = appliedCoupon?.isValid ? appliedCoupon : autoPromo;
   const isAutoApplied = !appliedCoupon?.isValid && !!autoPromo?.isValid;
-  const discountAmount = effectiveDiscount?.isValid ? effectiveDiscount.discountAmount : 0;
 
-  const amountAfterCoupon = Math.max(0, cart.total - discountAmount);
+  const quote = useCheckoutQuote(cart.lines.map(l => ({ productId: l.productId, quantity: l.quantity })),
+    appliedCoupon?.isValid ? appliedCoupon.code ?? undefined : undefined, appliedGiftCard?.isValid ? appliedGiftCard.code ?? undefined : undefined);
+  const discountAmount = quote.data?.discountAmount ?? (effectiveDiscount?.isValid ? effectiveDiscount.discountAmount : 0);
+  const shippingAmount = quote.data?.shippingAmount ?? (cart.currency === 'BDT' && cart.total < freeShippingThreshold ? 60 : 0);
+  const amountAfterCoupon = Math.max(0, cart.total - discountAmount) + shippingAmount;
   const giftCardDeduction = appliedGiftCard?.isValid ? Math.min(amountAfterCoupon, appliedGiftCard.currentBalance) : 0;
   const remainingGiftCardBalance = appliedGiftCard?.isValid ? appliedGiftCard.currentBalance - giftCardDeduction : 0;
-  const finalTotal = Math.max(0, amountAfterCoupon - giftCardDeduction);
+  const finalTotal = quote.data?.totalAmount ?? Math.max(0, amountAfterCoupon - giftCardDeduction);
+  const onlineAvailable = checkoutOptions.data?.onlinePaymentsEnabled && cart.currency === 'BDT' && finalTotal >= 10 && finalTotal <= 500000;
+  useEffect(() => {
+    if (!onlineAvailable && paymentMethod !== 'CashOnDelivery') setPaymentMethod('CashOnDelivery');
+  }, [onlineAvailable, paymentMethod]);
 
   const qualifiesForFreeShipping = cart.total >= freeShippingThreshold;
   const amountNeededForFreeShipping = Math.max(0, freeShippingThreshold - cart.total);
@@ -221,9 +234,10 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   };
 
   const submit = async () => {
-    if (inFlight.current || cart.lines.length === 0 || cart.mixedCurrencies) return;
+    if (inFlight.current || cart.lines.length === 0 || cart.mixedCurrencies || (!quote.data && quote.isLoading) || quote.isError) return;
 
     inFlight.current = true;
+    setSubmitting(true);
     setInlineError(null);
     setShortItems([]);
     setNotice(null);
@@ -231,26 +245,38 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
     if (!idempotencyKey.current) idempotencyKey.current = createIdempotencyKey();
 
     try {
+      let session = guestSession;
+      if (!user && !session) {
+        session = await apiRequest<{ token: string; addressId: number }>('/api/guest/session', { method: 'POST', body: guestDetails });
+        setGuestSession(session);
+        sessionStorage.setItem('ninecube.guest.token', session.token);
+      }
       const order = await placeOrder.mutateAsync({
+        expectedTotal: quote.data?.totalAmount ?? finalTotal,
+        guestToken: !user ? session?.token : undefined,
+        addressId: !user ? session?.addressId : selectedAddressId ?? undefined,
+        deliveryInstructions: deliveryInstructions.trim() || undefined,
         items: cart.lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
-        couponCode: effectiveDiscount?.code ?? undefined,
+        couponCode: appliedCoupon?.isValid ? appliedCoupon.code ?? undefined : undefined,
         giftCardCode: appliedGiftCard?.code ?? undefined,
         paymentMethod: finalTotal === 0 ? 'CashOnDelivery' : paymentMethod,
         idempotencyKey: idempotencyKey.current
       });
 
-      if (paymentMethod !== 'CashOnDelivery') {
+      let redirectUrl: string | null | undefined;
+      if (paymentMethod !== 'CashOnDelivery' && order.totalAmount > 0) {
         try {
-          await processPayment.mutateAsync({ orderId: order.id, provider: paymentMethod });
-          order.paymentMethod = paymentMethod;
-          order.paymentStatus = 'Paid';
-          order.status = 'Confirmed';
+          const payment = !user && session
+            ? await apiRequest<import('../api/types').PaymentTransaction>('/api/guest/payments', { method: 'POST', guestToken: session.token, body: { orderId: order.id, provider: paymentMethod } })
+            : await processPayment.mutateAsync({ orderId: order.id, provider: paymentMethod });
+          redirectUrl = payment.redirectUrl;
         } catch (err) {
-          console.warn('Payment recording failed:', err);
+          toast.push('error', `Order #${order.id} was saved; payment is still unpaid. ${err instanceof Error ? err.message : 'Please retry from your order.'}`);
         }
       }
 
       idempotencyKey.current = null;
+      if (!user && session) sessionStorage.setItem(`ninecube.guest.order.${order.id}`, session.token);
       setNotice(`Order #${order.id} placed.`);
       toast.push('success', `Order #${order.id} placed for ${formatMoney(order.totalAmount, order.currency)}.`);
       cart.clear();
@@ -258,9 +284,15 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
       // request cannot keep the successful checkout trapped inside the cart sheet.
       void queryClient.invalidateQueries({ queryKey: ['products'] });
       onPlaced(order);
+      if (redirectUrl) window.location.assign(redirectUrl);
     } catch (error) {
+      if (error instanceof ApiError && error.code === 'checkout_quote_changed') {
+        await quote.refetch();
+        setInlineError(error.message);
+        return;
+      }
       if (error instanceof ApiError && error.isUnauthorized) {
-        // The auth layer redirects; nothing useful to show here.
+        navigate('/login');
         return;
       }
 
@@ -296,10 +328,11 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
       toast.pushError(error);
     } finally {
       inFlight.current = false;
+      setSubmitting(false);
     }
   };
 
-  const busy = placeOrder.isPending;
+  const busy = submitting || placeOrder.isPending;
 
   return (
     <section className="cart-panel" aria-labelledby="cart-heading">
@@ -411,8 +444,18 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
 
       {cart.lines.length > 0 && (
         <div className="cart-checkout-extras">
+          {!user ? <fieldset className="stack" disabled={!!guestSession}>
+            <legend>{t('Guest checkout')}</legend>
+            <p>{t('No account needed. Your order access is saved in this browser tab for 30 days.')}</p>
+            {Object.entries(guestDetails).map(([key, value]) => <label key={key} className="field">
+              <span>{t(({ name: 'Full name', email: 'Email', phone: 'Phone', division: 'Division', district: 'District', upazila: 'Upazila', addressLine: 'Street address' } as Record<string, string>)[key])}</span>
+              <input className="input" type={key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'}
+                value={value} required maxLength={key === 'addressLine' ? 500 : key === 'email' ? 256 : key === 'phone' ? 32 : 100}
+                onChange={e => setGuestDetails(current => ({ ...current, [key]: e.target.value }))} />
+            </label>)}
+          </fieldset> : null}
           {/* Address selection */}
-          <div className="cart-field">
+          {user ? <div className="cart-field">
             <div className="cart-field__label">
               <span>{t("Delivery address")}</span>
               <Link to="/account/profile" className="link-button">{t("Manage addresses")}</Link>
@@ -435,7 +478,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                 {t("No address saved.")} <Link to="/account/profile" className="link-button">{t("Add delivery address")}</Link>
               </p>
             )}
-          </div>
+          </div> : null}
 
           {/* Customer Delivery Instructions / Order Notes */}
           <div className="cart-field">
@@ -634,6 +677,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                   name="paymentMethod"
                   value="Card"
                   checked={paymentMethod === 'Card'}
+                  disabled={!onlineAvailable}
                   onChange={() => setPaymentMethod('Card')}
                 />
                 <span><span className="cart-pay__glyph" aria-hidden="true">💳</span> {t("Card (Visa/Mastercard)")}</span>
@@ -644,6 +688,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                   name="paymentMethod"
                   value="MobileFinancialService"
                   checked={paymentMethod === 'MobileFinancialService'}
+                  disabled={!onlineAvailable}
                   onChange={() => setPaymentMethod('MobileFinancialService')}
                 />
                 <span><span className="cart-pay__glyph" aria-hidden="true">📱</span> {t("Mobile Banking (bKash/Nagad)")}</span>
@@ -670,7 +715,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
           <div className="cart-summary-row">
             <span>{t("Delivery Fee")}</span>
             <span className={qualifiesForFreeShipping ? 'cart-summary-row--highlight' : undefined}>
-              {qualifiesForFreeShipping ? t("Free Delivery") : t(formatMoney(60, cart.currency))}
+              {shippingAmount === 0 ? t("Free Delivery") : t(formatMoney(shippingAmount, cart.currency))}
             </span>
           </div>
 
@@ -731,6 +776,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
       ) : null}
 
       {cart.mixedCurrencies ? <p className="cart-field__error" role="alert">{t("Place BDT and legacy-currency products in separate orders. Remove one currency to continue.")}</p> : null}
+      {quote.isError ? <p className="cart-field__error" role="alert">{quote.error.message} <button type="button" className="link-button" onClick={() => void quote.refetch()}>{t('Retry')}</button></p> : null}
       {inlineError ? (
         <p role="alert" data-testid="cart-error" className="cart-field__error">
           {t(inlineError)}
@@ -756,7 +802,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
             type="button"
             className="btn btn--primary cart-sticky-dock__cta"
             onClick={submit}
-            disabled={busy || cart.lines.length === 0 || cart.mixedCurrencies}
+            disabled={busy || cart.lines.length === 0 || cart.mixedCurrencies || (!quote.data && quote.isLoading) || quote.isError}
             data-testid="place-order"
           >
             {busy ? (

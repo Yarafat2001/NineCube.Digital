@@ -67,7 +67,8 @@ public sealed record InventoryMovementDto(
 
 public sealed record OrderLineRequest(int ProductId, int Quantity);
 
-public sealed record CreateOrderRequest(IReadOnlyList<OrderLineRequest> Items, string? CouponCode = null, PaymentMethod PaymentMethod = PaymentMethod.CashOnDelivery, string? GiftCardCode = null);
+public sealed record CreateOrderRequest(IReadOnlyList<OrderLineRequest> Items, string? CouponCode = null, PaymentMethod PaymentMethod = PaymentMethod.CashOnDelivery, string? GiftCardCode = null,
+    int? AddressId = null, string? DeliveryInstructions = null, decimal? ExpectedTotal = null);
 
 public sealed record OrderItemDto(
     int Id,
@@ -99,7 +100,9 @@ public sealed record OrderDto(
     PaymentStatus PaymentStatus = PaymentStatus.Unpaid,
     PaymentMethod PaymentMethod = PaymentMethod.CashOnDelivery,
     string? TrackingNumber = null,
-    string? Carrier = null);
+    string? Carrier = null,
+    string? DeliveryAddressJson = null,
+    string? DeliveryInstructions = null);
 
 public sealed record InvoiceDto(
     int OrderId,

@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(next);
 
     try {
-      if (next) sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      if (next) sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ accessToken: next.accessToken, user: next.user, expiresAtUtc: next.expiresAtUtc }));
       else sessionStorage.removeItem(STORAGE_KEY);
     } catch {
       /* storage can be unavailable (private mode); the in-memory session still works */
@@ -72,10 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
-    const currentToken = sessionRef.current?.refreshToken || localStorage.getItem('ninecube.auth.refresh-token');
-    if (currentToken) {
-      void apiRequest('/api/auth/logout', { method: 'POST', body: { refreshToken: currentToken } }).catch(() => {});
-    }
+    void apiRequest('/api/auth/logout', { method: 'POST', body: { refreshToken: '' } }).catch(() => {});
     try { localStorage.removeItem('ninecube.auth.refresh-token'); } catch {}
     persist(null);
   }, [persist]);
@@ -127,18 +124,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const applyAuthResponse = useCallback(
     (response: AuthResponse) => {
-      if (response.refreshToken) {
-        try { localStorage.setItem('ninecube.auth.refresh-token', response.refreshToken); } catch {}
-      }
+      try { localStorage.removeItem('ninecube.auth.refresh-token'); } catch {}
       persist({
         accessToken: response.accessToken,
         expiresAtUtc: response.expiresAtUtc,
         user: response.user,
-        refreshToken: response.refreshToken
       });
     },
     [persist]
   );
+
+  useEffect(() => {
+    if (!session) return;
+    const delay = Math.max(1000, new Date(session.expiresAtUtc).getTime() - Date.now() - 60_000);
+    const timeout = window.setTimeout(() => {
+      void apiRequest<AuthResponse>('/api/auth/refresh', { method: 'POST', body: { refreshToken: '' } })
+        .then(applyAuthResponse).catch(() => persist(null));
+    }, delay);
+    return () => window.clearTimeout(timeout);
+  }, [session?.accessToken, session?.expiresAtUtc, applyAuthResponse, persist]);
 
   const login = useCallback(
     async (email: string, password: string) => {

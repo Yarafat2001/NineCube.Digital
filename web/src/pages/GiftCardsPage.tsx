@@ -5,6 +5,8 @@ import { useValidateGiftCard, useCreateGiftCard } from '../api/hooks';
 import type { ValidateGiftCardResult } from '../api/types';
 import { formatMoney } from '../lib/helpers';
 import { useToast } from '../components/ui';
+import { useAuth } from '../state/AuthContext';
+import { apiRequest } from '../api/client';
 
 const PRESETS = [500, 1000, 2500, 5000];
 const DEMO_CARDS = [
@@ -17,6 +19,8 @@ export function GiftCardsPage() {
   useLanguage();
   const navigate = useNavigate();
   const toast = useToast();
+  const { user, token, hasRole } = useAuth();
+  const [purchasing, setPurchasing] = useState(false);
 
   const [activeTab, setActiveTab] = useState<'balance' | 'send'>('balance');
 
@@ -66,12 +70,21 @@ export function GiftCardsPage() {
 
   const handleSendGiftCard = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) { navigate('/login'); return; }
     if (effectiveAmount <= 0) {
       toast.push('error', 'Gift card value must be greater than zero.');
       return;
     }
 
     try {
+      if (hasRole('Customer')) {
+        setPurchasing(true);
+        const purchase = await apiRequest<{ orderId: number }>('/api/gift-card-purchases', { method: 'POST', token,
+          body: { amount: effectiveAmount, recipientName, recipientEmail, note } });
+        toast.push('info', t('Complete payment to issue and email your gift card.'));
+        navigate(`/orders/${purchase.orderId}`);
+        return;
+      }
       const card = await createGiftCard.mutateAsync({
         initialBalance: effectiveAmount,
         recipientName: recipientName.trim() || undefined,
@@ -96,7 +109,7 @@ export function GiftCardsPage() {
       setCustomAmount('');
     } catch (err: any) {
       toast.push('error', err.message || 'Failed to issue gift card.');
-    }
+    } finally { setPurchasing(false); }
   };
 
   return (
@@ -143,7 +156,7 @@ export function GiftCardsPage() {
               {t("Check Your Gift Card Balance")}
             </h2>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--muted)', margin: '0 0 var(--space-4) 0' }}>
-              {t("Enter your 16-character card code below to see your available spending balance and certificate details.")}
+            {t("Enter the gift card code from your email to check its balance.")}
             </p>
 
             {/* Code Input Form */}
@@ -169,7 +182,7 @@ export function GiftCardsPage() {
             </div>
 
             {/* Quick Demo Test Chips */}
-            <div style={{ background: 'var(--surface-muted, rgba(255,255,255,0.03))', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+            {import.meta.env.DEV ? <div style={{ background: 'var(--surface-muted, rgba(255,255,255,0.03))', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border)' }}>
               <span style={{ fontSize: 'var(--text-xs)', fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: '8px' }}>
                 ⚡ {t("Quick Test / Demo Cards (Click to test):")}
               </span>
@@ -189,7 +202,7 @@ export function GiftCardsPage() {
                   </button>
                 ))}
               </div>
-            </div>
+            </div> : null}
 
             {checkError && (
               <div role="alert" style={{ marginTop: 'var(--space-3)', padding: '10px 14px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--danger)', borderRadius: '8px', color: 'var(--danger)', fontSize: 'var(--text-sm)' }}>
@@ -374,10 +387,10 @@ export function GiftCardsPage() {
               <button
                 type="submit"
                 className="btn btn--primary"
-                disabled={createGiftCard.isPending || effectiveAmount <= 0}
+                disabled={purchasing || createGiftCard.isPending || effectiveAmount <= 0}
                 style={{ padding: '12px 24px', marginTop: 'var(--space-2)', fontSize: 'var(--text-md)', fontWeight: 700 }}
               >
-                {createGiftCard.isPending ? t("Issuing…") : `🎁 ${t("Generate & Send Gift Card")}`}
+                {purchasing || createGiftCard.isPending ? t("Saving…") : t(hasRole('Administrator') ? 'Issue gift card' : 'Continue to payment')}
               </button>
             </form>
 
@@ -461,7 +474,7 @@ export function GiftCardsPage() {
               {t("How do I use a gift card?")}
             </strong>
             <p style={{ fontSize: 'var(--text-xs)', color: 'var(--muted)', margin: 0 }}>
-              {t("Simply open your cart, enter your 16-character code in the Gift Card box, and click Apply. The balance will immediately deduct from your total.")}
+              {t("Enter your gift card code in the cart and click Apply. Its balance is deducted when the order is placed.")}
             </p>
           </div>
 

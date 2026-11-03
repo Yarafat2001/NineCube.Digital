@@ -65,6 +65,11 @@ public static class DependencyInjection
                 configuration["Products:PublicPrefix"] ?? "/uploads"));
         }
         services.AddScoped<IEmailSender, NineCube.Infrastructure.Email.SmtpEmailSender>();
+        if (!environment.IsEnvironment("Testing")) services.AddHostedService<NineCube.Infrastructure.Email.RestockWorker>();
+        if (!environment.IsEnvironment("Testing")) services.AddHostedService<NineCube.Infrastructure.Email.EmailDeliveryWorker>();
+        if (!environment.IsEnvironment("Testing")) services.AddHostedService<NineCube.Infrastructure.Email.ReservationWorker>();
+        services.AddHttpClient<IPaymentGateway, NineCube.Infrastructure.Payments.SslCommerzGateway>(client => client.Timeout = TimeSpan.FromSeconds(30))
+            .RemoveAllLoggers();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         services.AddHttpContextAccessor();

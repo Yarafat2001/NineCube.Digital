@@ -18,17 +18,19 @@ public sealed class PaymentEndpoints : IEndpoint
             .WithTags("Payments");
 
         group.MapPost("/process", ProcessPaymentAsync)
-            .RequireAuthorization(Policies.AnyAuthenticated)
+            .RequireAuthorization(Policies.CustomerOnly)
+            .RequireRateLimiting("checkout")
             .WithName("ProcessPayment")
             .WithSummary("Processes or records a payment for an existing order.");
 
         group.MapPost("/callback", ProcessCallbackAsync)
             .AllowAnonymous()
+            .DisableAntiforgery()
             .WithName("PaymentGatewayCallback")
             .WithSummary("Gateway webhook / callback listener for asynchronous transaction capture.");
 
         group.MapGet("/order/{orderId:int}", GetOrderTransactionsAsync)
-            .RequireAuthorization(Policies.AnyAuthenticated)
+            .RequireAuthorization(Policies.CustomerStaffOrAdmin)
             .WithName("GetOrderPayments")
             .WithSummary("Retrieves all payment transactions associated with an order.");
     }
@@ -44,13 +46,16 @@ public sealed class PaymentEndpoints : IEndpoint
         return TypedResults.Ok(transaction);
     }
 
-    public static async Task<Results<Ok<PaymentTransactionDto>, ProblemHttpResult>> ProcessCallbackAsync(
-        PaymentCallbackRequest request,
+    public static async Task<IResult> ProcessCallbackAsync(
+        HttpRequest request,
         IPaymentService paymentService,
         CancellationToken ct)
     {
-        var transaction = await paymentService.ProcessCallbackAsync(request, ct);
-        return TypedResults.Ok(transaction);
+        var validationId = request.HasFormContentType
+            ? (await request.ReadFormAsync(ct))["val_id"].ToString()
+            : (await request.ReadFromJsonAsync<PaymentCallbackRequest>(ct))?.ValidationId;
+        var transaction = await paymentService.ProcessCallbackAsync(new PaymentCallbackRequest(validationId ?? ""), ct);
+        return TypedResults.Ok(new { transaction.OrderId, transaction.Status, message = "Payment verified. You can return to your order." });
     }
 
     public static async Task<Results<Ok<IReadOnlyList<PaymentTransactionDto>>, ProblemHttpResult>> GetOrderTransactionsAsync(

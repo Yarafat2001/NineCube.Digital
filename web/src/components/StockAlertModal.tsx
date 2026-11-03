@@ -5,6 +5,8 @@ import type { Product } from '../api/types';
 import { useAuth } from '../state/AuthContext';
 import { useToast } from './ui';
 import { Icon } from './Icon';
+import { apiRequest } from '../api/client';
+import { Link } from 'react-router-dom';
 
 export interface StockAlertModalProps {
   product: Product;
@@ -12,47 +14,25 @@ export interface StockAlertModalProps {
   onSubscribed: () => void;
 }
 
-export function isStockAlertSubscribed(productId: number): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    const raw = localStorage.getItem('ninecube:stock_alerts');
-    const ids: number[] = raw ? JSON.parse(raw) : [];
-    return ids.includes(productId);
-  } catch {
-    return false;
-  }
-}
-
-export function addStockAlert(productId: number): void {
-  if (typeof window === 'undefined') return;
-  try {
-    const raw = localStorage.getItem('ninecube:stock_alerts');
-    const ids: number[] = raw ? JSON.parse(raw) : [];
-    if (!ids.includes(productId)) {
-      localStorage.setItem('ninecube:stock_alerts', JSON.stringify([...ids, productId]));
-    }
-  } catch {
-    // Ignore
-  }
-}
-
 export function StockAlertModal({ product, onClose, onSubscribed }: StockAlertModalProps) {
   useLanguage();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const toast = useToast();
   const [email, setEmail] = useState(user?.email ?? '');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!user || !token) return;
     setLoading(true);
-    setTimeout(() => {
-      addStockAlert(product.id);
+    try {
+      await apiRequest(`/api/restock-subscriptions/${product.id}`, { method: 'POST', token });
       toast.push('success', `${t("We'll email you at")} ${email} ${t("when this item restocks!")}`);
       onSubscribed();
       onClose();
-    }, 400);
+    } catch (error) {
+      toast.push('error', error instanceof Error ? error.message : 'Could not save your restock alert.');
+    } finally { setLoading(false); }
   };
 
   return createPortal(
@@ -91,6 +71,7 @@ export function StockAlertModal({ product, onClose, onSubscribed }: StockAlertMo
             <input
               id="stock-alert-email"
               type="email"
+              readOnly
               required
               className="input"
               value={email}
@@ -103,7 +84,8 @@ export function StockAlertModal({ product, onClose, onSubscribed }: StockAlertMo
             <button type="button" className="btn btn--sm btn--ghost" onClick={onClose}>
               {t("Cancel")}
             </button>
-            <button type="submit" className="btn btn--sm btn--primary" disabled={loading}>
+            {!user ? <Link to="/login" className="btn btn--sm btn--primary" onClick={onClose}>{t('Sign in to save an alert')}</Link> : null}
+            <button type="submit" className="btn btn--sm btn--primary" disabled={loading || !user}>
               {loading ? t("Saving…") : t("Notify Me")}
             </button>
           </div>

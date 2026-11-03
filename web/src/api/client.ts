@@ -70,12 +70,15 @@ export interface RequestOptions {
   token?: string | null;
   idempotencyKey?: string;
   signal?: AbortSignal;
+  guestToken?: string;
 }
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { method = 'GET', body, token, idempotencyKey, signal } = options;
+  const { method = 'GET', body, token, idempotencyKey, signal, guestToken } = options;
 
   const headers: Record<string, string> = { Accept: 'application/json' };
+  headers['X-NineCube-Client'] = 'web';
+  if (guestToken) headers['X-Guest-Token'] = guestToken;
 
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -87,6 +90,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     response = await fetch(`${API_BASE_URL}${path}`, {
       method,
       headers,
+      credentials: 'include',
       body: body === undefined ? undefined : typeof body === 'string' ? body : JSON.stringify(body),
       signal
     });

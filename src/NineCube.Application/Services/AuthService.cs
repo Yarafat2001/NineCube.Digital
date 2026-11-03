@@ -175,10 +175,17 @@ public sealed class AuthService : IAuthService
             throw new UnauthorizedException("Refresh token is required.");
 
         var existing = await _db.RefreshTokens
+            .AsNoTracking()
             .Include(t => t.User)
             .FirstOrDefaultAsync(t => t.Token == refreshToken, ct);
 
-        if (existing is null || !existing.IsActive)
+        if (existing is not null && existing.RevokedAtUtc is not null && existing.ReplacedByToken is not null)
+        {
+            await _db.RefreshTokens.Where(t => t.UserId == existing.UserId && t.RevokedAtUtc == null)
+                .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAtUtc, _clock.UtcNow), ct);
+            throw new UnauthorizedException("A rotated refresh token was reused. Sign in again.");
+        }
+        if (existing is null || existing.RevokedAtUtc is not null || existing.ExpiresAtUtc <= _clock.UtcNow)
             throw new UnauthorizedException("Invalid, expired, or revoked refresh token.");
 
         if (existing.User is null || !existing.User.IsActive)
@@ -187,9 +194,10 @@ public sealed class AuthService : IAuthService
         var now = _clock.UtcNow;
         var newRefreshToken = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
 
-        // Rotate token
-        existing.RevokedAtUtc = now;
-        existing.ReplacedByToken = newRefreshToken;
+        await using var transaction = await _db.Database.BeginTransactionAsync(ct);
+        var rotated = await _db.RefreshTokens.Where(t => t.Id == existing.Id && t.RevokedAtUtc == null && t.ExpiresAtUtc > now)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAtUtc, now).SetProperty(t => t.ReplacedByToken, newRefreshToken), ct);
+        if (rotated != 1) throw new UnauthorizedException("This session was already refreshed. Sign in again.");
 
         _db.RefreshTokens.Add(new RefreshToken
         {
@@ -200,7 +208,7 @@ public sealed class AuthService : IAuthService
         });
 
         await _db.SaveChangesAsync(ct);
-
+        await transaction.CommitAsync(ct);
         var token = _tokens.CreateAccessToken(existing.User);
         return new AuthResponse(token.AccessToken, token.ExpiresAtUtc,
             new UserSummaryDto(existing.User.Id, existing.User.Email, existing.User.Role, existing.User.CustomerId),

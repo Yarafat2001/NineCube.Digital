@@ -37,7 +37,9 @@ public enum OrderStatus
     Confirmed = 1,
     Shipped = 2,
     Rejected = 3,
-    Cancelled = 4
+    Cancelled = 4,
+    Delivered = 5,
+    DeliveryFailed = 6
 }
 
 /// <summary>
@@ -51,7 +53,9 @@ public static class OrderStatusRules
         {
             [OrderStatus.Pending] = new[] { OrderStatus.Confirmed, OrderStatus.Rejected, OrderStatus.Cancelled },
             [OrderStatus.Confirmed] = new[] { OrderStatus.Shipped, OrderStatus.Cancelled },
-            [OrderStatus.Shipped] = Array.Empty<OrderStatus>(),
+            [OrderStatus.Shipped] = new[] { OrderStatus.Delivered, OrderStatus.DeliveryFailed },
+            [OrderStatus.Delivered] = Array.Empty<OrderStatus>(),
+            [OrderStatus.DeliveryFailed] = new[] { OrderStatus.Shipped },
             [OrderStatus.Rejected] = Array.Empty<OrderStatus>(),
             [OrderStatus.Cancelled] = Array.Empty<OrderStatus>()
         };

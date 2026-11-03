@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<ICouponService, CouponService>();
         services.AddScoped<IGiftCardService, GiftCardService>();
         services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<CheckoutService>();
         services.AddScoped<IReviewService, ReviewService>();
         services.AddScoped<IWishlistService, WishlistService>();
         services.AddScoped<ICatalogService, CatalogService>();

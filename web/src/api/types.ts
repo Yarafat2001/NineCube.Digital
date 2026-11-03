@@ -4,7 +4,7 @@
 
 export type UserRole = 'Customer' | 'Staff' | 'InventoryManager' | 'Administrator';
 
-export type OrderStatus = 'Pending' | 'Confirmed' | 'Shipped' | 'Rejected' | 'Cancelled';
+export type OrderStatus = 'Pending' | 'Confirmed' | 'Shipped' | 'Rejected' | 'Cancelled' | 'Delivered' | 'DeliveryFailed';
 
 export interface PagedResult<T> {
   items: T[];
@@ -125,6 +125,8 @@ export interface Order {
   paymentMethod?: PaymentMethod;
   trackingNumber?: string | null;
   carrier?: string | null;
+  deliveryAddressJson?: string | null;
+  deliveryInstructions?: string | null;
 }
 
 export interface Invoice {
@@ -469,6 +471,7 @@ export interface CouponOrderReplayResult {
 }
 
 export interface PaymentTransaction {
+  redirectUrl?: string | null;
   id: number;
   orderId: number;
   amount: number;

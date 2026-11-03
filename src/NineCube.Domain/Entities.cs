@@ -88,6 +88,9 @@ public sealed class User
 
 public sealed class Order
 {
+    public string? DeliveryAddressJson { get; set; }
+    public string? DeliveryInstructions { get; set; }
+    public DateTime? ReservationExpiresAt { get; set; }
     public string Currency { get; set; } = "BDT";
     public int Id { get; set; }
     public int CustomerId { get; set; }

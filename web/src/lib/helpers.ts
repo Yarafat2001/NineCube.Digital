@@ -61,6 +61,8 @@ export interface StatusMeta {
 }
 
 export const orderStatusMeta: Record<OrderStatus, StatusMeta> = {
+  Delivered: { label: 'Delivered', glyph: '✓', tone: 'ok', description: 'Delivered to the customer.' },
+  DeliveryFailed: { label: 'Delivery failed', glyph: '!', tone: 'danger', description: 'Delivery needs attention. Contact the store for the next attempt.' },
   Pending: {
     label: 'Pending',
     glyph: '◔',

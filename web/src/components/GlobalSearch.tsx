@@ -38,7 +38,7 @@ export function GlobalSearch() {
   useEffect(() => {
     if (open) {
       document.documentElement.setAttribute('data-overlay-open', 'true');
-      const timer = setTimeout(() => inputRef.current?.focus(), 60);
+      const timer = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 60);
       return () => clearTimeout(timer);
     } else {
       document.documentElement.removeAttribute('data-overlay-open');

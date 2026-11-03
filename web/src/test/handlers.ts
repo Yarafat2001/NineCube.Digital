@@ -578,6 +578,16 @@ const needsSecondSignature = (body: CouponMoney): boolean => {
  * interesting endpoints with server.use(...).
  */
 export const handlers = [
+  http.get(`${API}/api/checkout/options`, () => HttpResponse.json({ onlinePaymentsEnabled: true })),
+  http.post(`${API}/api/checkout/quote`, async ({ request }) => {
+    const body = await request.json() as { items: { productId: number; quantity: number }[] };
+    const subTotal = body.items.reduce((sum, item) => sum + (products.find(p => p.id === item.productId)?.price ?? 0) * item.quantity, 0);
+    const shippingAmount = subTotal < 2500 ? 60 : 0;
+    return HttpResponse.json({ subTotal, discountAmount: 0, shippingAmount, giftCardAmount: 0,
+      totalAmount: subTotal + shippingAmount, currency: 'BDT', freeShippingThreshold: 2500, couponCode: null });
+  }),
+  http.get(`${API}/api/restock-subscriptions`, () => HttpResponse.json([])),
+  http.post(`${API}/api/restock-subscriptions/:id`, () => HttpResponse.json({ message: 'Saved' })),
   http.get(`${API}/api/categories`, () => HttpResponse.json([])),
   http.get(`${API}/api/tags`, () => HttpResponse.json(tags)),
   http.get(`${API}/api/auth/me`, () =>

@@ -21,6 +21,7 @@ public interface IOrderService
     Task<OrderDto> RejectAsync(int id, CancellationToken ct = default);
     Task<OrderDto> ShipAsync(int id, CancellationToken ct = default);
     Task<InvoiceDto> GetInvoiceAsync(int id, CancellationToken ct = default);
+    Task<int> ExpireReservationsAsync(CancellationToken ct = default);
 }
 
 /// <summary>
@@ -84,6 +85,7 @@ public sealed class OrderService : IOrderService
             throw new ForbiddenException("This account is not linked to a customer record and cannot place orders.");
 
         var customerId = _currentUser.CustomerId.Value;
+        if (request.DeliveryInstructions?.Length > 1000) throw new BusinessValidationException("Delivery instructions must be at most 1000 characters.");
         var lines = NormalizeLines(request);
 
         // Fast path: a retry of the very same submission returns the original order untouched.
@@ -93,6 +95,10 @@ public sealed class OrderService : IOrderService
             if (existing is not null) return new OrderPlacementResult(existing, Replayed: true);
         }
 
+        Address? deliveryAddress = null;
+        if (request.AddressId is int addressId)
+            deliveryAddress = await _db.Addresses.AsNoTracking().FirstOrDefaultAsync(a => a.Id == addressId && a.CustomerId == customerId, ct)
+                ?? throw new NotFoundException("Delivery address was not found.");
         // Snapshot the products once (server side prices only - the client never sends money).
         var productIds = lines.Select(l => l.ProductId).ToList();
         var products = await _db.Products.AsNoTracking()
@@ -190,8 +196,15 @@ public sealed class OrderService : IOrderService
 
             var subTotal = order.Items.Sum(i => i.LineTotal);
             order.SubTotal = subTotal;
-            order.TotalAmount = subTotal;
+            order.ShippingAmount = DeliveryPricing.Fee(subTotal, order.Currency);
+            order.TotalAmount = subTotal + order.ShippingAmount;
             order.PaymentMethod = request.PaymentMethod;
+            order.ReservationExpiresAt = request.PaymentMethod == PaymentMethod.CashOnDelivery ? null : now.AddMinutes(30);
+            order.DeliveryInstructions = request.DeliveryInstructions?.Trim();
+            order.DeliveryAddressJson = deliveryAddress is null ? null : System.Text.Json.JsonSerializer.Serialize(new
+            {
+                deliveryAddress.Division, deliveryAddress.District, deliveryAddress.Upazila, deliveryAddress.AddressLine, deliveryAddress.Phone
+            });
             order.PaymentStatus = PaymentStatus.Unpaid;
 
             var couponProductIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
@@ -206,42 +219,26 @@ public sealed class OrderService : IOrderService
                 return new CartLineItemDto(i.ProductId, i.Quantity, i.UnitPrice, match?.CategoryId, match?.BrandId);
             }).ToList();
 
-            if (!string.IsNullOrWhiteSpace(request.CouponCode))
-            {
-                var couponResult = await _couponService.ValidateCouponAsync(
-                    new ApplyCouponRequest(request.CouponCode, subTotal, lineDtos), ct);
-
-                if (couponResult.IsValid)
-                {
-                    order.CouponCode = couponResult.Code;
-                    order.DiscountAmount = couponResult.DiscountAmount;
-                    order.TotalAmount = Math.Max(0, subTotal - couponResult.DiscountAmount);
-                }
-            }
-            else
-            {
-                // Auto-evaluate active automatic promotions without requiring manual code entry
-                var eval = await _couponService.EvaluateCartPromotionsAsync(
-                    new EvaluateCartPromotionsRequest(subTotal, lineDtos), ct);
-
-                if (eval.EffectiveDiscount != null && eval.EffectiveDiscount.IsValid && eval.EffectiveDiscount.DiscountAmount > 0)
-                {
-                    order.CouponCode = eval.EffectiveDiscount.Code;
-                    order.DiscountAmount = eval.EffectiveDiscount.DiscountAmount;
-                    order.TotalAmount = Math.Max(0, subTotal - eval.EffectiveDiscount.DiscountAmount);
-                }
-            }
+            var eval = await _couponService.EvaluateCartPromotionsAsync(
+                new EvaluateCartPromotionsRequest(subTotal, lineDtos, request.CouponCode), ct);
+            if (!string.IsNullOrWhiteSpace(request.CouponCode) && eval.ManualDiscount?.IsValid != true)
+                throw new BusinessValidationException(eval.ManualDiscount?.Reason ?? "Coupon is unavailable.");
+            order.CouponCode = eval.EffectiveDiscount?.Code;
+            order.DiscountAmount = eval.TotalDiscountAmount;
+            order.TotalAmount = Math.Max(0, subTotal - order.DiscountAmount) + order.ShippingAmount;
 
             if (!string.IsNullOrWhiteSpace(request.GiftCardCode))
             {
                 var gcCode = request.GiftCardCode.Trim().ToUpperInvariant();
                 var card = await _db.GiftCards.FirstOrDefaultAsync(g => g.Code == gcCode && g.IsActive, ct);
-                if (card != null && card.CurrentBalance > 0 && (card.ExpiresAt == null || card.ExpiresAt > now))
+                if (card != null && card.Currency == order.Currency && card.CurrentBalance > 0 && (card.ExpiresAt == null || card.ExpiresAt > now))
                 {
                     var payable = order.TotalAmount;
                     var deduction = Math.Min(payable, card.CurrentBalance);
-                    card.CurrentBalance -= deduction;
-                    card.LastUsedAt = now;
+                    var redeemed = await _db.GiftCards.Where(g => g.Id == card.Id && g.IsActive && g.CurrentBalance >= deduction)
+                        .ExecuteUpdateAsync(s => s.SetProperty(g => g.CurrentBalance, g => g.CurrentBalance - deduction)
+                            .SetProperty(g => g.LastUsedAt, now), ct);
+                    if (redeemed != 1) throw new ResourceConflictException("Gift card balance changed. Refresh your checkout.", "gift_card_balance_changed");
                     order.GiftCardCode = card.Code;
                     order.GiftCardAmount = deduction;
                     order.TotalAmount = payable - deduction;
@@ -250,8 +247,11 @@ public sealed class OrderService : IOrderService
                         order.PaymentStatus = PaymentStatus.Paid;
                     }
                 }
+                else throw new BusinessValidationException("Gift card is unavailable for this order.");
             }
 
+            if (request.ExpectedTotal is decimal expectedTotal && expectedTotal != order.TotalAmount)
+                throw new ResourceConflictException("Your checkout total changed. Review the updated quote before placing the order.", "checkout_quote_changed");
             _db.Orders.Add(order);
             await _db.SaveChangesAsync(ct); // needs order.Id for the ledger rows
 
@@ -278,25 +278,27 @@ public sealed class OrderService : IOrderService
                 Details = $"total={order.TotalAmount:0.00}; lines={order.Items.Count}"
             });
 
-            await _db.SaveChangesAsync(ct);
-            // Critical section ends here: stock decrements, order rows and movements are committed immediately.
-            // Row locks on products are released, eliminating lock contention during flash sales.
-            await tx.CommitAsync(ct);
-
-            // Send transactional email receipt
+            // Queue the receipt in the same transaction as the order. SMTP never runs under stock locks.
             var customer = await _db.Customers.AsNoTracking().FirstOrDefaultAsync(c => c.Id == customerId, ct);
             if (customer is not null && !string.IsNullOrWhiteSpace(customer.Email))
             {
-                var rows = string.Join("", order.Items.Select(i => $"<tr><td style='padding:6px;border:1px solid #ddd;'>{i.ProductName}</td><td style='padding:6px;border:1px solid #ddd;text-align:center;'>{i.Quantity}</td><td style='padding:6px;border:1px solid #ddd;text-align:right;'>{order.Currency} {i.LineTotal:0.00}</td></tr>"));
+                var rows = string.Join("", order.Items.Select(i => $"<tr><td>{System.Net.WebUtility.HtmlEncode(i.ProductName)}</td><td>{i.Quantity}</td><td>{order.Currency} {i.LineTotal:0.00}</td></tr>"));
                 var emailBody = $"<div style='font-family:sans-serif;'><h2>Order Confirmation #{order.Id}</h2><p>Thank you for shopping with NineCube Digital!</p><table style='border-collapse:collapse;width:100%;'><thead><tr style='background:#f4f4f4;'><th style='padding:6px;border:1px solid #ddd;'>Item</th><th style='padding:6px;border:1px solid #ddd;'>Qty</th><th style='padding:6px;border:1px solid #ddd;'>Total</th></tr></thead><tbody>{rows}</tbody></table><p style='font-size:16px;'><strong>Order Total: {order.Currency} {order.TotalAmount:0.00}</strong></p><p>We will notify you as soon as your items are on the way.</p></div>";
-                _ = _emailSender.SendEmailAsync(customer.Email, $"Order #{order.Id} Confirmation - NineCube Digital", emailBody, CancellationToken.None);
+                _db.EmailDeliveries.Add(new EmailDelivery { Key = $"order-receipt:{order.Id}", Recipient = customer.Email,
+                    Subject = $"Order #{order.Id} received - NineCube Digital", Body = emailBody, CreatedAt = now });
             }
+            foreach (var applied in eval.AppliedDiscounts ?? [])
+            {
+                if (string.IsNullOrWhiteSpace(applied.Code)) continue;
+                var consumed = await _db.Coupons.Where(c => c.Code == applied.Code && c.IsActive
+                        && (c.UsageLimit == null || c.UsageCount < c.UsageLimit))
+                    .ExecuteUpdateAsync(s => s.SetProperty(c => c.UsageCount, c => c.UsageCount + 1), ct);
+                if (consumed != 1) throw new ResourceConflictException("A promotion is no longer available. Refresh checkout.", "promotion_changed");
+            }
+            await _db.SaveChangesAsync(ct);
+            await tx.CommitAsync(ct);
 
             // Post-commit side effects: customer and staff inbox notifications and low-stock alerts.
-            if (!string.IsNullOrWhiteSpace(order.CouponCode))
-            {
-                await _couponService.ConsumeCouponAsync(order.CouponCode, ct);
-            }
             var money = $"{order.TotalAmount:0.00} {order.Currency}";
             var customerName = await _db.Customers.AsNoTracking()
                 .Where(c => c.Id == customerId).Select(c => c.Name).FirstOrDefaultAsync(ct) ?? "Customer";
@@ -339,6 +341,29 @@ public sealed class OrderService : IOrderService
     }
 
     // ------------------------------------------------------------------ status transitions
+
+    public async Task<int> ExpireReservationsAsync(CancellationToken ct = default)
+    {
+        var now = _clock.UtcNow;
+        var ids = await _db.Orders.AsNoTracking().Where(o => o.Status == OrderStatus.Pending && o.PaymentStatus == PaymentStatus.Unpaid
+            && o.ReservationExpiresAt != null && o.ReservationExpiresAt <= now).OrderBy(o => o.Id).Select(o => o.Id).Take(50).ToListAsync(ct);
+        var expired = 0;
+        foreach (var id in ids)
+        {
+            try
+            {
+                await _errors.ExecuteWithRetryAsync(async () =>
+                {
+                    _db.ChangeTracker.Clear();
+                    return await TransitionAsync(id, [OrderStatus.Pending], OrderStatus.Cancelled, "order.reservation_expired",
+                        true, "unpaid reservation expired", ct, expireUnpaidOnly: true);
+                });
+                expired++;
+            }
+            catch (InvalidStateTransitionException) { /* Payment or confirmation won the race. */ }
+        }
+        return expired;
+    }
 
     public Task<OrderDto> CancelAsync(int id, CancellationToken ct = default) =>
         _errors.ExecuteWithRetryAsync(async () =>
@@ -401,13 +426,22 @@ public sealed class OrderService : IOrderService
         string auditAction,
         bool restoreStock,
         string? movementReason,
-        CancellationToken ct)
+        CancellationToken ct,
+        bool expireUnpaidOnly = false)
     {
         var now = _clock.UtcNow;
 
         await using var tx = await _db.Database.BeginTransactionAsync(ct);
 
         var query = _db.Orders.Where(o => o.Id == orderId && expected.Contains(o.Status));
+        if (target is OrderStatus.Confirmed or OrderStatus.Shipped)
+        {
+            var billing = await _db.Orders.AsNoTracking().Where(o => o.Id == orderId)
+                .Select(o => new { o.PaymentMethod, o.PaymentStatus }).FirstOrDefaultAsync(ct);
+            if (billing is not null && billing.PaymentMethod != PaymentMethod.CashOnDelivery && billing.PaymentStatus != PaymentStatus.Paid)
+                throw new ResourceConflictException("Verify online payment before confirming or shipping this order.", "payment_required");
+        }
+        if (expireUnpaidOnly) query = query.Where(o => o.PaymentStatus == PaymentStatus.Unpaid && o.ReservationExpiresAt != null && o.ReservationExpiresAt <= now);
 
         // A customer may only touch their own order. Staff may touch any.
         if (_currentUser.Role == UserRole.Customer)
@@ -418,7 +452,7 @@ public sealed class OrderService : IOrderService
         }
 
         var affected = await query.ExecuteUpdateAsync(
-            s => s.SetProperty(o => o.Status, target).SetProperty(o => o.UpdatedAt, now), ct);
+            s => s.SetProperty(o => o.Status, target).SetProperty(o => o.UpdatedAt, now).SetProperty(o => o.ReservationExpiresAt, (DateTime?)null), ct);
 
         if (affected == 0)
         {
@@ -438,6 +472,23 @@ public sealed class OrderService : IOrderService
         if (restoreStock)
         {
             await RestoreReservedStockAsync(orderId, movementReason ?? "stock released", now, ct);
+            var releasedOrder = await _db.Orders.AsNoTracking().FirstAsync(o => o.Id == orderId, ct);
+            if (releasedOrder.GiftCardAmount > 0 && !string.IsNullOrWhiteSpace(releasedOrder.GiftCardCode))
+            {
+                var restored = await _db.GiftCards.Where(g => g.Code == releasedOrder.GiftCardCode)
+                    .ExecuteUpdateAsync(s => s.SetProperty(g => g.CurrentBalance, g => g.CurrentBalance + releasedOrder.GiftCardAmount), ct);
+                if (restored != 1) throw new ResourceConflictException("The redeemed gift card needs manual reconciliation.", "gift_card_reconciliation_required");
+                if (releasedOrder.TotalAmount == 0)
+                    await _db.Orders.Where(o => o.Id == orderId).ExecuteUpdateAsync(s => s.SetProperty(o => o.PaymentStatus, PaymentStatus.Refunded), ct);
+            }
+            if (releasedOrder.PaymentStatus == PaymentStatus.Paid && releasedOrder.TotalAmount > 0)
+            {
+                _db.AuditLogs.Add(new AuditLog { UserId = _currentUser.UserId, Action = "payment.refund_required",
+                    EntityType = nameof(Order), EntityId = orderId.ToString(), CreatedAt = now,
+                    Details = $"Refund due for cancelled/rejected paid order: {releasedOrder.TotalAmount:0.00} {releasedOrder.Currency}" });
+                await _notifications.AddForStaffAsync(NotificationType.OrderStatusChanged, $"Refund review for Order #{orderId}",
+                    "This paid order was closed. Verify the payment and arrange its refund.", $"/orders/{orderId}", ct);
+            }
         }
 
         _db.AuditLogs.Add(new AuditLog
@@ -585,6 +636,8 @@ public sealed class OrderService : IOrderService
                 o.PaymentMethod,
                 o.TrackingNumber,
                 o.Carrier,
+                o.DeliveryAddressJson,
+                o.DeliveryInstructions,
                 Items = o.Items.Select(i => new
                 {
                     i.Id,
@@ -619,7 +672,7 @@ public sealed class OrderService : IOrderService
             o.PaymentStatus,
             o.PaymentMethod,
             o.TrackingNumber,
-            o.Carrier))
+            o.Carrier, o.DeliveryAddressJson, o.DeliveryInstructions))
             .ToList();
 
         return new PagedResult<OrderDto>(dtos, page, pageSize, total);
@@ -676,6 +729,8 @@ public sealed class OrderService : IOrderService
                 o.PaymentMethod,
                 o.TrackingNumber,
                 o.Carrier,
+                o.DeliveryAddressJson,
+                o.DeliveryInstructions,
                 Items = o.Items
                     .OrderBy(i => i.Id)
                     .Select(i => new
@@ -714,7 +769,7 @@ public sealed class OrderService : IOrderService
             order.PaymentStatus,
             order.PaymentMethod,
             order.TrackingNumber,
-            order.Carrier);
+            order.Carrier, order.DeliveryAddressJson, order.DeliveryInstructions);
     }
 
     private async Task<OrderDto?> FindByIdempotencyKeyAsync(int customerId, string idempotencyKey, CancellationToken ct)

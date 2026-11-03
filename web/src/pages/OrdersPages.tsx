@@ -15,6 +15,8 @@ import {
 import { formatDateTime, formatMoney, orderStatusMeta } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
+import { PaymentActions } from '../components/PaymentActions';
+import { DeliveryManagement } from '../components/DeliveryManagement';
 
 const STATUS_FILTERS: (OrderStatus | '')[] = ['', 'Pending', 'Confirmed', 'Shipped', 'Rejected', 'Cancelled'];
 
@@ -24,7 +26,7 @@ const STATUS_FILTERS: (OrderStatus | '')[] = ['', 'Pending', 'Confirmed', 'Shipp
  */
 export function OrderTimeline({ order }: { order: Order }) {
   useLanguage();
-  const happyPath: OrderStatus[] = ['Pending', 'Confirmed', 'Shipped'];
+  const happyPath: OrderStatus[] = ['Pending', 'Confirmed', 'Shipped', 'Delivered'];
 
   if (order.status === 'Rejected' || order.status === 'Cancelled') {
     return (
@@ -38,8 +40,7 @@ export function OrderTimeline({ order }: { order: Order }) {
     );
   }
 
-  const reachedIndex = happyPath.indexOf(order.status);
-
+  const reachedIndex = order.status === 'DeliveryFailed' ? 2 : happyPath.indexOf(order.status);
   const createdDate = order.createdAt ? new Date(order.createdAt) : new Date();
   const estDeliveryMin = new Date(createdDate.getTime() + 2 * 24 * 60 * 60 * 1000);
   const estDeliveryMax = new Date(createdDate.getTime() + 4 * 24 * 60 * 60 * 1000);
@@ -57,6 +58,7 @@ export function OrderTimeline({ order }: { order: Order }) {
       <div className="order-delivery-est card-glass" aria-label={t("Estimated Delivery")}>
         <span aria-hidden="true">🚚</span>
         <span>{t("Estimated Delivery:")} <strong>{estDateStr}</strong> ({t("Standard Fulfillment")})</span>
+
       </div>
     </div>
   );
@@ -304,6 +306,9 @@ export function OrderDetailPage() {
       </header>
 
       <OrderTimeline order={order} />
+      <DeliveryManagement order={order} />
+      <Link to={`/help?order=${order.id}`}>{t('Get help with this order')}</Link>
+      {hasRole('Customer') ? <PaymentActions order={order} /> : null}
       <p className="muted">{t(orderStatusMeta[order.status].description)}</p>
 
       {/* Payment & Delivery Metadata Tiles */}

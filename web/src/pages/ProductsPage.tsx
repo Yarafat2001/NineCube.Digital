@@ -223,7 +223,7 @@ function ProductCard({
               setQuantity(1);
             }}
           >
-            <span className="product-card__btn-icon" aria-hidden="true">{justAdded ? '✓' : '🛒'}</span>
+            <span className="product-card__btn-icon" aria-hidden="true">{justAdded ? <Icon name="check" width={13} height={13} /> : <Icon name="cart" width={13} height={13} />}</span>
             <span className="product-card__btn-text">{justAdded ? t("Added!") : t("Add to cart")}</span>
           </button>
         </div>
@@ -313,7 +313,7 @@ export function ProductsPage() {
     }
   }, [productsQuery.error]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const canOrder = hasRole('Customer');
+  const canOrder = !user || hasRole('Customer');
   const canEditProducts = hasRole('InventoryManager');
 
   // The "no access" notice is a one-off: the guard hands it over in history state, and it is
@@ -489,7 +489,7 @@ export function ProductsPage() {
                     canOrder={canOrder}
                     queryString={params.toString()}
                     isWishlisted={wishlistIds.has(product.id)}
-                    onToggleWishlist={canOrder ? () => toggleWishlist.mutate(product.id) : undefined}
+                    onToggleWishlist={canOrder ? () => user ? toggleWishlist.mutate(product.id) : navigate('/login') : undefined}
                     isComparing={compareItems.some((x) => x.id === product.id)}
                     onToggleCompare={canOrder ? () => handleToggleCompare(product) : undefined}
                     onQuickView={(p) => {

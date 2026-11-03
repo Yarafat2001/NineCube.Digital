@@ -5,7 +5,8 @@ import { useLowStockThreshold, useProduct, useProductReviews, useAddReview, useW
 import { formatDateTime } from '../lib/helpers';
 import { EmptyState, ErrorState, LoadingBlock, QuantityStepper, StockBadge, useToast } from '../components/ui';
 import { RecentlyViewed } from '../components/RecentlyViewed';
-import { StockAlertModal, isStockAlertSubscribed } from '../components/StockAlertModal';
+import { StockAlertModal } from '../components/StockAlertModal';
+import { useRestockSubscriptions } from '../api/hooks';
 import { Icon } from '../components/Icon';
 import { recordRecentView } from '../lib/recentViews';
 import { ProductViewer } from '../components/ProductViewer';
@@ -22,11 +23,12 @@ export function ProductDetailPage() {
   useLanguage();
   const { id } = useParams();
   const productId = Number(id);
-  const { hasRole } = useAuth();
+  const { hasRole, user } = useAuth();
   const cart = useCart();
   const toast = useToast();
   const [showStockAlert, setShowStockAlert] = useState(false);
-  const [isAlertSubscribed, setIsAlertSubscribed] = useState(() => isStockAlertSubscribed(productId));
+  const restockSubscriptions = useRestockSubscriptions();
+  const isAlertSubscribed = restockSubscriptions.data?.includes(productId) ?? false;
   const [quantity, setQuantity] = useState(1);
   const [copied, setCopied] = useState(false);
   const [added, setAdded] = useState(false);
@@ -226,7 +228,7 @@ export function ProductDetailPage() {
                 <span>{isAlertSubscribed ? t("✓ Subscribed to restock alerts") : t("Notify Me When in Stock")}</span>
               </button>
             </div>
-          ) : hasRole('Customer') ? (
+          ) : !user || hasRole('Customer') ? (
             <div className="product-detail__purchase">
               <QuantityStepper value={quantity} max={product.stockQuantity} onChange={setQuantity} label={t(fullName)} />
               <button type="button" className="btn btn--primary" onClick={() => { cart.add(product, quantity); setQuantity(1); setAdded(true); }}>{t("Add to cart")}</button>
@@ -324,7 +326,7 @@ export function ProductDetailPage() {
         <StockAlertModal
           product={product}
           onClose={() => setShowStockAlert(false)}
-          onSubscribed={() => setIsAlertSubscribed(true)}
+          onSubscribed={() => void restockSubscriptions.refetch()}
         />
       ) : null}
 

@@ -16,6 +16,11 @@ public sealed class OrderEndpoints : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
+        app.MapGet("/api/checkout/options", (NineCube.Application.Abstractions.IPaymentGateway gateway) =>
+            TypedResults.Ok(new { onlinePaymentsEnabled = gateway.IsConfigured, deliveryFee = 60, freeShippingThreshold = DeliveryPricing.FreeShippingThreshold }))
+            .AllowAnonymous();
+        app.MapPost("/api/checkout/quote", async (CreateOrderRequest request, CheckoutService checkout, CancellationToken ct) =>
+            TypedResults.Ok(await checkout.QuoteAsync(request, ct))).AllowAnonymous().RequireRateLimiting("checkout");
         var group = app.MapGroup("/api/orders")
             .WithTags("Orders")
             .RequireAuthorization();

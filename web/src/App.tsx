@@ -27,6 +27,9 @@ const AccountDashboardPage = lazy(() => import('./pages/AccountPages').then((mod
 const ProfilePage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.ProfilePage })));
 const NotificationsPage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.NotificationsPage })));
 const GiftCardsPage = lazy(() => import('./pages/GiftCardsPage').then((module) => ({ default: module.GiftCardsPage })));
+const GuestOrderPage = lazy(() => import('./pages/GuestOrderPage').then(module => ({ default: module.GuestOrderPage })));
+const CustomerCarePage = lazy(() => import('./pages/CustomerCarePage').then(module => ({ default: module.CustomerCarePage })));
+const StorePolicyPage = lazy(() => import('./pages/CustomerCarePage').then(module => ({ default: module.StorePolicyPage })));
 
 function RouteFallback() {
   useLanguage();
@@ -71,18 +74,14 @@ export function App() {
             <Route
               path="/products"
               element={
-                <RequireAuth>
-                  <ProductsPage />
-                </RequireAuth>
+                <ProductsPage />
               }
             />
 
             <Route
               path="/products/:id"
               element={
-                <RequireAuth>
-                  <ProductDetailPage />
-                </RequireAuth>
+                <ProductDetailPage />
               }
             />
 
@@ -186,6 +185,9 @@ export function App() {
             />
 
             <Route path="/gift-cards" element={<GiftCardsPage />} />
+            <Route path="/guest/orders/:id" element={<GuestOrderPage />} />
+            <Route path="/help" element={<CustomerCarePage />} />
+            <Route path="/policies/:section" element={<StorePolicyPage />} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

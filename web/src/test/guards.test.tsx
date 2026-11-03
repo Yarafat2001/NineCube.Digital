@@ -19,11 +19,11 @@ describe('Route guards', () => {
     expect(screen.queryByTestId('showcase')).not.toBeInTheDocument();
     expect(document.body).not.toHaveClass('showcase-active');
   });
-  it('sends an anonymous visitor to the login page', async () => {
+  it('lets an anonymous visitor browse products', async () => {
     renderApp('/products');
 
-    expect(await screen.findByRole('heading', { name: /^welcome$/i })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: /catalogue/i })).not.toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /catalogue/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^welcome$/i })).not.toBeInTheDocument();
   });
 
   it('shows the public showcase to an anonymous visitor without demanding a sign-in', async () => {
