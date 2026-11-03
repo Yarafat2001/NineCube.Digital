@@ -156,10 +156,21 @@ is the first point where the promise can actually be kept.
 2. The stepper per line, capped at live stock
 3. Remove takes just that line out
 4. Delivery address picker: choose from saved delivery addresses or add a new address
-5. Promotional coupon: type a code (e.g. `SAVE10`, `WELCOME50`, `NINECUBE`) and click Apply to validate and deduct discounts
-6. Payment method: select Cash on Delivery, Card, or Mobile Banking (bKash/Nagad)
-7. Total breakdown: subtotal, discount deducted, and net total priced in the store currency
-8. Place order sends the whole basket as one request with an idempotency key
+5. Delivery instructions / Order notes (optional): enter courier notes, gate instructions, or preferred drop-off details
+6. Promotional coupon: type a code (e.g. `SAVE10`, `WELCOME50`, `NINECUBE`) and click Apply to validate and deduct discounts
+7. Payment method: select Cash on Delivery, Card, or Mobile Banking (bKash/Nagad)
+8. Total breakdown: subtotal, discount deducted, and net total priced in the store currency
+9. Place order sends the whole basket as one request with an idempotency key
+
+#### Delivery instructions workflow (CartPanel.tsx)
+
+- **Location**: In the slide-out cart drawer (`CartPanel.tsx`), positioned immediately under the Delivery Address selection block.
+- **Workflow**:
+  1. Add items to your basket and open the cart panel via the navigation bar cart button.
+  2. Select your delivery address.
+  3. Enter any special fulfillment notes in the **Delivery instructions / Order notes (optional)** textarea (e.g., *"Leave with lobby security"*, *"Call 15 minutes before arrival"*, *"Building 4, Apt 2B"*).
+  4. The input is styled with design system tokens (`var(--surface)`, `var(--border)`, `var(--text)`) ensuring clear legibility across both light and dark color themes.
+  5. The placeholder and field label adapt to the chosen language (English or Bengali).
 
 What happens when you press Place order:
 
@@ -190,9 +201,24 @@ for you.
 
 1. The current status
 2. Pending, Confirmed, Shipped, or the terminal Rejected or Cancelled
-3. Printable invoice
-4. The lines as they were bought, with the price the server charged at that moment
-5. Cancel order releases the reserved stock. It is offered only while the order is Pending or Confirmed
+3. Live delivery milestone estimator: dynamic 2–4 business day fulfillment window
+4. Printable invoice
+5. The lines as they were bought, with the price the server charged at that moment
+6. Cancel order releases the reserved stock. It is offered only while the order is Pending or Confirmed
+
+#### Live delivery milestone estimator workflow (OrdersPages.tsx)
+
+- **Location**: On the order detail screen (`OrdersPages.tsx` at `/orders/:id`), located directly below the visual step-by-step order progress timeline.
+- **Calculation Logic**:
+  - Dynamically calculates standard fulfillment dates starting from the order creation timestamp (`createdAt + 2 business days` to `createdAt + 4 business days`).
+- **Workflow & Presentation**:
+  1. Navigate to **My Orders** from the top navigation bar.
+  2. Click **View** on any existing order to open the full order timeline.
+  3. Under the status pills, a dedicated glass card displays the dynamic delivery milestone badge:
+     - 🚚 **Estimated Delivery:** `<date_start> – <date_end>` (Standard Fulfillment).
+  4. The milestone automatically localizes date formats and titles into English or Bengali:
+     - *English:* **Estimated Delivery: Nov 5 – Nov 7, 2026 (Standard Fulfillment)**
+     - *Bengali:* **আনুমানিক ডেলিভারি: ৫ নভেম্বর – ৭ নভেম্বর, ২০২৬ (স্ট্যান্ডার্ড ডেলিভারি)**
 
 ![The invoice](docs/manual/09-invoice.png)
 

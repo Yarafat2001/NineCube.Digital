@@ -411,6 +411,7 @@ framework — hand-written CSS driven by design tokens.
   **keeps the cart** so the customer can correct it.
 - **Performance**: routes are code-split (a customer never downloads the admin console), search is
   debounced at 300 ms, and TanStack Query caches with refetch on window focus and after mutations.
+- **Delivery instructions & milestone estimation**: Shoppers can supply optional courier delivery instructions or order notes directly within the slide-out cart drawer, while completed orders feature a live 2–4 business day delivery milestone estimator dynamically localized under the fulfillment timeline.
 
 ### The showcase at `/`
 
