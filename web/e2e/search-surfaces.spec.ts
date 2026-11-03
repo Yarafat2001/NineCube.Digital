@@ -87,6 +87,56 @@ test.describe('search surfaces on the system plate', () => {
         const clear = page.locator('.spotlight-clear-btn');
         await expect(clear).toBeVisible();
         expect(Math.round((await clear.boundingBox())!.height)).toBeGreaterThanOrEqual(30);
+
+        // The screenshots showed two ✕ in one well: the app's clear button beside Chromium's own
+        // search decoration, which `appearance: none` on the element does not switch off. Ask the
+        // engine what the pseudo-element resolved to rather than trusting the stylesheet text.
+        const decorations = await page.locator('.spotlight-input').evaluate(el => ({
+          cancel: getComputedStyle(el, '::-webkit-search-cancel-button').display,
+          ornament: getComputedStyle(el, '::-webkit-search-decoration').display,
+          buttons: [...el.closest('.spotlight-field')!.querySelectorAll('button')].length
+        }));
+        expect(decorations.cancel, 'Chromium still paints its own clear inside the well').toBe('none');
+        expect(decorations.ornament, 'Chromium still paints its own search ornament inside the well').toBe('none');
+        expect(decorations.buttons, `the well carries ${decorations.buttons} clear controls`).toBe(1);
+
+        // One amber line while the field holds focus, and none while a control inside it does:
+        // as :focus-within the well rang at the same time as the button, which read as two outlines.
+        await page.locator('.spotlight-input').click();
+        const ringIn = await page.locator('.spotlight-field').evaluate(el => {
+          const cs = getComputedStyle(el);
+          return {
+            well: `${cs.outlineStyle} ${cs.outlineWidth}`,
+            ringColor: cs.outlineColor,
+            border: cs.borderTopColor,
+            field: getComputedStyle(el.querySelector('.spotlight-input')!).outlineStyle
+          };
+        });
+        expect(`${ringIn.well} ${ringIn.ringColor}`, 'the well draws no ring while the field is focused')
+          .toBe(`solid 2px ${await page.evaluate(() => {
+            const probe = document.createElement('div');
+            probe.style.color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+            document.body.append(probe);
+            const rgb = getComputedStyle(probe).color;
+            probe.remove();
+            return rgb;
+          })}`);
+        expect(ringIn.field, 'the bare input draws a second ring inside the well').toBe('none');
+        expect(ringIn.border, 'an amber border under the amber ring paints the well outlined twice')
+          .not.toBe(ringIn.ringColor);
+
+        await page.keyboard.press('Tab');
+        const onControl = await page.locator('.spotlight-field').evaluate(el => ({
+          focused: document.activeElement?.className ?? '',
+          well: getComputedStyle(el).outlineStyle,
+          button: getComputedStyle(document.activeElement as HTMLElement).outlineStyle
+        }));
+        expect(String(onControl.focused), 'Tab did not land on a control inside the well')
+          .toMatch(/spotlight-(clear|close)-btn/);
+        expect(onControl.well, 'the well rings itself again while a button inside it holds focus')
+          .toBe('none');
+        expect(onControl.button, 'the clear button drew no ring of its own').not.toBe('none');
+
         await page.screenshot({ path: `artifacts/scope/search-${width}-${theme}-spotlight.png` });
         await page.keyboard.press('Escape');
 

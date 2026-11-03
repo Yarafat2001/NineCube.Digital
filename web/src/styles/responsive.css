@@ -113,6 +113,15 @@ main .link-button:is(:hover, :focus-visible, :active),
   .dashboard-stats, .sales-stats { grid-template-columns: minmax(0, 1fr); }
   .product-detail__thumbs { flex-wrap: nowrap; overflow-x: auto; padding: 4px; }
 }
+/* A settings row is two columns only while there is room for both. On a phone the name takes
+   the line and the control drops under it at full width, so a dial is never squeezed to 190px. */
+@media (max-width: 768px) {
+  .setting-row { grid-template-columns: minmax(0, 1fr); }
+  .setting-row__control { justify-content: flex-start; }
+  .setting-row__number { flex: 1 1 auto; width: auto; min-width: 0; }
+  .policy-input { width: 100%; }
+}
+
 @media (hover: none) and (prefers-reduced-motion: no-preference) {
   .product-card[data-revealed='true'] { animation: touch-card-reveal 500ms ease-out; }
   .product-card:active { transform: scale(.985); box-shadow: var(--shadow-sm); }

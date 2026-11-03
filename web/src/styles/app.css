@@ -862,6 +862,20 @@ input[type='search'] {
   appearance: none;
 }
 
+/* `appearance: none` on the element does not remove Chromium's own search decorations, and the
+   spotlight well and the scope target picker each draw their own clear button on top of it: the
+   live dialog showed two ✕ side by side in one field, the second unstyleable and unfocusable.
+   Only these two surfaces ship a clear, so only they give the native one up - the ten other
+   search fields in the app have no clear of their own and keep it. */
+.spotlight-input::-webkit-search-cancel-button,
+.spotlight-input::-webkit-search-decoration,
+.target-search__bar input::-webkit-search-cancel-button,
+.target-search__bar input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
@@ -3879,8 +3893,22 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 .order-replay__counts { margin-left: auto; }
 .order-replay__giveaway { color: var(--warn-text, var(--text)); min-width: 74px; text-align: right; }
 
-/* Discount policy: the shop's own limits, on the same plate as the rest of Settings. */
-.policy-card { max-width: 760px; }
+/* ------------------------------------------- admin settings plate -----
+   The Settings tab used to be two translucent card-glass forms of different widths (480px
+   and 760px) floating in a 1376px column, and its auto-fit grid put four hard limits into
+   three 229px columns, so the fourth field sat alone over a 482px hole. Both dials now share
+   the solid plate the registries use, and every control is one row: the name and what it
+   refuses on the left, the field on the right, so the row is full at any width. */
+.settings-plate { display: flex; flex-direction: column; }
+
+.settings-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.settings-block + .settings-block { border-top: 1px solid var(--row-line); }
 
 .policy-card__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
@@ -3907,7 +3935,7 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 .policy-group__title {
   margin: 0;
   padding-bottom: 6px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--row-line);
   font-size: var(--text-label);
   font-weight: 750;
   letter-spacing: .04em;
@@ -3915,7 +3943,32 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   color: var(--text-muted);
 }
 
-.policy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.policy-rows { display: flex; flex-direction: column; }
+
+.setting-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 250px);
+  align-items: center;
+  gap: 6px var(--space-5);
+}
+
+/* The limit rows are a list, so they divide like one. */
+.policy-rows .setting-row {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--row-line);
+}
+
+.policy-rows .setting-row:first-child { padding-top: 0; }
+.policy-rows .setting-row:last-child { padding-bottom: 0; border-bottom: 0; }
+
+.setting-row__control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.setting-row__number { width: 130px; flex-shrink: 0; }
 
 .policy-input { position: relative; display: flex; align-items: center; }
 
@@ -4672,8 +4725,11 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.spotlight-field:focus-within {
-  border-color: var(--accent);
+/* The well frames the ring only while the search field itself holds focus. As :focus-within it
+   also lit when the clear or close button inside it was focused, and that button draws its own
+   ring - so one amber outline sat inside another and the field looked outlined twice. The amber
+   border went the same way: with a 2px ring 2px outside it, the well showed two amber lines. */
+.spotlight-field:has(.spotlight-input:focus-visible) {
   outline: var(--focus-ring);
   outline-offset: 2px;
 }
@@ -4686,7 +4742,7 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   flex-shrink: 0;
 }
 
-.spotlight-field:focus-within .spotlight-search-icon {
+.spotlight-field:has(.spotlight-input:focus-visible) .spotlight-search-icon {
   color: var(--accent-text);
 }
 

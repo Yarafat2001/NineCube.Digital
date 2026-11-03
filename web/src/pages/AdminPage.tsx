@@ -221,6 +221,9 @@ export function AdminPage() {
   const policyValue = (key: keyof DiscountPolicy) =>
     policyDraft[key] ?? (policyQuery.data ? String(policyQuery.data.policy[key]) : '');
 
+  /** A dial left at 0 means the shop never set it, so the field shows its placeholder instead of a wall of zeros. */
+  const policyDisplay = (key: keyof DiscountPolicy) => (policyValue(key) === '0' ? '' : policyValue(key));
+
   const submitPolicy = async (event: FormEvent) => {
     event.preventDefault();
     const next = POLICY_FIELDS.reduce(
@@ -991,116 +994,123 @@ export function AdminPage() {
 
       {tab === 'settings' ? (
         <section role="tabpanel" id="panel-settings" aria-labelledby="tab-settings" className="stack">
-          {settingsQuery.isLoading ? <LoadingBlock label={t("Loading settings")} variant="line" count={2} /> : null}
-          {settingsQuery.isError ? <ErrorState error={settingsQuery.error} onRetry={() => settingsQuery.refetch()} /> : null}
-
-          {settingsQuery.data ? (
-            <form className="card-glass stack" style={{ maxWidth: 480 }} onSubmit={submitSettings}>
-              <div className="field">
-                <label htmlFor="low-stock-threshold">{t("Low stock threshold")}</label>
-                <input
-                  id="low-stock-threshold"
-                  type="number"
-                  min={0}
-                  max={10000}
-                  required
-                  value={threshold === '' ? settingsQuery.data.lowStockThreshold : threshold}
-                  onChange={(event) => setThreshold(event.target.value)}
-                />
-                <span className="hint">
-                  {t("Products at or below this quantity are flagged as low stock everywhere in the app. It is stored in the database, not in code.")}</span>
-              </div>
-
-              <button type="submit" className="btn btn--primary" disabled={updateSettings.isPending}>
-                {t("Save settings")}</button>
-            </form>
-          ) : null}
-
-          {policyQuery.isLoading ? <LoadingBlock label={t("Loading the discount policy")} variant="line" count={3} /> : null}
-          {policyQuery.isError ? <ErrorState error={policyQuery.error} onRetry={() => policyQuery.refetch()} /> : null}
-
-          {policyQuery.data ? (
-            <form className="card-glass stack policy-card" onSubmit={submitPolicy}>
-              <div className="policy-card__head">
-                <h3 className="policy-card__title">
-                  <Icon name="shield" width={15} height={15} aria-hidden="true" />
-                  {t("Discount policy")}
-                </h3>
-                <span className={`badge ${policyIsOpen(policyQuery.data.policy) ? 'badge--ok' : 'badge--neutral'}`}>
-                  <span className="badge__glyph" aria-hidden="true">{policyIsOpen(policyQuery.data.policy) ? t("✓") : t("—")}</span>
-                  {t(policyIsOpen(policyQuery.data.policy) ? "Limits on" : "No limits yet")}
-                </span>
-              </div>
-
-              <p className="policy-card__lead">
-                {t("These are the shop's own limits on giving money away. Coupons already live keep running exactly as they are — a limit only bites when a coupon is saved from now on.")}
-              </p>
-
-              {(['limit', 'review'] as const).map((group) => (
-                <div className="policy-group" key={group}>
-                  <h4 className="policy-group__title">
-                    {t(group === 'limit' ? "Hard limits — the shop refuses these" : "Second signature — these wait for another administrator")}
-                  </h4>
-                  <div className="policy-grid">
-                    {POLICY_FIELDS.filter((field) => field.group === group).map((field) => (
-                      <div className="field" key={field.key}>
-                        <label htmlFor={`policy-${field.key}`}>{t(field.label)}</label>
-                        <div className="policy-input">
-                          <input
-                            id={`policy-${field.key}`}
-                            type="number"
-                            min={0}
-                            step={field.unit === '%' ? '0.5' : '50'}
-                            inputMode="decimal"
-                            placeholder="0"
-                            value={policyValue(field.key)}
-                            onChange={(event) => setPolicyDraft((prev) => ({ ...prev, [field.key]: event.target.value }))}
-                          />
-                          <span className="policy-input__unit">{t(field.unit)}</span>
-                        </div>
-                        <span className="hint">{t(field.hint)}</span>
-                      </div>
-                    ))}
+          {/* Both dials of the store on the one solid plate the registries use. They were two
+              card-glass forms of different widths floating in a 1376px column. */}
+          <div className="table-surface settings-plate">
+            <form className="settings-block" onSubmit={submitSettings}>
+              {settingsQuery.isLoading ? <LoadingBlock label={t("Loading settings")} variant="line" count={2} /> : settingsQuery.isError ? <ErrorState error={settingsQuery.error} onRetry={() => settingsQuery.refetch()} /> : (
+                <div className="setting-row">
+                  <div className="field">
+                    <label htmlFor="low-stock-threshold">{t("Low stock threshold")}</label>
+                    <span className="hint">
+                      {t("Products at or below this quantity are flagged as low stock everywhere in the app. It is stored in the database, not in code.")}</span>
+                  </div>
+                  <div className="setting-row__control">
+                    <input
+                      id="low-stock-threshold"
+                      className="setting-row__number"
+                      type="number"
+                      min={0}
+                      max={10000}
+                      required
+                      value={threshold === '' ? settingsQuery.data?.lowStockThreshold ?? '' : threshold}
+                      onChange={(event) => setThreshold(event.target.value)}
+                    />
+                    <button type="submit" className="btn btn--primary" disabled={updateSettings.isPending}>
+                      {t("Save settings")}</button>
                   </div>
                 </div>
-              ))}
-
-              <div className="policy-spend">
-                <div className="policy-spend__row">
-                  <span className="policy-spend__label">{t("Given away in the last 7 days")}</span>
-                  <strong className="policy-spend__figure">{formatMoney(policyQuery.data.promoSpendLast7Days)}</strong>
-                </div>
-                {Number(policyValue('weeklySpendCap')) > 0 ? (
-                  <>
-                    <div className="policy-meter" role="img"
-                      aria-label={`${t("Given away in the last 7 days")}: ${Math.round(meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))))}%`}>
-                      <div
-                        className={`policy-meter__fill ${meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))) >= 80 ? 'policy-meter__fill--tight' : ''}`}
-                        style={{ width: `${Math.min(100, meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))))}%` }}
-                      />
-                    </div>
-                    <p className="policy-spend__note">
-                      {t("of a weekly budget of")} {formatMoney(Number(policyValue('weeklySpendCap')))}
-                    </p>
-                  </>
-                ) : (
-                  <p className="policy-spend__note">
-                    {t("No weekly budget is set, so campaigns can be released without a spend check.")}
-                  </p>
-                )}
-              </div>
-
-              <div className="policy-card__actions">
-                <button type="submit" className="btn btn--primary" disabled={updatePolicy.isPending}>
-                  {t(updatePolicy.isPending ? "Saving…" : "Save policy")}</button>
-                {Object.keys(policyDraft).length > 0 ? (
-                  <button type="button" className="btn btn--outline btn--sm" onClick={() => setPolicyDraft({})}>
-                    {t("Discard changes")}
-                  </button>
-                ) : null}
-              </div>
+              )}
             </form>
-          ) : null}
+
+            {policyQuery.isLoading ? <div className="settings-block"><LoadingBlock label={t("Loading the discount policy")} variant="line" count={3} /></div> : null}
+            {policyQuery.isError ? <div className="settings-block"><ErrorState error={policyQuery.error} onRetry={() => policyQuery.refetch()} /></div> : null}
+
+            {policyQuery.data ? (
+              <form className="settings-block policy-card" onSubmit={submitPolicy}>
+                <div className="policy-card__head">
+                  <h3 className="policy-card__title">
+                    <Icon name="shield" width={15} height={15} aria-hidden="true" />
+                    {t("Discount policy")}
+                  </h3>
+                  <span className={`badge badge--${policyIsOpen(policyQuery.data.policy) ? 'ok' : 'neutral'}`}>
+                    <span className="badge__glyph" aria-hidden="true">{policyIsOpen(policyQuery.data.policy) ? t("✓") : t("⊘")}</span>
+                    {t(policyIsOpen(policyQuery.data.policy) ? "Limits on" : "No limits yet")}
+                  </span>
+                </div>
+
+                <p className="policy-card__lead">
+                  {t("These are the shop's own limits on giving money away. Coupons already live keep running exactly as they are — a limit only bites when a coupon is saved from now on.")}
+                </p>
+
+                {(['limit', 'review'] as const).map((group) => (
+                  <div className="policy-group" key={group}>
+                    <h4 className="policy-group__title">
+                      {t(group === 'limit' ? "Hard limits — the shop refuses these" : "Second signature — these wait for another administrator")}
+                    </h4>
+                    <div className="policy-rows">
+                      {POLICY_FIELDS.filter((field) => field.group === group).map((field) => (
+                        <div className="setting-row" key={field.key}>
+                          <div className="field">
+                            <label htmlFor={`policy-${field.key}`}>{t(field.label)}</label>
+                            <span className="hint">{t(field.hint)}</span>
+                          </div>
+                          <div className="policy-input">
+                            <input
+                              id={`policy-${field.key}`}
+                              type="number"
+                              min={0}
+                              step={field.unit === '%' ? '0.5' : '50'}
+                              inputMode="decimal"
+                              placeholder={t("None")}
+                              value={policyDisplay(field.key)}
+                              onChange={(event) => setPolicyDraft((prev) => ({ ...prev, [field.key]: event.target.value }))}
+                            />
+                            <span className="policy-input__unit">{t(field.unit)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="policy-spend">
+                  <div className="policy-spend__row">
+                    <span className="policy-spend__label">{t("Given away in the last 7 days")}</span>
+                    <strong className="policy-spend__figure">{formatMoney(policyQuery.data.promoSpendLast7Days)}</strong>
+                  </div>
+                  {Number(policyValue('weeklySpendCap')) > 0 ? (
+                    <>
+                      <div className="policy-meter" role="img"
+                        aria-label={`${t("Given away in the last 7 days")}: ${Math.round(meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))))}%`}>
+                        <div
+                          className={`policy-meter__fill ${meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))) >= 80 ? 'policy-meter__fill--tight' : ''}`}
+                          style={{ width: `${Math.min(100, meterPercent(policyQuery.data.promoSpendLast7Days, Number(policyValue('weeklySpendCap'))))}%` }}
+                        />
+                      </div>
+                      <p className="policy-spend__note">
+                        {t("of a weekly budget of")} {formatMoney(Number(policyValue('weeklySpendCap')))}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="policy-spend__note">
+                      {t("No weekly budget is set, so campaigns can be released without a spend check.")}
+                    </p>
+                  )}
+                </div>
+
+                <div className="policy-card__actions">
+                  <button type="submit" className="btn btn--primary" disabled={updatePolicy.isPending}>
+                    {t(updatePolicy.isPending ? "Saving…" : "Save policy")}</button>
+                  {Object.keys(policyDraft).length > 0 ? (
+                    <button type="button" className="btn btn--outline btn--sm" onClick={() => setPolicyDraft({})}>
+                      {t("Discard changes")}
+                    </button>
+                  ) : null}
+                </div>
+              </form>
+            ) : null}
+          </div>
         </section>
       ) : null}
 

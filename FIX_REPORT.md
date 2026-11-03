@@ -1,5 +1,139 @@
 # FIX_REPORT
 
+# Round 18 — the Settings tab is one plate now, and the search well has one clear button
+
+Date: 2026-11-03. Brief: "fix these ADmin settings Discount policy and give it as the modern e-commerce
+style design, and also add system current state UI relevancy, Global search bar issues are double clear
+options fix these all more efficiently", with three dark screenshots: the Discount policy panel, the Low
+stock threshold card, and the Ctrl+K spotlight open on "co" with two ✕ inside one field.
+
+## What the Settings tab actually measured before I touched it
+
+Read off a running build of the real app at 1440 px, dark theme:
+
+- The tab was **two `card-glass` forms of different widths** floating in a 1376 px content column: the
+  threshold card 480 × 233, the policy card 760 × 853. So 896 px of column sat empty beside the first
+  card and 616 px beside the second, and both were translucent (`background: rgba(0, 0, 0, 0)`), which
+  is the treatment the registries stopped using two rounds ago.
+- The policy fields were on `repeat(auto-fit, minmax(210px, 1fr))`, which resolved to **three tracks of
+  228.66 px** for **four** limits. Three fields filled the first line at x = 57, 298, 538; the fourth
+  ("Promo budget for a rolling month") dropped to its own line at x = 57 with **482 px of empty track
+  beside it**. The second group was worse in a different way: its tracks resolved to
+  `349px 349px 0px`, an entirely collapsed third column.
+- The state chip read **"— No limits yet"**. The em dash is not in this app's state vocabulary; the
+  registries above use `⊘` for off, `✓` for on, `◔` for waiting, `✕` for refused.
+- An unset dial printed a literal `0`, so the panel opened as a wall of zeros instead of a shop that has
+  not set its limits yet.
+- The two cards ran from y = 387 to y = 1497 - **1110 px** of settings - and the page's `main` measured
+  1439 px tall.
+
+## The double ✕ was Chromium's, and it was not one defect but two
+
+The spotlight's well already ships its own clear button (30 × 30, at x = 954 in the screenshot's frame).
+Chromium paints its own `::-webkit-search-cancel-button` inside any `input[type='search']` on top of
+that, so the field showed two ✕ side by side - and the second one cannot be styled, cannot be focused
+and cannot be reached by keyboard. `appearance: none` on the *element* does not remove it; the
+pseudo-element itself has to be reset. That is the whole fix.
+
+I scoped it to the two fields that ship their own clear - the spotlight and the scope target picker in
+the coupon builder. The app has **twelve** `type="search"` inputs; the other ten have no clear of their
+own, so a blanket reset would have quietly taken away their only way out of a search.
+
+The amber outline looked drawn twice for two separate reasons, and both needed fixing:
+
+- The well rang itself on `:focus-within`, which also fires when the clear or close button *inside* it
+  holds focus - and those buttons draw their own ring. After one Tab the probe read
+  `wellOutline: solid rgb(255, 195, 107)` **and** `activeOutline: solid rgb(255, 195, 107)`: one ring
+  inside another. The well now rings only `:has(.spotlight-input:focus-visible)`.
+- The well also turned its own border amber while the amber ring sat 2 px outside it, so the field
+  showed two amber lines. The border colour change is gone; the ring is the only amber line.
+
+## What it is now
+
+Both dials sit on the one solid plate the registries use (`.table-surface`: `--surface`, the 22 px
+`--radius-lg`, `--shell-shadow`, the accent strip), divided by the house `--row-line`, and every control
+is a row: the name and what it refuses on the left, the field on the right.
+
+- The grid is `minmax(0, 1fr) minmax(190px, 250px)` - deterministic, so a fourth limit cannot strand over
+  a hole. Under 768 px the row becomes one column and the control drops under its name at full width, so
+  a dial is never squeezed to 190 px on a phone.
+- The chip speaks the registry vocabulary: `⊘ No limits yet` on `badge--neutral`, `✓ Limits on` on
+  `badge--ok`.
+- An unset dial shows the placeholder "None" (the string already in `bn.json`) instead of a zero. Saving
+  is unchanged, because `Number('') || 0` is the same 0 the field used to hold.
+
+## Numbers off the running screen
+
+| | before | after |
+| --- | --- | --- |
+| plates on the tab | 2 translucent cards, 480 px and 760 px | 1 solid plate, 1376 px, both blocks 1374 px |
+| policy grid | 3 tracks of 228.66 px for 4 fields | 7 rows, each 1052 px of label + 250 px of control, flush |
+| dead space beside the fourth field | 482 px | 0 |
+| the settings block at 1440 | 1110 px (233 + 853 + the gap between two cards) | 874 px (one plate) |
+| page height at 1440 | main 1439 px | main 1203 px |
+| the same at 390 | - | plate 366 px, controls full width at 316 px, block 1478 px |
+| ✕ controls in the spotlight well | 2 (the app's + Chromium's) | 1 |
+| rings while the clear button holds focus | 2 (well + button) | 1 (button only; well resolves `outline: none`) |
+| well border while focused | `rgb(255, 171, 77)` amber under an amber ring | `rgb(119, 133, 154)` grey, ring stays `rgb(154, 63, 0)` |
+
+The seeded run (policy written: 40 %, 2 500, 60 %, 150 000, 25 %, 5 000) reads `✓ Limits on` in
+`rgb(20, 83, 45)` on `rgb(220, 252, 231)` with every value in its own row, at both 1440 and 390, in both
+themes.
+
+## Tests
+
+- `web/src/test/admin-settings-panel.test.tsx` - new, 6 tests. Both forms inside one `.table-surface`
+  with no inline width cap and no `card-glass`; the row grid's two tracks and the phone collapse in
+  `responsive.css`; the dividers on `var(--row-line)`; an unset dial empty with placeholder "None"; the
+  chip `⊘`/`badge--neutral` unset and `✓`/`badge--ok` once a limit is written.
+- `web/src/test/search-surfaces.test.tsx` - 11 tests now. The old assertion on
+  `.spotlight-field:focus-within` is replaced by the `:has(.spotlight-input:focus-visible)` contract,
+  plus a test that the native-clear reset exists, covers both fields that ship a clear, and is *not*
+  applied to `input[type='search']` generally.
+- `web/e2e/admin-settings.spec.ts` - new. Asks the live DOM what it resolved: plate width against its
+  column, opaque background, both blocks full width, the number of tracks each row put its dial in, the
+  label and control bounding boxes on one line at 1440 and stacked at 390, the chip glyph against the
+  house set. Walks 1440 and 390 × light and dark, skips itself with an explanation until
+  `NINECUBE_SEED_PASSWORD` is set.
+- `web/e2e/search-surfaces.spec.ts` - extended with the two things the screenshots showed: the resolved
+  `::-webkit-search-cancel-button` display, the number of buttons inside the well, and the ring state
+  before and after a real Tab.
+- `web/src/test/discount-moderation.test.tsx` (15 tests) still passes untouched - the refusal, replay and
+  second-signature behaviour reads the same labels through the new markup.
+
+Full suite in an isolated worktree at HEAD plus only my files: **39 files, 269 tests, all green**, and
+`npx tsc --noEmit`, `npm run i18n:check` (1900 entries) and `npm run build` all clean.
+
+One thing I will not paper over: a second full-suite run on this box, minutes later, failed **5** files -
+and a *different* 5 than the run before it, three of which (`catalogue-sidebar`, `categories`,
+`checkout`) this round never touched. Every failure was the same `waitFor` timeout while a lazily loaded
+page was still arriving, on a machine the other session was building on at the time. Re-running exactly
+those five files with my changes in place: **52 tests, all passing**. So this is contention, not a
+regression - but it is also a real flake in this suite's page-load waits, and CI on its own hardware is
+the tiebreaker.
+
+## Limits, honestly
+
+I could not run the committed browser specs: nothing is listening on 5080 or 5173 for this project, and I
+have no demo password, so those live runs stay owed by you. Everything in the "after" column comes from a
+throwaway stub build of the real app - the real components, the real stylesheets, the app's own MSW
+fixtures - booted in-process on a random free port, and that harness is deleted again. It proves layout
+and paint, not catalogue data.
+
+One measurement I want on the record rather than buried: Chromium's computed style for
+`::-webkit-search-cancel-button` still reports `display: block` after the reset, while the pixel result
+is gone. The computed-style read is not a proof here; the screenshot and the button count are. That is
+why the e2e spec asserts both.
+
+## The repository, again
+
+The other session is still working in this same tree. At the time of writing its `App.tsx` edit imports
+a `GuestOrderPage.tsx` that is **untracked**, and `tsc --noEmit` in the shared tree fails on that file's
+unused import - not mine. So I gated in a detached worktree at HEAD with only my seven code files copied
+in, and my commit contains those plus this report. Nothing of theirs is committed, changed or reverted by
+this round. If you did not intend two agents to push into one tree at once, this is the second round it
+has cost time.
+
 # Round 17 — the two search boxes are one object now, and the navbar stopped buying a catalogue nobody asked for
 
 Date: 2026-11-03. Brief: "here currently some new features are including but it has some latency and

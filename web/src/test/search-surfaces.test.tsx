@@ -83,9 +83,31 @@ describe('Search surfaces follow the system plate', () => {
     expect(field).toContain('background: var(--surface-sunken)');
     expect(field).toContain('border: 1px solid var(--border-strong)');
     expect(field).toContain('min-height: 46px');
-    expect(block(app, '.spotlight-field:focus-within')).toContain('outline: var(--focus-ring)');
+
+    // The well rings itself only while the search field holds focus. As :focus-within it also lit
+    // for the clear and close buttons inside it, which draw their own ring, so the field read as
+    // outlined twice; and with an amber border under an amber ring it read as outlined twice again.
+    const focusedWell = '.spotlight-field:has(.spotlight-input:focus-visible)';
+    expect(block(app, focusedWell)).toContain('outline: var(--focus-ring)');
+    expect(block(app, focusedWell)).not.toContain('border-color');
+    expect(app).not.toContain('.spotlight-field:focus-within {');
     // The bare input must not draw a second ring inside the well.
     expect(block(app, '.spotlight-field .spotlight-input:focus-visible')).toContain('outline: none');
+  });
+
+  it('leaves one clear control in the well, not the app’s button beside Chromium’s', () => {
+    // The whole rule, selectors included: which fields give up the native clear is the contract.
+    const lines = app.split('\n');
+    const at = lines.findIndex(line => line.startsWith('.spotlight-input::-webkit-search-cancel-button,'));
+    expect(at).toBeGreaterThanOrEqual(0);
+    const rule = lines.slice(at, lines.slice(at).findIndex(line => line === '}') + at + 1).join('\n');
+    expect(rule).toContain('-webkit-appearance: none');
+    expect(rule).toContain('display: none');
+
+    // Scoped to the two fields that ship their own clear. The other ten search inputs have no
+    // clear of their own, so a blanket reset would quietly take their only way out of a search.
+    expect(app).not.toMatch(/^input\[type='search'\]::-webkit-search-cancel-button/m);
+    expect(rule).toContain('.target-search__bar input::-webkit-search-cancel-button');
   });
 
   it('builds chips, rows and the footer key from the option tokens at label size', () => {
