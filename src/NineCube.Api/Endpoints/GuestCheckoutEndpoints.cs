@@ -8,10 +8,13 @@ using NineCube.Application.Contracts;
 using NineCube.Application.Services;
 using NineCube.Domain;
 using NineCube.Infrastructure.Identity;
+using NineCube.Application.Validation;
 
 namespace NineCube.Api.Endpoints;
 
-public sealed record GuestSessionRequest(string Name, string Email, string Phone, string Division, string District, string Upazila, string AddressLine);
+public sealed record GuestSessionRequest(string Name, string Email, string Phone, string Division, string District, string Upazila, string AddressLine,
+    string CountryCode = "BD", string? PostalCode = null, string? RecipientName = null, string? Company = null,
+    string? AddressLine2 = null, string? Landmark = null, string? DeliveryInstructions = null);
 
 public sealed class GuestCheckoutEndpoints : IEndpoint
 {
@@ -22,16 +25,20 @@ public sealed class GuestCheckoutEndpoints : IEndpoint
         {
             if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length > 200
                 || string.IsNullOrWhiteSpace(request.Email) || request.Email.Length > 256 || !MailAddress.TryCreate(request.Email, out _)
-                || string.IsNullOrWhiteSpace(request.Phone) || request.Phone.Length > 32
-                || string.IsNullOrWhiteSpace(request.AddressLine) || request.AddressLine.Length > 300
-                || string.IsNullOrWhiteSpace(request.Division) || request.Division.Length > 80
-                || string.IsNullOrWhiteSpace(request.District) || request.District.Length > 80
-                || string.IsNullOrWhiteSpace(request.Upazila) || request.Upazila.Length > 80)
+                || string.IsNullOrWhiteSpace(request.Phone))
                 throw new BusinessValidationException("Enter your name, email, phone and complete delivery address.");
+            var errors = AddressValidation.Errors(new AddressRequest("Delivery", request.Division, request.District, request.Upazila,
+                request.AddressLine, request.Phone, CountryCode: request.CountryCode, PostalCode: request.PostalCode,
+                RecipientName: request.RecipientName, Company: request.Company, AddressLine2: request.AddressLine2,
+                Landmark: request.Landmark, DeliveryInstructions: request.DeliveryInstructions));
+            if (errors.Count > 0) throw new BusinessValidationException("Check your delivery address.", errors);
             // Never attach anonymous orders to an existing account merely because emails match.
             var customer = new Customer { Name = request.Name.Trim(), Email = request.Email.Trim(), Phone = request.Phone.Trim(), CreatedAt = clock.UtcNow };
-            var address = new Address { Customer = customer, Label = "Delivery", Division = request.Division.Trim(), District = request.District.Trim(),
-                Upazila = request.Upazila.Trim(), AddressLine = request.AddressLine.Trim(), Phone = request.Phone.Trim(), IsDefault = true };
+            var address = new Address { Customer = customer, Label = "Delivery", Division = request.Division?.Trim() ?? "", District = request.District?.Trim() ?? "",
+                Upazila = request.Upazila?.Trim() ?? "", AddressLine = request.AddressLine.Trim(), Phone = request.Phone.Trim(), IsDefault = true,
+                CountryCode = request.CountryCode.Trim().ToUpperInvariant(), PostalCode = request.PostalCode?.Trim(),
+                RecipientName = request.RecipientName?.Trim() ?? request.Name.Trim(), Company = request.Company?.Trim(),
+                AddressLine2 = request.AddressLine2?.Trim(), Landmark = request.Landmark?.Trim(), DeliveryInstructions = request.DeliveryInstructions?.Trim() };
             var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
             db.Addresses.Add(address);
             db.GuestCheckoutSessions.Add(new GuestCheckoutSession { Customer = customer, TokenHash = Hash(token), ExpiresAt = clock.UtcNow.AddDays(30) });

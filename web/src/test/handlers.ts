@@ -1391,8 +1391,7 @@ export const handlers = [
   http.post(`${API}/api/auth/forgot-password`, async ({ request }) => {
     void (await request.json());
     return HttpResponse.json({
-      message: 'Password reset token generated.',
-      demoResetToken: 'DEMO-TOKEN-123456'
+      message: 'Password reset token generated.'
     });
   }),
 

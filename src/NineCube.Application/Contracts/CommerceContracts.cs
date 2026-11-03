@@ -5,7 +5,7 @@ namespace NineCube.Application.Contracts;
 // ---------------------------------------------------------------- Password Reset
 public sealed record ForgotPasswordRequest(string Email);
 public sealed record ResetPasswordRequest(string Email, string Token, string NewPassword);
-public sealed record ForgotPasswordResponse(string Message, string? DemoResetToken = null);
+public sealed record ForgotPasswordResponse(string Message);
 
 // ---------------------------------------------------------------- Coupons & Discounts
 

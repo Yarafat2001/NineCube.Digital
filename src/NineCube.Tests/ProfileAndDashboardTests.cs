@@ -168,7 +168,7 @@ public sealed class ProfileAndDashboardTests(ApiFactory factory) : ApiTestBase(f
         dashboard.RecentOrders.Should().BeEmpty();
         dashboard.RecentNotifications.Should().BeEmpty();
         dashboard.UnreadNotifications.Should().Be(0);
-        dashboard.OrdersByStatus.Should().HaveCount(5, "the cards are always rendered, even at zero");
+        dashboard.OrdersByStatus.Should().HaveCount(7, "the cards are always rendered, even at zero");
     }
 
     [Fact]
@@ -188,7 +188,7 @@ public sealed class ProfileAndDashboardTests(ApiFactory factory) : ApiTestBase(f
         var dashboard = await ReadAsync<DashboardDto>(await GetAsync("api/me/dashboard", customer.AccessToken));
 
         dashboard.TotalOrders.Should().Be(3);
-        dashboard.TotalSpent.Should().Be(first.TotalAmount + third.TotalAmount);
+        dashboard.TotalSpent.Should().Be(0m, "uncollected COD orders are not spending");
         dashboard.TotalItems.Should().Be(3, "the cancelled lines are not spent items");
         dashboard.Currency.Should().Be("BDT");
         dashboard.OrdersByStatus.Single(s => s.Status == nameof(OrderStatus.Pending)).Count.Should().Be(2);

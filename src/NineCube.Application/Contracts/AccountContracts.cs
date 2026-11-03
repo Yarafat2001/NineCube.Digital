@@ -69,6 +69,7 @@ public sealed record ChangePasswordRequest(string CurrentPassword, string NewPas
 // ---------------------------------------------------------------- customer dashboard
 
 public sealed record StatusCountDto(string Status, int Count);
+public sealed record CurrencySpendDto(string Currency, decimal Amount);
 
 public sealed record DashboardOrderDto(
     int Id,
@@ -86,7 +87,8 @@ public sealed record DashboardDto(
     int TotalItems,
     IReadOnlyList<DashboardOrderDto> RecentOrders,
     IReadOnlyList<NotificationDto> RecentNotifications,
-    int UnreadNotifications);
+    int UnreadNotifications,
+    IReadOnlyList<CurrencySpendDto>? SpendingByCurrency = null);
 
 // ---------------------------------------------------------------- bulk product edits
 

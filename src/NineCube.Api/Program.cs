@@ -166,6 +166,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.Configure<NineCube.Application.Services.SecurityOptions>(builder.Configuration.GetSection("Security"));
+builder.Services.Configure<NineCube.Application.Services.StorefrontOptions>(builder.Configuration.GetSection("Storefront"));
 
 var app = builder.Build();
 

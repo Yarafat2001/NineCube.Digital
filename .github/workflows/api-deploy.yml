@@ -61,5 +61,12 @@ jobs:
           CATALOGUE_CHECK_CONNECTION: Host=localhost;Database=ninecube_catalogue_checks;Username=postgres;Password=catalogue_checks
         run: dotnet run --project tools/deployment-checks/DeploymentChecks.csproj --configuration Release
 
-      - name: PostgreSQL commerce and security tests
-        run: dotnet test src/NineCube.Tests/NineCube.Tests.csproj -c Release --filter "FullyQualifiedName~CommerceHttpTests|FullyQualifiedName~AddressValidationTests|FullyQualifiedName~PaymentIntegrityTests|FullyQualifiedName~SslCommerz" --logger "trx;LogFileName=commerce.trx"
+      - name: Full PostgreSQL backend test suite
+        run: dotnet test src/NineCube.Tests/NineCube.Tests.csproj -c Release --logger "trx;LogFileName=commerce.trx"
+
+      - name: Upload backend test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-tests
+          path: src/NineCube.Tests/TestResults/*.trx

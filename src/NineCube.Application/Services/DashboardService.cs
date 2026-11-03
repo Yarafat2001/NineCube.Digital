@@ -32,6 +32,7 @@ public sealed class DashboardService(IAppDbContext db, ICurrentUser currentUser)
         var totalItems = 0;
         string currency = "BDT";
         var recent = new List<DashboardOrderDto>();
+        var spending = new List<CurrencySpendDto>();
 
         if (customerId is not null)
         {
@@ -44,6 +45,10 @@ public sealed class DashboardService(IAppDbContext db, ICurrentUser currentUser)
                     o.Status,
                     o.TotalAmount,
                     o.PaymentStatus,
+                    o.GiftCardAmount,
+                    Collected = o.PaymentTransactions.Where(p => p.Status == PaymentStatus.Paid && p.Currency == o.Currency).Sum(p => (decimal?)p.Amount) ?? 0,
+                    HasReceipt = o.PaymentTransactions.Any(p => p.Status == PaymentStatus.Paid && p.Currency == o.Currency),
+                    Refunded = db.RefundRecords.Where(r => r.OrderId == o.Id && r.Status == "Settled").Sum(r => (decimal?)r.Amount) ?? 0,
                     o.Currency,
                     o.CreatedAt,
                     ItemCount = o.Items.Sum(i => i.Quantity)
@@ -52,6 +57,10 @@ public sealed class DashboardService(IAppDbContext db, ICurrentUser currentUser)
 
             totalOrders = orders.Count;
             currency = orders.FirstOrDefault()?.Currency ?? "BDT";
+            spending = orders.GroupBy(o => o.Currency).Select(g => new CurrencySpendDto(g.Key,
+                g.Sum(o => (o.HasReceipt ? o.Collected : o.PaymentStatus is PaymentStatus.Paid or PaymentStatus.Refunded ? o.TotalAmount : 0)
+                    + o.GiftCardAmount - o.Refunded))).ToList();
+            spent = spending.FirstOrDefault(s => s.Currency == currency)?.Amount ?? 0;
 
             foreach (var order in orders)
             {
@@ -62,7 +71,6 @@ public sealed class DashboardService(IAppDbContext db, ICurrentUser currentUser)
                 if (OrderStatusRules.ReservationsReleased(order.Status)) continue;
 
                 totalItems += order.ItemCount;
-                if (order.PaymentStatus == PaymentStatus.Paid && order.Currency == currency) spent += order.TotalAmount;
             }
 
             recent = orders.Take(5)
@@ -93,6 +101,6 @@ public sealed class DashboardService(IAppDbContext db, ICurrentUser currentUser)
             notificationRows
                 .Select(n => new NotificationDto(n.Id, n.Type, n.Title, n.Body, n.Link, n.IsRead, n.CreatedAt, n.ReadAt))
                 .ToList(),
-            unread);
+            unread, spending);
     }
 }

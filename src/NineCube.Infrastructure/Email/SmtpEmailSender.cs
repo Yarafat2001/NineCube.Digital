@@ -25,11 +25,10 @@ public sealed class SmtpEmailSender : IEmailSender
         var password = _configuration["Email:Smtp:Password"];
         var fromEmail = _configuration["Email:Smtp:From"] ?? "noreply@ninecube.digital";
 
-        // When SMTP is not configured (e.g. development or preview), log and succeed cleanly without dropping requests
+        // The outbox must retain undelivered mail; simulation must never mark real messages sent.
         if (string.IsNullOrWhiteSpace(host))
         {
-            _logger.LogInformation("Email simulation (no SMTP host configured) to {To}: {Subject}", toEmail, subject);
-            return;
+            throw new InvalidOperationException("Configure Email:Smtp:Host before sending email.");
         }
 
         var port = int.TryParse(portStr, out var p) ? p : 587;

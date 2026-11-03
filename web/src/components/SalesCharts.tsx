@@ -6,7 +6,7 @@ import { formatMoney } from '../lib/helpers';
 export function SalesCharts({ data }: { data: SalesSummary }) {
   useLanguage();
   const total = data.byStatus.reduce((sum, row) => sum + row.orderCount, 0);
-  const maxRevenue = Math.max(0, ...data.byStatus.map(row => row.revenue));
+  const maxRevenue = Math.max(0, ...data.byStatus.map(row => Math.abs(row.revenue)));
   let offset = 0;
   return <div className="sales-charts">
     <section className="card-glass sales-chart" aria-labelledby="sales-distribution-title">
@@ -31,11 +31,11 @@ export function SalesCharts({ data }: { data: SalesSummary }) {
     </section>
     <section className="card-glass sales-chart" aria-labelledby="sales-revenue-title">
       <h2 id="sales-revenue-title">{t("Revenue by status")}</h2>
-      <p className="muted">{t(data.currency ?? 'BDT')} {t(" revenue from standing orders. Cancelled and rejected orders contribute zero.")}</p>
+      <p className="muted">{t(data.currency ?? 'BDT')} {t(" net collected payments after settled cash refunds.")}</p>
       <ul className="sales-revenue" aria-label={t("Revenue by status values")}>
         {data.byStatus.map(row => <li key={row.status} data-status={row.status}>
           <div className="sales-revenue__label"><span>{t(row.status)}</span><strong>{t(formatMoney(row.revenue, data.currency))}</strong></div>
-          <div className="sales-revenue__track" aria-hidden="true"><span style={{ width: `${maxRevenue > 0 ? row.revenue / maxRevenue * 100 : 0}%` }} /></div>
+          <div className="sales-revenue__track" aria-hidden="true"><span style={{ width: `${maxRevenue > 0 ? Math.abs(row.revenue) / maxRevenue * 100 : 0}%` }} /></div>
         </li>)}
       </ul>
       {!maxRevenue && <p className="muted">{t("No revenue for the selected range and currency.")}</p>}

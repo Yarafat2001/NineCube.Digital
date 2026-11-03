@@ -114,11 +114,11 @@ public sealed class CatalogService : ICatalogService
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var term = search.Trim().ToLowerInvariant().Normalize(System.Text.NormalizationForm.FormC);
-            // Unicode text and Bengali digits are accepted; literal substring matching avoids wildcard injection.
-            term = string.Concat(term.Select(c => c >= '\u09e6' && c <= '\u09ef' ? (char)('0' + c - '\u09e6') : c));
-            query = query.Where(p => p.Name.ToLower().Contains(term) || p.Sku.ToLower().Contains(term)
-                || (p.Description != null && p.Description.ToLower().Contains(term)));
+            foreach (var alternatives in CatalogSearch.Terms(search))
+                query = query.Where(p => alternatives.Any(term => p.Name.ToLower().Contains(term) || p.Sku.ToLower().Contains(term)
+                    || (p.Description != null && p.Description.ToLower().Contains(term))
+                    || (p.Brand != null && p.Brand.Name.ToLower().Contains(term))
+                    || p.Categories.Any(c => c.Category.Name.ToLower().Contains(term))));
         }
 
         if (_currentUser is not null && !_currentUser.IsInRole(UserRole.Staff, UserRole.InventoryManager, UserRole.Administrator))
@@ -216,5 +216,5 @@ public sealed class CatalogService : ICatalogService
             p.BrandId, p.Brand == null ? null : p.Brand.Name, p.Brand == null ? null : p.Brand.Slug,
             p.ProductLineId, p.ProductLine == null ? null : p.ProductLine.Name, p.ProductLine == null ? null : p.ProductLine.Slug,
             p.Images.OrderBy(i => i.SortOrder).ThenBy(i => i.Id).Select(i => new ProductImageDto(i.Id, i.Url, i.IsPrimary, i.AltText)).ToList(),
-            p.CompareAtPrice, p.ParentProductId, p.VariantLabel, p.Variants.Any(v => v.IsActive));
+            p.CompareAtPrice, p.ParentProductId, p.VariantLabel, p.Variants.Any(v => v.IsActive), p.SpecsJson);
 }

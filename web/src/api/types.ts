@@ -39,6 +39,7 @@ export interface ProductImage {
 }
 
 export interface Product {
+  specsJson?: string | null;
   parentProductId?: number | null; variantLabel?: string | null; hasVariants?: boolean;
   slug?: string; needsReview?: boolean; priceBasis?: string; priceVerifiedAt?: string | null; sourceName?: string | null; sourceUrl?: string | null;
   currency?: string;
@@ -155,6 +156,12 @@ export interface SalesByStatus {
 }
 
 export interface SalesSummary {
+  orderValue?: number;
+  collectedPayments?: number;
+  refundedPayments?: number;
+  outstandingCod?: number;
+  giftCreditUsed?: number;
+  giftCreditRestored?: number;
   currency?: string;
   from: string;
   to: string;
@@ -246,6 +253,7 @@ export interface DashboardOrder {
 }
 
 export interface Dashboard {
+  spendingByCurrency?: { currency: string; amount: number }[];
   totalOrders: number;
   ordersByStatus: DashboardStatusCount[];
   totalSpent: number;
@@ -521,7 +529,6 @@ export interface WishlistItem {
 
 export interface ForgotPasswordResponse {
   message: string;
-  demoResetToken?: string | null;
 }
 
 

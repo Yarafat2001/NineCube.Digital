@@ -19,20 +19,20 @@ public sealed class PasswordResetService : IPasswordResetService
     private readonly IClock _clock;
     private readonly IPasswordHasherService _hasher;
     private readonly ICacheService _cache;
-    private readonly IEmailSender _emailSender;
+    private readonly StorefrontOptions _storefront;
 
     public PasswordResetService(
         IAppDbContext db,
         IClock clock,
         IPasswordHasherService hasher,
         ICacheService cache,
-        IEmailSender emailSender)
+        Microsoft.Extensions.Options.IOptions<StorefrontOptions> storefront)
     {
         _db = db;
         _clock = clock;
         _hasher = hasher;
         _cache = cache;
-        _emailSender = emailSender;
+        _storefront = storefront.Value;
     }
 
     public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken ct = default)
@@ -59,11 +59,12 @@ public sealed class PasswordResetService : IPasswordResetService
         };
 
         _db.PasswordResetTokens.Add(resetToken);
+        var link = _storefront.Link($"login?resetToken={Uri.EscapeDataString(rawToken)}&email={Uri.EscapeDataString(user.Email)}");
         _db.EmailDeliveries.Add(new EmailDelivery
         {
             Key = $"password-reset:{Guid.NewGuid():N}", Recipient = user.Email,
             Subject = "Reset Your NineCube Password",
-            Body = $"<p>Your password reset token is <strong>{rawToken}</strong>.</p><p>It expires in one hour. Ignore this message if you did not request it.</p>",
+            Body = $"<p><a href=\"{System.Net.WebUtility.HtmlEncode(link)}\">Reset your password</a></p><p>The reset link is valid for one hour. If you did not request a password reset, you can safely ignore this email.</p>",
             CreatedAt = _clock.UtcNow
         });
         await _db.SaveChangesAsync(ct);

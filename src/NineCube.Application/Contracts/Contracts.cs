@@ -42,7 +42,7 @@ public sealed record ProductDto(
     int? BrandId = null, string? BrandName = null, string? BrandSlug = null,
     int? ProductLineId = null, string? ProductLineName = null, string? ProductLineSlug = null,
     IReadOnlyList<ProductImageDto>? Images = null,
-    decimal? CompareAtPrice = null, int? ParentProductId = null, string? VariantLabel = null, bool HasVariants = false);
+    decimal? CompareAtPrice = null, int? ParentProductId = null, string? VariantLabel = null, bool HasVariants = false, string? SpecsJson = null);
 
 /// <summary>Upload metadata echoed back after a product image is stored.</summary>
 public sealed record ProductImageUploadRequest(string Url, bool SetAsPrimary = true, string? AltText = null);
@@ -130,7 +130,13 @@ public sealed record SalesSummaryDto(
     int TotalOrders,
     decimal TotalRevenue,
     IReadOnlyList<SalesByStatusDto> ByStatus,
-    string Currency = "BDT");
+    string Currency = "BDT",
+    decimal OrderValue = 0,
+    decimal CollectedPayments = 0,
+    decimal RefundedPayments = 0,
+    decimal OutstandingCod = 0,
+    decimal GiftCreditUsed = 0,
+    decimal GiftCreditRestored = 0);
 
 // ---------------------------------------------------------------- admin
 

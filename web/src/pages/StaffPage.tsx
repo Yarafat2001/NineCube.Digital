@@ -288,7 +288,7 @@ export function SalesSummaryPage() {
       <header className="page-header">
         <div>
           <h1>{t("Sales summary")}</h1>
-          <p>{t("Read-only. Cancelled and rejected orders are listed but contribute no revenue.")}</p>
+          <p>{t("Orders created in this range, with their current payment and refund position. Figures are separated by currency.")}</p>
         </div>
         <Link className="btn" to="/staff">
           {t("Back to orders")}</Link>
@@ -334,9 +334,9 @@ export function SalesSummaryPage() {
             </div>
             <div className="stat-tile card-glass">
               <span className="stat-icon" data-tone="ok"><Icon name="wallet" /></span>
-              <div className="stat-tile__label">{t("Revenue (standing orders)")}</div>
+              <div className="stat-tile__label">{t("Net collected payments")}</div>
               <div className="stat-tile__value">{t(formatMoney(summary.data.totalRevenue, summary.data.currency))}</div>
-              <p className="muted">{t("Cancelled and rejected orders excluded")}</p>
+              <p className="muted">{t("Collected payments less settled cash refunds. Gift credit is shown separately.")}</p>
             </div>
             <div className="stat-tile card-glass">
               <span className="stat-icon" data-tone="warn"><Icon name="clock" /></span>
@@ -348,6 +348,16 @@ export function SalesSummaryPage() {
             </div>
           </div>
 
+          <div className="grid-tiles sales-stats">
+            {[
+              { label: 'Order value', value: summary.data.orderValue },
+              { label: 'Collected payments', value: summary.data.collectedPayments },
+              { label: 'Settled cash refunds', value: summary.data.refundedPayments },
+              { label: 'Outstanding COD', value: summary.data.outstandingCod },
+              { label: 'Gift credit used', value: summary.data.giftCreditUsed },
+              { label: 'Gift credit restored', value: summary.data.giftCreditRestored }
+            ].map(metric => <div className="stat-tile card-glass" key={metric.label}><div className="stat-tile__label">{t(metric.label)}</div><div className="stat-tile__value">{formatMoney(metric.value ?? 0, summary.data!.currency)}</div></div>)}
+          </div>
           <SalesCharts data={summary.data} />
           <div className="table-surface">
             <div className="table-scroll">
@@ -359,7 +369,7 @@ export function SalesSummaryPage() {
                     <th scope="col" className="num">
                       {t("Orders")}</th>
                     <th scope="col" className="num">
-                      {t("Revenue")}</th>
+                      {t("Net collected payments")}</th>
                     <th scope="col" className="num">
                       {t("Share")}</th>
                   </tr>

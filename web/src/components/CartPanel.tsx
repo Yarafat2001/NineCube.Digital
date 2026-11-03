@@ -1,3 +1,5 @@
+import { AddressFields } from './AddressBook';
+import type { AddressInput } from '../api/hooks';
 import { addressLines } from '../lib/addresses';
 import { t, useLanguage } from '../i18n/language';
 import { useQueryClient } from '@tanstack/react-query';
@@ -44,7 +46,9 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   const [notice, setNotice] = useState<string | null>(null);
 
   const { data: profile } = useProfile(!!user);
-  const [guestDetails, setGuestDetails] = useState({ name: '', email: '', phone: '', division: '', district: '', upazila: '', addressLine: '' });
+  const [guestDetails, setGuestDetails] = useState({ name: '', email: '' });
+  const [guestAddress, setGuestAddress] = useState<AddressInput>({ label: 'Delivery', countryCode: 'BD', phone: '', division: '', district: '', upazila: '', addressLine: '', isDefault: true });
+  const [guestErrors, setGuestErrors] = useState<Record<string, string[]>>({});
   const [guestSession, setGuestSession] = useState<{ token: string; addressId: number } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const validateCoupon = useValidateCoupon();
@@ -87,7 +91,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
 
   useEffect(() => {
     if (profile?.addresses && profile.addresses.length > 0 && selectedAddressId === null) {
-      const available = profile.addresses.filter(a => (a.countryCode ?? 'BD') === 'BD');
+      const available = profile.addresses;
       const def = available.find(a => a.isDefault) ?? available[0] ?? profile.addresses[0];
       if (def) setSelectedAddressId(def.id);
     }
@@ -126,8 +130,10 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   const effectiveDiscount = appliedCoupon?.isValid ? appliedCoupon : autoPromo;
   const isAutoApplied = !appliedCoupon?.isValid && !!autoPromo?.isValid;
 
+  const destination = user ? profile?.addresses.find(a => a.id === selectedAddressId) : guestAddress;
   const quote = useCheckoutQuote(cart.lines.map(l => ({ productId: l.productId, quantity: l.quantity })),
-    appliedCoupon?.isValid ? appliedCoupon.code ?? undefined : undefined, appliedGiftCard?.isValid ? appliedGiftCard.code ?? undefined : undefined);
+    appliedCoupon?.isValid ? appliedCoupon.code ?? undefined : undefined, appliedGiftCard?.isValid ? appliedGiftCard.code ?? undefined : undefined,
+    { deliveryCountryCode: destination?.countryCode ?? 'BD', deliveryDivision: destination?.division, deliveryDistrict: destination?.district });
   const discountAmount = quote.data?.discountAmount ?? (effectiveDiscount?.isValid ? effectiveDiscount.discountAmount : 0);
   const shippingAmount = quote.data?.shippingAmount ?? (cart.currency === 'BDT' && cart.total < freeShippingThreshold ? 60 : 0);
   const amountAfterCoupon = Math.max(0, cart.total - discountAmount) + shippingAmount;
@@ -139,7 +145,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
     if (!onlineAvailable && paymentMethod !== 'CashOnDelivery') setPaymentMethod('CashOnDelivery');
   }, [onlineAvailable, paymentMethod]);
 
-  const qualifiesForFreeShipping = cart.total >= freeShippingThreshold;
+  const qualifiesForFreeShipping = quote.data ? quote.data.shippingAmount === 0 : cart.total >= freeShippingThreshold;
   const amountNeededForFreeShipping = Math.max(0, freeShippingThreshold - cart.total);
   const freeShippingPercent = Math.min(100, Math.round((cart.total / (freeShippingThreshold || 1)) * 100));
 
@@ -232,7 +238,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   };
 
   const submit = async () => {
-    if (inFlight.current || cart.lines.length === 0 || cart.mixedCurrencies || (!quote.data && quote.isLoading) || quote.isError) return;
+    if (inFlight.current || cart.lines.length === 0 || cart.mixedCurrencies || quote.isFetching || quote.isError) return;
 
     inFlight.current = true;
     setSubmitting(true);
@@ -245,7 +251,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
     try {
       let session = guestSession;
       if (!user && !session) {
-        session = await apiRequest<{ token: string; addressId: number }>('/api/guest/session', { method: 'POST', body: guestDetails });
+        session = await apiRequest<{ token: string; addressId: number }>('/api/guest/session', { method: 'POST', body: { ...guestAddress, ...guestDetails } });
         setGuestSession(session);
         sessionStorage.setItem('ninecube.guest.token', session.token);
       }
@@ -284,6 +290,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
       onPlaced(order);
       if (redirectUrl) window.location.assign(redirectUrl);
     } catch (error) {
+      if (!user && error instanceof ApiError) setGuestErrors(error.fieldErrors);
       if (error instanceof ApiError && error.code === 'checkout_quote_changed') {
         await quote.refetch();
         setInlineError(error.message);
@@ -445,13 +452,14 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
         <div className="cart-checkout-extras">
           {!user ? <fieldset className="stack" disabled={!!guestSession}>
             <legend>{t('Guest checkout')}</legend>
-            <p>{t('No account needed. Your order access is saved in this browser tab for 30 days.')}</p>
+            <p>{t('No account needed. Recover your order by email on any device.')}</p>
             {Object.entries(guestDetails).map(([key, value]) => <label key={key} className="field">
               <span>{t(({ name: 'Full name', email: 'Email', phone: 'Phone', division: 'Division', district: 'District', upazila: 'Upazila', addressLine: 'Street address' } as Record<string, string>)[key])}</span>
               <input className="cart-input" type={key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'}
                 value={value} required maxLength={key === 'addressLine' ? 500 : key === 'email' ? 256 : key === 'phone' ? 32 : 100}
                 onChange={e => setGuestDetails(current => ({ ...current, [key]: e.target.value }))} />
             </label>)}
+            <AddressFields draft={guestAddress} setDraft={value => { setGuestAddress(value); setGuestErrors({}); }} errors={guestErrors} checkout />
           </fieldset> : null}
           {/* Address selection */}
           {user ? <div className="cart-field">
@@ -467,7 +475,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                 onChange={e => setSelectedAddressId(Number(e.target.value))}
               >
                 {profile.addresses.map(a => (
-                  <option key={a.id} value={a.id} disabled={(a.countryCode ?? 'BD') !== 'BD'}>
+                  <option key={a.id} value={a.id} >
                     {a.label}: {addressLines(a).join(', ')}
                   </option>
                 ))}
@@ -479,7 +487,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
             )}
           </div> : null}
 
-          {profile?.addresses.some(a => (a.countryCode ?? 'BD') !== 'BD') && <p className="cart-field__hint">{t('Delivery is currently available within Bangladesh only.')}</p>}
+          {quote.data?.minDeliveryDays != null && quote.data?.maxDeliveryDays != null && <p className="cart-field__hint">{t('Estimated delivery days')}: {quote.data.minDeliveryDays}?{quote.data.maxDeliveryDays}</p>}
 
           {(cart.syncStatus === 'error' || cart.syncStatus === 'conflict') && <div role="status"><p>{t('Your cart could not sync. Reload the saved cart to resolve changes from another device.')}</p><button type="button" className="btn" onClick={cart.reloadSavedCart}>{t('Reload saved cart')}</button></div>}
           {/* Customer Delivery Instructions / Order Notes */}
@@ -804,7 +812,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
             type="button"
             className="btn btn--primary cart-sticky-dock__cta"
             onClick={submit}
-            disabled={busy || cart.syncStatus === 'loading' || (profile?.addresses.some(a => a.id === selectedAddressId && (a.countryCode ?? 'BD') !== 'BD') ?? false) || cart.lines.length === 0 || cart.mixedCurrencies || (!quote.data && quote.isLoading) || quote.isError}
+            disabled={busy || cart.syncStatus === 'loading' || cart.lines.length === 0 || cart.mixedCurrencies || quote.isFetching || quote.isError}
             data-testid="place-order"
           >
             {busy ? (

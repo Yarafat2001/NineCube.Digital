@@ -29,7 +29,9 @@ public sealed class OrderPlacementTests : ApiTestBase
         var order = await ReadAsync<OrderDto>(response);
         order.Status.Should().Be(OrderStatus.Pending);
         order.CustomerId.Should().Be(customer.User.CustomerId);
-        order.TotalAmount.Should().Be(31.50m);
+        order.SubTotal.Should().Be(31.50m);
+        order.ShippingAmount.Should().Be(60m);
+        order.TotalAmount.Should().Be(91.50m);
         order.Items.Should().HaveCount(1);
         order.Items[0].Quantity.Should().Be(3);
         order.Items[0].UnitPrice.Should().Be(10.50m);
@@ -148,7 +150,9 @@ public sealed class OrderPlacementTests : ApiTestBase
         var order = await ReadAsync<OrderDto>(response);
         order.Items.Should().HaveCount(1, "two lines for the same product must be merged");
         order.Items[0].Quantity.Should().Be(5);
-        order.TotalAmount.Should().Be(20.00m);
+        order.SubTotal.Should().Be(20.00m);
+        order.ShippingAmount.Should().Be(60m);
+        order.TotalAmount.Should().Be(80.00m);
 
         (await Factory.GetStockAsync(product.Id)).Should().Be(15);
     }

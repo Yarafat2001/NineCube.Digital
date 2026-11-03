@@ -53,7 +53,7 @@ export function AddressBook({ addresses, recipientName, phone }: { addresses: Ad
           </div></div>
         <address>{addressLines(address).map((line, index) => <span key={index}>{line}</span>)}</address>
         {address.deliveryInstructions && <p className="muted">{address.deliveryInstructions}</p>}
-        {(address.countryCode ?? 'BD') !== 'BD' && <small>{t('Delivery is currently available within Bangladesh only.')}</small>}
+        {(address.countryCode ?? 'BD') !== 'BD' && <small>{t('Delivery availability and fees are checked at checkout.')}</small>}
         {!address.isDefault && <button type="button" className="btn btn--sm btn--ghost" disabled={busy} onClick={() => update.mutate({ ...address, isDefault: true }, {
           onSuccess: () => { if (editing === address.id) setDraft(current => ({ ...current, isDefault: true })); toast.push('success', 'Default address updated.'); }, onError: error => toast.pushError(error)
         })}>{t('Set as default')}</button>}
@@ -69,7 +69,7 @@ export function AddressBook({ addresses, recipientName, phone }: { addresses: Ad
   </section>;
 }
 
-export function AddressFields({ draft, setDraft, errors }: { draft: AddressInput; setDraft: (value: AddressInput) => void; errors: Record<string, string[]> }) {
+export function AddressFields({ draft, setDraft, errors, checkout = false }: { draft: AddressInput; setDraft: (value: AddressInput) => void; errors: Record<string, string[]>; checkout?: boolean }) {
   const language = useLanguage();
   const prefix = useId();
   const rules = addressRules(draft.countryCode);
@@ -95,15 +95,15 @@ export function AddressFields({ draft, setDraft, errors }: { draft: AddressInput
       <select id={`${prefix}-country`} autoComplete="country" value={draft.countryCode ?? 'BD'} onChange={e => setDraft({ ...draft, countryCode: e.target.value, division: '', district: '', upazila: '', postalCode: '' })}>
         {countries.map(({ code, name }) => <option key={code} value={code}>{name}</option>)}
       </select>
-      {(draft.countryCode ?? 'BD') !== 'BD' && <small className="muted">{t('You can save this address. Delivery is currently available within Bangladesh only.')}</small>}
+      {(draft.countryCode ?? 'BD') !== 'BD' && <small className="muted">{t('Delivery availability and fees are checked at checkout.')}</small>}
       {errors.countryCode && <span role="alert" className="error">{errors.countryCode.map(message => t(message)).join(' ')}</span>}
     </div>
-    <div className="field address-fields__wide"><div className="row" role="group" aria-label={t('Address type')}>
+    {!checkout && <div className="field address-fields__wide"><div className="row" role="group" aria-label={t('Address type')}>
       {['Home', 'Work', 'Other'].map(label => <button key={label} type="button" className="filter-chip" aria-pressed={draft.label === label} onClick={() => setDraft({ ...draft, label })}>{t(label)}</button>)}
-    </div></div>
-    {input('label', 'Label', { required: true, maxLength: 60 })}
+    </div></div>}
+    {!checkout && input('label', 'Label', { required: true, maxLength: 60 })}
     {input('recipientName', 'Recipient name', { autoComplete: 'shipping name' })}
-    {input('phone', 'Phone (optional)', { autoComplete: 'shipping tel', type: 'tel', maxLength: 20 })}
+    {input('phone', checkout ? 'Phone' : 'Phone (optional)', { required: checkout, autoComplete: 'shipping tel', type: 'tel', maxLength: 20 })}
     {input('company', 'Company (optional)', { autoComplete: 'shipping organization' })}
     {input('addressLine', 'Address line', { required: true, autoComplete: 'shipping address-line1', maxLength: 300, wide: true })}
     {input('addressLine2', 'Apartment / floor / building (optional)', { autoComplete: 'shipping address-line2', wide: true })}
@@ -117,6 +117,6 @@ export function AddressFields({ draft, setDraft, errors }: { draft: AddressInput
       <textarea id={`${prefix}-instructions`} rows={2} maxLength={1000} value={draft.deliveryInstructions ?? ''} onChange={e => setDraft({ ...draft, deliveryInstructions: e.target.value })} />
       {errors.deliveryInstructions && <span role="alert" className="error">{errors.deliveryInstructions.map(message => t(message)).join(' ')}</span>}
     </div>
-    <label className="checkbox address-fields__wide"><input type="checkbox" checked={draft.isDefault} onChange={e => setDraft({ ...draft, isDefault: e.target.checked })} />{t('Use as my default address')}</label>
+    {!checkout && <label className="checkbox address-fields__wide"><input type="checkbox" checked={draft.isDefault} onChange={e => setDraft({ ...draft, isDefault: e.target.checked })} />{t('Use as my default address')}</label>}
   </div>;
 }

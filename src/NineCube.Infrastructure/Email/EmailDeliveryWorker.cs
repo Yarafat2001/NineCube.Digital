@@ -17,6 +17,9 @@ public sealed class EmailDeliveryWorker(IServiceScopeFactory scopes, ILogger<Ema
             try
             {
                 using var scope = scopes.CreateScope();
+                // Preserve the queue while SMTP is being configured; do not exhaust retries.
+                var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                if (string.IsNullOrWhiteSpace(config["Email:Smtp:Host"])) continue;
                 var db = scope.ServiceProvider.GetRequiredService<IAppDbContext>();
                 var clock = scope.ServiceProvider.GetRequiredService<IClock>();
                 var sender = scope.ServiceProvider.GetRequiredService<IEmailSender>();

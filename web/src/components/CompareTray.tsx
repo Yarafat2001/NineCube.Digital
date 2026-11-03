@@ -5,6 +5,7 @@ import type { Product } from '../api/types';
 import { formatMoney } from '../lib/helpers';
 import { Icon } from './Icon';
 import { ProductThumbnail } from './ProductImage';
+import { productSpecs } from '../lib/productSpecs';
 
 export interface CompareTrayProps {
   items: Product[];
@@ -16,6 +17,8 @@ export interface CompareTrayProps {
 export function CompareTray({ items, onRemove, onClear, onAddToCart }: CompareTrayProps) {
   useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
+  const specs = items.map(item => productSpecs(item.specsJson));
+  const specKeys = [...new Set(specs.flatMap(item => Object.keys(item)))];
 
   useEffect(() => {
     if (items.length === 0) setModalOpen(false);
@@ -211,6 +214,10 @@ export function CompareTray({ items, onRemove, onClear, onAddToCart }: CompareTr
                       </div>
                     ))}
 
+                    {specKeys.map(key => <div key={key} style={{ display: 'contents' }}>
+                      <div className="compare-cell compare-cell--label"><strong>{key}</strong></div>
+                      {items.map((item, index) => <div className="compare-cell" key={item.id}>{specs[index][key] ?? '—'}</div>)}
+                    </div>)}
                     {/* Tags / Specs Row */}
                     <div className="compare-cell compare-cell--label">
                       <strong>{t("Tags")}</strong>

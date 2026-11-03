@@ -56,7 +56,7 @@ public sealed class CategoryService(IAppDbContext db, ISettingsService settings,
 
     private async Task<T> Mutate<T>(Func<Task<T>> action, CancellationToken ct) => await db.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
     {
-        await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, ct);
+        await using var tx = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
         // Serialize hierarchy edits and category assignments; inventory rows are never updated.
         try
         {

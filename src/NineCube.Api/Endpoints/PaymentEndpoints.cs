@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Options;
 using NineCube.Api.Auth;
 using NineCube.Api.Common;
 using NineCube.Application.Contracts;
@@ -54,7 +55,7 @@ public sealed class PaymentEndpoints : IEndpoint
     public static async Task<IResult> ProcessCallbackAsync(
         HttpRequest request,
         IPaymentService paymentService,
-        Microsoft.Extensions.Configuration.IConfiguration configuration,
+        IOptions<StorefrontOptions> storefront,
         CancellationToken ct)
     {
         string? validationId = null;
@@ -91,7 +92,7 @@ public sealed class PaymentEndpoints : IEndpoint
                 var transaction = await paymentService.ProcessCallbackAsync(new PaymentCallbackRequest(validationId), ct);
                 if (isBrowser)
                 {
-                    return Results.Redirect(StorefrontLinks.To(configuration, $"payment/return?order={transaction.OrderId}&payment=success"));
+                    return Results.Redirect(storefront.Value.Link($"payment/return?order={transaction.OrderId}&payment=success"));
                 }
                 return TypedResults.Ok(new { transaction.OrderId, transaction.Status, message = "Payment verified. You can return to your order." });
             }
@@ -103,7 +104,7 @@ public sealed class PaymentEndpoints : IEndpoint
                     "CANCELLED" => "cancelled",
                     _ => "failed"
                 };
-                return Results.Redirect(StorefrontLinks.To(configuration, $"payment/return?payment={outcome}"));
+                return Results.Redirect(storefront.Value.Link($"payment/return?payment={outcome}"));
             }
 
             return TypedResults.BadRequest(new { error = "missing_val_id", message = "No validation identifier provided." });
@@ -112,7 +113,7 @@ public sealed class PaymentEndpoints : IEndpoint
         {
             if (isBrowser)
             {
-                return Results.Redirect(StorefrontLinks.To(configuration, "payment/return?payment=error"));
+                return Results.Redirect(storefront.Value.Link("payment/return?payment=error"));
             }
             throw;
         }

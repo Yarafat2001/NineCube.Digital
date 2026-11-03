@@ -50,9 +50,10 @@ export function AccountDashboardPage() {
       <div className="dashboard-stats" data-testid="dashboard-stats">
         {[
           { label: 'Total orders', value: String(data.totalOrders), caption: 'All orders on your account', icon: 'box' as const, tone: 'info' },
-          { label: 'Total spent', value: formatMoney(data.totalSpent, data.currency), caption: `Across ${data.totalItems} items`, icon: 'wallet' as const, tone: 'ok' },
+          { label: 'Total spent', value: data.spendingByCurrency?.map(s => formatMoney(s.amount, s.currency)).join(' / ') || formatMoney(data.totalSpent, data.currency), caption: 'Paid amounts and gift credit less settled refunds', icon: 'wallet' as const, tone: 'ok' },
           { label: 'Active orders', value: String(countOf(['Pending', 'Confirmed', 'Shipped'])), caption: 'Pending, confirmed or in transit', icon: 'truck' as const, tone: 'warn' },
-          { label: 'Delivered', value: String(data.ordersByStatus.find(s => s.status === 'Delivered')?.count ?? 0), caption: 'Delivery confirmation is not reported yet', icon: 'check' as const, tone: 'ok' }
+          { label: 'Delivered', value: String(data.ordersByStatus.find(s => s.status === 'Delivered')?.count ?? 0), caption: 'Orders confirmed as delivered', icon: 'check' as const, tone: 'ok' },
+          { label: 'Delivery failed', value: String(data.ordersByStatus.find(s => s.status === 'DeliveryFailed')?.count ?? 0), caption: 'Orders where delivery could not be completed', icon: 'truck' as const, tone: 'warn' }
         ].map(stat => <div className="stat-tile card-glass" key={stat.label}><span className="stat-icon" data-tone={stat.tone}><Icon name={stat.icon} /></span><span className="stat-tile__label">{t(stat.label)}</span><span className="stat-tile__value">{t(stat.value)}</span><span className="muted">{t(stat.caption)}</span></div>)}
       </div>
       {data.totalOrders === 0 ? <EmptyState title={t("No orders yet")} description={t("Your first order will appear here.")} action={<Link className="btn btn--primary" to="/products">{t("Browse products")}</Link>} /> : null}

@@ -94,6 +94,8 @@ public static class ProductionCatalogImporter
                     restoredProducts++;
                 }
             }
+            // A renamed existing SKU is merchant-owned; do not attach unrelated bundled media or specifications.
+            if (!isNew && product.Name != item.Name) continue;
             if (string.IsNullOrWhiteSpace(product.Description)) product.Description = item.Description;
             if (string.IsNullOrWhiteSpace(product.SpecsJson)) product.SpecsJson = item.SpecsJson;
             if (string.IsNullOrWhiteSpace(product.SourceName)) product.SourceName = item.SourceName;

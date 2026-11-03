@@ -823,6 +823,8 @@ export function useRestockSubscriptions() {
 }
 
 export interface CheckoutQuote {
+  minDeliveryDays?: number | null;
+  maxDeliveryDays?: number | null;
   subTotal: number; discountAmount: number; shippingAmount: number;
   giftCardAmount: number; totalAmount: number; currency: string;
   freeShippingThreshold: number; couponCode: string | null;
@@ -832,11 +834,11 @@ export function useCheckoutOptions() {
   return useQuery({ queryKey: ['checkout-options'], queryFn: () => apiRequest<{ onlinePaymentsEnabled: boolean }>('/api/checkout/options') });
 }
 
-export function useCheckoutQuote(items: { productId: number; quantity: number }[], couponCode?: string, giftCardCode?: string) {
+export function useCheckoutQuote(items: { productId: number; quantity: number }[], couponCode?: string, giftCardCode?: string, destination?: { deliveryCountryCode?: string; deliveryDivision?: string; deliveryDistrict?: string }) {
   return useQuery({
-    queryKey: ['checkout-quote', items.map(i => `${i.productId}:${i.quantity}`).join(','), couponCode, giftCardCode],
+    queryKey: ['checkout-quote', items.map(i => `${i.productId}:${i.quantity}`).join(','), couponCode, giftCardCode, destination],
     queryFn: ({ signal }) => apiRequest<CheckoutQuote>('/api/checkout/quote', {
-      method: 'POST', body: { items, couponCode, giftCardCode }, signal
+      method: 'POST', body: { items, couponCode, giftCardCode, ...destination }, signal
     }),
     enabled: items.length > 0,
     staleTime: 15_000,

@@ -20,7 +20,8 @@ public sealed class AuthorizationTests : ApiTestBase
     [Fact]
     public async Task Test10_Unauthenticated_calls_return_401()
     {
-        foreach (var url in new[] { "api/products", "api/orders", "api/products/low-stock", "api/admin/users", "api/auth/me" })
+        (await GetAsync("api/products")).StatusCode.Should().Be(HttpStatusCode.OK, "the active catalogue is public");
+        foreach (var url in new[] { "api/orders", "api/products/low-stock", "api/admin/users", "api/auth/me" })
         {
             var response = await GetAsync(url);
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, $"{url} requires authentication");
@@ -223,7 +224,7 @@ public sealed class AuthorizationTests : ApiTestBase
         var product = await SeedProductAsync("T10-I", 10.00m, stock: 5);
         var (_, adminToken) = await SeedAndLoginAsync("t10-i-admin@example.com", UserRole.Administrator);
 
-        foreach (var url in new[] { "api/products", "api/orders", "api/reports/sales", "api/admin/audit-logs", "api/admin/settings" })
+        foreach (var url in new[] { "api/orders", "api/reports/sales", "api/admin/audit-logs", "api/admin/settings" })
         {
             (await GetAsync(url, adminToken)).StatusCode.Should().Be(HttpStatusCode.OK, $"{url} is readable by an administrator");
         }

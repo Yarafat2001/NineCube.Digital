@@ -53,6 +53,19 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
   const forgotPasswordMutation = useForgotPassword();
   const resetPasswordMutation = useResetPassword();
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const resetToken = params.get('resetToken');
+    const resetEmail = params.get('email');
+    if (!resetToken || !resetEmail || signup) return;
+    setRecoveryEmail(resetEmail);
+    setRecoveryToken(resetToken);
+    setRecoveryStep('reset');
+    setShowRecovery(true);
+    // Remove the secret from the visible URL and browser history after reading it.
+    navigate(location.pathname, { replace: true, state: location.state });
+  }, [location.search, location.pathname, signup, navigate]);
+
   const handleRequestToken = async (e: FormEvent) => {
     e.preventDefault();
     if (!recoveryEmail.trim()) return;

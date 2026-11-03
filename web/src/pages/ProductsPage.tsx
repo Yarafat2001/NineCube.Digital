@@ -1,4 +1,5 @@
 import { t, useLanguage } from '../i18n/language';
+import { BuyingGuide } from '../components/BuyingGuide';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLowStockThreshold, useProducts, useCategories, useTags, useBrands, useWishlist, useToggleWishlist } from '../api/hooks';
@@ -482,6 +483,7 @@ export function ProductsPage() {
             </div>
           </div>
 
+          <BuyingGuide category={category} />
           {gridPending ? <LoadingBlock label={t("Loading products")} variant="card" count={6} /> : null}
 
           {productsQuery.isError && !gridPending ? (

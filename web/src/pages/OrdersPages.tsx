@@ -1,9 +1,10 @@
+import { apiRequest } from '../api/client';
 import { OrderAftercare } from '../components/OrderAftercare';
 import { t, useLanguage } from '../i18n/language';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useOrder, useOrderAction, useOrders } from '../api/hooks';
-import type { Order, OrderStatus } from '../api/types';
+import type { Product, Order, OrderStatus } from '../api/types';
 import {
   EmptyState,
   ErrorState,
@@ -82,31 +83,7 @@ export function MyOrdersPage() {
   const cart = useCart();
   const toast = useToast();
 
-  const handleReorder = (order: Order) => {
-    let count = 0;
-    for (const item of order.items) {
-      cart.add(
-        {
-          id: item.productId,
-          name: item.name,
-          sku: item.sku,
-          price: item.unitPrice,
-          currency: order.currency ?? 'BDT',
-          stockQuantity: 999,
-          isActive: true,
-          description: '',
-          categories: [],
-          tags: [],
-          images: [],
-          imageUrl: null,
-        } as any,
-        item.quantity
-      );
-      count += item.quantity;
-    }
-    toast.push('success', `${t("Added items from Order #")}${order.id} ${t("to your cart.")}`);
-    document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet'));
-  };
+  const { reorder: handleReorder, busy: reordering } = useReorder();
   const [status, setStatus] = useState<OrderStatus | ''>('');
   const [page, setPage] = useState(1);
 
@@ -199,7 +176,8 @@ export function MyOrdersPage() {
                         <button
                           type="button"
                           className="btn btn--sm btn--outline"
-                          onClick={() => handleReorder(order)}
+                          disabled={reordering}
+                          onClick={() => void handleReorder(order)}
                           title={t("Add all items back to cart")}
                         >
                           🔄 {t("Buy again")}</button>
@@ -234,31 +212,7 @@ export function OrderDetailPage() {
   const cart = useCart();
   const { user, hasRole } = useAuth();
 
-  const handleReorder = (o: Order) => {
-    let count = 0;
-    for (const item of o.items) {
-      cart.add(
-        {
-          id: item.productId,
-          name: item.name,
-          sku: item.sku,
-          price: item.unitPrice,
-          currency: o.currency ?? 'BDT',
-          stockQuantity: 999,
-          isActive: true,
-          description: '',
-          categories: [],
-          tags: [],
-          images: [],
-          imageUrl: null,
-        } as any,
-        item.quantity
-      );
-      count += item.quantity;
-    }
-    toast.push('success', `${t("Added items from Order #")}${o.id} ${t("to your cart.")}`);
-    document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet'));
-  };
+  const { reorder: handleReorder, busy: reordering } = useReorder();
   const orderId = Number(id);
   const orderQuery = useOrder(Number.isFinite(orderId) ? orderId : null);
   const action = useOrderAction();
@@ -427,7 +381,8 @@ export function OrderDetailPage() {
             <button
               type="button"
               className="btn btn--primary"
-              onClick={() => handleReorder(order)}
+              disabled={reordering}
+                          onClick={() => void handleReorder(order)}
             >
               🔄 {t("Buy again")}
             </button>
@@ -447,4 +402,30 @@ export function OrderDetailPage() {
       </div>
     </div>
   );
+}
+
+
+function useReorder() {
+  const cart = useCart(); const toast = useToast(); const guard = useRef(false); const [busy, setBusy] = useState(false);
+  const reorder = async (order: Order) => {
+    if (guard.current) return;
+    guard.current = true; setBusy(true);
+    try {
+      const results = await Promise.allSettled(order.items.map(async item => ({ item, product: await apiRequest<Product>(`/api/products/${item.productId}`) })));
+      let added = 0; let skipped = 0;
+      for (const result of results) {
+        if (result.status === 'rejected') { skipped++; continue; }
+        const { item, product } = result.value;
+        const existing = cart.lines.find(l => l.productId === product.id)?.quantity ?? 0;
+        const quantity = Math.max(0, Math.min(item.quantity, product.stockQuantity - existing, 1000 - existing));
+        if (!product.isActive || product.hasVariants || !quantity) { skipped++; continue; }
+        cart.add(product, quantity); added += quantity;
+        if (quantity < item.quantity) skipped++;
+      }
+      toast.push(added ? 'success' : 'info', added ? t('Available items added at current prices.') : t('These items are currently unavailable.'));
+      if (skipped) toast.push('info', t('Some items or quantities are unavailable and were skipped.'));
+      if (added) document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet'));
+    } finally { guard.current = false; setBusy(false); }
+  };
+  return { reorder, busy };
 }
