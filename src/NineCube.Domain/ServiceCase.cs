@@ -1,7 +1,7 @@
 namespace NineCube.Domain;
 
 public enum ServiceCaseKind { Support, Return, Exchange, Warranty }
-public enum ServiceCaseStatus { Open, Approved, Rejected, Completed }
+public enum ServiceCaseStatus { Open, Approved, Rejected, Completed, Received }
 
 public sealed class ServiceCase
 {

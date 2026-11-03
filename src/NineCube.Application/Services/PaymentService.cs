@@ -114,6 +114,7 @@ public sealed class PaymentService(IAppDbContext db, ICurrentUser currentUser, I
             return Dto(transaction);
         }
         order.PaymentStatus = PaymentStatus.Paid;
+        order.PaidAt = clock.UtcNow;
         order.PaymentMethod = transaction.Provider;
         order.UpdatedAt = clock.UtcNow;
         order.ReservationExpiresAt = null;

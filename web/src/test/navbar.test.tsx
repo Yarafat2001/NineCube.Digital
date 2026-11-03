@@ -16,9 +16,9 @@ function signIn(role: UserRole) {
 describe('Navbar', () => {
   it('shows only the links the role can actually use', async () => {
     expect(navItemsFor('Customer').map((item) => item.label)).toEqual(['Products', 'My Orders']);
-    expect(navItemsFor('Staff').map((item) => item.label)).toEqual(['Products', 'Orders', 'Sales']);
-    expect(navItemsFor('InventoryManager').map((item) => item.label)).toEqual(['Products', 'Inventory']);
-    expect(navItemsFor('Administrator').map((item) => item.label)).toEqual(['Products', 'Admin', 'Staff', 'Inventory']);
+    expect(navItemsFor('Staff').map((item) => item.label)).toEqual(['Products', 'Orders', 'Sales', 'Operations']);
+    expect(navItemsFor('InventoryManager').map((item) => item.label)).toEqual(['Products', 'Inventory', 'Operations']);
+    expect(navItemsFor('Administrator').map((item) => item.label)).toEqual(['Products', 'Admin', 'Staff', 'Inventory', 'Operations']);
 
     signIn('Administrator');
     renderApp('/admin');
@@ -26,7 +26,7 @@ describe('Navbar', () => {
     const nav = await screen.findByRole('navigation', { name: /main/i });
     const links = Array.from(nav.querySelectorAll('.navbar__link')).map((link) => link.textContent);
 
-    expect(links).toEqual(['Products', 'Admin', 'Staff', 'Inventory']);
+    expect(links).toEqual(['Products', 'Admin', 'Staff', 'Inventory', 'Operations']);
     expect(screen.queryByRole('link', { name: 'My Orders' })).not.toBeInTheDocument();
   });
 
@@ -84,12 +84,15 @@ describe('Navbar', () => {
     await user.keyboard('{ArrowRight}');
     expect(screen.getByRole('link', { name: 'Inventory' })).toHaveFocus();
 
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('link', { name: 'Operations' })).toHaveFocus();
+
     // wraps around to the first link in the tray
     await user.keyboard('{ArrowRight}');
     expect(within(screen.getByRole('navigation', { name: /main/i })).getByRole('link', { name: 'Products' })).toHaveFocus();
 
     await user.keyboard('{ArrowLeft}');
-    expect(screen.getByRole('link', { name: 'Inventory' })).toHaveFocus();
+    expect(screen.getByRole('link', { name: 'Operations' })).toHaveFocus();
   });
 
   it('shows the signed-in email and signs the user out', async () => {
@@ -113,6 +116,6 @@ describe('Navbar', () => {
 
     const nav = await screen.findByRole('navigation', { name: /main/i });
     expect(nav.querySelector('.navbar__tray')).not.toBeNull();
-    expect(within(nav).getAllByRole('link')).toHaveLength(3); // brand + 2 role links
+    expect(within(nav).getAllByRole('link')).toHaveLength(4); // brand + 3 role links
   });
 });

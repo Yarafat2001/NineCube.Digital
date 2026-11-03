@@ -21,19 +21,21 @@ public sealed class AuthService : IAuthService
     private readonly IJwtTokenService _tokens;
     private readonly ICurrentUser _currentUser;
     private readonly IClock _clock;
+    private readonly SecurityOptions _securityOptions;
 
     public AuthService(
         IAppDbContext db,
         IPasswordHasherService hasher,
         IJwtTokenService tokens,
         ICurrentUser currentUser,
-        IClock clock)
+        IClock clock, Microsoft.Extensions.Options.IOptions<SecurityOptions>? securityOptions = null)
     {
         _db = db;
         _hasher = hasher;
         _tokens = tokens;
         _currentUser = currentUser;
         _clock = clock;
+        _securityOptions = securityOptions?.Value ?? new();
     }
 
     /// <summary>
@@ -103,6 +105,8 @@ public sealed class AuthService : IAuthService
     public async Task<AuthResponse> LoginAsync(LoginRequest request, CancellationToken ct = default)
     {
         var email = Normalize(request.Email);
+        await using var loginTx = await _db.Database.BeginTransactionAsync(ct);
+        await _db.Database.ExecuteSqlInterpolatedAsync($"SELECT 1 FROM \"Users\" WHERE \"Email\" = {email} FOR UPDATE", ct);
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
 
         var ok = user is not null && _hasher.Verify(request.Password, user.PasswordHash);
@@ -129,6 +133,12 @@ public sealed class AuthService : IAuthService
             throw new UnauthorizedException("This account has been deactivated. Contact an administrator.");
         }
 
+        if (user.MfaEnabled || (_securityOptions.RequireStaffMfa && user.Role != UserRole.Customer))
+        {
+            try { await AccountCodes.RequireAsync(_db, user.Id, request.Code, _clock, ct); }
+            catch (UnauthorizedException) { await loginTx.CommitAsync(ct); throw; }
+        }
+
         _db.AuditLogs.Add(new AuditLog
         {
             UserId = user.Id,
@@ -150,6 +160,8 @@ public sealed class AuthService : IAuthService
             ExpiresAtUtc = _clock.UtcNow.AddDays(14)
         });
         await _db.SaveChangesAsync(ct);
+
+        await loginTx.CommitAsync(ct);
 
         return new AuthResponse(token.AccessToken, token.ExpiresAtUtc,
             new UserSummaryDto(user.Id, user.Email, user.Role, user.CustomerId), refreshToken);
@@ -195,6 +207,8 @@ public sealed class AuthService : IAuthService
         var newRefreshToken = Convert.ToBase64String(System.Security.Cryptography.RandomNumberGenerator.GetBytes(64));
 
         await using var transaction = await _db.Database.BeginTransactionAsync(ct);
+        await _db.Database.ExecuteSqlInterpolatedAsync($"SELECT 1 FROM \"Users\" WHERE \"Id\" = {existing.UserId} FOR UPDATE", ct);
+        await _db.ChangeTracker.Entries<User>().Single(e => e.Entity == existing.User).ReloadAsync(ct);
         var rotated = await _db.RefreshTokens.Where(t => t.Id == existing.Id && t.RevokedAtUtc == null && t.ExpiresAtUtc > now)
             .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAtUtc, now).SetProperty(t => t.ReplacedByToken, newRefreshToken), ct);
         if (rotated != 1) throw new UnauthorizedException("This session was already refreshed. Sign in again.");

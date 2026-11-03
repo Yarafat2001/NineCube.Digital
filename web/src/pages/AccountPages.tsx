@@ -1,19 +1,17 @@
 import { t, useLanguage } from '../i18n/language';
 import { useState } from 'react';
 import { Icon, type IconName } from '../components/Icon';
-import divisions from '../data/divisions.json';
-import districts from '../data/districts.json';
-import upazilas from '../data/upazilas.json';
+import { AddressBook } from '../components/AddressBook';
 import { Link } from 'react-router-dom';
 import {
-  useChangePassword, useCreateAddress, useDashboard, useDeleteAddress, useDeleteNotification,
+  useChangePassword, useDashboard, useDeleteNotification,
   useMarkAllNotificationsRead, useMarkNotificationRead, useNotifications, useProfile,
-  useUpdateAddress, useUpdateProfile, type AddressInput
+  useUpdateProfile
 } from '../api/hooks';
 import { ApiError, describeError } from '../api/client';
 import { EmptyState, ErrorState, LoadingBlock, useToast } from '../components/ui';
 import { formatDate, formatDateTime, formatMoney, timeAgo, notificationTypeMeta, orderStatusMeta } from '../lib/helpers';
-import type { Address, OrderStatus, Profile } from '../api/types';
+import type { OrderStatus, Profile } from '../api/types';
 
 // ------------------------------------------------------------------ dashboard
 
@@ -21,9 +19,9 @@ import type { Address, OrderStatus, Profile } from '../api/types';
 const STATUS_GROUPS: { key: string; label: string; statuses: OrderStatus[]; icon: IconName }[] = [
   { key: 'Pending', label: 'Pending', statuses: ['Pending'], icon: 'clock' },
   { key: 'Confirmed', label: 'Confirmed', statuses: ['Confirmed'], icon: 'check' },
-  { key: 'Processing', label: 'Processing', statuses: [], icon: 'box' },
   { key: 'Shipped', label: 'Shipped', statuses: ['Shipped'], icon: 'truck' },
-  { key: 'Delivered', label: 'Delivered', statuses: [], icon: 'check' },
+  { key: 'Delivered', label: 'Delivered', statuses: ['Delivered'], icon: 'check' },
+  { key: 'DeliveryFailed', label: 'Delivery failed', statuses: ['DeliveryFailed'], icon: 'truck' },
   { key: 'Cancelled', label: 'Cancelled', statuses: ['Cancelled'], icon: 'logout' },
   { key: 'Rejected', label: 'Rejected', statuses: ['Rejected'], icon: 'logout' }
 ];
@@ -62,7 +60,7 @@ export function AccountDashboardPage() {
 
       <section className="card-glass" aria-labelledby="dashboard-status">
         <h2 id="dashboard-status">{t("Orders by status")}</h2>
-        <p className="muted">{t("Processing and delivery confirmation are not separate statuses in this system yet. Shipped means in transit.")}</p>
+        
         <div className="status-chart" role="img" aria-label={t(`Orders by status: ${STATUS_GROUPS.map(g => `${g.label} ${countOf(g.statuses)}`).join(', ')}`)}>
           {STATUS_GROUPS.map(g => <span key={g.key} data-status={g.key} style={{ flexGrow: countOf(g.statuses) }} title={t(`${g.label}: ${countOf(g.statuses)}`)} />)}
         </div>
@@ -131,7 +129,6 @@ export function AccountDashboardPage() {
 
 // ------------------------------------------------------------------ profile
 
-const emptyAddress = { label: '', division: '', district: '', upazila: '', addressLine: '', phone: '', isDefault: false };
 
 /**
  * Name and phone are editable, email is not (it is the login), and the password changes through its
@@ -165,7 +162,8 @@ export function ProfilePage() {
         <PasswordForm onDone={() => toast.push('success', 'Password changed.')} />
       </div>
 
-      {canEditProfile ? <AddressBook addresses={data.addresses} /> : (
+      <Link to="/account/security">{t("Account security")}</Link>
+      {canEditProfile ? <AddressBook addresses={data.addresses} recipientName={data.name} phone={data.phone} /> : (
         <p className="muted">{t("Saved delivery addresses belong to a customer account. This sign-in is a staff account.")}</p>
       )}
     </div>
@@ -269,134 +267,6 @@ function PasswordForm({ onDone }: { onDone: () => void }) {
       </button>
       {change.isSuccess ? <p role="status" className="muted">{t("Password changed.")}</p> : null}
     </form>
-  );
-}
-
-function AddressBook({ addresses }: { addresses: Address[] }) {
-  useLanguage();
-  const create = useCreateAddress();
-  const update = useUpdateAddress();
-  const remove = useDeleteAddress();
-  const toast = useToast();
-
-  const [draft, setDraft] = useState<AddressInput>(emptyAddress);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
-
-  const save = (event: React.FormEvent) => {
-    event.preventDefault();
-    setErrors({});
-
-    const done = () => {
-      setDraft(emptyAddress); setEditingId(null);
-      toast.push('success', editingId === null ? 'Address saved.' : 'Address updated.');
-    };
-    const failed = (error: unknown) => setErrors(error instanceof ApiError ? error.fieldErrors : { form: [describeError(error)] });
-
-    if (editingId === null) create.mutate(draft, { onSuccess: done, onError: failed });
-    else update.mutate({ ...draft, id: editingId }, { onSuccess: done, onError: failed });
-  };
-
-  const edit = (address: Address) => {
-    setEditingId(address.id);
-    setErrors({});
-    setDraft({
-      label: address.label, division: address.division, district: address.district, upazila: address.upazila,
-      addressLine: address.addressLine, phone: address.phone ?? '', isDefault: address.isDefault
-    });
-  };
-
-  return (
-    <section className="card-glass stack" aria-labelledby="address-book">
-      <h2 id="address-book">{t("Saved delivery addresses")}</h2>
-
-      {addresses.length === 0 ? <p className="muted">{t("No addresses saved yet. Add one below and it will be offered at checkout.")}</p> : (
-        <ul className="address-list">
-          {addresses.map(address => (
-            <li key={address.id} className="address-card" data-default={address.isDefault}>
-              <span className="row-between">
-                <strong>{t(address.label)}{address.isDefault ? <span className="filter-chip"> {t(" Default")}</span> : null}</strong>
-                <span className="row">
-                  <button type="button" className="btn btn--sm btn--ghost" onClick={() => edit(address)}>{t("Edit")}</button>
-                  <button type="button" className="btn btn--sm btn--danger" aria-label={t(`Delete ${address.label}`)} onClick={() => remove.mutate(address.id, {
-                    onSuccess: () => toast.push('success', 'Address removed.'),
-                    onError: error => toast.pushError(error)
-                  })}>{t("Delete")}</button>
-                </span>
-              </span>
-              <span>{t(address.addressLine)}</span>
-              <span className="muted">{t(address.upazila)}{t(", ")}{t(address.district)}{t(", ")}{t(address.division)}</span>
-              {address.phone ? <span className="muted">{t(address.phone)}</span> : null}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <form className="address-form" onSubmit={save} aria-label={t(editingId === null ? 'Add address' : 'Edit address')}>
-        <h3>{t(editingId === null ? 'Add an address' : 'Edit address')}</h3>
-        <AddressFields draft={draft} setDraft={setDraft} errors={errors} />
-        {errors.form ? <p className="filter-error" role="alert">{t(errors.form.join(' '))}</p> : null}
-        <div className="row">
-          <button type="submit" className="btn btn--primary" disabled={create.isPending || update.isPending}>
-            {t(editingId === null ? 'Save address' : 'Update address')}
-          </button>
-          {editingId !== null ? (
-            <button type="button" className="btn btn--ghost" onClick={() => { setEditingId(null); setDraft(emptyAddress); setErrors({}); }}>
-              {t("Cancel")}</button>
-          ) : null}
-        </div>
-      </form>
-    </section>
-  );
-}
-
-function AddressFields({ draft, setDraft, errors }: { draft: AddressInput; setDraft: (next: AddressInput) => void; errors: Record<string, string[]> }) {
-  useLanguage();
-  const set = (key: keyof AddressInput) => (event: React.ChangeEvent<HTMLInputElement>) => setDraft({ ...draft, [key]: event.target.value });
-
-  return (
-    <div className="address-fields">
-      {(
-        [
-          ['label', 'Label', 'Home'],
-          ['phone', 'Phone (optional)', '01712345678']
-        ] as const
-      ).map(([key, label, placeholder]) => (
-        <div className="field" key={key}>
-          <label htmlFor={`address-${key}`}>{t(label)}</label>
-          <input id={`address-${key}`} value={String(draft[key] ?? '')} placeholder={t(placeholder)} onChange={set(key)}
-            aria-invalid={Boolean(errors[key])} />
-          <FieldError errors={errors[key]} />
-        </div>
-      ))}
-
-      {(['division', 'district', 'upazila'] as const).map(key => {
-        const division = divisions.find(d => d.name === draft.division);
-        const district = districts.find(d => d.name === draft.district && d.division_id === division?.id);
-        const options = key === 'division' ? divisions : key === 'district' ? districts.filter(d => d.division_id === division?.id) : upazilas.filter(u => u.district_id === district?.id);
-        const label = key[0].toUpperCase() + key.slice(1);
-        return <div className="field" key={key}><label htmlFor={`address-${key}`}>{t(label)}</label>
-          <select id={`address-${key}`} value={draft[key]} disabled={key === 'district' ? !draft.division : key === 'upazila' ? !draft.district : false} aria-invalid={Boolean(errors[key])}
-            onChange={e => setDraft({ ...draft, [key]: e.target.value, ...(key === 'division' ? { district: '', upazila: '' } : key === 'district' ? { upazila: '' } : {}) })}>
-            <option value="">{t("Select ")}{t(label.toLowerCase())}</option>
-            {draft[key] && !options.some(o => o.name === draft[key]) ? <option value={draft[key]}>{t(draft[key])} {t(" (saved address)")}</option> : null}
-            {options.map(o => <option key={o.id} value={o.name}>{t(o.name)}</option>)}
-          </select><FieldError errors={errors[key]} /></div>;
-      })}
-      <div className="field address-fields__wide">
-        <label htmlFor="address-addressLine">{t("Address line")}</label>
-        <input id="address-addressLine" value={draft.addressLine} placeholder={t("House 12, Road 5")} onChange={set('addressLine')}
-          aria-invalid={Boolean(errors.addressLine)} />
-        <FieldError errors={errors.addressLine} />
-      </div>
-
-      <div className="field address-fields__wide">
-        <label className="checkbox">
-          <input type="checkbox" checked={draft.isDefault} onChange={event => setDraft({ ...draft, isDefault: event.target.checked })} />
-          {t("Use as my default address")}</label>
-        <FieldError errors={errors.isDefault} />
-      </div>
-    </div>
   );
 }
 

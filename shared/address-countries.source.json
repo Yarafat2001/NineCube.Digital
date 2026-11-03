@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/google/libaddressinput/master/common/src/main/java/com/google/i18n/addressinput/common/RegionDataConstants.java",
+  "sha256": "ae0c44ef06e64e32e5c2f74ac43e717e69256ee17bc9c6770546ef716e223416",
+  "copyright": "Copyright (C) 2010 Google Inc.",
+  "license": "Apache-2.0",
+  "documentation": "https://github.com/google/libaddressinput/wiki/AddressValidationMetadata"
+}

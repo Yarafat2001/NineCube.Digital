@@ -151,12 +151,11 @@ public sealed class AddressRequestValidator : AbstractValidator<AddressRequest>
 {
     public AddressRequestValidator()
     {
-        RuleFor(x => x.Label).NotEmpty().MaximumLength(60);
-        RuleFor(x => x.Division).NotEmpty().MaximumLength(80);
-        RuleFor(x => x.District).NotEmpty().MaximumLength(80);
-        RuleFor(x => x.Upazila).NotEmpty().MaximumLength(80);
-        RuleFor(x => x.AddressLine).NotEmpty().MaximumLength(300);
-        RuleFor(x => x.Phone).MaximumLength(20);
+        RuleFor(x => x).Custom((request, context) =>
+        {
+            foreach (var (field, messages) in AddressValidation.Errors(request))
+                foreach (var message in messages) context.AddFailure(field, message);
+        });
     }
 }
 

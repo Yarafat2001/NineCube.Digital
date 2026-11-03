@@ -16,7 +16,7 @@ using NineCube.Infrastructure.Storage;
 
 namespace NineCube.Infrastructure;
 
-public sealed record CachedUserInfo(int Id, string Email, UserRole Role, int? CustomerId, bool IsActive);
+public sealed record CachedUserInfo(int Id, string Email, UserRole Role, int? CustomerId, bool IsActive, int SecurityVersion);
 
 public static class DependencyInjection
 {
@@ -70,6 +70,7 @@ public static class DependencyInjection
         if (!environment.IsEnvironment("Testing")) services.AddHostedService<NineCube.Infrastructure.Email.ReservationWorker>();
         services.AddHttpClient<IPaymentGateway, NineCube.Infrastructure.Payments.SslCommerzGateway>(client => client.Timeout = TimeSpan.FromSeconds(30))
             .RemoveAllLoggers();
+        services.AddScoped<IRefundGateway>(sp => (IRefundGateway)sp.GetRequiredService<IPaymentGateway>());
         services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         services.AddHttpContextAccessor();
@@ -125,17 +126,15 @@ public static class DependencyInjection
                         var cache = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
                         var db = context.HttpContext.RequestServices.GetRequiredService<IAppDbContext>();
 
-                        var user = await cache.GetOrCreateAsync(
-                            $"auth:user:{userId}",
-                            async ct =>
-                            {
-                                return await db.Users.AsNoTracking()
-                                    .Where(u => u.Id == userId)
-                                    .Select(u => new CachedUserInfo(u.Id, u.Email, u.Role, u.CustomerId, u.IsActive))
-                                    .FirstOrDefaultAsync(ct);
-                            },
-                            TimeSpan.FromSeconds(30),
-                            context.HttpContext.RequestAborted);
+                        // Read current security state on every request, across API instances.
+                        var user = await db.Users.AsNoTracking().Where(u => u.Id == userId)
+                            .Select(u => new CachedUserInfo(u.Id, u.Email, u.Role, u.CustomerId, u.IsActive, u.SecurityVersion))
+                            .FirstOrDefaultAsync(context.HttpContext.RequestAborted);
+                        var tokenVersion = context.Principal?.FindFirstValue("sv") ?? "0";
+                        if (user is not null && tokenVersion != user.SecurityVersion.ToString())
+                        {
+                            context.Fail("This session has been revoked. Sign in again."); return;
+                        }
 
                         if (user is null)
                         {

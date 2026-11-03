@@ -265,6 +265,26 @@ export function ProductsPage() {
     });
   };
 
+  const handleToggleWishlist = (p: Product) => {
+    if (!user) {
+      toast.push('info', t('Please sign in to save items to your wishlist.'));
+      navigate('/login');
+      return;
+    }
+    toggleWishlist.mutate(p.id, {
+      onSuccess: (data) => {
+        if (data.inWishlist) {
+          toast.push('success', `${t("Added")} ${p.name} ${t("to your wishlist.")}`);
+        } else {
+          toast.push('info', `${t("Removed")} ${p.name} ${t("from your wishlist.")}`);
+        }
+      },
+      onError: () => {
+        toast.push('error', t('Could not update wishlist. Please try again.'));
+      }
+    });
+  };
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -489,7 +509,7 @@ export function ProductsPage() {
                     canOrder={canOrder}
                     queryString={params.toString()}
                     isWishlisted={wishlistIds.has(product.id)}
-                    onToggleWishlist={canOrder ? () => user ? toggleWishlist.mutate(product.id) : navigate('/login') : undefined}
+                    onToggleWishlist={canOrder ? () => handleToggleWishlist(product) : undefined}
                     isComparing={compareItems.some((x) => x.id === product.id)}
                     onToggleCompare={canOrder ? () => handleToggleCompare(product) : undefined}
                     onQuickView={(p) => {
@@ -532,6 +552,8 @@ export function ProductsPage() {
             cart.add(item, quantity);
             toast.push('success', `${t("Added")} ${item.name} ${t("to your cart.")}`);
           }}
+          isWishlisted={wishlistIds.has(quickViewProduct.id)}
+          onToggleWishlist={canOrder ? () => handleToggleWishlist(quickViewProduct) : undefined}
         />
       ) : null}
 

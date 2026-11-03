@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NineCube.Application.Abstractions;
 using NineCube.Application.Contracts;
 using NineCube.Domain;
+using NineCube.Application.Validation;
 
 namespace NineCube.Application.Services;
 
@@ -87,6 +88,8 @@ public sealed class ProfileService(
 
     public async Task ChangePasswordAsync(ChangePasswordRequest request, CancellationToken ct = default)
     {
+        await using var passwordTx = await db.Database.BeginTransactionAsync(ct);
+        await db.Database.ExecuteSqlInterpolatedAsync($"SELECT 1 FROM \"Users\" WHERE \"Id\" = {currentUser.UserId} FOR UPDATE", ct);
         var (user, _) = await LoadAsync(ct);
 
         if (!hasher.Verify(request.CurrentPassword ?? string.Empty, user.PasswordHash))
@@ -112,6 +115,9 @@ public sealed class ProfileService(
         }
 
         user.PasswordHash = hasher.Hash(next);
+        user.SecurityVersion++;
+        await db.RefreshTokens.Where(t => t.UserId == user.Id && t.RevokedAtUtc == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAtUtc, clock.UtcNow), ct);
 
         db.AuditLogs.Add(new AuditLog
         {
@@ -124,6 +130,7 @@ public sealed class ProfileService(
         });
 
         await db.SaveChangesAsync(ct);
+        await passwordTx.CommitAsync(ct);
     }
 
     // ------------------------------------------------------------------ addresses
@@ -142,22 +149,18 @@ public sealed class ProfileService(
         Validate(request);
 
         await using var tx = await db.Database.BeginTransactionAsync(ct);
+        await db.Database.ExecuteSqlInterpolatedAsync($"SELECT 1 FROM \"Customers\" WHERE \"Id\" = {customer.Id} FOR UPDATE", ct);
 
         var address = new Address
         {
             CustomerId = customer.Id,
-            Label = request.Label.Trim(),
-            Division = request.Division.Trim(),
-            District = request.District.Trim(),
-            Upazila = request.Upazila.Trim(),
-            AddressLine = request.AddressLine.Trim(),
-            Phone = string.IsNullOrWhiteSpace(request.Phone) ? null : request.Phone.Trim(),
-            IsDefault = request.IsDefault,
             CreatedAt = clock.UtcNow
         };
 
-        // The first address is the default whether or not the caller asked for it.
-        if (!await db.Addresses.AnyAsync(a => a.CustomerId == customer.Id, ct)) address.IsDefault = true;
+        Apply(address, request);
+
+        // Also repair older address books that did not have a default.
+        if (!await db.Addresses.AnyAsync(a => a.CustomerId == customer.Id && a.IsDefault, ct)) address.IsDefault = true;
 
         db.Addresses.Add(address);
         // Only when this row claims the default: otherwise the customer's existing default stays.
@@ -175,21 +178,17 @@ public sealed class ProfileService(
 
         Validate(request);
 
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        await db.Database.ExecuteSqlInterpolatedAsync($"SELECT 1 FROM \"Customers\" WHERE \"Id\" = {customer.Id} FOR UPDATE", ct);
+
         var address = await db.Addresses.FirstOrDefaultAsync(a => a.Id == id && a.CustomerId == customer.Id, ct)
             ?? throw new NotFoundException($"Address {id} was not found.");
 
-        await using var tx = await db.Database.BeginTransactionAsync(ct);
-
-        address.Label = request.Label.Trim();
-        address.Division = request.Division.Trim();
-        address.District = request.District.Trim();
-        address.Upazila = request.Upazila.Trim();
-        address.AddressLine = request.AddressLine.Trim();
-        address.Phone = string.IsNullOrWhiteSpace(request.Phone) ? null : request.Phone.Trim();
-        address.IsDefault = request.IsDefault;
+        Apply(address, request);
 
         if (address.IsDefault) await ClearOtherDefaultsAsync(customer.Id, keepId: id, ct);
         await db.SaveChangesAsync(ct);
+        await EnsureDefaultAsync(customer.Id, ct);
         await tx.CommitAsync(ct);
 
         return await RequireAddressAsync(id, customer.Id, ct);
@@ -200,10 +199,11 @@ public sealed class ProfileService(
         var (_, customer) = await LoadAsync(ct);
         if (customer is null) throw new BusinessValidationException("This account has no customer profile.");
 
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        await db.Database.ExecuteSqlInterpolatedAsync($"SELECT 1 FROM \"Customers\" WHERE \"Id\" = {customer.Id} FOR UPDATE", ct);
+
         var address = await db.Addresses.FirstOrDefaultAsync(a => a.Id == id && a.CustomerId == customer.Id, ct)
             ?? throw new NotFoundException($"Address {id} was not found.");
-
-        await using var tx = await db.Database.BeginTransactionAsync(ct);
 
         var wasDefault = address.IsDefault;
         db.Addresses.Remove(address);
@@ -226,7 +226,7 @@ public sealed class ProfileService(
 
     /// <summary>
     /// Blanks every other default before the caller's row claims it: the filtered unique index
-    /// allows exactly one row per customer, and the write order is the point.
+    /// allows at most one default per customer, and the write order is the point.
     /// </summary>
     private async Task ClearOtherDefaultsAsync(int customerId, int? keepId, CancellationToken ct)
     {
@@ -234,58 +234,66 @@ public sealed class ProfileService(
         if (!await others.AnyAsync(ct)) return;
 
         await others.ExecuteUpdateAsync(s => s.SetProperty(a => a.IsDefault, false), ct);
+        foreach (var entry in db.ChangeTracker.Entries<Address>().Where(e =>
+            e.State != EntityState.Added && e.Entity.CustomerId == customerId && e.Entity.Id != keepId))
+        {
+            entry.Entity.IsDefault = false;
+            entry.Property(a => a.IsDefault).OriginalValue = false;
+        }
     }
+
+    private static string? Clean(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    private static void Apply(Address address, AddressRequest request)
+    {
+        address.Label = request.Label.Trim();
+        address.CountryCode = (request.CountryCode ?? "BD").Trim().ToUpperInvariant();
+        address.Division = request.Division?.Trim() ?? "";
+        address.District = request.District?.Trim() ?? "";
+        address.Upazila = request.Upazila?.Trim() ?? "";
+        address.AddressLine = request.AddressLine.Trim();
+        address.Phone = Clean(request.Phone);
+        address.IsDefault = request.IsDefault;
+        address.RecipientName = Clean(request.RecipientName);
+        address.Company = Clean(request.Company);
+        address.AddressLine2 = Clean(request.AddressLine2);
+        address.Landmark = Clean(request.Landmark);
+        address.PostalCode = Clean(request.PostalCode);
+        address.DeliveryInstructions = Clean(request.DeliveryInstructions);
+    }
+
+    private async Task EnsureDefaultAsync(int customerId, CancellationToken ct)
+    {
+        if (await db.Addresses.AnyAsync(a => a.CustomerId == customerId && a.IsDefault, ct)) return;
+        var first = await db.Addresses.Where(a => a.CustomerId == customerId).OrderBy(a => a.Id).FirstOrDefaultAsync(ct);
+        if (first is not null) { first.IsDefault = true; await db.SaveChangesAsync(ct); }
+    }
+
+    private static AddressDto ToDto(Address a) => new(a.Id, a.Label, a.Division, a.District, a.Upazila,
+        a.AddressLine, a.Phone, a.IsDefault, a.CountryCode, a.RecipientName, a.Company, a.AddressLine2,
+        a.Landmark, a.PostalCode, a.DeliveryInstructions);
 
     private async Task<AddressDto> RequireAddressAsync(int id, int customerId, CancellationToken ct)
     {
-        var row = await db.Addresses.AsNoTracking()
-            .Where(a => a.Id == id && a.CustomerId == customerId)
-            .Select(a => new { a.Id, a.Label, a.Division, a.District, a.Upazila, a.AddressLine, a.Phone, a.IsDefault })
-            .FirstOrDefaultAsync(ct);
-
-        if (row is null) throw new NotFoundException($"Address {id} was not found.");
-
-        return new AddressDto(row.Id, row.Label, row.Division, row.District, row.Upazila, row.AddressLine, row.Phone, row.IsDefault);
+        var row = await db.Addresses.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id && a.CustomerId == customerId, ct)
+            ?? throw new NotFoundException($"Address {id} was not found.");
+        return ToDto(row);
     }
 
     private async Task<IReadOnlyList<AddressDto>> AddressesOfAsync(int customerId, CancellationToken ct)
     {
-        var rows = await db.Addresses.AsNoTracking()
-            .Where(a => a.CustomerId == customerId)
-            .OrderByDescending(a => a.IsDefault).ThenBy(a => a.Id)
-            .Select(a => new { a.Id, a.Label, a.Division, a.District, a.Upazila, a.AddressLine, a.Phone, a.IsDefault })
-            .ToListAsync(ct);
-
-        return rows
-            .Select(r => new AddressDto(r.Id, r.Label, r.Division, r.District, r.Upazila, r.AddressLine, r.Phone, r.IsDefault))
-            .ToList();
+        var rows = await db.Addresses.AsNoTracking().Where(a => a.CustomerId == customerId)
+            .OrderByDescending(a => a.IsDefault).ThenBy(a => a.Id).ToListAsync(ct);
+        return rows.Select(ToDto).ToList();
     }
 
     private static void Validate(AddressRequest request)
     {
-        var errors = new Dictionary<string, string[]>();
-
-        void Required(string key, string? value, int max, string label)
-        {
-            var trimmed = value?.Trim() ?? string.Empty;
-            if (trimmed.Length == 0) errors[key] = [$"{label} is required."];
-            else if (trimmed.Length > max) errors[key] = [$"{label} must be at most {max} characters."];
-        }
-
-        Required("label", request.Label, 60, "Label");
-        Required("division", request.Division, 80, "Division");
-        Required("district", request.District, 80, "District");
-        Required("upazila", request.Upazila, 80, "Upazila");
-        Required("addressLine", request.AddressLine, 300, "Address line");
-
-        var phone = request.Phone?.Trim() ?? string.Empty;
-        if (phone.Length > 0 && !IsPlausiblePhone(phone)) errors["phone"] = ["Phone number is not valid."];
-
+        var errors = AddressValidation.Errors(request);
         if (errors.Count > 0) throw new BusinessValidationException("The address is incomplete.", errors);
     }
 
     private static bool IsPlausiblePhone(string value) =>
-        value.Length is >= 6 and <= 20 && value.All(c => char.IsDigit(c) || c is ' ' or '+' or '-' or ')');
+        value.Length is >= 6 and <= 20 && value.All(c => char.IsDigit(c) || c is ' ' or '+' or '-' or '(' or ')' or '.');
 
     private async Task<(User User, Customer? Customer)> LoadAsync(CancellationToken ct)
     {

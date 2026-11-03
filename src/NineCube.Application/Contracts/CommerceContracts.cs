@@ -227,7 +227,7 @@ public sealed record ProductReviewDto(
     int Rating,
     string? Comment,
     bool IsVerifiedBuyer,
-    DateTime CreatedAt);
+    DateTime CreatedAt, string? MerchantResponse = null);
 
 public sealed record ProductRatingSummaryDto(
     decimal AverageRating,

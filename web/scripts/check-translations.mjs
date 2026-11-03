@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const catalogue = JSON.parse(fs.readFileSync(path.join(root, 'src/i18n/bn.json'), 'utf8'));
 // Names and technical identifiers are intentionally identical in both languages.
-const identities = new Set(['NineCube Digital', 'NineCube.Digital', 'BDT', 'SKU', 'LinkedIn', 'https://… or /products/…', 'e.g. order. or user.', 'support@ninecube.digital', 'care@ninecube.digital']);
+const identities = new Set(['NineCube Digital', 'NineCube.Digital', 'BDT', 'USD', 'SKU', 'LinkedIn', 'https://… or /products/…', 'e.g. order. or user.', 'support@ninecube.digital', 'care@ninecube.digital']);
 const untranslated = [];
 const textAttributes = new Set(['aria-label', 'title', 'placeholder', 'alt', 'label', 'description', 'message', 'heading']);
 function inspect(directory) {

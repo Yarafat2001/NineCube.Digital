@@ -168,9 +168,9 @@ describe('Profile page', () => {
     renderApp('/account/profile');
 
     await user.type(await screen.findByLabelText('Label'), 'Office');
-    await user.selectOptions(screen.getByLabelText('Division'), 'Dhaka');
-    await user.selectOptions(screen.getByLabelText('District'), 'Dhaka');
-    await user.selectOptions(screen.getByLabelText('Upazila'), 'Savar');
+    await user.type(screen.getByLabelText('Division'), 'Dhaka');
+    await user.type(screen.getByLabelText('District'), 'Dhaka');
+    await user.type(screen.getByLabelText('Area / thana / upazila'), 'Savar');
     await user.type(screen.getByLabelText('Address line'), 'House 42, Avenue 3');
     await user.click(screen.getByRole('button', { name: /save address/i }));
 

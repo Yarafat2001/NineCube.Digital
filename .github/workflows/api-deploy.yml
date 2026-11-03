@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'shared/**'
+      - 'src/NineCube.Tests/**'
       - 'src/NineCube.Api/**'
       - 'src/NineCube.Application/**'
       - 'src/NineCube.Domain/**'
@@ -12,6 +14,7 @@ on:
       - '.dockerignore'
       - 'tools/deployment-checks/**'
       - '.github/workflows/api-deploy.yml'
+  pull_request:
   workflow_dispatch:
 
 env:
@@ -57,3 +60,6 @@ jobs:
         env:
           CATALOGUE_CHECK_CONNECTION: Host=localhost;Database=ninecube_catalogue_checks;Username=postgres;Password=catalogue_checks
         run: dotnet run --project tools/deployment-checks/DeploymentChecks.csproj --configuration Release
+
+      - name: PostgreSQL commerce and security tests
+        run: dotnet test src/NineCube.Tests/NineCube.Tests.csproj -c Release --filter "FullyQualifiedName~CommerceHttpTests|FullyQualifiedName~AddressValidationTests|FullyQualifiedName~PaymentIntegrityTests|FullyQualifiedName~SslCommerz" --logger "trx;LogFileName=commerce.trx"

@@ -128,6 +128,8 @@ public sealed class InventoryService : IInventoryService
     public Task<ProductDto> AdjustStockAsync(int productId, StockAdjustmentRequest request, CancellationToken ct = default)
         => _errors.ExecuteWithRetryAsync(async () =>
         {
+            if (await _db.Products.AnyAsync(p => p.ParentProductId == productId && p.IsActive, ct))
+                throw new BusinessValidationException("Adjust stock on the individual variant SKU.");
             var delta = request.Delta;
             if (delta == 0)
                 throw new BusinessValidationException("Delta must be a non-zero signed integer.");

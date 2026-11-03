@@ -24,6 +24,7 @@ public sealed class ReviewEndpoints : IEndpoint
 
         group.MapPost("/products/{productId:int}", AddReviewAsync)
             .RequireAuthorization(Policies.CustomerOnly)
+            .RequireRateLimiting("checkout")
             .WithName("AddProductReview")
             .WithSummary("Submits a review and rating for a product (verified buyer checked).");
     }

@@ -1,7 +1,7 @@
 import { t, useLanguage } from '../i18n/language';
 import { Link } from 'react-router-dom';
 import { useWishlist, useToggleWishlist } from '../api/hooks';
-import { EmptyState, ErrorState, LoadingBlock } from '../components/ui';
+import { EmptyState, ErrorState, LoadingBlock, useToast } from '../components/ui';
 import { formatMoney } from '../lib/helpers';
 import { ProductThumbnail } from '../components/ProductImage';
 import { useCart } from '../state/CartContext';
@@ -11,6 +11,7 @@ export function WishlistPage() {
   const wishlistQuery = useWishlist();
   const toggleWishlist = useToggleWishlist();
   const cart = useCart();
+  const toast = useToast();
 
   if (wishlistQuery.isLoading) {
     return (
@@ -88,6 +89,7 @@ export function WishlistPage() {
                         isActive: true,
                         rowVersion: null
                       }, 1);
+                      toast.push('success', `${t("Added")} ${item.productName} ${t("to your cart.")}`);
                       document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet'));
                     }}
                   >
@@ -98,7 +100,16 @@ export function WishlistPage() {
                 <button
                   type="button"
                   className="btn btn--sm btn--ghost"
-                  onClick={() => toggleWishlist.mutate(item.productId)}
+                  onClick={() => {
+                    toggleWishlist.mutate(item.productId, {
+                      onSuccess: () => {
+                        toast.push('info', `${t("Removed")} ${item.productName} ${t("from your wishlist.")}`);
+                      },
+                      onError: () => {
+                        toast.push('error', t('Could not update wishlist. Please try again.'));
+                      }
+                    });
+                  }}
                   disabled={toggleWishlist.isPending}
                   aria-label={t(`Remove ${item.productName} from wishlist`)}
                 >

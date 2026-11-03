@@ -62,7 +62,8 @@ public sealed class JwtTokenService : IJwtTokenService
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-            new("role", user.Role.ToString())
+            new("role", user.Role.ToString()),
+            new("sv", user.SecurityVersion.ToString())
         };
 
         if (user.CustomerId is not null)

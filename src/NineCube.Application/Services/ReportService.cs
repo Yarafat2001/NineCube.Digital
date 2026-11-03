@@ -38,7 +38,7 @@ public sealed class ReportService : IReportService
 
         var orders = await _db.Orders.AsNoTracking()
             .Where(o => o.CreatedAt >= fromUtc && o.CreatedAt <= toUtc && o.Currency == currency)
-            .Select(o => new { o.Status, o.TotalAmount })
+            .Select(o => new { o.Status, o.TotalAmount, o.PaymentStatus })
             .ToListAsync(ct);
 
         var byStatus = orders
@@ -47,7 +47,7 @@ public sealed class ReportService : IReportService
             .Select(g => new SalesByStatusDto(
                 g.Key.ToString(),
                 g.Count(),
-                g.Where(o => !OrderStatusRules.ReservationsReleased(o.Status)).Sum(o => o.TotalAmount),
+                g.Where(o => o.PaymentStatus == PaymentStatus.Paid).Sum(o => o.TotalAmount),
                 orders.Count == 0 ? 0m : decimal.Round(g.Count() * 100m / orders.Count, 2)))
             .ToList();
 
@@ -62,7 +62,7 @@ public sealed class ReportService : IReportService
         byStatus = byStatus.OrderBy(s => s.Status).ToList();
 
         var revenue = orders
-            .Where(o => !OrderStatusRules.ReservationsReleased(o.Status))
+            .Where(o => o.PaymentStatus == PaymentStatus.Paid)
             .Sum(o => o.TotalAmount);
 
         return new SalesSummaryDto(fromUtc, toUtc, orders.Count, revenue, byStatus, currency);

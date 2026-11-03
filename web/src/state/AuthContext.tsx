@@ -27,7 +27,7 @@ export interface AuthContextValue {
   user: UserSummary | null;
   token: string | null;
   initialising: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, code?: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
   hasRole: (...roles: UserRole[]) => boolean;
@@ -145,10 +145,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [session?.accessToken, session?.expiresAtUtc, applyAuthResponse, persist]);
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, code?: string) => {
       const response = await apiRequest<AuthResponse>('/api/auth/login', {
         method: 'POST',
-        body: { email, password }
+        body: { email, password, code }
       });
       applyAuthResponse(response);
     },

@@ -55,6 +55,25 @@ public sealed class GuestCheckoutEndpoints : IEndpoint
             try { await IdentifyAsync(http, db, clock, ct); return Results.Ok(await orders.GetOrderAsync(id, ct)); }
             finally { http.User = original; }
         });
+        group.MapPost("/orders/{id:int}/cancel", async (int id, HttpContext http, IAppDbContext db, IClock clock, IOrderService orders, CancellationToken ct) =>
+        {
+            var original = http.User;
+            try { await IdentifyAsync(http, db, clock, ct); return Results.Ok(await orders.CancelAsync(id, ct)); }
+            finally { http.User = original; }
+        });
+        group.MapPost("/orders/{id:int}/support", async (int id, ReviewReportRequest request, HttpContext http, IAppDbContext db, IClock clock, IOrderService orders, CancellationToken ct) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.Reason) || request.Reason.Length > 2000) throw new BusinessValidationException("Enter a support message of at most 2000 characters.");
+            var original = http.User;
+            try
+            {
+                await IdentifyAsync(http, db, clock, ct);
+                var order = await orders.GetOrderAsync(id, ct);
+                db.ServiceCases.Add(new ServiceCase { OrderId = id, CustomerId = order.CustomerId, Kind = ServiceCaseKind.Support, Message = request.Reason.Trim(), CreatedAt = clock.UtcNow, UpdatedAt = clock.UtcNow });
+                await db.SaveChangesAsync(ct); return Results.NoContent();
+            }
+            finally { http.User = original; }
+        });
         group.MapPost("/payments", async (ProcessPaymentRequest request, HttpContext http, IAppDbContext db, IClock clock, IPaymentService payments, CancellationToken ct) =>
         {
             var original = http.User;

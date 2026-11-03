@@ -7,7 +7,7 @@ using NineCube.Domain;
 
 namespace NineCube.Infrastructure.Payments;
 
-public sealed class SslCommerzGateway(HttpClient client, IConfiguration configuration) : IPaymentGateway
+public sealed class SslCommerzGateway(HttpClient client, IConfiguration configuration) : IPaymentGateway, IRefundGateway
 {
     private string StoreId => configuration["Payments:SslCommerz:StoreId"] ?? "";
     private string Password => configuration["Payments:SslCommerz:StorePassword"] ?? "";
@@ -62,6 +62,29 @@ public sealed class SslCommerzGateway(HttpClient client, IConfiguration configur
             throw new BusinessValidationException("Gateway returned an invalid amount.");
         return new VerifiedPayment(Text(root, "tran_id"), amount, Text(root, "currency"),
             Text(root, "status") is "VALID" or "VALIDATED", Text(root, "risk_level") != "0", Text(root, "bank_tran_id"));
+    }
+
+    public Task<GatewayRefund> InitiateRefundAsync(string bankTransactionId, string refundId, decimal amount, string reason, CancellationToken ct) =>
+        RefundAsync(bankTransactionId, new() { ["bank_tran_id"] = bankTransactionId, ["refund_trans_id"] = refundId,
+            ["refund_amount"] = amount.ToString("0.00", CultureInfo.InvariantCulture), ["refund_remarks"] = Limit(reason, 255) }, ct);
+
+    public Task<GatewayRefund> QueryRefundAsync(string bankTransactionId, string reference, CancellationToken ct) =>
+        RefundAsync(bankTransactionId, new() { ["refund_ref_id"] = reference }, ct);
+
+    private async Task<GatewayRefund> RefundAsync(string bankTransactionId, Dictionary<string, string> fields, CancellationToken ct)
+    {
+        EnsureConfigured();
+        fields["store_id"] = StoreId; fields["store_passwd"] = Password; fields["format"] = "json";
+        var query = string.Join("&", fields.Select(p => Uri.EscapeDataString(p.Key) + "=" + Uri.EscapeDataString(p.Value)));
+        using var response = await client.GetAsync($"{BaseUrl}/validator/api/merchantTransIDvalidationAPI.php?{query}", ct);
+        response.EnsureSuccessStatusCode();
+        using var json = await response.Content.ReadFromJsonAsync<JsonDocument>(ct) ?? throw new BusinessValidationException("No refund response received.");
+        var root = json.RootElement;
+        var reference = Text(root, "refund_ref_id"); var status = Text(root, "status").ToLowerInvariant();
+        if (Text(root, "APIConnect") != "DONE" || Text(root, "bank_tran_id") != bankTransactionId || string.IsNullOrWhiteSpace(reference)
+            || status is not ("success" or "processing" or "refunded" or "cancelled"))
+            throw new ResourceConflictException("Refund needs reconciliation with the payment provider.", "refund_reconciliation_required");
+        return new(reference, status);
     }
 
     private void EnsureConfigured()

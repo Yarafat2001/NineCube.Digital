@@ -53,7 +53,7 @@ export function CustomerCarePage() {
           } catch (error) { toast.pushError(error); } finally { setBusy(false); }
         }}>
           <label className="field">{t('Order number')}<input className="input" type="number" min="1" required value={orderId} onChange={e => setOrderId(e.target.value)} /></label>
-          <label className="field">{t('Request type')}<select value={kind} onChange={e => setKind(e.target.value)}>{['Support', 'Return', 'Exchange', 'Warranty'].map(value => <option key={value}>{value}</option>)}</select></label>
+          <label className="field">{t('Request type')}<select value={kind} onChange={e => setKind(e.target.value)}>{['Support', 'Warranty'].map(value => <option key={value}>{value}</option>)}</select></label>
           <label className="field">{t('How can we help?')}<textarea className="input" required maxLength={2000} rows={4} value={message} onChange={e => setMessage(e.target.value)} /></label>
           <button className="btn btn--primary" disabled={busy}>{t(busy ? 'Saving…' : 'Send request')}</button>
         </form>

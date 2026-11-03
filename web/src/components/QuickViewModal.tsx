@@ -13,9 +13,18 @@ export interface QuickViewModalProps {
   onClose: () => void;
   onAdded: (product: Product, quantity: number) => void;
   threshold?: number;
+  isWishlisted?: boolean;
+  onToggleWishlist?: () => void;
 }
 
-export function QuickViewModal({ product, onClose, onAdded, threshold = 5 }: QuickViewModalProps) {
+export function QuickViewModal({
+  product,
+  onClose,
+  onAdded,
+  threshold = 5,
+  isWishlisted = false,
+  onToggleWishlist
+}: QuickViewModalProps) {
   useLanguage();
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
@@ -105,9 +114,23 @@ export function QuickViewModal({ product, onClose, onAdded, threshold = 5 }: Qui
             ) : null}
 
             {outOfStock ? (
-              <p className="muted" style={{ fontSize: 'var(--text-sm)', margin: '8px 0' }}>
-                {t("Not currently orderable.")}
-              </p>
+              <div className="row" style={{ alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <p className="muted" style={{ fontSize: 'var(--text-sm)', margin: '8px 0' }}>
+                  {t("Not currently orderable.")}
+                </p>
+                {onToggleWishlist ? (
+                  <button
+                    type="button"
+                    className={`btn btn--sm ${isWishlisted ? 'btn--primary' : 'btn--ghost'}`}
+                    onClick={onToggleWishlist}
+                    aria-label={t(isWishlisted ? "Remove from wishlist" : "Add to wishlist")}
+                    title={t(isWishlisted ? "Saved in wishlist" : "Save to wishlist")}
+                  >
+                    <Icon name="heart" width={14} height={14} />
+                    <span>{t(isWishlisted ? "Saved" : "Save to wishlist")}</span>
+                  </button>
+                ) : null}
+              </div>
             ) : (
               <div className="row" style={{ alignItems: 'center', gap: '12px', marginTop: '8px' }}>
                 <QuantityStepper
@@ -127,6 +150,18 @@ export function QuickViewModal({ product, onClose, onAdded, threshold = 5 }: Qui
                 >
                   {justAdded ? `✓ ${t("Added!")}` : `🛒 ${t("Add to cart")}`}
                 </button>
+                {onToggleWishlist ? (
+                  <button
+                    type="button"
+                    className={`btn btn--ghost ${isWishlisted ? 'btn--primary' : ''}`}
+                    onClick={onToggleWishlist}
+                    aria-label={t(isWishlisted ? "Remove from wishlist" : "Add to wishlist")}
+                    title={t(isWishlisted ? "Saved in wishlist" : "Save to wishlist")}
+                    style={{ padding: '0 10px', height: '40px' }}
+                  >
+                    <Icon name="heart" width={16} height={16} />
+                  </button>
+                ) : null}
               </div>
             )}
 

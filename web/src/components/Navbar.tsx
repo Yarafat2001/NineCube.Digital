@@ -41,19 +41,22 @@ export function navItemsFor(role: UserRole): NavItem[] {
       return [
         { to: '/products', label: 'Products' },
         { to: '/staff', label: 'Orders' },
-        { to: '/staff/sales', label: 'Sales' }
+        { to: '/staff/sales', label: 'Sales' },
+        { to: '/operations', label: 'Operations' }
       ];
     case 'InventoryManager':
       return [
         { to: '/products', label: 'Products' },
-        { to: '/inventory', label: 'Inventory' }
+        { to: '/inventory', label: 'Inventory' },
+        { to: '/operations', label: 'Operations' }
       ];
     case 'Administrator':
       return [
         { to: '/products', label: 'Products' },
         { to: '/admin', label: 'Admin' },
         { to: '/staff', label: 'Staff' },
-        { to: '/inventory', label: 'Inventory' }
+        { to: '/inventory', label: 'Inventory' },
+        { to: '/operations', label: 'Operations' }
       ];
     default:
       return [];

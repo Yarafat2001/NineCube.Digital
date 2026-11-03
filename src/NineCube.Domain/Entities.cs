@@ -27,6 +27,10 @@ public sealed class Product
     public int? ProductLineId { get; set; }
     public ProductLine? ProductLine { get; set; }
     /// <summary>decimal(18,2). Never a floating point type for money.</summary>
+    public decimal UnitCost { get; set; }
+    public int? ParentProductId { get; set; }
+    public List<Product> Variants { get; set; } = [];
+    public string? VariantLabel { get; set; }
     public decimal Price { get; set; }
     /// <summary>Optional original / regular MSRP price for showing strikethrough compare-at discounts.</summary>
     public decimal? CompareAtPrice { get; set; }
@@ -63,6 +67,13 @@ public sealed class Address
     public int Id { get; set; }
     public int CustomerId { get; set; }
     public Customer? Customer { get; set; }
+    public string CountryCode { get; set; } = "BD";
+    public string? RecipientName { get; set; }
+    public string? Company { get; set; }
+    public string? AddressLine2 { get; set; }
+    public string? Landmark { get; set; }
+    public string? PostalCode { get; set; }
+    public string? DeliveryInstructions { get; set; }
     public string Label { get; set; } = string.Empty;
     public string Division { get; set; } = string.Empty;
     public string District { get; set; } = string.Empty;
@@ -77,6 +88,9 @@ public sealed class User
 {
     public int Id { get; set; }
     public string Email { get; set; } = string.Empty;
+    public bool MfaEnabled { get; set; }
+    public int SecurityVersion { get; set; }
+    public DateTime? EmailVerifiedAt { get; set; }
     public string PasswordHash { get; set; } = string.Empty;
     public UserRole Role { get; set; }
     public bool IsActive { get; set; } = true;
@@ -90,6 +104,8 @@ public sealed class Order
 {
     public string? DeliveryAddressJson { get; set; }
     public string? DeliveryInstructions { get; set; }
+    public DateTime? PaidAt { get; set; }
+    public DateTime? DeliveredAt { get; set; }
     public DateTime? ReservationExpiresAt { get; set; }
     public string Currency { get; set; } = "BDT";
     public int Id { get; set; }
@@ -126,6 +142,7 @@ public sealed class OrderItem
     public Product? Product { get; set; }
     public int Quantity { get; set; }
     /// <summary>Price snapshot taken server side at placement time.</summary>
+    public decimal UnitCost { get; set; }
     public decimal UnitPrice { get; set; }
     public decimal LineTotal { get; set; }
 }
@@ -292,6 +309,7 @@ public sealed class ProductReview
     public Customer? Customer { get; set; }
     public int Rating { get; set; }
     public string? Comment { get; set; }
+    public string? MerchantResponse { get; set; }
     public bool IsVerifiedBuyer { get; set; }
     public bool IsApproved { get; set; } = true;
     public DateTime CreatedAt { get; set; }

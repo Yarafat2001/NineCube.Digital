@@ -14,7 +14,7 @@ public sealed record PagedResult<T>(IReadOnlyList<T> Items, int Page, int PageSi
 // ---------------------------------------------------------------- auth
 
 public sealed record RegisterRequest(string Email, string Password, string Name);
-public sealed record LoginRequest(string Email, string Password);
+public sealed record LoginRequest(string Email, string Password, string? Code = null);
 
 public sealed record UserSummaryDto(int Id, string Email, UserRole Role, int? CustomerId);
 
@@ -42,7 +42,7 @@ public sealed record ProductDto(
     int? BrandId = null, string? BrandName = null, string? BrandSlug = null,
     int? ProductLineId = null, string? ProductLineName = null, string? ProductLineSlug = null,
     IReadOnlyList<ProductImageDto>? Images = null,
-    decimal? CompareAtPrice = null);
+    decimal? CompareAtPrice = null, int? ParentProductId = null, string? VariantLabel = null, bool HasVariants = false);
 
 /// <summary>Upload metadata echoed back after a product image is stored.</summary>
 public sealed record ProductImageUploadRequest(string Url, bool SetAsPrimary = true, string? AltText = null);
@@ -68,7 +68,7 @@ public sealed record InventoryMovementDto(
 public sealed record OrderLineRequest(int ProductId, int Quantity);
 
 public sealed record CreateOrderRequest(IReadOnlyList<OrderLineRequest> Items, string? CouponCode = null, PaymentMethod PaymentMethod = PaymentMethod.CashOnDelivery, string? GiftCardCode = null,
-    int? AddressId = null, string? DeliveryInstructions = null, decimal? ExpectedTotal = null);
+    int? AddressId = null, string? DeliveryInstructions = null, decimal? ExpectedTotal = null, string? DeliveryCountryCode = null, string? DeliveryDivision = null, string? DeliveryDistrict = null);
 
 public sealed record OrderItemDto(
     int Id,

@@ -18,7 +18,7 @@ public sealed class DashboardService(IAppDbContext db, ICurrentUser currentUser)
 {
     private static readonly OrderStatus[] StatusOrder =
     [
-        OrderStatus.Pending, OrderStatus.Confirmed, OrderStatus.Shipped, OrderStatus.Cancelled, OrderStatus.Rejected
+        OrderStatus.Pending, OrderStatus.Confirmed, OrderStatus.Shipped, OrderStatus.Delivered, OrderStatus.DeliveryFailed, OrderStatus.Cancelled, OrderStatus.Rejected
     ];
 
     public async Task<DashboardDto> ForCurrentUserAsync(CancellationToken ct = default)
@@ -43,6 +43,7 @@ public sealed class DashboardService(IAppDbContext db, ICurrentUser currentUser)
                     o.Id,
                     o.Status,
                     o.TotalAmount,
+                    o.PaymentStatus,
                     o.Currency,
                     o.CreatedAt,
                     ItemCount = o.Items.Sum(i => i.Quantity)
@@ -61,7 +62,7 @@ public sealed class DashboardService(IAppDbContext db, ICurrentUser currentUser)
                 if (OrderStatusRules.ReservationsReleased(order.Status)) continue;
 
                 totalItems += order.ItemCount;
-                spent += order.TotalAmount;
+                if (order.PaymentStatus == PaymentStatus.Paid && order.Currency == currency) spent += order.TotalAmount;
             }
 
             recent = orders.Take(5)

@@ -165,6 +165,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.Configure<NineCube.Application.Services.SecurityOptions>(builder.Configuration.GetSection("Security"));
+
 var app = builder.Build();
 
 // ---------------------------------------------------------------- database bootstrap

@@ -1,0 +1,1132 @@
+{
+  "AC": {
+    "name": "ASCENSION ISLAND",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "AD": {
+    "name": "ANDORRA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "AE": {
+    "name": "UNITED ARAB EMIRATES",
+    "fmt": "%N%n%O%n%A%n%S",
+    "lfmt": "%N%n%O%n%A%n%S",
+    "require": "AS",
+    "state_name_type": "emirate"
+  },
+  "AF": {
+    "name": "AFGHANISTAN",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "AG": {
+    "name": "ANTIGUA AND BARBUDA",
+    "require": "A"
+  },
+  "AI": {
+    "name": "ANGUILLA",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "AL": {
+    "name": "ALBANIA",
+    "fmt": "%N%n%O%n%A%n%Z%n%C"
+  },
+  "AM": {
+    "name": "ARMENIA",
+    "fmt": "%N%n%O%n%A%n%Z%n%C%n%S",
+    "lfmt": "%N%n%O%n%A%n%Z%n%C%n%S"
+  },
+  "AO": {
+    "name": "ANGOLA"
+  },
+  "AQ": {
+    "name": "ANTARCTICA"
+  },
+  "AR": {
+    "name": "ARGENTINA",
+    "fmt": "%N%n%O%n%A%n%Z %C%n%S"
+  },
+  "AS": {
+    "name": "AMERICAN SAMOA",
+    "fmt": "%N%n%O%n%A%n%C %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "zip_name_type": "zip"
+  },
+  "AT": {
+    "name": "AUSTRIA",
+    "fmt": "%O%n%N%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "AU": {
+    "name": "AUSTRALIA",
+    "fmt": "%O%n%N%n%A%n%C %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "locality_name_type": "suburb"
+  },
+  "AW": {
+    "name": "ARUBA"
+  },
+  "AX": {
+    "name": "FINLAND",
+    "fmt": "%O%n%N%n%A%nAX-%Z %C%nÅLAND",
+    "require": "ACZ"
+  },
+  "AZ": {
+    "name": "AZERBAIJAN",
+    "fmt": "%N%n%O%n%A%nAZ %Z %C"
+  },
+  "BA": {
+    "name": "BOSNIA AND HERZEGOVINA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "BB": {
+    "name": "BARBADOS",
+    "fmt": "%N%n%O%n%A%n%C, %S %Z",
+    "state_name_type": "parish"
+  },
+  "BD": {
+    "name": "BANGLADESH",
+    "fmt": "%N%n%O%n%A%n%C - %Z"
+  },
+  "BE": {
+    "name": "BELGIUM",
+    "fmt": "%O%n%N%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "BF": {
+    "name": "BURKINA FASO",
+    "fmt": "%N%n%O%n%A%n%C %X"
+  },
+  "BG": {
+    "name": "BULGARIA (REP.)",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "BH": {
+    "name": "BAHRAIN",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "BI": {
+    "name": "BURUNDI"
+  },
+  "BJ": {
+    "name": "BENIN"
+  },
+  "BL": {
+    "name": "SAINT BARTHELEMY",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "BM": {
+    "name": "BERMUDA",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "BN": {
+    "name": "BRUNEI DARUSSALAM",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "BO": {
+    "name": "BOLIVIA"
+  },
+  "BQ": {
+    "name": "BONAIRE, SINT EUSTATIUS, AND SABA"
+  },
+  "BR": {
+    "name": "BRAZIL",
+    "fmt": "%O%n%N%n%A%n%D%n%C-%S%n%Z",
+    "require": "ASCZ",
+    "state_name_type": "state",
+    "sublocality_name_type": "neighborhood"
+  },
+  "BS": {
+    "name": "BAHAMAS",
+    "fmt": "%N%n%O%n%A%n%C, %S",
+    "state_name_type": "island"
+  },
+  "BT": {
+    "name": "BHUTAN",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "BV": {
+    "name": "BOUVET ISLAND"
+  },
+  "BW": {
+    "name": "BOTSWANA"
+  },
+  "BY": {
+    "name": "BELARUS",
+    "fmt": "%O%n%N%n%A%n%Z, %C%n%S"
+  },
+  "BZ": {
+    "name": "BELIZE"
+  },
+  "CA": {
+    "name": "CANADA",
+    "fmt": "%N%n%O%n%A%n%C %S %Z",
+    "require": "ACSZ"
+  },
+  "CC": {
+    "name": "COCOS (KEELING) ISLANDS",
+    "fmt": "%O%n%N%n%A%n%C %S %Z"
+  },
+  "CD": {
+    "name": "CONGO (DEM. REP.)"
+  },
+  "CF": {
+    "name": "CENTRAL AFRICAN REPUBLIC"
+  },
+  "CG": {
+    "name": "CONGO (REP.)"
+  },
+  "CH": {
+    "name": "SWITZERLAND",
+    "fmt": "%O%n%N%n%A%nCH-%Z %C",
+    "require": "ACZ"
+  },
+  "CI": {
+    "name": "COTE D'IVOIRE",
+    "fmt": "%N%n%O%n%X %A %C %X"
+  },
+  "CK": {
+    "name": "COOK ISLANDS"
+  },
+  "CL": {
+    "name": "CHILE",
+    "fmt": "%N%n%O%n%A%n%Z %C%n%S"
+  },
+  "CM": {
+    "name": "CAMEROON"
+  },
+  "CN": {
+    "name": "CHINA",
+    "fmt": "%Z%n%S%C%D%n%A%n%O%n%N",
+    "lfmt": "%N%n%O%n%A%n%D%n%C%n%S, %Z",
+    "require": "ACSZ",
+    "sublocality_name_type": "district"
+  },
+  "CO": {
+    "name": "COLOMBIA",
+    "fmt": "%N%n%O%n%A%n%D%n%C, %S, %Z",
+    "require": "AS",
+    "state_name_type": "department"
+  },
+  "CR": {
+    "name": "COSTA RICA",
+    "fmt": "%N%n%O%n%A%n%S, %C%n%Z",
+    "require": "ACS"
+  },
+  "CU": {
+    "name": "CUBA",
+    "fmt": "%N%n%O%n%A%n%C %S%n%Z"
+  },
+  "CV": {
+    "name": "CAPE VERDE",
+    "fmt": "%N%n%O%n%A%n%Z %C%n%S",
+    "state_name_type": "island"
+  },
+  "CW": {
+    "name": "CURACAO"
+  },
+  "CX": {
+    "name": "CHRISTMAS ISLAND",
+    "fmt": "%O%n%N%n%A%n%C %S %Z"
+  },
+  "CY": {
+    "name": "CYPRUS",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "CZ": {
+    "name": "CZECH REP.",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "DE": {
+    "name": "GERMANY",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "DJ": {
+    "name": "DJIBOUTI"
+  },
+  "DK": {
+    "name": "DENMARK",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "DM": {
+    "name": "DOMINICA"
+  },
+  "DO": {
+    "name": "DOMINICAN REP.",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "DZ": {
+    "name": "ALGERIA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "EC": {
+    "name": "ECUADOR",
+    "fmt": "%N%n%O%n%A%n%Z%n%C"
+  },
+  "EE": {
+    "name": "ESTONIA",
+    "fmt": "%N%n%O%n%A%n%Z %C %S",
+    "require": "ACZ"
+  },
+  "EG": {
+    "name": "EGYPT",
+    "fmt": "%N%n%O%n%A%n%C%n%S%n%Z",
+    "lfmt": "%N%n%O%n%A%n%C%n%S%n%Z"
+  },
+  "EH": {
+    "name": "WESTERN SAHARA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "ER": {
+    "name": "ERITREA"
+  },
+  "ES": {
+    "name": "SPAIN",
+    "fmt": "%N%n%O%n%A%n%Z %C %S",
+    "require": "ACSZ"
+  },
+  "ET": {
+    "name": "ETHIOPIA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "FI": {
+    "name": "FINLAND",
+    "fmt": "%O%n%N%n%A%nFI-%Z %C",
+    "require": "ACZ"
+  },
+  "FJ": {
+    "name": "FIJI"
+  },
+  "FK": {
+    "name": "FALKLAND ISLANDS (MALVINAS)",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "require": "ACZ"
+  },
+  "FM": {
+    "name": "MICRONESIA (Federated State of)",
+    "fmt": "%N%n%O%n%A%n%C %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "zip_name_type": "zip"
+  },
+  "FO": {
+    "name": "FAROE ISLANDS",
+    "fmt": "%N%n%O%n%A%nFO%Z %C"
+  },
+  "FR": {
+    "name": "FRANCE",
+    "fmt": "%O%n%N%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "GA": {
+    "name": "GABON"
+  },
+  "GB": {
+    "name": "UNITED KINGDOM",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "require": "ACZ",
+    "locality_name_type": "post_town"
+  },
+  "GD": {
+    "name": "GRENADA (WEST INDIES)"
+  },
+  "GE": {
+    "name": "GEORGIA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "GF": {
+    "name": "FRENCH GUIANA",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "GG": {
+    "name": "CHANNEL ISLANDS",
+    "fmt": "%N%n%O%n%A%n%C%nGUERNSEY%n%Z",
+    "require": "ACZ"
+  },
+  "GH": {
+    "name": "GHANA"
+  },
+  "GI": {
+    "name": "GIBRALTAR",
+    "fmt": "%N%n%O%n%A%nGIBRALTAR%n%Z",
+    "require": "A"
+  },
+  "GL": {
+    "name": "GREENLAND",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "GM": {
+    "name": "GAMBIA"
+  },
+  "GN": {
+    "name": "GUINEA",
+    "fmt": "%N%n%O%n%Z %A %C"
+  },
+  "GP": {
+    "name": "GUADELOUPE",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "GQ": {
+    "name": "EQUATORIAL GUINEA"
+  },
+  "GR": {
+    "name": "GREECE",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "GS": {
+    "name": "SOUTH GEORGIA",
+    "fmt": "%N%n%O%n%A%n%n%C%n%Z",
+    "require": "ACZ"
+  },
+  "GT": {
+    "name": "GUATEMALA",
+    "fmt": "%N%n%O%n%A%n%Z- %C"
+  },
+  "GU": {
+    "name": "GUAM",
+    "fmt": "%N%n%O%n%A%n%C %Z",
+    "require": "ACZ",
+    "zip_name_type": "zip"
+  },
+  "GW": {
+    "name": "GUINEA-BISSAU",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "GY": {
+    "name": "GUYANA"
+  },
+  "HK": {
+    "name": "HONG KONG",
+    "fmt": "%S%n%C%n%A%n%O%n%N",
+    "lfmt": "%N%n%O%n%A%n%C%n%S",
+    "require": "AS",
+    "state_name_type": "area",
+    "locality_name_type": "district"
+  },
+  "HM": {
+    "name": "HEARD AND MCDONALD ISLANDS",
+    "fmt": "%O%n%N%n%A%n%C %S %Z"
+  },
+  "HN": {
+    "name": "HONDURAS",
+    "fmt": "%N%n%O%n%A%n%C, %S%n%Z",
+    "require": "ACS",
+    "state_name_type": "department"
+  },
+  "HR": {
+    "name": "CROATIA",
+    "fmt": "%N%n%O%n%A%nHR-%Z %C"
+  },
+  "HT": {
+    "name": "HAITI",
+    "fmt": "%N%n%O%n%A%nHT%Z %C"
+  },
+  "HU": {
+    "name": "HUNGARY (Rep.)",
+    "fmt": "%N%n%O%n%C%n%A%n%Z",
+    "require": "ACZ"
+  },
+  "ID": {
+    "name": "INDONESIA",
+    "fmt": "%N%n%O%n%A%n%C%n%S %Z",
+    "require": "AS"
+  },
+  "IE": {
+    "name": "IRELAND",
+    "fmt": "%N%n%O%n%A%n%D%n%C%n%S%n%Z",
+    "state_name_type": "county",
+    "sublocality_name_type": "townland",
+    "zip_name_type": "eircode"
+  },
+  "IL": {
+    "name": "ISRAEL",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "IM": {
+    "name": "ISLE OF MAN",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "require": "ACZ"
+  },
+  "IN": {
+    "name": "INDIA",
+    "fmt": "%N%n%O%n%A%n%T%n%F%n%L%n%C %Z%n%S",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "zip_name_type": "pin"
+  },
+  "IO": {
+    "name": "BRITISH INDIAN OCEAN TERRITORY",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "require": "ACZ"
+  },
+  "IQ": {
+    "name": "IRAQ",
+    "fmt": "%O%n%N%n%A%n%C, %S%n%Z",
+    "require": "ACS"
+  },
+  "IR": {
+    "name": "IRAN",
+    "fmt": "%O%n%N%n%S%n%C, %D%n%A%n%Z",
+    "sublocality_name_type": "neighborhood"
+  },
+  "IS": {
+    "name": "ICELAND",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "IT": {
+    "name": "ITALY",
+    "fmt": "%N%n%O%n%A%n%Z %C %S",
+    "require": "ACSZ"
+  },
+  "JE": {
+    "name": "CHANNEL ISLANDS",
+    "fmt": "%N%n%O%n%A%n%C%nJERSEY%n%Z",
+    "require": "ACZ"
+  },
+  "JM": {
+    "name": "JAMAICA",
+    "fmt": "%N%n%O%n%A%n%C%n%S %X",
+    "require": "ACS",
+    "state_name_type": "parish"
+  },
+  "JO": {
+    "name": "JORDAN",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "JP": {
+    "name": "JAPAN",
+    "fmt": "〒%Z%n%S%n%A%n%O%n%N",
+    "lfmt": "%N%n%O%n%A, %S%n%Z",
+    "require": "ASZ",
+    "state_name_type": "prefecture"
+  },
+  "KE": {
+    "name": "KENYA",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "KG": {
+    "name": "KYRGYZSTAN",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "KH": {
+    "name": "CAMBODIA",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "KI": {
+    "name": "KIRIBATI",
+    "fmt": "%N%n%O%n%A%n%S%n%C",
+    "state_name_type": "island"
+  },
+  "KM": {
+    "name": "COMOROS"
+  },
+  "KN": {
+    "name": "SAINT KITTS AND NEVIS",
+    "fmt": "%N%n%O%n%A%n%C, %S",
+    "require": "ACS",
+    "state_name_type": "island"
+  },
+  "KP": {
+    "name": "NORTH KOREA",
+    "fmt": "%Z%n%S%n%C%n%A%n%O%n%N",
+    "lfmt": "%N%n%O%n%A%n%C%n%S, %Z"
+  },
+  "KR": {
+    "name": "SOUTH KOREA",
+    "fmt": "%S %C%D%n%A%n%O%n%N%n%Z",
+    "lfmt": "%N%n%O%n%A%n%D%n%C%n%S%n%Z",
+    "require": "ACSZ",
+    "state_name_type": "do_si",
+    "sublocality_name_type": "district"
+  },
+  "KW": {
+    "name": "KUWAIT",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "KY": {
+    "name": "CAYMAN ISLANDS",
+    "fmt": "%N%n%O%n%A%n%S %Z",
+    "require": "AS",
+    "state_name_type": "island"
+  },
+  "KZ": {
+    "name": "KAZAKHSTAN",
+    "fmt": "%Z%n%S%n%C%n%A%n%O%n%N"
+  },
+  "LA": {
+    "name": "LAO (PEOPLE'S DEM. REP.)",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "LB": {
+    "name": "LEBANON",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "LC": {
+    "name": "SAINT LUCIA"
+  },
+  "LI": {
+    "name": "LIECHTENSTEIN",
+    "fmt": "%O%n%N%n%A%nFL-%Z %C",
+    "require": "ACZ"
+  },
+  "LK": {
+    "name": "SRI LANKA",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "LR": {
+    "name": "LIBERIA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "LS": {
+    "name": "LESOTHO",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "LT": {
+    "name": "LITHUANIA",
+    "fmt": "%O%n%N%n%A%nLT-%Z %C %S",
+    "require": "ACZ"
+  },
+  "LU": {
+    "name": "LUXEMBOURG",
+    "fmt": "%O%n%N%n%A%nL-%Z %C",
+    "require": "ACZ"
+  },
+  "LV": {
+    "name": "LATVIA",
+    "fmt": "%N%n%O%n%A%n%S%n%C, %Z",
+    "require": "ACZ"
+  },
+  "LY": {
+    "name": "LIBYA"
+  },
+  "MA": {
+    "name": "MOROCCO",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "MC": {
+    "name": "MONACO",
+    "fmt": "%N%n%O%n%A%nMC-%Z %C %X"
+  },
+  "MD": {
+    "name": "Rep. MOLDOVA",
+    "fmt": "%N%n%O%n%A%nMD-%Z %C"
+  },
+  "ME": {
+    "name": "MONTENEGRO",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "MF": {
+    "name": "SAINT MARTIN",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "MG": {
+    "name": "MADAGASCAR",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "MH": {
+    "name": "MARSHALL ISLANDS",
+    "fmt": "%N%n%O%n%A%n%C %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "zip_name_type": "zip"
+  },
+  "MK": {
+    "name": "MACEDONIA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "ML": {
+    "name": "MALI"
+  },
+  "MM": {
+    "name": "MYANMAR",
+    "fmt": "%N%n%O%n%A%n%C, %Z"
+  },
+  "MN": {
+    "name": "MONGOLIA",
+    "fmt": "%N%n%O%n%A%n%C%n%S %Z"
+  },
+  "MO": {
+    "name": "MACAO",
+    "fmt": "%A%n%O%n%N",
+    "lfmt": "%N%n%O%n%A",
+    "require": "A"
+  },
+  "MP": {
+    "name": "NORTHERN MARIANA ISLANDS",
+    "fmt": "%N%n%O%n%A%n%C %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "zip_name_type": "zip"
+  },
+  "MQ": {
+    "name": "MARTINIQUE",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "MR": {
+    "name": "MAURITANIA"
+  },
+  "MS": {
+    "name": "MONTSERRAT"
+  },
+  "MT": {
+    "name": "MALTA",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "MU": {
+    "name": "MAURITIUS",
+    "fmt": "%N%n%O%n%A%n%Z%n%C"
+  },
+  "MV": {
+    "name": "MALDIVES",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "MW": {
+    "name": "MALAWI",
+    "fmt": "%N%n%O%n%A%n%C %X"
+  },
+  "MX": {
+    "name": "MEXICO",
+    "fmt": "%N%n%O%n%A%n%D%n%Z %C, %S",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "sublocality_name_type": "neighborhood"
+  },
+  "MY": {
+    "name": "MALAYSIA",
+    "fmt": "%N%n%O%n%A%n%D%n%Z %C%n%S",
+    "require": "ACZ",
+    "state_name_type": "state",
+    "sublocality_name_type": "village_township"
+  },
+  "MZ": {
+    "name": "MOZAMBIQUE",
+    "fmt": "%N%n%O%n%A%n%Z %C%S"
+  },
+  "NA": {
+    "name": "NAMIBIA",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "NC": {
+    "name": "NEW CALEDONIA",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "NE": {
+    "name": "NIGER",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "NF": {
+    "name": "NORFOLK ISLAND",
+    "fmt": "%O%n%N%n%A%n%C %S %Z"
+  },
+  "NG": {
+    "name": "NIGERIA",
+    "fmt": "%N%n%O%n%A%n%D%n%C %Z%n%S",
+    "state_name_type": "state"
+  },
+  "NI": {
+    "name": "NICARAGUA",
+    "fmt": "%N%n%O%n%A%n%Z%n%C, %S",
+    "state_name_type": "department"
+  },
+  "NL": {
+    "name": "NETHERLANDS",
+    "fmt": "%O%n%N%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "NO": {
+    "name": "NORWAY",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ",
+    "locality_name_type": "post_town"
+  },
+  "NP": {
+    "name": "NEPAL",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "NR": {
+    "name": "NAURU CENTRAL PACIFIC",
+    "fmt": "%N%n%O%n%A%n%S",
+    "require": "AS",
+    "state_name_type": "district"
+  },
+  "NU": {
+    "name": "NIUE"
+  },
+  "NZ": {
+    "name": "NEW ZEALAND",
+    "fmt": "%N%n%O%n%A%n%D%n%C %Z",
+    "require": "ACDZ"
+  },
+  "OM": {
+    "name": "OMAN",
+    "fmt": "%N%n%O%n%A%n%Z%n%C"
+  },
+  "PA": {
+    "name": "PANAMA (REP.)",
+    "fmt": "%N%n%O%n%A%n%C%n%S"
+  },
+  "PE": {
+    "name": "PERU",
+    "fmt": "%N%n%O%n%A%n%C %Z%n%S",
+    "locality_name_type": "district"
+  },
+  "PF": {
+    "name": "FRENCH POLYNESIA",
+    "fmt": "%N%n%O%n%A%n%Z %C %S",
+    "require": "ACSZ",
+    "state_name_type": "island"
+  },
+  "PG": {
+    "name": "PAPUA NEW GUINEA",
+    "fmt": "%N%n%O%n%A%n%C %Z %S",
+    "require": "ACS"
+  },
+  "PH": {
+    "name": "PHILIPPINES",
+    "fmt": "%N%n%O%n%A%n%D, %C%n%Z %S"
+  },
+  "PK": {
+    "name": "PAKISTAN",
+    "fmt": "%N%n%O%n%A%n%D%n%C-%Z"
+  },
+  "PL": {
+    "name": "POLAND",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "PM": {
+    "name": "ST. PIERRE AND MIQUELON",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "PN": {
+    "name": "PITCAIRN",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "require": "ACZ"
+  },
+  "PR": {
+    "name": "PUERTO RICO",
+    "fmt": "%N%n%O%n%A%n%C PR %Z",
+    "require": "ACZ",
+    "zip_name_type": "zip"
+  },
+  "PS": {
+    "name": "PALESTINIAN TERRITORY"
+  },
+  "PT": {
+    "name": "PORTUGAL",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "PW": {
+    "name": "PALAU",
+    "fmt": "%N%n%O%n%A%n%C %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "zip_name_type": "zip"
+  },
+  "PY": {
+    "name": "PARAGUAY",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "QA": {
+    "name": "QATAR"
+  },
+  "RE": {
+    "name": "REUNION",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "RO": {
+    "name": "ROMANIA",
+    "fmt": "%N%n%O%n%A%n%Z %S %C",
+    "require": "ACZ"
+  },
+  "RS": {
+    "name": "REPUBLIC OF SERBIA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "RU": {
+    "name": "RUSSIAN FEDERATION",
+    "fmt": "%N%n%O%n%A%n%C%n%S%n%Z",
+    "lfmt": "%N%n%O%n%A%n%C%n%S%n%Z",
+    "require": "ACSZ",
+    "state_name_type": "oblast"
+  },
+  "RW": {
+    "name": "RWANDA"
+  },
+  "SA": {
+    "name": "SAUDI ARABIA",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "SB": {
+    "name": "SOLOMON ISLANDS"
+  },
+  "SC": {
+    "name": "SEYCHELLES",
+    "fmt": "%N%n%O%n%A%n%C%n%S",
+    "state_name_type": "island"
+  },
+  "SD": {
+    "name": "SUDAN",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "locality_name_type": "district"
+  },
+  "SE": {
+    "name": "SWEDEN",
+    "fmt": "%O%n%N%n%A%nSE-%Z %C",
+    "require": "ACZ",
+    "locality_name_type": "post_town"
+  },
+  "SG": {
+    "name": "REP. OF SINGAPORE",
+    "fmt": "%N%n%O%n%A%nSINGAPORE %Z",
+    "require": "AZ"
+  },
+  "SH": {
+    "name": "SAINT HELENA",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "require": "ACZ"
+  },
+  "SI": {
+    "name": "SLOVENIA",
+    "fmt": "%N%n%O%n%A%nSI-%Z %C"
+  },
+  "SJ": {
+    "name": "SVALBARD AND JAN MAYEN ISLANDS",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ",
+    "locality_name_type": "post_town"
+  },
+  "SK": {
+    "name": "SLOVAKIA",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "ACZ"
+  },
+  "SL": {
+    "name": "SIERRA LEONE"
+  },
+  "SM": {
+    "name": "SAN MARINO",
+    "fmt": "%N%n%O%n%A%n%Z %C",
+    "require": "AZ"
+  },
+  "SN": {
+    "name": "SENEGAL",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "SO": {
+    "name": "SOMALIA",
+    "fmt": "%N%n%O%n%A%n%C, %S %Z",
+    "require": "ACS"
+  },
+  "SR": {
+    "name": "SURINAME",
+    "fmt": "%N%n%O%n%A%n%C%n%S"
+  },
+  "SS": {
+    "name": "SOUTH SUDAN"
+  },
+  "ST": {
+    "name": "SAO TOME AND PRINCIPE"
+  },
+  "SV": {
+    "name": "EL SALVADOR",
+    "fmt": "%N%n%O%n%A%n%Z-%C%n%S",
+    "require": "ACS"
+  },
+  "SX": {
+    "name": "SINT MAARTEN"
+  },
+  "SY": {
+    "name": "SYRIA",
+    "locality_name_type": "district"
+  },
+  "SZ": {
+    "name": "SWAZILAND",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "TA": {
+    "name": "TRISTAN DA CUNHA",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "TC": {
+    "name": "TURKS AND CAICOS ISLANDS",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "require": "ACZ"
+  },
+  "TD": {
+    "name": "CHAD"
+  },
+  "TF": {
+    "name": "FRENCH SOUTHERN TERRITORIES"
+  },
+  "TG": {
+    "name": "TOGO"
+  },
+  "TH": {
+    "name": "THAILAND",
+    "fmt": "%N%n%O%n%A%n%D %C%n%S %Z",
+    "lfmt": "%N%n%O%n%A%n%D, %C%n%S %Z"
+  },
+  "TJ": {
+    "name": "TAJIKISTAN",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "TK": {
+    "name": "TOKELAU"
+  },
+  "TL": {
+    "name": "TIMOR-LESTE"
+  },
+  "TM": {
+    "name": "TURKMENISTAN",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "TN": {
+    "name": "TUNISIA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "TO": {
+    "name": "TONGA"
+  },
+  "TR": {
+    "name": "TURKEY",
+    "fmt": "%N%n%O%n%A%n%Z %C/%S",
+    "require": "ACZ",
+    "locality_name_type": "district"
+  },
+  "TT": {
+    "name": "TRINIDAD AND TOBAGO",
+    "fmt": "%N%n%O%n%A%n%C%n%Z"
+  },
+  "TV": {
+    "name": "TUVALU",
+    "fmt": "%N%n%O%n%A%n%C%n%S",
+    "state_name_type": "island"
+  },
+  "TW": {
+    "name": "TAIWAN",
+    "fmt": "%Z%n%S%C%n%A%n%O%n%N",
+    "lfmt": "%N%n%O%n%A%n%C, %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "county",
+    "locality_name_type": "district"
+  },
+  "TZ": {
+    "name": "TANZANIA (UNITED REP.)",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "UA": {
+    "name": "UKRAINE",
+    "fmt": "%N%n%O%n%A%n%C%n%S%n%Z",
+    "lfmt": "%N%n%O%n%A%n%C%n%S%n%Z",
+    "require": "ACZ",
+    "state_name_type": "oblast"
+  },
+  "UG": {
+    "name": "UGANDA"
+  },
+  "UM": {
+    "name": "UNITED STATES MINOR OUTLYING ISLANDS",
+    "fmt": "%N%n%O%n%A%n%C %S %Z",
+    "require": "ACS",
+    "state_name_type": "state",
+    "zip_name_type": "zip"
+  },
+  "US": {
+    "name": "UNITED STATES",
+    "fmt": "%N%n%O%n%A%n%C, %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "zip_name_type": "zip"
+  },
+  "UY": {
+    "name": "URUGUAY",
+    "fmt": "%N%n%O%n%A%n%Z %C %S"
+  },
+  "UZ": {
+    "name": "UZBEKISTAN",
+    "fmt": "%N%n%O%n%A%n%Z %C%n%S"
+  },
+  "VA": {
+    "name": "VATICAN",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "VC": {
+    "name": "SAINT VINCENT AND THE GRENADINES (ANTILLES)",
+    "fmt": "%N%n%O%n%A%n%C %Z"
+  },
+  "VE": {
+    "name": "VENEZUELA",
+    "fmt": "%N%n%O%n%A%n%C %Z, %S",
+    "require": "ACS",
+    "state_name_type": "state"
+  },
+  "VG": {
+    "name": "VIRGIN ISLANDS (BRITISH)",
+    "fmt": "%N%n%O%n%A%n%C%n%Z",
+    "require": "A"
+  },
+  "VI": {
+    "name": "VIRGIN ISLANDS (U.S.)",
+    "fmt": "%N%n%O%n%A%n%C %S %Z",
+    "require": "ACSZ",
+    "state_name_type": "state",
+    "zip_name_type": "zip"
+  },
+  "VN": {
+    "name": "VIET NAM",
+    "fmt": "%N%n%O%n%A%n%C%n%S %Z",
+    "lfmt": "%N%n%O%n%A%n%C%n%S %Z",
+    "require": "AS"
+  },
+  "VU": {
+    "name": "VANUATU"
+  },
+  "WF": {
+    "name": "WALLIS AND FUTUNA ISLANDS",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "WS": {
+    "name": "SAMOA"
+  },
+  "XK": {
+    "name": "KOSOVO",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "YE": {
+    "name": "YEMEN"
+  },
+  "YT": {
+    "name": "MAYOTTE",
+    "fmt": "%O%n%N%n%A%n%Z %C %X",
+    "require": "ACZ"
+  },
+  "ZA": {
+    "name": "SOUTH AFRICA",
+    "fmt": "%N%n%O%n%A%n%D%n%C%n%Z",
+    "require": "ACZ"
+  },
+  "ZM": {
+    "name": "ZAMBIA",
+    "fmt": "%N%n%O%n%A%n%Z %C"
+  },
+  "ZW": {
+    "name": "ZIMBABWE"
+  }
+}

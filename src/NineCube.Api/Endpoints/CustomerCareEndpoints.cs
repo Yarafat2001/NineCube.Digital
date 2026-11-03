@@ -30,8 +30,8 @@ public sealed class CustomerCareEndpoints : IEndpoint
                 throw new BusinessValidationException("Choose a request type and enter a message of at most 2000 characters.");
             var order = await db.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == request.OrderId && o.CustomerId == user.CustomerId, ct)
                 ?? throw new NotFoundException("Order was not found.");
-            if (request.Kind is ServiceCaseKind.Return or ServiceCaseKind.Exchange && order.Status != OrderStatus.Delivered)
-                throw new BusinessValidationException("Returns and exchanges can be requested after delivery.");
+            if (request.Kind is ServiceCaseKind.Return or ServiceCaseKind.Exchange)
+                throw new BusinessValidationException("Select returned items from the order details page.");
             var entry = new ServiceCase { OrderId = order.Id, CustomerId = order.CustomerId, Kind = request.Kind,
                 Message = request.Message.Trim(), CreatedAt = clock.UtcNow, UpdatedAt = clock.UtcNow };
             db.ServiceCases.Add(entry);
@@ -45,6 +45,8 @@ public sealed class CustomerCareEndpoints : IEndpoint
             var entry = await db.ServiceCases.FirstOrDefaultAsync(c => c.Id == id, ct) ?? throw new NotFoundException("Request was not found.");
             if (entry.Status is ServiceCaseStatus.Completed or ServiceCaseStatus.Rejected)
                 throw new ResourceConflictException("This request has already been closed.");
+            if (entry.Kind is ServiceCaseKind.Return or ServiceCaseKind.Exchange && request.Status is ServiceCaseStatus.Completed or ServiceCaseStatus.Received)
+                throw new BusinessValidationException("Use return inspection and refund settlement to complete a return.");
             entry.Status = request.Status;
             entry.Response = request.Response.Trim();
             entry.UpdatedAt = clock.UtcNow;
@@ -69,6 +71,7 @@ public sealed class CustomerCareEndpoints : IEndpoint
             if (string.IsNullOrWhiteSpace(request.Carrier) || string.IsNullOrWhiteSpace(request.TrackingNumber))
                 throw new BusinessValidationException("Enter the carrier and tracking number.");
             order.Status = request.Status;
+            if (request.Status == OrderStatus.Delivered) order.DeliveredAt ??= clock.UtcNow;
             order.Carrier = request.Carrier.Trim();
             order.TrackingNumber = request.TrackingNumber.Trim();
             order.UpdatedAt = clock.UtcNow;
@@ -111,60 +114,11 @@ public sealed class CustomerCareEndpoints : IEndpoint
             await db.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
             return Results.NoContent();
-        }).RequireAuthorization(Policies.StaffOnly);
+        }).RequireAuthorization(Policies.StaffOrAdmin);
 
-        app.MapPost("/api/courier/webhook", async (CourierWebhookRequest request, IAppDbContext db, INotificationWriter notifications, IClock clock, CancellationToken ct) =>
-        {
-            var code = request.TrackingCode?.Trim() ?? request.ConsignmentId?.Trim();
-            if (string.IsNullOrWhiteSpace(code))
-                throw new BusinessValidationException("Tracking code or consignment identifier is required.");
-
-            var order = await db.Orders.FirstOrDefaultAsync(o => o.TrackingNumber == code, ct)
-                ?? throw new NotFoundException($"Order with tracking number {code} was not found.");
-
-            var normalized = (request.Status ?? "").ToLowerInvariant().Replace("_", "").Replace("-", "");
-            OrderStatus? target = normalized switch
-            {
-                "delivered" or "partialdelivered" => OrderStatus.Delivered,
-                "failed" or "deliveryfailed" or "cancelled" or "returned" => OrderStatus.DeliveryFailed,
-                "shipped" or "intransit" => OrderStatus.Shipped,
-                _ => null
-            };
-
-            if (target is null || order.Status == target.Value) return Results.Ok(new { updated = false, orderId = order.Id, currentStatus = order.Status });
-
-            if (!OrderStatusRules.CanTransition(order.Status, target.Value))
-                throw new InvalidStateTransitionException(order.Status, target.Value);
-
-            order.Status = target.Value;
-            order.UpdatedAt = clock.UtcNow;
-
-            db.AuditLogs.Add(new AuditLog
-            {
-                Action = "order.courier_webhook_updated",
-                EntityType = nameof(Order),
-                EntityId = order.Id.ToString(),
-                CreatedAt = clock.UtcNow,
-                Details = $"status={target.Value}; tracking={code}; carrier_message={request.Message}"
-            });
-
-            var userIds = await db.Users.AsNoTracking()
-                .Where(u => u.IsActive && u.CustomerId == order.CustomerId)
-                .Select(u => u.Id)
-                .ToListAsync(ct);
-
-            var title = $"Order #{order.Id} {target.Value.ToString().ToLowerInvariant()}";
-            var body = target.Value == OrderStatus.Delivered
-                ? $"Your order #{order.Id} was confirmed delivered by the carrier."
-                : $"Delivery update for order #{order.Id}: {request.Message ?? target.Value.ToString()}";
-
-            foreach (var userId in userIds)
-            {
-                notifications.Add(userId, NotificationType.OrderStatusChanged, title, body, $"/orders/{order.Id}");
-            }
-
-            await db.SaveChangesAsync(ct);
-            return Results.Ok(new { updated = true, orderId = order.Id, status = order.Status });
-        }).AllowAnonymous().WithName("CourierWebhook").WithSummary("Inbound courier webhook from carrier partners.");
+        // No courier is configured. Never accept unauthenticated status changes.
+        app.MapPost("/api/courier/webhook", () => Results.Problem(
+            statusCode: 503, title: "Courier integration is not configured."))
+            .RequireAuthorization(Policies.AdministratorOnly).WithName("CourierWebhook");
     }
 }

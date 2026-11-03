@@ -27,7 +27,14 @@ public sealed record AddressDto(
     string Upazila,
     string AddressLine,
     string? Phone,
-    bool IsDefault);
+    bool IsDefault,
+    string CountryCode = "BD",
+    string? RecipientName = null,
+    string? Company = null,
+    string? AddressLine2 = null,
+    string? Landmark = null,
+    string? PostalCode = null,
+    string? DeliveryInstructions = null);
 
 public sealed record AddressRequest(
     string Label,
@@ -36,7 +43,14 @@ public sealed record AddressRequest(
     string Upazila,
     string AddressLine,
     string? Phone = null,
-    bool IsDefault = false);
+    bool IsDefault = false,
+    string CountryCode = "BD",
+    string? RecipientName = null,
+    string? Company = null,
+    string? AddressLine2 = null,
+    string? Landmark = null,
+    string? PostalCode = null,
+    string? DeliveryInstructions = null);
 
 /// <summary>Email is the login identity and is therefore read-only on the profile page.</summary>
 public sealed record ProfileDto(

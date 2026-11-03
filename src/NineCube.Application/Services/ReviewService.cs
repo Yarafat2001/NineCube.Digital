@@ -63,7 +63,7 @@ public sealed class ReviewService : IReviewService
             Rating = request.Rating,
             Comment = string.IsNullOrWhiteSpace(request.Comment) ? null : request.Comment.Trim(),
             IsVerifiedBuyer = isVerified,
-            IsApproved = true,
+            IsApproved = false,
             CreatedAt = _clock.UtcNow
         };
 
@@ -94,7 +94,7 @@ public sealed class ReviewService : IReviewService
                 r.Rating,
                 r.Comment,
                 r.IsVerifiedBuyer,
-                r.CreatedAt))
+                r.CreatedAt, r.MerchantResponse))
             .ToListAsync(ct);
 
         decimal avg = reviews.Count > 0

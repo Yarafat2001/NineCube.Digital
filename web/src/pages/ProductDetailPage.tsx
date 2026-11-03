@@ -1,6 +1,6 @@
 import { t, useLanguage } from '../i18n/language';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useLowStockThreshold, useProduct, useProductReviews, useAddReview, useWishlist, useToggleWishlist } from '../api/hooks';
 import { formatDateTime } from '../lib/helpers';
 import { EmptyState, ErrorState, LoadingBlock, QuantityStepper, StockBadge, useToast } from '../components/ui';
@@ -22,6 +22,7 @@ import { useCart } from '../state/CartContext';
 export function ProductDetailPage() {
   useLanguage();
   const { id } = useParams();
+  const navigate = useNavigate();
   const productId = Number(id);
   const { hasRole, user } = useAuth();
   const cart = useCart();
@@ -224,11 +225,29 @@ export function ProductDetailPage() {
               <span className="muted" style={{ fontSize: 'var(--text-xs)' }}>{t("No reviews yet")}</span>
             )}
 
-            {hasRole('Customer') ? (
+            {!user || hasRole('Customer') ? (
               <button
                 type="button"
                 className={`btn btn--sm ${isInWishlist ? 'btn--primary' : 'btn--ghost'}`}
-                onClick={() => toggleWishlist.mutate(productId)}
+                onClick={() => {
+                  if (!user) {
+                    toast.push('info', t('Please sign in to save items to your wishlist.'));
+                    navigate('/login');
+                    return;
+                  }
+                  toggleWishlist.mutate(productId, {
+                    onSuccess: (data) => {
+                      if (data.inWishlist) {
+                        toast.push('success', `${t("Added")} ${product?.name ?? ''} ${t("to your wishlist.")}`);
+                      } else {
+                        toast.push('info', `${t("Removed")} ${product?.name ?? ''} ${t("from your wishlist.")}`);
+                      }
+                    },
+                    onError: () => {
+                      toast.push('error', t('Could not update wishlist. Please try again.'));
+                    }
+                  });
+                }}
                 disabled={toggleWishlist.isPending}
                 aria-label={t(isInWishlist ? 'Remove from wishlist' : 'Add to wishlist')}
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}

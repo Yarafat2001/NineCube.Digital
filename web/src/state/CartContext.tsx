@@ -1,4 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useAuth } from './AuthContext';
+import { useSavedCart } from './useSavedCart';
 import type { Product } from '../api/types';
 
 /**
@@ -29,6 +31,8 @@ export interface CartContextValue {
   clear: () => void;
   /** Re-checks the lines against fresh product data after a 409. */
   reconcile: (products: Product[]) => void;
+  syncStatus?: string;
+  reloadSavedCart?: () => void;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -38,30 +42,29 @@ export const MAX_QUANTITY_PER_LINE = 1000;
 const CART_STORAGE_KEY = 'ninecube.cart.v1';
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [lines, setLines] = useState<CartLine[]>(() => {
+  const { user, token, initialising } = useAuth();
+  const owner = user?.role === 'Customer' ? user.id : null;
+  const keyFor = (id: number | null) => id === null ? CART_STORAGE_KEY : `${CART_STORAGE_KEY}.account.${id}`;
+  const read = (id: number | null): CartLine[] => {
     try {
-      const raw = localStorage.getItem(CART_STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch {
-      // LocalStorage unavailable in test or private mode
-    }
-    return [];
-  });
-
+      const raw = localStorage.getItem(keyFor(id)) ?? (id !== null ? localStorage.getItem(CART_STORAGE_KEY) : null);
+      const value: unknown = JSON.parse(raw ?? '[]');
+      return Array.isArray(value) ? value.filter(l => l && Number.isSafeInteger(l.productId) && Number.isInteger(l.quantity) && l.quantity > 0 && l.quantity <= 1000).slice(0, 200) : [];
+    } catch { return []; }
+  };
+  const [cart, setCart] = useState(() => ({ owner, lines: read(owner) }));
+  const lines = cart.owner === owner ? cart.lines : [];
+  const setLines = useCallback<React.Dispatch<React.SetStateAction<CartLine[]>>>(update => setCart(current => ({ owner,
+    lines: typeof update === 'function' ? update(current.owner === owner ? current.lines : []) : update })), [owner]);
+  useEffect(() => { if (cart.owner !== owner) setCart({ owner, lines: read(owner) }); }, [owner, cart.owner]);
   useEffect(() => {
-    try {
-      if (lines.length === 0) {
-        localStorage.removeItem(CART_STORAGE_KEY);
-      } else {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(lines));
-      }
-    } catch {
-      // Ignore storage write issues
-    }
-  }, [lines]);
+    if (cart.owner !== owner) return;
+    try { localStorage.setItem(keyFor(owner), JSON.stringify(lines)); } catch { /* Cart remains usable without local storage. */ }
+  }, [lines, owner, cart.owner]);
+  const { syncStatus, reloadSavedCart } = useSavedCart(owner, token, initialising, lines, setLines);
+  useEffect(() => {
+    if (owner && syncStatus === 'synced') { try { localStorage.removeItem(CART_STORAGE_KEY); } catch { /* Storage can be unavailable. */ } }
+  }, [owner, syncStatus]);
 
   const add = useCallback((product: Product, quantity: number) => {
     setLines((current) => {
@@ -135,8 +138,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
 
     const currencies = new Set(lines.map(line => line.currency ?? 'BDT'));
-    return { currency: lines[0]?.currency ?? 'BDT', mixedCurrencies: currencies.size > 1, lines, total: Math.round(total * 100) / 100, itemCount, add, setQuantity, remove, clear, reconcile };
-  }, [lines, add, setQuantity, remove, clear, reconcile]);
+    return { syncStatus, reloadSavedCart, currency: lines[0]?.currency ?? 'BDT', mixedCurrencies: currencies.size > 1, lines, total: Math.round(total * 100) / 100, itemCount, add, setQuantity, remove, clear, reconcile };
+  }, [lines, add, setQuantity, remove, clear, reconcile, syncStatus, reloadSavedCart]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

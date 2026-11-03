@@ -68,13 +68,13 @@ public sealed class PaymentEndpoints : IEndpoint
             tranId = form["tran_id"].ToString();
             status = form["status"].ToString();
         }
-        else if (request.Query.ContainsKey("val_id"))
+        else if (request.QueryString.HasValue)
         {
             validationId = request.Query["val_id"].ToString();
             tranId = request.Query["tran_id"].ToString();
             status = request.Query["status"].ToString();
         }
-        else
+        else if (request.ContentType?.Contains("json", StringComparison.OrdinalIgnoreCase) == true)
         {
             var json = await request.ReadFromJsonAsync<PaymentCallbackRequest>(ct);
             validationId = json?.ValidationId;
@@ -83,8 +83,6 @@ public sealed class PaymentEndpoints : IEndpoint
         var isBrowser = request.Headers.Accept.Any(a => a?.Contains("text/html") == true)
             || request.HasFormContentType;
 
-        var frontendBase = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()?.FirstOrDefault()
-            ?? "http://localhost:5173";
 
         try
         {
@@ -93,7 +91,7 @@ public sealed class PaymentEndpoints : IEndpoint
                 var transaction = await paymentService.ProcessCallbackAsync(new PaymentCallbackRequest(validationId), ct);
                 if (isBrowser)
                 {
-                    return Results.Redirect($"{frontendBase}/orders/{transaction.OrderId}?payment=success");
+                    return Results.Redirect(StorefrontLinks.To(configuration, $"payment/return?order={transaction.OrderId}&payment=success"));
                 }
                 return TypedResults.Ok(new { transaction.OrderId, transaction.Status, message = "Payment verified. You can return to your order." });
             }
@@ -105,16 +103,16 @@ public sealed class PaymentEndpoints : IEndpoint
                     "CANCELLED" => "cancelled",
                     _ => "failed"
                 };
-                return Results.Redirect($"{frontendBase}/checkout?payment={outcome}&ref={Uri.EscapeDataString(tranId ?? "")}");
+                return Results.Redirect(StorefrontLinks.To(configuration, $"payment/return?payment={outcome}"));
             }
 
             return TypedResults.BadRequest(new { error = "missing_val_id", message = "No validation identifier provided." });
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             if (isBrowser)
             {
-                return Results.Redirect($"{frontendBase}/checkout?payment=error&message={Uri.EscapeDataString(ex.Message)}");
+                return Results.Redirect(StorefrontLinks.To(configuration, "payment/return?payment=error"));
             }
             throw;
         }

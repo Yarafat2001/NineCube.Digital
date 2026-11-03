@@ -1,3 +1,4 @@
+import { OrderAftercare } from '../components/OrderAftercare';
 import { t, useLanguage } from '../i18n/language';
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -18,7 +19,7 @@ import { useCart } from '../state/CartContext';
 import { PaymentActions } from '../components/PaymentActions';
 import { DeliveryManagement } from '../components/DeliveryManagement';
 
-const STATUS_FILTERS: (OrderStatus | '')[] = ['', 'Pending', 'Confirmed', 'Shipped', 'Rejected', 'Cancelled'];
+const STATUS_FILTERS: (OrderStatus | '')[] = ['', 'Pending', 'Confirmed', 'Shipped', 'Delivered', 'DeliveryFailed', 'Rejected', 'Cancelled'];
 
 /**
  * Status timeline. A cancelled or rejected order is shown as its own terminal step rather than
@@ -307,6 +308,7 @@ export function OrderDetailPage() {
 
       <OrderTimeline order={order} />
       <DeliveryManagement order={order} />
+      <OrderAftercare order={order} />
       <Link to={`/help?order=${order.id}`}>{t('Get help with this order')}</Link>
       {hasRole('Customer') ? <PaymentActions order={order} /> : null}
       <p className="muted">{t(orderStatusMeta[order.status].description)}</p>

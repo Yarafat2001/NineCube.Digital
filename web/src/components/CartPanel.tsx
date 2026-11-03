@@ -1,3 +1,4 @@
+import { addressLines } from '../lib/addresses';
 import { t, useLanguage } from '../i18n/language';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCheckoutQuote, useCheckoutOptions } from '../api/hooks';
@@ -60,11 +61,6 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
   const [showCouponsDrawer, setShowCouponsDrawer] = useState<boolean>(false);
   const availableCouponsQuery = useAvailableCoupons();
 
-  const defaultCoupons: { code: string; title: string; discountText: string; minOrder: number; type: 'percent' | 'fixed' }[] = [
-    { code: 'SAVE10', title: '10% OFF Storewide', discountText: '10% OFF', minOrder: 0, type: 'percent' },
-    { code: 'NINECUBE', title: 'BDT 500 OFF Big Basket', discountText: 'BDT 500 OFF', minOrder: 2000, type: 'fixed' },
-    { code: 'WELCOME50', title: 'BDT 50 Welcome Discount', discountText: 'BDT 50 OFF', minOrder: 0, type: 'fixed' }
-  ];
 
   const availableCoupons = (availableCouponsQuery.data && availableCouponsQuery.data.length > 0)
     ? availableCouponsQuery.data.map(c => ({
@@ -74,7 +70,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
         minOrder: c.minOrderAmount,
         type: c.discountType === 'Percentage' ? ('percent' as const) : ('fixed' as const)
       }))
-    : defaultCoupons;
+    : [];
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(2500);
 
   const [couponCode, setCouponCode] = useState('');
@@ -91,7 +87,8 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
 
   useEffect(() => {
     if (profile?.addresses && profile.addresses.length > 0 && selectedAddressId === null) {
-      const def = profile.addresses.find(a => a.isDefault) ?? profile.addresses[0];
+      const available = profile.addresses.filter(a => (a.countryCode ?? 'BD') === 'BD');
+      const def = available.find(a => a.isDefault) ?? available[0] ?? profile.addresses[0];
       if (def) setSelectedAddressId(def.id);
     }
   }, [profile, selectedAddressId]);
@@ -470,8 +467,8 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                 onChange={e => setSelectedAddressId(Number(e.target.value))}
               >
                 {profile.addresses.map(a => (
-                  <option key={a.id} value={a.id}>
-                    {a.label} ({a.division}, {a.district} - {a.addressLine})
+                  <option key={a.id} value={a.id} disabled={(a.countryCode ?? 'BD') !== 'BD'}>
+                    {a.label}: {addressLines(a).join(', ')}
                   </option>
                 ))}
               </select>
@@ -482,6 +479,9 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
             )}
           </div> : null}
 
+          {profile?.addresses.some(a => (a.countryCode ?? 'BD') !== 'BD') && <p className="cart-field__hint">{t('Delivery is currently available within Bangladesh only.')}</p>}
+
+          {(cart.syncStatus === 'error' || cart.syncStatus === 'conflict') && <div role="status"><p>{t('Your cart could not sync. Reload the saved cart to resolve changes from another device.')}</p><button type="button" className="btn" onClick={cart.reloadSavedCart}>{t('Reload saved cart')}</button></div>}
           {/* Customer Delivery Instructions / Order Notes */}
           <div className="cart-field">
             <label htmlFor="cart-delivery-instructions" className="cart-field__label">
@@ -804,7 +804,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
             type="button"
             className="btn btn--primary cart-sticky-dock__cta"
             onClick={submit}
-            disabled={busy || cart.lines.length === 0 || cart.mixedCurrencies || (!quote.data && quote.isLoading) || quote.isError}
+            disabled={busy || cart.syncStatus === 'loading' || (profile?.addresses.some(a => a.id === selectedAddressId && (a.countryCode ?? 'BD') !== 'BD') ?? false) || cart.lines.length === 0 || cart.mixedCurrencies || (!quote.data && quote.isLoading) || quote.isError}
             data-testid="place-order"
           >
             {busy ? (

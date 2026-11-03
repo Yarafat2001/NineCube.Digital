@@ -126,6 +126,13 @@ main .link-button:is(:hover, :focus-visible, :active),
    field readable; on a phone the sheet is the viewport, so every field takes the whole line. */
 @media (max-width: 640px) {
   .cart-checkout-extras fieldset { grid-template-columns: minmax(0, 1fr); }
+  /* The send form and its certificate preview sit side by side only while there are two real
+     columns; on a phone the preview drops below the fields so the certificate keeps its full
+     width instead of being squeezed to 292px. */
+  .gift-send { grid-template-columns: minmax(0, 1fr); }
+  .gift-amounts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gift-faq__item { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .gift-check__row .btn { min-width: 0; flex: 1 1 100%; }
 }
 
 @media (hover: none) and (prefers-reduced-motion: no-preference) {

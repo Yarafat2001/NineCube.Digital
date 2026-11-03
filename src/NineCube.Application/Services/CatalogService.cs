@@ -114,12 +114,15 @@ public sealed class CatalogService : ICatalogService
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var term = search.Trim();
-            query = query.Where(p => p.Name.Contains(term) || p.Sku.Contains(term));
+            var term = search.Trim().ToLowerInvariant().Normalize(System.Text.NormalizationForm.FormC);
+            // Unicode text and Bengali digits are accepted; literal substring matching avoids wildcard injection.
+            term = string.Concat(term.Select(c => c >= '\u09e6' && c <= '\u09ef' ? (char)('0' + c - '\u09e6') : c));
+            query = query.Where(p => p.Name.ToLower().Contains(term) || p.Sku.ToLower().Contains(term)
+                || (p.Description != null && p.Description.ToLower().Contains(term)));
         }
 
         if (_currentUser is not null && !_currentUser.IsInRole(UserRole.Staff, UserRole.InventoryManager, UserRole.Administrator))
-            query = query.Where(p => p.IsActive);
+            query = query.Where(p => p.IsActive && p.ParentProductId == null);
         else if (isActive is not null) query = query.Where(p => p.IsActive == isActive);
 
         if (filters.MinPrice < 0 || filters.MaxPrice < 0 || (filters.MinPrice != null && filters.MaxPrice != null && filters.MinPrice > filters.MaxPrice))
@@ -142,8 +145,8 @@ public sealed class CatalogService : ICatalogService
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         if (tagNames.Count > 0) query = query.Where(p => p.Tags.Any(t => tagNames.Contains(t.Tag.Name)));
-        if (filters.InStock == true) query = query.Where(p => p.IsActive && p.StockQuantity > 0);
-        if (filters.InStock == false) query = query.Where(p => !p.IsActive || p.StockQuantity <= 0);
+        if (filters.InStock == true) query = query.Where(p => p.IsActive && (p.StockQuantity > 0 || p.Variants.Any(v => v.IsActive && v.StockQuantity > 0)));
+        if (filters.InStock == false) query = query.Where(p => !p.IsActive || (p.StockQuantity <= 0 && !p.Variants.Any(v => v.IsActive && v.StockQuantity > 0)));
         if (filters.MinPrice != null) query = query.Where(p => p.Price >= filters.MinPrice);
         if (filters.MaxPrice != null) query = query.Where(p => p.Price <= filters.MaxPrice);
 
@@ -204,7 +207,7 @@ public sealed class CatalogService : ICatalogService
             p.Sku,
             p.Name,
             p.Price,
-            p.StockQuantity,
+            p.Variants.Any(v => v.IsActive) ? p.Variants.Where(v => v.IsActive).Sum(v => v.StockQuantity) : p.StockQuantity,
             p.IsActive,
             p.RowVersion == null ? null : Convert.ToBase64String(p.RowVersion), p.Description, p.ImageUrl,
             p.Categories.OrderByDescending(c => c.IsPrimary).ThenBy(c => c.Category.Name).Select(c => new ProductCategoryDto(c.CategoryId, c.Category.Name, c.Category.Slug, c.IsPrimary)).ToList(),
@@ -213,5 +216,5 @@ public sealed class CatalogService : ICatalogService
             p.BrandId, p.Brand == null ? null : p.Brand.Name, p.Brand == null ? null : p.Brand.Slug,
             p.ProductLineId, p.ProductLine == null ? null : p.ProductLine.Name, p.ProductLine == null ? null : p.ProductLine.Slug,
             p.Images.OrderBy(i => i.SortOrder).ThenBy(i => i.Id).Select(i => new ProductImageDto(i.Id, i.Url, i.IsPrimary, i.AltText)).ToList(),
-            p.CompareAtPrice);
+            p.CompareAtPrice, p.ParentProductId, p.VariantLabel, p.Variants.Any(v => v.IsActive));
 }

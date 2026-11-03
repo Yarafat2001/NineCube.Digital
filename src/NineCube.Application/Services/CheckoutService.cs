@@ -6,7 +6,7 @@ using NineCube.Domain;
 namespace NineCube.Application.Services;
 
 public sealed record CheckoutQuote(decimal SubTotal, decimal DiscountAmount, decimal ShippingAmount,
-    decimal GiftCardAmount, decimal TotalAmount, string Currency, decimal FreeShippingThreshold, string? CouponCode);
+    decimal GiftCardAmount, decimal TotalAmount, string Currency, decimal FreeShippingThreshold, string? CouponCode, int? MinDeliveryDays = null, int? MaxDeliveryDays = null);
 
 public static class DeliveryPricing
 {
@@ -35,7 +35,8 @@ public sealed class CheckoutService(IAppDbContext db, ICouponService coupons, IC
         if (!string.IsNullOrWhiteSpace(request.CouponCode) && evaluation.ManualDiscount?.IsValid != true)
             throw new BusinessValidationException(evaluation.ManualDiscount?.Reason ?? "Coupon is unavailable.");
         var discount = evaluation.TotalDiscountAmount;
-        var shipping = DeliveryPricing.Fee(subtotal, currency);
+        var delivery = await DeliveryRates.ResolveAsync(db, request.DeliveryCountryCode ?? "BD", request.DeliveryDivision, request.DeliveryDistrict, currency, subtotal, ct);
+        var shipping = delivery.Fee;
         var payable = Math.Max(0, subtotal - discount) + shipping;
         var gift = 0m;
         if (!string.IsNullOrWhiteSpace(request.GiftCardCode))
@@ -46,6 +47,6 @@ public sealed class CheckoutService(IAppDbContext db, ICouponService coupons, IC
                 throw new BusinessValidationException("Gift card is unavailable for this order.");
             gift = Math.Min(payable, card.CurrentBalance);
         }
-        return new(subtotal, discount, shipping, gift, payable - gift, currency, DeliveryPricing.FreeShippingThreshold, evaluation.EffectiveDiscount?.Code);
+        return new(subtotal, discount, shipping, gift, payable - gift, currency, delivery.FreeAbove ?? 0, evaluation.EffectiveDiscount?.Code, delivery.MinDays, delivery.MaxDays);
     }
 }

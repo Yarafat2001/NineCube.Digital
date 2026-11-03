@@ -1,0 +1,12 @@
+.delivery-address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); padding: 0; list-style: none; }
+.delivery-address-book address { display: flex; flex-direction: column; gap: .2rem; font-style: normal; overflow-wrap: anywhere; }
+.delivery-address-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.delivery-address-fields .field { min-width: 0; }
+.delivery-address-fields label:has(+ input:required)::after { content: " *"; color: var(--accent-text); }
+.delivery-address-fields input:not([type="checkbox"]), .delivery-address-fields select, .delivery-address-fields textarea { width: 100%; }
+.delivery-address-fields > .checkbox { display: flex; align-items: center; justify-content: flex-start; gap: .6rem; }
+.delivery-address-fields input[type="checkbox"] { flex: 0 0 auto; width: 1.1rem; height: 1.1rem; margin: 0; }
+.delivery-address-fields [aria-pressed="true"] { border-color: var(--accent); }
+@media (max-width: 640px) { .delivery-address-fields { grid-template-columns: minmax(0, 1fr); } .delivery-address-book .row-between { flex-wrap: wrap; gap: .5rem; } }
+
+.delivery-address-preview { padding: 1rem; border: 1px solid var(--border); border-radius: .75rem; }

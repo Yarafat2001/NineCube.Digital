@@ -16,6 +16,57 @@ namespace NineCube.Tests;
 
 public sealed class CommerceHttpTests(CommerceHttpFixture fixture) : IClassFixture<CommerceHttpFixture>
 {
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
+    };
+    [Fact]
+    public async Task SavedAddressesRoundTripInternationalFieldsAndKeepExactlyOneDefault()
+    {
+        var email = $"address-{Guid.NewGuid():N}@example.test";
+        const string password = "Address-test-password-123!";
+        using (var scope = fixture.Factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasherService>();
+            db.Users.Add(new User { Email = email, PasswordHash = hasher.Hash(password), Role = UserRole.Customer,
+                Customer = new Customer { Name = "Address buyer", Email = email, CreatedAt = DateTime.UtcNow } });
+            await db.SaveChangesAsync();
+        }
+        using var client = fixture.Factory.CreateClient();
+        using var login = await client.PostAsJsonAsync("/api/auth/login", new { email, password });
+        login.EnsureSuccessStatusCode();
+        var auth = (await login.Content.ReadFromJsonAsync<AuthResponse>(JsonOptions))!;
+        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", auth.AccessToken);
+        var uk = new AddressRequest("Work", "", "London", "", "12 Example Street", CountryCode: "GB", PostalCode: "SW1A 1AA",
+            RecipientName: "Address buyer", AddressLine2: "Flat 4", Landmark: "Beside the library", DeliveryInstructions: "Call on arrival");
+        using var firstResponse = await client.PostAsJsonAsync("/api/me/addresses", uk);
+        firstResponse.EnsureSuccessStatusCode();
+        var first = (await firstResponse.Content.ReadFromJsonAsync<AddressDto>())!;
+        Assert.True(first.IsDefault);
+        Assert.Equal("GB", first.CountryCode);
+        Assert.Equal("Flat 4", first.AddressLine2);
+        Assert.Equal("Call on arrival", first.DeliveryInstructions);
+        using var secondResponse = await client.PostAsJsonAsync("/api/me/addresses", new AddressRequest("Home", "Dhaka", "Dhaka", "Unlisted village", "House 42", IsDefault: true));
+        secondResponse.EnsureSuccessStatusCode();
+        var second = (await secondResponse.Content.ReadFromJsonAsync<AddressDto>())!;
+        var addresses = (await client.GetFromJsonAsync<AddressDto[]>("/api/me/addresses"))!;
+        Assert.Equal(2, addresses.Length);
+        Assert.Equal(second.Id, Assert.Single(addresses, a => a.IsDefault).Id);
+        using var unset = await client.PutAsJsonAsync($"/api/me/addresses/{second.Id}", new AddressRequest("Home", "Dhaka", "Dhaka", "Unlisted village", "House 42"));
+        unset.EnsureSuccessStatusCode();
+        addresses = (await client.GetFromJsonAsync<AddressDto[]>("/api/me/addresses"))!;
+        Assert.Single(addresses, a => a.IsDefault);
+        using var switchDefault = await client.PutAsJsonAsync($"/api/me/addresses/{first.Id}", uk with { IsDefault = true });
+        switchDefault.EnsureSuccessStatusCode();
+        using var deleted = await client.DeleteAsync($"/api/me/addresses/{first.Id}");
+        deleted.EnsureSuccessStatusCode();
+        addresses = (await client.GetFromJsonAsync<AddressDto[]>("/api/me/addresses"))!;
+        Assert.True(Assert.Single(addresses).IsDefault);
+        using var outsider = await fixture.Client.DeleteAsync($"/api/me/addresses/{second.Id}");
+        Assert.Equal(HttpStatusCode.Unauthorized, outsider.StatusCode);
+    }
+
     [Fact]
     public async Task PublicProductDocumentsIncludeStructuredDataAndOnlyActiveProductsAppearInSitemap()
     {
@@ -148,7 +199,7 @@ public sealed class CommerceHttpTests(CommerceHttpFixture fixture) : IClassFixtu
         request.Headers.Add("X-NineCube-Client", "web");
         using var response = await fixture.Client.SendAsync(request);
         response.EnsureSuccessStatusCode();
-        var auth = await response.Content.ReadFromJsonAsync<AuthResponse>();
+        var auth = await response.Content.ReadFromJsonAsync<AuthResponse>(JsonOptions);
         Assert.Null(auth!.RefreshToken);
         var cookie = string.Join(";", response.Headers.GetValues("Set-Cookie")).ToLowerInvariant();
         Assert.Contains("httponly", cookie);
@@ -171,7 +222,7 @@ public sealed class CommerceHttpTests(CommerceHttpFixture fixture) : IClassFixtu
         request.Headers.Add("Idempotency-Key", key);
         using var response = await fixture.Client.SendAsync(request);
         response.EnsureSuccessStatusCode();
-        return (await response.Content.ReadFromJsonAsync<OrderDto>())!;
+        return (await response.Content.ReadFromJsonAsync<OrderDto>(JsonOptions))!;
     }
 }
 

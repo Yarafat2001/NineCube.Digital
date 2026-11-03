@@ -17,7 +17,7 @@ public sealed class CategoryService(IAppDbContext db, ISettingsService settings,
             {
                 var categories = await db.Categories.AsNoTracking().ToListAsync(token);
                 var visible = Visible(categories, includeInactive);
-                var links = await db.ProductCategories.AsNoTracking().Select(x => new { x.CategoryId, x.ProductId, x.Product.StockQuantity, x.Product.IsActive }).ToListAsync(token);
+                var links = await db.ProductCategories.AsNoTracking().Where(x => x.Product.ParentProductId == null).Select(x => new { x.CategoryId, x.ProductId, StockQuantity = x.Product.Variants.Any(v => v.IsActive) ? x.Product.Variants.Where(v => v.IsActive).Sum(v => v.StockQuantity) : x.Product.StockQuantity, x.Product.IsActive }).ToListAsync(token);
                 var threshold = await settings.GetLowStockThresholdAsync(token);
                 CategoryDto Build(Category c)
                 {
@@ -60,8 +60,13 @@ public sealed class CategoryService(IAppDbContext db, ISettingsService settings,
         // Serialize hierarchy edits and category assignments; inventory rows are never updated.
         try
         {
-            var lockResult = await db.Database.SqlQueryRaw<int>("DECLARE @result int; EXEC @result = sp_getapplock @Resource=N'NineCube.Categories', @LockMode=N'Exclusive', @LockOwner=N'Transaction', @LockTimeout=15000; SELECT @result AS Value;").ToListAsync(ct);
-            if (lockResult[0] < 0) throw new ResourceConflictException("Category edits are busy. Try again.", "category_busy");
+            if (db.Database.ProviderName?.Contains("Npgsql") == true)
+                await db.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(78566421)", ct);
+            else
+            {
+                var lockResult = await db.Database.SqlQueryRaw<int>("DECLARE @result int; EXEC @result = sp_getapplock @Resource=N'NineCube.Categories', @LockMode=N'Exclusive', @LockOwner=N'Transaction', @LockTimeout=15000; SELECT @result AS Value;").ToListAsync(ct);
+                if (lockResult[0] < 0) throw new ResourceConflictException("Category edits are busy. Try again.", "category_busy");
+            }
             var result = await action();
             await tx.CommitAsync(ct);
             cache.RemoveByPrefix("categories:");

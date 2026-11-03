@@ -87,10 +87,13 @@ describe('Actionable chips and one-line actions', () => {
   it('paints a secondary button as a control, not as the surface it sits on', () => {
     // --nav-glass is the material of the card, tray and table behind it, which is why a row action
     // on /inventory or /admin looked like plain text.
-    const button = block(modern, ':root .btn:not(.btn--primary):not(.btn--danger):not(.btn--ghost):not(.btn--outline)');
+    const button = block(modern, ':root .btn:not(.btn--primary):not(.btn--danger):not(.btn--ghost):not(.btn--outline):not(.btn--on-cert)');
     expect(button).toContain('background: var(--surface-raised)');
     expect(button).toContain('border-color: var(--border-strong)');
     expect(button).not.toContain('var(--nav-glass)');
+    // A button that lives on the gift certificate has to be named in this chain, because the raised
+    // paint above it out-specifies .btn--on-cert and would put a light tile on the dark card.
+    expect(modern).toMatch(/^\.btn--on-cert \{ background: transparent;.*color: var\(--cert-ink\); \}/m);
     // A row action with no button chrome still has to read as an action.
     expect(block(app, 'td.actions .link-button')).toContain('color: var(--accent-text)');
   });

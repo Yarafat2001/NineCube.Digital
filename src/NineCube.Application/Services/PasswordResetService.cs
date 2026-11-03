@@ -59,25 +59,24 @@ public sealed class PasswordResetService : IPasswordResetService
         };
 
         _db.PasswordResetTokens.Add(resetToken);
+        _db.EmailDeliveries.Add(new EmailDelivery
+        {
+            Key = $"password-reset:{Guid.NewGuid():N}", Recipient = user.Email,
+            Subject = "Reset Your NineCube Password",
+            Body = $"<p>Your password reset token is <strong>{rawToken}</strong>.</p><p>It expires in one hour. Ignore this message if you did not request it.</p>",
+            CreatedAt = _clock.UtcNow
+        });
         await _db.SaveChangesAsync(ct);
-
-        // Dispatch transactional email with reset token
-        _ = _emailSender.SendEmailAsync(
-            user.Email,
-            "Reset Your NineCube Password",
-            $"<p>Hello,</p><p>You requested a password reset for your NineCube Digital account.</p><p>Your secure reset token is: <strong>{rawToken}</strong></p><p>This token is valid for 1 hour. If you did not make this request, you can safely ignore this email.</p>",
-            ct);
-
-        return new ForgotPasswordResponse(
-            "If an active account with that email exists, reset instructions have been generated.",
-            DemoResetToken: rawToken);
+        return new ForgotPasswordResponse("If an active account with that email exists, reset instructions have been generated.");
     }
 
     public async Task<bool> ResetPasswordAsync(ResetPasswordRequest request, CancellationToken ct = default)
     {
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        await _db.Database.ExecuteSqlInterpolatedAsync($"SELECT 1 FROM \"Users\" WHERE lower(\"Email\") = {normalizedEmail} FOR UPDATE", ct);
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedEmail && u.IsActive, ct)
-            ?? throw new NotFoundException("Password reset request is invalid or has expired.");
+            ?? throw new ResourceConflictException("The password reset token is invalid, expired, or already used.", "invalid_reset_token");
 
         var rawToken = request.Token.Trim().ToLowerInvariant();
         var tokenHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(rawToken))).ToLowerInvariant();
@@ -89,8 +88,14 @@ public sealed class PasswordResetService : IPasswordResetService
 
         validToken.UsedAtUtc = now;
         user.PasswordHash = _hasher.Hash(request.NewPassword);
+        user.SecurityVersion++;
+        await _db.RefreshTokens.Where(t => t.UserId == user.Id && t.RevokedAtUtc == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAtUtc, now), ct);
+        await _db.PasswordResetTokens.Where(t => t.UserId == user.Id && t.UsedAtUtc == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.UsedAtUtc, now), ct);
 
         await _db.SaveChangesAsync(ct);
+        await tx.CommitAsync(ct);
         _cache.Remove($"auth:user:{user.Id}");
 
         return true;

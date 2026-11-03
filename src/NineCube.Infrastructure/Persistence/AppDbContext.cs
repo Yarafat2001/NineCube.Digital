@@ -8,6 +8,15 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+    public DbSet<SavedCart> SavedCarts => Set<SavedCart>();
+    public DbSet<AccountChallenge> AccountChallenges => Set<AccountChallenge>();
+    public DbSet<GuestRecovery> GuestRecoverys => Set<GuestRecovery>();
+    public DbSet<ReviewReport> ReviewReports => Set<ReviewReport>();
+    public DbSet<Supplier> Suppliers => Set<Supplier>();
+    public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+    public DbSet<PurchaseOrderLine> PurchaseOrderLines => Set<PurchaseOrderLine>();
+    public DbSet<ReturnLine> ReturnLines => Set<ReturnLine>();
+    public DbSet<RefundRecord> RefundRecords => Set<RefundRecord>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
@@ -57,6 +66,20 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Product>().Property(p => p.UnitCost).HasPrecision(18, 2);
+        modelBuilder.Entity<OrderItem>().Property(p => p.UnitCost).HasPrecision(18, 2);
+        modelBuilder.Entity<Product>().Property(p => p.VariantLabel).HasMaxLength(100);
+        modelBuilder.Entity<Product>().HasOne<Product>().WithMany(p => p.Variants).HasForeignKey(p => p.ParentProductId).OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<ProductReview>().Property(r => r.MerchantResponse).HasMaxLength(2000);
+        modelBuilder.Entity<SavedCart>(e => { e.HasKey(c => c.CustomerId); e.Property(c => c.Version).IsConcurrencyToken(); });
+        modelBuilder.Entity<AccountChallenge>(e => { e.HasIndex(c => c.TokenHash).IsUnique(); e.Property(c => c.Purpose).HasMaxLength(30); });
+        modelBuilder.Entity<GuestRecovery>(e => e.HasIndex(c => c.TokenHash).IsUnique());
+        modelBuilder.Entity<ReviewReport>(e => { e.HasIndex(c => new { c.ReviewId, c.CustomerId }).IsUnique(); e.Property(c => c.Reason).HasMaxLength(1000); });
+        modelBuilder.Entity<Supplier>(e => { e.Property(c => c.Name).HasMaxLength(200); e.Property(c => c.Email).HasMaxLength(256); e.Property(c => c.Phone).HasMaxLength(32); });
+        modelBuilder.Entity<PurchaseOrder>(e => { e.HasIndex(c => new { c.SupplierId, c.Reference }).IsUnique(); e.Property(c => c.Reference).HasMaxLength(100); e.HasOne<Supplier>().WithMany().HasForeignKey(c => c.SupplierId).OnDelete(DeleteBehavior.Restrict); });
+        modelBuilder.Entity<PurchaseOrderLine>(e => { e.Property(c => c.UnitCost).HasPrecision(18, 2); e.HasOne<Product>().WithMany().HasForeignKey(c => c.ProductId).OnDelete(DeleteBehavior.Restrict); });
+        modelBuilder.Entity<ReturnLine>(e => { e.HasIndex(c => new { c.ServiceCaseId, c.OrderItemId }).IsUnique(); e.HasOne<ServiceCase>().WithMany().HasForeignKey(c => c.ServiceCaseId).OnDelete(DeleteBehavior.Restrict); e.HasOne<OrderItem>().WithMany().HasForeignKey(c => c.OrderItemId).OnDelete(DeleteBehavior.Restrict); });
+        modelBuilder.Entity<RefundRecord>(e => { e.Property(c => c.Amount).HasPrecision(18, 2); e.Property(c => c.GiftCardAmount).HasPrecision(18, 2); e.Property(c => c.Reference).HasMaxLength(200); e.HasIndex(c => c.Reference).IsUnique().HasFilter("\"Reference\" IS NOT NULL"); e.HasOne<Order>().WithMany().HasForeignKey(c => c.OrderId).OnDelete(DeleteBehavior.Restrict); });
         modelBuilder.Entity<EmailDelivery>(e =>
         {
             e.Property(m => m.Key).HasMaxLength(128);
@@ -226,12 +249,19 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(a => a.Division).HasMaxLength(80).IsRequired();
             e.Property(a => a.District).HasMaxLength(80).IsRequired();
             e.Property(a => a.Upazila).HasMaxLength(80).IsRequired();
+            e.Property(a => a.CountryCode).HasMaxLength(2).HasDefaultValue("BD").IsRequired();
+            e.Property(a => a.RecipientName).HasMaxLength(200);
+            e.Property(a => a.Company).HasMaxLength(200);
+            e.Property(a => a.AddressLine2).HasMaxLength(200);
+            e.Property(a => a.Landmark).HasMaxLength(200);
+            e.Property(a => a.PostalCode).HasMaxLength(32);
+            e.Property(a => a.DeliveryInstructions).HasMaxLength(1000);
             e.Property(a => a.AddressLine).HasMaxLength(300).IsRequired();
             e.Property(a => a.Phone).HasMaxLength(32);
             e.Property(a => a.CreatedAt);
             e.HasIndex(a => a.CustomerId);
             // At most one default address per customer, enforced by the database.
-            e.HasIndex(a => a.CustomerId).IsUnique();
+            e.HasIndex(a => a.CustomerId, "IX_Addresses_DefaultCustomer").IsUnique().HasFilter("\"IsDefault\" = TRUE");
             e.HasOne(a => a.Customer)
                 .WithMany(c => c.Addresses)
                 .HasForeignKey(a => a.CustomerId)

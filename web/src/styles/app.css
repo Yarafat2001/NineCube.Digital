@@ -2564,46 +2564,156 @@ th.check input,
 td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 
 
-/* ---------------------------------------------------------------- Digital Gift Card Certificate */
+/* ---------------------------------------------------------------- Digital Gift Card Certificate
+   One object, four call sites (the customer's verified card, the customer's live preview, the staff
+   builder's preview and the registry's detail dialog). It used to be four copies of the same markup
+   with its colours typed out inline: #fff, #f9e29d, rgba(255,215,0,.85) and a 48px black drop shadow
+   that read as a hole punched in the light plate. Every colour now comes from the --cert-* tokens and
+   the structure from here. */
 .gift-card-cert {
-  background: linear-gradient(135deg, rgba(30, 27, 46, 0.95) 0%, rgba(17, 24, 39, 0.98) 50%, rgba(49, 31, 78, 0.95) 100%);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 215, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-lg, 16px);
-  padding: var(--space-4, 20px);
-  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 460px;
+  min-height: 210px;
+  padding: var(--space-4);
+  border: 1px solid var(--cert-edge);
+  border-radius: var(--radius-md);
+  background-color: var(--cert-base);
+  background-image: var(--cert-bg);
+  box-shadow: var(--cert-shadow);
+  color: var(--cert-ink);
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 .gift-card-cert:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.7), 0 0 32px rgba(255, 215, 0, 0.25);
+  box-shadow: var(--cert-shadow-raised);
 }
 .gift-card-cert::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at 75% 25%, rgba(255, 215, 0, 0.08) 0%, transparent 60%);
+  inset: 0;
+  background: radial-gradient(circle at 78% 18%, var(--cert-edge) 0%, transparent 58%);
   pointer-events: none;
 }
+.gift-card-cert > * { position: relative; }
+
+.gift-card-cert__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.gift-card-cert__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+  font-weight: 750;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.gift-card-cert__brand svg { color: var(--cert-gold); }
+
+.gift-card-cert__kind {
+  display: block;
+  margin-top: 3px;
+  font-size: var(--text-micro);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--cert-gold-soft);
+}
+
+.gift-card-cert__amount { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.gift-card-cert__amount > span { font-size: var(--text-label); color: var(--cert-ink-soft); }
+
+.gift-card-cert__amount > strong {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--cert-gold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.gift-card-cert__code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--cert-well);
+}
+
+.gift-card-cert__code .mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: .1em;
+  overflow-wrap: anywhere;
+}
+
+.gift-card-cert__tag {
+  font-size: var(--text-micro);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--cert-ink-faint);
+  white-space: nowrap;
+}
+
+.gift-card-cert__foot {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--cert-rule);
+}
+
+.gift-card-cert__foot span {
+  display: block;
+  font-size: var(--text-micro);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--cert-ink-faint);
+}
+
+.gift-card-cert__foot strong { font-size: var(--text-label); font-weight: 700; }
+.gift-card-cert__right { text-align: right; }
+.gift-card-cert__right strong { display: inline-flex; align-items: center; gap: 5px; }
+.gift-card-cert__right svg { color: var(--cert-gold); }
+
+.gift-card-cert__note {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--cert-well);
+  font-size: var(--text-label);
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--cert-ink-soft);
+}
+
 .gift-card-chip {
-  width: 44px;
-  height: 32px;
-  background: linear-gradient(135deg, #d4af37 0%, #f9e29d 50%, #aa7c11 100%);
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 4px rgba(0,0,0,0.3);
+  width: 40px;
+  height: 29px;
+  flex: 0 0 auto;
+  background: var(--cert-chip);
+  border: 1px solid var(--cert-rule);
+  border-radius: var(--radius-sm);
   position: relative;
 }
 .gift-card-chip::after {
   content: '';
   position: absolute;
   inset: 4px;
-  border: 1px solid rgba(0,0,0,0.3);
+  border: 1px solid rgba(0, 0, 0, .3);
   border-radius: 3px;
 }
 
@@ -5834,3 +5944,119 @@ body[data-overlay-open='true'] {
   color: var(--text-muted);
   border-radius: var(--radius-sm);
 }
+
+/* ----------------------------------------------------------- gift cards ---
+   Measured live on 2026-11-03: the screen was 26 inline-styled elements (47 once a card was
+   verified), 11 colour emoji with zero <svg> behind them, two tokens that exist nowhere
+   (--text-md, --surface-muted) so the field inherited its type and the demo well fell back to a 3%
+   white wash, two input heights on one page (47px and 43px), and three translucent plates of the
+   same size stacked one inside the other. It is now one plate of divided blocks, the shared
+   segmented control, the shared inputs and the shared certificate. */
+.gift-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  gap: var(--space-4);
+}
+
+.gift-page h1 { display: inline-flex; align-items: center; gap: 12px; }
+.gift-page h1 svg { flex: 0 0 auto; color: var(--brand); }
+
+.gift-page__switch { display: flex; justify-content: center; }
+
+.gift-plate { display: flex; flex-direction: column; }
+
+.gift-block { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); }
+.gift-block + .gift-block { border-top: 1px solid var(--row-line); }
+
+.gift-check__row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* The code field and the send form's fields are one control: measured at 42px against 43px while this
+   carried --text-sm, because the shared input's height is set by its line box. */
+.gift-code {
+  flex: 1 1 260px;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.gift-check__row .btn { min-width: 150px; }
+
+/* The denomination picker is a grid of equal tiles rather than a wrapping pill row. Measured at 390:
+   the shared .segmented wrapped onto two lines and kept its 999px radius, so the well swept a large
+   empty lobe around the fourth chip. Four tiles across on a laptop, two on a phone, never a wrap. */
+.gift-amounts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-radius: var(--radius-md);
+}
+
+.gift-amounts .segmented__option { justify-self: stretch; text-align: center; }
+
+.gift-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 10px 12px;
+  border: 1px solid var(--edge-well);
+  border-radius: var(--radius-md);
+  background: var(--well-fill);
+  box-shadow: var(--well-shadow);
+}
+
+.gift-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-label);
+  font-weight: 750;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gift-eyebrow svg { flex: 0 0 auto; }
+
+.gift-result { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
+
+.gift-result__flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-label);
+  font-weight: 750;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ok-text, var(--ok));
+}
+
+.gift-result__actions { justify-content: center; }
+
+.gift-send {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.gift-preview { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.gift-faq__list { display: flex; flex-direction: column; margin: 0; }
+
+/* One question-and-answer row per entry. Tried: two columns of stacked pairs at 900px and up, which
+   measured 291px against these rows' 284px — an answer needs more lines once it loses the question
+   beside it, so the narrower column buys nothing. The old three-column strip was shorter still but
+   gave every answer 298px at 14px. */
+.gift-faq__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: var(--space-2) var(--space-5);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--row-line);
+}
+
+.gift-faq__item:first-child { padding-top: 0; }
+.gift-faq__item:last-child { padding-bottom: 0; border-bottom: 0; }
+.gift-faq__item dt { font-size: var(--text-sm); font-weight: 700; }
+.gift-faq__item dd { margin: 0; font-size: var(--text-sm); line-height: 1.5; color: var(--text-muted); }

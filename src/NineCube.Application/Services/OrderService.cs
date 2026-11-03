@@ -99,6 +99,10 @@ public sealed class OrderService : IOrderService
         if (request.AddressId is int addressId)
             deliveryAddress = await _db.Addresses.AsNoTracking().FirstOrDefaultAsync(a => a.Id == addressId && a.CustomerId == customerId, ct)
                 ?? throw new NotFoundException("Delivery address was not found.");
+
+        var chosenIds = lines.Select(l => l.ProductId).ToArray();
+        if (await _db.Products.AnyAsync(p => p.IsActive && p.ParentProductId != null && chosenIds.Contains(p.ParentProductId.Value), ct))
+            throw new BusinessValidationException("Choose a product variant before adding it to an order.");
         // Snapshot the products once (server side prices only - the client never sends money).
         var productIds = lines.Select(l => l.ProductId).ToList();
         var products = await _db.Products.AsNoTracking()
@@ -189,6 +193,7 @@ public sealed class OrderService : IOrderService
                     ProductName = product.Name,
                     PrimaryCategoryName = product.Categories.FirstOrDefault(c => c.IsPrimary)?.Category?.Name ?? "Uncategorized",
                     Quantity = line.Quantity,
+                    UnitCost = product.UnitCost,
                     UnitPrice = product.Price,
                     LineTotal = decimal.Round(product.Price * line.Quantity, 2, MidpointRounding.AwayFromZero)
                 });
@@ -196,14 +201,18 @@ public sealed class OrderService : IOrderService
 
             var subTotal = order.Items.Sum(i => i.LineTotal);
             order.SubTotal = subTotal;
-            order.ShippingAmount = DeliveryPricing.Fee(subTotal, order.Currency);
+            var delivery = await DeliveryRates.ResolveAsync(_db, deliveryAddress?.CountryCode ?? request.DeliveryCountryCode ?? "BD",
+                deliveryAddress?.Division ?? request.DeliveryDivision, deliveryAddress?.District ?? request.DeliveryDistrict, order.Currency, subTotal, ct);
+            order.ShippingAmount = delivery.Fee;
             order.TotalAmount = subTotal + order.ShippingAmount;
             order.PaymentMethod = request.PaymentMethod;
             order.ReservationExpiresAt = request.PaymentMethod == PaymentMethod.CashOnDelivery ? null : now.AddMinutes(30);
             order.DeliveryInstructions = request.DeliveryInstructions?.Trim();
             order.DeliveryAddressJson = deliveryAddress is null ? null : System.Text.Json.JsonSerializer.Serialize(new
             {
-                deliveryAddress.Division, deliveryAddress.District, deliveryAddress.Upazila, deliveryAddress.AddressLine, deliveryAddress.Phone
+                deliveryAddress.Division, deliveryAddress.District, deliveryAddress.Upazila, deliveryAddress.AddressLine, deliveryAddress.Phone,
+                deliveryAddress.CountryCode, deliveryAddress.RecipientName, deliveryAddress.Company,
+                deliveryAddress.AddressLine2, deliveryAddress.Landmark, deliveryAddress.PostalCode, deliveryAddress.DeliveryInstructions
             });
             order.PaymentStatus = PaymentStatus.Unpaid;
 
@@ -473,11 +482,16 @@ public sealed class OrderService : IOrderService
         {
             await RestoreReservedStockAsync(orderId, movementReason ?? "stock released", now, ct);
             var releasedOrder = await _db.Orders.AsNoTracking().FirstAsync(o => o.Id == orderId, ct);
-            if (releasedOrder.GiftCardAmount > 0 && !string.IsNullOrWhiteSpace(releasedOrder.GiftCardCode))
+            var accountedGiftRefunds = await _db.RefundRecords.Where(r => r.OrderId == orderId && r.Status != "Cancelled").SumAsync(r => r.GiftCardAmount, ct);
+            var giftToRestore = Math.Max(0, releasedOrder.GiftCardAmount - accountedGiftRefunds);
+            if (giftToRestore > 0 && !string.IsNullOrWhiteSpace(releasedOrder.GiftCardCode))
             {
                 var restored = await _db.GiftCards.Where(g => g.Code == releasedOrder.GiftCardCode)
-                    .ExecuteUpdateAsync(s => s.SetProperty(g => g.CurrentBalance, g => g.CurrentBalance + releasedOrder.GiftCardAmount), ct);
+                    .ExecuteUpdateAsync(s => s.SetProperty(g => g.CurrentBalance, g => g.CurrentBalance + giftToRestore), ct);
                 if (restored != 1) throw new ResourceConflictException("The redeemed gift card needs manual reconciliation.", "gift_card_reconciliation_required");
+                _db.RefundRecords.Add(new RefundRecord { OrderId = orderId, Amount = giftToRestore, GiftCardAmount = giftToRestore,
+                    Currency = releasedOrder.Currency, Method = "GiftCard", Reference = $"gift-release:{orderId}", Status = "Settled",
+                    Reason = "Cancelled or rejected order", CreatedAt = now, SettledAt = now });
                 if (releasedOrder.TotalAmount == 0)
                     await _db.Orders.Where(o => o.Id == orderId).ExecuteUpdateAsync(s => s.SetProperty(o => o.PaymentStatus, PaymentStatus.Refunded), ct);
             }

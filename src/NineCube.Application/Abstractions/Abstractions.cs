@@ -12,6 +12,15 @@ namespace NineCube.Application.Abstractions;
 /// </summary>
 public interface IAppDbContext
 {
+    DbSet<SavedCart> SavedCarts { get; }
+    DbSet<AccountChallenge> AccountChallenges { get; }
+    DbSet<GuestRecovery> GuestRecoverys { get; }
+    DbSet<ReviewReport> ReviewReports { get; }
+    DbSet<Supplier> Suppliers { get; }
+    DbSet<PurchaseOrder> PurchaseOrders { get; }
+    DbSet<PurchaseOrderLine> PurchaseOrderLines { get; }
+    DbSet<ReturnLine> ReturnLines { get; }
+    DbSet<RefundRecord> RefundRecords { get; }
     DbSet<Product> Products { get; }
     DbSet<Category> Categories { get; }
     DbSet<ProductCategory> ProductCategories { get; }
@@ -171,4 +180,11 @@ public interface IPaymentGateway
     bool IsConfigured { get; }
     Task<GatewaySession> CreateSessionAsync(Order order, string reference, CancellationToken ct);
     Task<VerifiedPayment> VerifyAsync(string validationId, CancellationToken ct);
+}
+
+public sealed record GatewayRefund(string Reference, string Status);
+public interface IRefundGateway
+{
+    Task<GatewayRefund> InitiateRefundAsync(string bankTransactionId, string refundId, decimal amount, string reason, CancellationToken ct);
+    Task<GatewayRefund> QueryRefundAsync(string bankTransactionId, string reference, CancellationToken ct);
 }

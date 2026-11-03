@@ -1,7 +1,7 @@
 import { t, useLanguage } from '../i18n/language';
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ApiError, describeError } from '../api/client';
+import { apiRequest, ApiError, describeError } from '../api/client';
 import { AuthCard, NeuButton, NeuInput, SocialButtons, type SocialProvider } from '../components/auth/AuthCard';
 import { useAuth } from '../state/AuthContext';
 import { useForgotPassword, useResetPassword } from '../api/hooks';
@@ -40,6 +40,8 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
   const previousPath = useRef(location.pathname);
 
   // Password Recovery Modal State
+  const [signinCode, setSigninCode] = useState('');
+  const [useCode, setUseCode] = useState(false);
   const [showRecovery, setShowRecovery] = useState(false);
   const [recoveryEmail, setRecoveryEmail] = useState('');
   const [recoveryToken, setRecoveryToken] = useState('');
@@ -59,9 +61,7 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
     try {
       const res = await forgotPasswordMutation.mutateAsync(recoveryEmail.trim());
       setRecoveryNotice(res.message);
-      if (res.demoResetToken) {
-        setRecoveryToken(res.demoResetToken);
-      }
+      setRecoveryToken('');
       setRecoveryStep('reset');
     } catch (err: any) {
       setRecoveryError(err.message ?? 'Failed to send recovery instructions.');
@@ -139,7 +139,7 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
     setBusy(true);
     try {
       if (signup) await register(email.trim(), password, name.trim());
-      else await login(email.trim(), password);
+      else await login(email.trim(), password, signinCode || undefined);
       try {
         if (remember) localStorage.setItem(EMAIL_KEY, email.trim());
         else localStorage.removeItem(EMAIL_KEY);
@@ -192,6 +192,13 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
                 {t(registering && field('name', 'Full Name', name, setName, mode))}
                 {t(field('email', 'Email Address', email, setEmail, mode, 'email'))}
                 {t(field('password', 'Password', password, setPassword, mode, 'password'))}
+                {!registering && <>
+                  {useCode && <label className="field">{t('Email sign-in code')}<input autoComplete="one-time-code" inputMode="numeric" maxLength={6} value={signinCode} onChange={e => setSigninCode(e.target.value)} /></label>}
+                  <button className={styles.textButton} type="button" disabled={busy || !email.trim() || !password} onClick={async () => {
+                    try { await apiRequest('/api/auth/signin-code', { method: 'POST', body: { email: email.trim(), password } }); setUseCode(true); setNotice(t('If your credentials are correct, a sign-in code will arrive by email.')); }
+                    catch (error) { setNotice(describeError(error)); }
+                  }}>{t('Request two-step sign-in code')}</button>
+                </>}
                 {t(registering && field('confirmation', 'Confirm Password', confirmation, setConfirmation, mode, 'password'))}
                 {!registering && <>
                   <div className={styles.options}>

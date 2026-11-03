@@ -39,6 +39,7 @@ export interface ProductImage {
 }
 
 export interface Product {
+  parentProductId?: number | null; variantLabel?: string | null; hasVariants?: boolean;
   slug?: string; needsReview?: boolean; priceBasis?: string; priceVerifiedAt?: string | null; sourceName?: string | null; sourceUrl?: string | null;
   currency?: string;
   categories?: ProductCategory[];
@@ -202,6 +203,13 @@ export interface Notification {
 }
 
 export interface Address {
+  countryCode?: string;
+  recipientName?: string | null;
+  company?: string | null;
+  addressLine2?: string | null;
+  landmark?: string | null;
+  postalCode?: string | null;
+  deliveryInstructions?: string | null;
   id: number;
   label: string;
   division: string;
@@ -483,6 +491,7 @@ export interface PaymentTransaction {
 }
 
 export interface ProductReview {
+  merchantResponse?: string | null;
   id: number;
   productId: number;
   customerId: number;

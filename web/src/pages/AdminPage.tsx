@@ -33,6 +33,7 @@ import { flattenCategories } from '../components/CategoryFilters';
 import { ScopeImpactPanel } from '../components/ScopeImpactPanel';
 import { OrderReplayPanel } from '../components/OrderReplayPanel';
 import { StepCard } from '../components/StepCard';
+import { GiftCardCertificate } from '../components/GiftCardCertificate';
 import {
   ATTRIBUTE_ICON,
   ScopeRuleEditor,
@@ -2196,67 +2197,17 @@ export function AdminPage() {
             <div className="voucher-ticket-container">
               <div className="giftcard-preview">
                 <span className="giftcard-preview__label">{t("Digital Card Live Preview")}</span>
-                <div
-                  className="gift-card-cert"
-                  style={{
-                    minHeight: '210px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  {/* Top Bar: Brand & Chip */}
-                  <div className="row-between" style={{ alignItems: 'flex-start' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Icon name="box" width={20} height={20} style={{ color: '#f9e29d' }} />
-                        <strong style={{ fontSize: '15px', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#fff' }}>
-                          {t("NineCube Digital")}
-                        </strong>
-                      </div>
-                      <span style={{ fontSize: '11px', color: 'rgba(255, 215, 0, 0.85)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-                        {t("E-Gift Certificate")}
-                      </span>
-                    </div>
-                    <div className="gift-card-chip" aria-hidden="true" />
-                  </div>
-
-                  {/* Center: Card Code & Balance */}
-                  <div style={{ margin: 'var(--space-3) 0' }}>
-                    <div className="row-between" style={{ alignItems: 'baseline' }}>
-                      <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.7)' }}>{t("Balance")}</span>
-                      <strong style={{ fontSize: '24px', fontWeight: 800, color: '#f9e29d', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
-                        {t("BDT")} {gcInitialBalance ? Number(gcInitialBalance).toLocaleString() : '0'}
-                      </strong>
-                    </div>
-
-                    <div style={{ marginTop: '6px', padding: '6px 12px', background: 'rgba(0,0,0,0.35)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: 'monospace', fontSize: '14px', letterSpacing: '1.5px', color: '#fff' }}>
-                        {gcCode || 'GC-••••-••••-••••'}
-                      </span>
-                      <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase' }}>{t("Online Only")}</span>
-                    </div>
-                  </div>
-
-                  {/* Bottom Bar: Recipient & Expiry */}
-                  <div className="row-between" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '8px' }}>
-                    <div>
-                      <span style={{ color: 'rgba(255,255,255,0.5)', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>{t("Recipient")}</span>
-                      <strong>{gcRecipientName || t("Valued Customer")}</strong>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ color: 'rgba(255,255,255,0.5)', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>{t("Expires")}</span>
-                      <span>{gcExpiresAt ? formatDateTime(gcExpiresAt) : t("Never")}</span>
-                    </div>
-                  </div>
-
-                  {/* Personalized Greeting Note */}
-                  {gcNote && (
-                    <div style={{ marginTop: '8px', fontSize: '11px', fontStyle: 'italic', color: '#f3e8ff', background: 'rgba(255,255,255,0.08)', padding: '4px 8px', borderRadius: '4px' }}>
-                      “{gcNote}”
-                    </div>
-                  )}
-                </div>
+                <GiftCardCertificate
+                  amountLabel={t("Balance")}
+                  amount={`${t("BDT")} ${gcInitialBalance ? Number(gcInitialBalance).toLocaleString() : '0'}`}
+                  code={gcCode || 'GC-••••-••••-••••'}
+                  codeTag={t("Online Only")}
+                  leftLabel={t("Recipient")}
+                  leftValue={gcRecipientName || t("Valued Customer")}
+                  rightLabel={t("Expires")}
+                  rightValue={gcExpiresAt ? formatDateTime(gcExpiresAt) : t("Never")}
+                  note={gcNote}
+                />
               </div>
 
               <div className="giftcard-summary">
@@ -2649,70 +2600,17 @@ export function AdminPage() {
                 </>
               }
             >
-                <div
-                  className="gift-card-cert"
-                  style={{
-                    minHeight: '230px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <div className="row-between" style={{ alignItems: 'flex-start' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Icon name="gift" width={22} height={22} aria-hidden="true" />
-                        <strong style={{ fontSize: '18px', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#fff' }}>
-                          {t("NineCube Digital")}
-                        </strong>
-                      </div>
-                      <span style={{ fontSize: '12px', color: 'rgba(255, 215, 0, 0.85)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-                        {t("E-Gift Certificate")}
-                      </span>
-                    </div>
-                    <div className="gift-card-chip" aria-hidden="true" />
-                  </div>
-
-                  <div style={{ margin: 'var(--space-4) 0' }}>
-                    <div className="row-between" style={{ alignItems: 'baseline' }}>
-                      <span style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.7)' }}>{t("Available Balance")}</span>
-                      <strong style={{ fontSize: '28px', fontWeight: 800, color: '#f9e29d' }}>
-                        {t("BDT")} {selectedCardForModal.currentBalance.toLocaleString()}
-                      </strong>
-                    </div>
-
-                    <div style={{ marginTop: '8px', padding: '8px 14px', background: 'rgba(0,0,0,0.45)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: 'monospace', fontSize: '16px', letterSpacing: '2px', color: '#fff', fontWeight: 700 }}>
-                        {selectedCardForModal.code}
-                      </span>
-                      <button
-                        type="button"
-                        className="btn btn--sm"
-                        onClick={() => copyToClipboard(selectedCardForModal.code)}
-                        style={{ fontSize: '11px', padding: '2px 8px' }}
-                      >
-                        <Icon name="copy" width={13} height={13} /> {t("Copy")}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="row-between" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.85)', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '10px' }}>
-                    <div>
-                      <span style={{ color: 'rgba(255,255,255,0.5)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>{t("Recipient")}</span>
-                      <strong>{selectedCardForModal.recipientName || t("Valued Customer")}</strong>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ color: 'rgba(255,255,255,0.5)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>{t("Valid Thru")}</span>
-                      <span>{selectedCardForModal.expiresAt ? formatDateTime(selectedCardForModal.expiresAt) : t("Never Expires")}</span>
-                    </div>
-                  </div>
-
-                  {selectedCardForModal.note && (
-                    <div style={{ marginTop: '10px', fontSize: '12px', fontStyle: 'italic', color: '#f3e8ff', background: 'rgba(255,255,255,0.1)', padding: '6px 10px', borderRadius: '6px' }}>
-                      “{selectedCardForModal.note}”
-                    </div>
-                  )}
-                </div>
+                <GiftCardCertificate
+                  amountLabel={t("Available Balance")}
+                  amount={`${t("BDT")} ${selectedCardForModal.currentBalance.toLocaleString()}`}
+                  code={selectedCardForModal.code}
+                  onCopy={() => copyToClipboard(selectedCardForModal.code)}
+                  leftLabel={t("Recipient")}
+                  leftValue={selectedCardForModal.recipientName || t("Valued Customer")}
+                  rightLabel={t("Valid Thru")}
+                  rightValue={selectedCardForModal.expiresAt ? formatDateTime(selectedCardForModal.expiresAt) : t("Never Expires")}
+                  note={selectedCardForModal.note}
+                />
             </Modal>
           )}
 
