@@ -247,7 +247,7 @@ export function OrderDetailPage() {
         <div>
           <h1>{t("Order #")}{t(order.id)}</h1>
           <p>
-            {t("Placed ")}{t(formatDateTime(order.createdAt))} {t(" Â· last updated ")}{t(formatDateTime(order.updatedAt))}
+            {t("Placed ")}{t(formatDateTime(order.createdAt))} {t("· last updated")} {t(formatDateTime(order.updatedAt))}
           </p>
         </div>
         <div className="row">

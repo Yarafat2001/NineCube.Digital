@@ -74,8 +74,9 @@ function ProductCard({
   const primary = product.categories?.find(c => c.isPrimary) ?? product.categories?.[0];
   // A "Brand: X" tag is duplicate plumbing: the brand already has its own line on the card.
   const tags = (product.tags ?? []).filter(tag => !isBrandTag(tag));
-  const shownTags = tags.slice(0, MAX_TAG_CHIPS);
-  const hiddenTags = tags.slice(MAX_TAG_CHIPS);
+  const maxTags = primary ? 1 : MAX_TAG_CHIPS;
+  const shownTags = tags.slice(0, maxTags);
+  const hiddenTags = tags.slice(maxTags);
   const discountPercent = product.compareAtPrice && product.compareAtPrice > product.price
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
@@ -100,36 +101,38 @@ function ProductCard({
             <span>⚡ {t("Only")} {product.stockQuantity} {t("left")}</span>
           </div>
         ) : null}
-        {canOrder && onToggleWishlist ? (
-          <button
-            type="button"
-            className={`product-card__wishlist-btn ${isWishlisted ? 'product-card__wishlist-btn--active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onToggleWishlist();
-            }}
-            aria-label={t(isWishlisted ? "Remove from wishlist" : "Add to wishlist")}
-            title={t(isWishlisted ? "Saved in wishlist" : "Save to wishlist")}
-          >
-            <Icon name="heart" width={14} height={14} />
-          </button>
-        ) : null}
-        {onQuickView ? (
-          <button
-            type="button"
-            className="product-card__quick-view-btn"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onQuickView(product);
-            }}
-            aria-label={`${t("Quick view")} ${displayName}`}
-            title={t("Quick view")}
-          >
-            <Icon name="eye" width={14} height={14} />
-          </button>
-        ) : null}
+        <div className="product-card__actions-overlay">
+          {canOrder && onToggleWishlist ? (
+            <button
+              type="button"
+              className={`product-card__wishlist-btn ${isWishlisted ? 'product-card__wishlist-btn--active' : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleWishlist();
+              }}
+              aria-label={t(isWishlisted ? "Remove from wishlist" : "Add to wishlist")}
+              title={t(isWishlisted ? "Saved in wishlist" : "Save to wishlist")}
+            >
+              <Icon name="heart" width={14} height={14} />
+            </button>
+          ) : null}
+          {onQuickView ? (
+            <button
+              type="button"
+              className="product-card__quick-view-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onQuickView(product);
+              }}
+              aria-label={`${t("Quick view")} ${displayName}`}
+              title={t("Quick view")}
+            >
+              <Icon name="eye" width={14} height={14} />
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <div className="product-card__body">
@@ -180,21 +183,6 @@ function ProductCard({
             </span>
           ) : null}
         </div>
-        {canOrder && onToggleCompare ? (
-          <button
-            type="button"
-            className={`product-card__compare-btn ${isComparing ? 'product-card__compare-btn--active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onToggleCompare();
-            }}
-            aria-pressed={isComparing}
-            title={t(isComparing ? "Remove from comparison" : "Compare")}
-          >
-            <span aria-hidden="true">⇄</span> {isComparing ? t("Comparing") : t("Compare")}
-          </button>
-        ) : null}
       </div>
 
       {outOfStock ? (
@@ -226,6 +214,24 @@ function ProductCard({
           >
             <span className="product-card__btn-icon" aria-hidden="true">{justAdded ? <Icon name="check" width={13} height={13} /> : <Icon name="cart" width={13} height={13} />}</span>
             <span className="product-card__btn-text">{justAdded ? t("Added!") : t("Add to cart")}</span>
+          </button>
+        </div>
+      ) : null}
+
+      {canOrder && onToggleCompare ? (
+        <div className="product-card__secondary-bar">
+          <button
+            type="button"
+            className={`product-card__compare-btn ${isComparing ? 'product-card__compare-btn--active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleCompare();
+            }}
+            aria-pressed={isComparing}
+            title={t(isComparing ? "Remove from comparison" : "Compare")}
+          >
+            <span aria-hidden="true">⇄</span> {isComparing ? t("Comparing") : t("Compare")}
           </button>
         </div>
       ) : null}
