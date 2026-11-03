@@ -87,7 +87,9 @@ export function ProductThumbnail({
   style?: React.CSSProperties;
   iconSize?: number;
 }) {
-  const rawUrl = url ?? (product ? primaryImage(product as Product) : null);
+  const explicitUrl = url && typeof url === 'string' && url.trim().length > 0 ? url.trim() : null;
+  const productUrl = product ? primaryImage(product as Product) : null;
+  const rawUrl = explicitUrl ?? productUrl;
   const src = resolveAssetUrl(rawUrl);
   const [broken, setBroken] = useState(false);
 

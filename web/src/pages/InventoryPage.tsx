@@ -1,7 +1,8 @@
 import { t, useLanguage } from '../i18n/language';
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ApiError, describeError, resolveAssetUrl } from '../api/client';
+import { ApiError, describeError } from '../api/client';
+import { ProductThumbnail } from '../components/ProductImage';
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_IMAGE_BYTES,
@@ -102,7 +103,7 @@ function ImageGallery({ productId }: { productId: number }) {
         <ul className="inventory-gallery">
           {images.map(image => (
             <li key={image.id}>
-              <img src={resolveAssetUrl(image.url) ?? ''} alt={t(image.altText ?? '')} loading="lazy" />
+              <ProductThumbnail url={image.url} alt={image.altText ?? ''} iconSize={24} />
               <div className="row" style={{ gap: 'var(--space-2)' }}>
                 {image.isPrimary ? <span className="badge badge--info">{t("Primary")}</span> : (
                   <button type="button" className="btn btn--sm" disabled={setPrimary.isPending}

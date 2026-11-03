@@ -47,11 +47,11 @@ public sealed class ReviewService : IReviewService
             throw new ResourceConflictException("You have already reviewed this product.", "duplicate_review");
         }
 
-        // Verify if customer has actually purchased this product in any confirmed/shipped order
+        // Verify if customer has actually purchased this product in any confirmed/shipped/delivered order
         var isVerified = await _db.OrderItems.AsNoTracking()
             .AnyAsync(i => i.ProductId == productId
                 && i.Order!.CustomerId == customerId
-                && (i.Order.Status == OrderStatus.Confirmed || i.Order.Status == OrderStatus.Shipped), ct);
+                && (i.Order.Status == OrderStatus.Confirmed || i.Order.Status == OrderStatus.Shipped || i.Order.Status == OrderStatus.Delivered), ct);
 
         var customer = await _db.Customers.AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == customerId, ct);

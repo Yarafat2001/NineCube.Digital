@@ -1,5 +1,133 @@
 # FIX_REPORT
 
+# Round 19 — the cart sheet is one plate now: real rows, real icons, a rail you can see
+
+Date: 2026-11-03. Brief: "Your cart- fix this design not looks good, I need to fix this properly", with a
+screenshot of the "Your cart" sheet at a phone width: one line item, a `🚚 Add BDT 2,492.01 more for FREE
+Delivery! / 0%` well with nothing visible under the copy, a `✨ Frequently added together` list where every
+recommendation was a stack of plain text with a solid `+ Add` pill underneath its price, and the sticky
+Total / Place order dock.
+
+## How I measured it
+
+The sheet needs a basket, and half of its states need a customer, so I ran the app against the MSW stub API
+in a throwaway harness (deleted before this commit) with a hand-seeded cart and an `/api/auth/me` override
+for the signed-in state. Then I ran the *same* probe against HEAD in a detached worktree, so every pair below
+is the same measurement on the same fixtures: 1440x900 and 390x844, light and dark, with the cart both below
+and above the 2,500 taka free-delivery line, plus the same four combinations as a guest.
+
+## What the sheet actually resolved to before I touched it
+
+- **The recommendation block had no stylesheet at all.** Its eight classes - `cart-upsell`, `__title`,
+  `__items`, `__item`, `__info`, `__name`, `__price`, `__btn` - are written in `CartPanel.tsx` and appear
+  nowhere in `app.css`, `modern.css`, `components/Navbar.css` or `responsive.css`. The browser therefore
+  laid the block out as default block boxes: title **16 px, weight 400, `text-transform: none`**, name
+  **16 px**, price **16 px**, no dividers, and the `+ Add` button starting a **new line under each price**.
+  Rows measured **82 px at 1440** and **94 px on a phone**; the block took **270 px** of the sheet where the
+  styled one takes **218 px**.
+- **The rail under the delivery message was the same colour as the tray holding it.** `.cart-ship__track`
+  was `background: var(--surface-sunken)`, and `--well-fill` - the tray's own fill - is defined in the dark
+  theme as `var(--surface-sunken)`. Measured as luminance steps from its own well: **15 steps in light,
+  0 in dark**. That is why the `0%` state in the screenshot shows a message and no progress bar - there was
+  literally nothing to see.
+- **The wells did not share a corner.** `border-radius` resolved to `14px` on the line tray, **`8px`** on the
+  delivery well and **`0px`** on the recommendations, next to `14px` on the checkout plate. Three different
+  objects pretending to be one.
+- **Every icon in the sheet was a colour emoji.** 🗑️ on Remove, 🚚/🎉 on the delivery row, ✨ on the
+  recommendations, 🏷️ on coupons, 🎁 on the gift card, 💵/💳/📱 on the three payment methods, ⚡ on the
+  auto-discount. The sheet held **0 `<svg>` elements** and **7 colour emoji in its own labels** (9 in the
+  unlocked state). They belong to no theme, they are drawn differently on every OS, and as inline boxes they
+  sit on the text baseline - a step below the copy they are supposed to mark.
+- **`+ Add` was `btn--outline`, a class this project has never defined.** Twelve elements in `src/` carry it
+  and not one rule matched it, so the button fell through to the default tier
+  (`:root .btn:not(.btn--primary):not(.btn--danger):not(.btn--ghost)` in `modern.css`) and got the raised
+  solid face: `rgb(255,255,255)` in light, `rgb(35,32,34)` in dark, plus the inset highlight and the drop
+  shadow. In the screenshot that is the reason the small "add this" pill looked like the primary action - and
+  it is also why the nine admin buttons that carry it - six Cancels, one Close, one Refuse and the policy
+  "Discard changes" - have always looked like the action they exist to step back from.
+- **Guest checkout was a native `<fieldset>`.** For a visitor the seven order-detail fields sat in a groove
+  border with **`0px` radius**, a legend at inherited **16 px**, and **one column** - **761 px of form** - inside
+  the checkout plate. That made the plate look like a box inside a box, and because the total dock is sticky,
+  the bottom half of the form kept sliding under it.
+
+## What I changed
+
+`web/src/styles/app.css`: wrote the `.cart-upsell*` rules on the house well tokens (`--edge-well`,
+`--radius-md`, `--well-fill`, `--well-shadow`) with each recommendation as a `minmax(0, 1fr) auto` grid row -
+name and price in the first column, the Add control on the trailing edge, `--row-line` between rows - and the
+title/price on the label step of the type scale. `.cart-ship` took the same radius as the other wells; its
+track now uses `--border-strong`, the one border token that resolves opaque in both themes. The guest
+`fieldset` became a well with a two-up grid, and its legend a label. Added the flex rules that centre a line
+icon inside a label, and sized `.cart-panel svg` to the type it sits on.
+
+`web/src/styles/modern.css`: defined `.btn--outline` where the other button tiers live - transparent face, no
+shadow, `--opt-edge` hairline - and excluded it from the default-paint selector so the tier actually applies.
+
+`web/src/styles/responsive.css`: below 640 px the guest grid goes back to one field per line, since the sheet
+*is* the viewport there.
+
+`web/src/components/CartPanel.tsx`, `web/src/components/Icon.tsx`: the ten emoji-as-icons became `<Icon />`
+calls from the house set (one new glyph, `card`), the guest inputs now use the sheet's own `cart-input` class,
+and no label text changed. Cart upsell rows still carry no thumbnails - those were taken out on purpose in
+`cc5a198` and stay out.
+
+## The same probe, after
+
+| what the browser resolved | before | after |
+| --- | --- | --- |
+| delivery rail, steps from its own tray (light / dark) | 15 / 0 | **156 / 51** |
+| recommendation rows at 1440 | 82, 82, 82 px, button on its own line | **55, 60, 54 px, button beside the price** |
+| recommendation rows at 390 | 94, 94, 94 px, stacked | **79, 84, 78 px, one row each (a long name wraps inside its column)** |
+| recommendations block height at 1440 | 270 px | **218 px** |
+| block title | 16 px / 400 / none | **13 px / 750 / uppercase** |
+| name, price | 16 px, 16 px, no dividers | **15 px, 13 px tabular-nums, 1 px `--row-line` between rows** |
+| well radii (lines / delivery / recommendations / checkout) | 14 / 8 / 0 / 14 px | **14 / 14 / 14 / 14 px** |
+| `<svg>` in the sheet, colour emoji in its own labels | 0, 7 | **8, 0** |
+| `+ Add` paint | solid raised face, `rgb(255,255,255)` light / `rgb(35,32,34)` dark | **transparent, 1 px `--opt-edge`, `box-shadow: none`** |
+| guest form at 1440 | 1 column, 761 px, radius 0 px, legend 16 px | **2 columns, 373 px, radius 14 px, legend 13 px** |
+| guest form at 390 | 1 column, 761 px | **1 column, 628 px** |
+
+The outline tier reaches past the cart, as it should - those twelve elements were already declaring it. On the
+customer orders page the `Buy again` row action went from a raised solid face (indistinguishable from the
+primary next to it) to a hairline outline measuring **3.19:1** against its own face in light and **4.54:1** in
+dark, with its text at 15:1. The nine admin buttons take the same treatment; I checked the
+arithmetic in `modern.css`, not each dialog live, so consider those visually confirmed by the two routes above
+rather than by a screenshot each.
+
+## Tests
+
+- `web/src/test/option-and-cart.test.ts` grew six contract tests (the file now runs 18): the upsell well and
+  row grid, `.btn--outline` defined *and* excluded from the default paint, one radius across the four wells,
+  the rail's contrast against the resolved `--well-fill` in both themes (read out of `tokens.css`, so it fails
+  if someone re-tunes the token), zero colour emoji in `CartPanel.tsx` with every `<Icon name>` resolving to a
+  real glyph, the icon-centring rules, and the guest well with its 640 px collapse. All 18 pass.
+- `web/e2e/cart-sheet.spec.ts` grew two tests (the spec now runs 4) that ask the live DOM the same questions
+  through a probe which blends every colour over what is actually painted behind it. I ran that probe and those
+  exact thresholds against the stub build first: **12 of 12 scenarios pass on the fix, 12 of 12 fail at HEAD**,
+  each for the reason named in the bullet list above.
+
+## What this did not cover
+
+- **The live run is still yours.** `npm run e2e cart-sheet` needs `NINECUBE_SEED_PASSWORD`, which stays in your
+  environment; I cannot sign in to the stack. The thresholds it applies are the ones I just proved in a browser
+  against the stub API.
+- Colour emoji are still standing in for icons in ten other files (`GiftCardsPage`, `OrdersPages`,
+  `ProductsPage`, `ProductDetailPage`, `CampaignBanner`, `CompareTray`, `QuickViewModal`, `StockAlertModal`,
+  `CustomerCarePage`, `AdminPage`). Converting them is the same mechanical change as this round's and should be
+  its own pass, screen by screen, so each one gets looked at. Say the word and I will take them in order.
+- One colour emoji can still appear *inside* the sheet: an auto-applied campaign's own title comes from the API
+  (`⚡ Monsoon Deal`), and that is data the shop typed, not chrome. The browser check therefore counts
+  pictographs only in the labels this code writes and excludes the nodes that carry product names, coupon
+  titles and notes.
+- Two cosmetic things I left alone because they are not defects: the long uppercase "Delivery instructions /
+  order notes (optional)" label wraps to two lines on a phone, and the sticky dock overlaps content mid-scroll
+  by design - the sheet's own scroll now ends 442 px sooner at 1440, so the overlap is far less likely.
+
+## Gates
+
+`npx tsc --noEmit -p tsconfig.json`, `npm run i18n:check` (1900 entries), `npx vitest run` and `npm run build`,
+each re-run in a detached worktree at HEAD with only this round's eight files copied in, after the last edit.
+
 # Round 18 — the Settings tab is one plate now, and the search well has one clear button
 
 Date: 2026-11-03. Brief: "fix these ADmin settings Discount policy and give it as the modern e-commerce

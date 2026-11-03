@@ -25,7 +25,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
     /// The factory owns the database because xUnit v2 cannot inject a collection fixture into
     /// another collection fixture, and the connection string has to be known before the app builds.
     /// </summary>
-    public TestDatabase Database { get; } = new();
+    public PostgresTestDatabase Database { get; } = new();
 
     public ApiFactory()
     {
@@ -70,27 +70,24 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        await db.Database.ExecuteSqlRawAsync(
-            """
-            DELETE FROM Notifications;
-            DELETE FROM Addresses;
-            DELETE FROM InventoryMovements;
-            DELETE FROM OrderItems;
-            DELETE FROM Orders;
-            DELETE FROM AuditLogs;
-            DELETE FROM ProductImages;
-            DELETE FROM Products;
-            DELETE FROM ProductLines;
-            DELETE FROM Brands;
-            DELETE FROM Users;
-            DELETE FROM Customers;
-            DELETE FROM Settings;
-            DELETE FROM Categories WHERE Depth = 4;
-            DELETE FROM Categories WHERE Depth = 3 AND Id NOT IN (4,7);
-            DELETE FROM Categories WHERE Depth = 2 AND Id NOT IN (3,6);
-            DELETE FROM Categories WHERE Depth = 1 AND Id NOT IN (1,2,5);
-            DELETE FROM Tags;
-            """);
+        await db.Notifications.ExecuteDeleteAsync();
+        await db.Addresses.ExecuteDeleteAsync();
+        await db.InventoryMovements.ExecuteDeleteAsync();
+        await db.OrderItems.ExecuteDeleteAsync();
+        await db.Orders.ExecuteDeleteAsync();
+        await db.AuditLogs.ExecuteDeleteAsync();
+        await db.ProductImages.ExecuteDeleteAsync();
+        await db.Products.ExecuteDeleteAsync();
+        await db.ProductLines.ExecuteDeleteAsync();
+        await db.Brands.ExecuteDeleteAsync();
+        await db.Users.ExecuteDeleteAsync();
+        await db.Customers.ExecuteDeleteAsync();
+        await db.Settings.ExecuteDeleteAsync();
+        await db.Categories.Where(c => c.Depth == 4).ExecuteDeleteAsync();
+        await db.Categories.Where(c => c.Depth == 3 && c.Id != 4 && c.Id != 7).ExecuteDeleteAsync();
+        await db.Categories.Where(c => c.Depth == 2 && c.Id != 3 && c.Id != 6).ExecuteDeleteAsync();
+        await db.Categories.Where(c => c.Depth == 1 && c.Id != 1 && c.Id != 2 && c.Id != 5).ExecuteDeleteAsync();
+        await db.Tags.ExecuteDeleteAsync();
     }
 
     public async Task<T> WithDbAsync<T>(Func<AppDbContext, Task<T>> action)

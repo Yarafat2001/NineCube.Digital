@@ -51,10 +51,76 @@ export function ProductDetailPage() {
   const isInWishlist = wishlistQuery.data?.some(item => item.productId === productId);
 
   useEffect(() => {
-    if (product) {
-      recordRecentView(product);
+    if (!product) return;
+    recordRecentView(product);
+
+    // Dynamic Title & OpenGraph SEO Metadata
+    document.title = `${product.name} | NineCube Digital`;
+
+    const setMeta = (property: string, content: string) => {
+      let meta = document.querySelector(`meta[property="${property}"], meta[name="${property}"]`) as HTMLMetaElement | null;
+      if (!meta) {
+        meta = document.createElement('meta');
+        if (property.startsWith('og:') || property.startsWith('product:')) {
+          meta.setAttribute('property', property);
+        } else {
+          meta.setAttribute('name', property);
+        }
+        document.head.appendChild(meta);
+      }
+      meta.content = content;
+    };
+
+    setMeta('og:title', product.name);
+    setMeta('og:description', product.description || `${product.name} available at NineCube Digital`);
+    if (product.imageUrl) setMeta('og:image', product.imageUrl);
+    setMeta('og:price:amount', product.price.toString());
+    setMeta('og:price:currency', product.currency ?? 'BDT');
+    setMeta('og:type', 'product');
+    setMeta('twitter:card', 'summary_large_image');
+    setMeta('twitter:title', product.name);
+
+    // Schema.org Product JSON-LD structured data for search engine rich snippets
+    const ldJson = {
+      '@context': 'https://schema.org/',
+      '@type': 'Product',
+      name: product.name,
+      image: product.imageUrl ? [product.imageUrl] : [],
+      description: product.description || product.name,
+      sku: product.sku,
+      offers: {
+        '@type': 'Offer',
+        url: window.location.href,
+        priceCurrency: product.currency,
+        price: product.price,
+        availability: product.stockQuantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        seller: {
+          '@type': 'Organization',
+          name: 'NineCube Digital'
+        }
+      },
+      ...(ratingSummary?.totalReviews ? {
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: ratingSummary.averageRating,
+          reviewCount: ratingSummary.totalReviews
+        }
+      } : {})
+    };
+
+    let scriptTag = document.getElementById('schema-product-ldjson') as HTMLScriptElement | null;
+    if (!scriptTag) {
+      scriptTag = document.createElement('script');
+      scriptTag.id = 'schema-product-ldjson';
+      scriptTag.type = 'application/ld+json';
+      document.head.appendChild(scriptTag);
     }
-  }, [product]);
+    scriptTag.text = JSON.stringify(ldJson);
+
+    return () => {
+      scriptTag?.remove();
+    };
+  }, [product, ratingSummary]);
 
   const handleShare = async () => {
     const url = window.location.href;

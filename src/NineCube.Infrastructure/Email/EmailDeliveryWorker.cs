@@ -7,14 +7,13 @@ using NineCube.Application.Abstractions;
 
 namespace NineCube.Infrastructure.Email;
 
-public sealed class EmailDeliveryWorker(IServiceScopeFactory scopes, IConfiguration configuration, ILogger<EmailDeliveryWorker> logger) : BackgroundService
+public sealed class EmailDeliveryWorker(IServiceScopeFactory scopes, ILogger<EmailDeliveryWorker> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(30));
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {
-            if (string.IsNullOrWhiteSpace(configuration["Email:Smtp:Host"])) continue;
             try
             {
                 using var scope = scopes.CreateScope();
@@ -22,7 +21,8 @@ public sealed class EmailDeliveryWorker(IServiceScopeFactory scopes, IConfigurat
                 var clock = scope.ServiceProvider.GetRequiredService<IClock>();
                 var sender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
                 var now = clock.UtcNow;
-                var batch = await db.EmailDeliveries.AsNoTracking().Where(m => m.SentAt == null && (m.LeaseUntil == null || m.LeaseUntil < now))
+                var batch = await db.EmailDeliveries.AsNoTracking()
+                    .Where(m => m.SentAt == null && m.Attempts < 5 && (m.LeaseUntil == null || m.LeaseUntil < now))
                     .OrderBy(m => m.Id).Take(20).ToListAsync(stoppingToken);
                 foreach (var message in batch)
                 {
@@ -36,7 +36,17 @@ public sealed class EmailDeliveryWorker(IServiceScopeFactory scopes, IConfigurat
                     }
                     catch (Exception ex) when (ex is not OperationCanceledException)
                     {
-                        logger.LogWarning("Email delivery {Id} failed; it remains queued for retry.", message.Id);
+                        var newAttempts = message.Attempts + 1;
+                        if (newAttempts >= 5)
+                        {
+                            logger.LogError("Email delivery {Id} exceeded maximum attempts (5); moved to dead-letter state.", message.Id);
+                            await db.EmailDeliveries.Where(m => m.Id == message.Id)
+                                .ExecuteUpdateAsync(s => s.SetProperty(m => m.LeaseUntil, DateTime.MaxValue), stoppingToken);
+                        }
+                        else
+                        {
+                            logger.LogWarning("Email delivery {Id} failed; attempt {Attempt}/5 scheduled for retry.", message.Id, newAttempts);
+                        }
                     }
                 }
             }

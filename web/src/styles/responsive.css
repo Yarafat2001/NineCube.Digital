@@ -122,6 +122,12 @@ main .link-button:is(:hover, :focus-visible, :active),
   .policy-input { width: 100%; }
 }
 
+/* Guest checkout pairs its short fields two-up, but only while the sheet is wide enough to keep a
+   field readable; on a phone the sheet is the viewport, so every field takes the whole line. */
+@media (max-width: 640px) {
+  .cart-checkout-extras fieldset { grid-template-columns: minmax(0, 1fr); }
+}
+
 @media (hover: none) and (prefers-reduced-motion: no-preference) {
   .product-card[data-revealed='true'] { animation: touch-card-reveal 500ms ease-out; }
   .product-card:active { transform: scale(.985); box-shadow: var(--shadow-sm); }

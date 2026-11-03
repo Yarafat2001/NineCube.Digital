@@ -8,6 +8,7 @@ import { usePlaceOrder, useValidateCoupon, useValidateGiftCard, useEvaluateCartP
 import type { Order, Product, ShortItem, CouponValidationResult, ValidateGiftCardResult, PaymentMethod } from '../api/types';
 import { Link, useNavigate } from 'react-router-dom';
 import { createIdempotencyKey, formatMoney } from '../lib/helpers';
+import { Icon } from './Icon';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
 import { useToast } from './ui';
@@ -388,7 +389,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                   onClick={() => cart.remove(line.productId)}
                   aria-label={t(`Remove ${line.name} from the cart`)}
                 >
-                  🗑️ {t("Remove")}</button>
+                  <Icon name="trash" /> {t("Remove")}</button>
               </div>
             </li>
           ))}
@@ -400,9 +401,9 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
           <div className="cart-ship__row">
             <span>
               {qualifiesForFreeShipping ? (
-                <>🎉 {t("You've unlocked FREE Delivery!")}</>
+                <><Icon name="check" /> {t("You've unlocked FREE Delivery!")}</>
               ) : (
-                <>🚚 {t("Add")} <strong>{formatMoney(amountNeededForFreeShipping, cart.currency)}</strong> {t("more for FREE Delivery!")}</>
+                <><Icon name="truck" /> {t("Add")} <strong>{formatMoney(amountNeededForFreeShipping, cart.currency)}</strong> {t("more for FREE Delivery!")}</>
               )}
             </span>
             <span className="cart-ship__pct">{freeShippingPercent}%</span>
@@ -416,7 +417,8 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
       {cart.lines.length > 0 && upsellProducts.length > 0 && (
         <div className="cart-upsell">
           <div className="cart-upsell__title">
-            <span>✨ {t("Frequently added together")}</span>
+            <Icon name="spark" />
+            <span>{t("Frequently added together")}</span>
           </div>
           <div className="cart-upsell__items">
             {upsellProducts.map((p) => (
@@ -449,7 +451,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
             <p>{t('No account needed. Your order access is saved in this browser tab for 30 days.')}</p>
             {Object.entries(guestDetails).map(([key, value]) => <label key={key} className="field">
               <span>{t(({ name: 'Full name', email: 'Email', phone: 'Phone', division: 'Division', district: 'District', upazila: 'Upazila', addressLine: 'Street address' } as Record<string, string>)[key])}</span>
-              <input className="input" type={key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'}
+              <input className="cart-input" type={key === 'email' ? 'email' : key === 'phone' ? 'tel' : 'text'}
                 value={value} required maxLength={key === 'addressLine' ? 500 : key === 'email' ? 256 : key === 'phone' ? 32 : 100}
                 onChange={e => setGuestDetails(current => ({ ...current, [key]: e.target.value }))} />
             </label>)}
@@ -550,7 +552,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                 onClick={() => setShowCouponsDrawer(!showCouponsDrawer)}
                 aria-expanded={showCouponsDrawer}
               >
-                <span>🏷️ {t("Available Coupons & Offers")} ({availableCoupons.length})</span>
+                <span><Icon name="ticket" /> {t("Available Coupons & Offers")} ({availableCoupons.length})</span>
                 <span className="cart-toggle-coupons-btn__state">{showCouponsDrawer ? t("Hide") : t("View")}</span>
               </button>
 
@@ -602,7 +604,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
 
           {/* Gift Card Code */}
           <div className="cart-field">
-            <span className="cart-field__label"><span>🎁 {t("Gift card")}</span></span>
+            <span className="cart-field__label"><span><Icon name="gift" /> {t("Gift card")}</span></span>
             {appliedGiftCard?.isValid ? (
               <div className="cart-note cart-note--gift">
                 <div className="cart-note__head">
@@ -669,7 +671,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                   checked={paymentMethod === 'CashOnDelivery'}
                   onChange={() => setPaymentMethod('CashOnDelivery')}
                 />
-                <span><span className="cart-pay__glyph" aria-hidden="true">💵</span> {t("Cash on Delivery")}</span>
+                <span><span className="cart-pay__glyph" aria-hidden="true"><Icon name="wallet" /></span> {t("Cash on Delivery")}</span>
               </label>
               <label className="cart-pay">
                 <input
@@ -680,7 +682,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                   disabled={!onlineAvailable}
                   onChange={() => setPaymentMethod('Card')}
                 />
-                <span><span className="cart-pay__glyph" aria-hidden="true">💳</span> {t("Card (Visa/Mastercard)")}</span>
+                <span><span className="cart-pay__glyph" aria-hidden="true"><Icon name="card" /></span> {t("Card (Visa/Mastercard)")}</span>
               </label>
               <label className="cart-pay">
                 <input
@@ -691,7 +693,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                   disabled={!onlineAvailable}
                   onChange={() => setPaymentMethod('MobileFinancialService')}
                 />
-                <span><span className="cart-pay__glyph" aria-hidden="true">📱</span> {t("Mobile Banking (bKash/Nagad)")}</span>
+                <span><span className="cart-pay__glyph" aria-hidden="true"><Icon name="phone" /></span> {t("Mobile Banking (bKash/Nagad)")}</span>
               </label>
             </div>
           </div>
@@ -722,7 +724,7 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
           {discountAmount > 0 && (
             <div className="cart-summary-row cart-summary-row--highlight">
               <span>
-                {isAutoApplied ? `⚡ ${t("Auto-Discount")}` : t("Coupon Discount")}
+                {isAutoApplied ? <><Icon name="bolt" /> {t("Auto-Discount")}</> : t("Coupon Discount")}
                 {effectiveDiscount?.code ? ` (${effectiveDiscount.code})` : ''}
                 {effectiveDiscount?.scopeSummary
                   ? ` · ${t("applies to")} ${effectiveDiscount.scopeSummary}`

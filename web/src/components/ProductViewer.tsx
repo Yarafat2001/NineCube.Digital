@@ -1,8 +1,7 @@
 import { t, useLanguage } from '../i18n/language';
 import { useEffect, useRef, useState } from 'react';
 import type { Product } from '../api/types';
-import { resolveAssetUrl } from '../api/client';
-import { ProductImage } from './ProductImage';
+import { ProductImage, ProductThumbnail } from './ProductImage';
 
 const backdrops = [
   { name: 'Pearl', color: '#f4f5f7' },
@@ -80,7 +79,7 @@ export function ProductViewer({ product }: { product: Product }) {
     {gallery.length > 1 ? <div className="product-detail__thumbs" aria-label={t("Product images")}>
       {gallery.map((image, imageIndex) => <button type="button" key={image.id} aria-pressed={index === imageIndex}
         aria-label={t(`Show ${image.altText ?? `${product.name} angle ${imageIndex + 1}`}`)} onClick={() => { setIndex(imageIndex); setZoom(1); setTilt({ x: 0, y: 0 }); }}>
-        <img src={resolveAssetUrl(image.url)} alt={t("")} loading="lazy" />
+        <ProductThumbnail url={image.url} alt={image.altText ?? ''} iconSize={18} />
       </button>)}
     </div> : null}
   </section>;

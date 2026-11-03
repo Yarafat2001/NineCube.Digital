@@ -32,7 +32,7 @@ public abstract class ApiTestBase : IAsyncLifetime
     protected const string ValidPassword = "Str0ng!Passw0rd";
 
     protected ApiFactory Factory { get; }
-    protected TestDatabase Database => Factory.Database;
+    protected PostgresTestDatabase Database => Factory.Database;
     protected HttpClient Client { get; private set; } = null!;
 
     protected ApiTestBase(ApiFactory factory) => Factory = factory;

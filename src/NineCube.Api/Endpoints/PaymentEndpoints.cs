@@ -29,6 +29,11 @@ public sealed class PaymentEndpoints : IEndpoint
             .WithName("PaymentGatewayCallback")
             .WithSummary("Gateway webhook / callback listener for asynchronous transaction capture.");
 
+        group.MapGet("/callback", ProcessCallbackAsync)
+            .AllowAnonymous()
+            .WithName("PaymentGatewayCallbackGet")
+            .WithSummary("Gateway browser redirect handler for asynchronous transaction capture.");
+
         group.MapGet("/order/{orderId:int}", GetOrderTransactionsAsync)
             .RequireAuthorization(Policies.CustomerStaffOrAdmin)
             .WithName("GetOrderPayments")
@@ -49,13 +54,70 @@ public sealed class PaymentEndpoints : IEndpoint
     public static async Task<IResult> ProcessCallbackAsync(
         HttpRequest request,
         IPaymentService paymentService,
+        Microsoft.Extensions.Configuration.IConfiguration configuration,
         CancellationToken ct)
     {
-        var validationId = request.HasFormContentType
-            ? (await request.ReadFormAsync(ct))["val_id"].ToString()
-            : (await request.ReadFromJsonAsync<PaymentCallbackRequest>(ct))?.ValidationId;
-        var transaction = await paymentService.ProcessCallbackAsync(new PaymentCallbackRequest(validationId ?? ""), ct);
-        return TypedResults.Ok(new { transaction.OrderId, transaction.Status, message = "Payment verified. You can return to your order." });
+        string? validationId = null;
+        string? tranId = null;
+        string? status = null;
+
+        if (request.HasFormContentType)
+        {
+            var form = await request.ReadFormAsync(ct);
+            validationId = form["val_id"].ToString();
+            tranId = form["tran_id"].ToString();
+            status = form["status"].ToString();
+        }
+        else if (request.Query.ContainsKey("val_id"))
+        {
+            validationId = request.Query["val_id"].ToString();
+            tranId = request.Query["tran_id"].ToString();
+            status = request.Query["status"].ToString();
+        }
+        else
+        {
+            var json = await request.ReadFromJsonAsync<PaymentCallbackRequest>(ct);
+            validationId = json?.ValidationId;
+        }
+
+        var isBrowser = request.Headers.Accept.Any(a => a?.Contains("text/html") == true)
+            || request.HasFormContentType;
+
+        var frontendBase = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()?.FirstOrDefault()
+            ?? "http://localhost:5173";
+
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(validationId))
+            {
+                var transaction = await paymentService.ProcessCallbackAsync(new PaymentCallbackRequest(validationId), ct);
+                if (isBrowser)
+                {
+                    return Results.Redirect($"{frontendBase}/orders/{transaction.OrderId}?payment=success");
+                }
+                return TypedResults.Ok(new { transaction.OrderId, transaction.Status, message = "Payment verified. You can return to your order." });
+            }
+
+            if (isBrowser)
+            {
+                var outcome = status?.ToUpperInvariant() switch
+                {
+                    "CANCELLED" => "cancelled",
+                    _ => "failed"
+                };
+                return Results.Redirect($"{frontendBase}/checkout?payment={outcome}&ref={Uri.EscapeDataString(tranId ?? "")}");
+            }
+
+            return TypedResults.BadRequest(new { error = "missing_val_id", message = "No validation identifier provided." });
+        }
+        catch (Exception ex)
+        {
+            if (isBrowser)
+            {
+                return Results.Redirect($"{frontendBase}/checkout?payment=error&message={Uri.EscapeDataString(ex.Message)}");
+            }
+            throw;
+        }
     }
 
     public static async Task<Results<Ok<IReadOnlyList<PaymentTransactionDto>>, ProblemHttpResult>> GetOrderTransactionsAsync(

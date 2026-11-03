@@ -2,6 +2,7 @@ using System.Data;
 using Microsoft.EntityFrameworkCore;
 using NineCube.Api.Auth;
 using NineCube.Application.Abstractions;
+using NineCube.Application.Services;
 using NineCube.Domain;
 
 namespace NineCube.Api.Endpoints;
@@ -9,6 +10,7 @@ namespace NineCube.Api.Endpoints;
 public sealed record CreateServiceCaseRequest(int OrderId, ServiceCaseKind Kind, string Message);
 public sealed record UpdateServiceCaseRequest(ServiceCaseStatus Status, string Response);
 public sealed record DeliveryUpdateRequest(OrderStatus Status, string? Carrier, string? TrackingNumber);
+public sealed record CourierWebhookRequest(string? TrackingCode, string? ConsignmentId, string? Status, string? Message);
 
 public sealed class CustomerCareEndpoints : IEndpoint
 {
@@ -53,7 +55,7 @@ public sealed class CustomerCareEndpoints : IEndpoint
         }).RequireAuthorization(Policies.StaffOrAdmin);
 
         app.MapPost("/api/orders/{id:int}/delivery", async (int id, DeliveryUpdateRequest request, IAppDbContext db,
-            ICurrentUser user, IClock clock, CancellationToken ct) =>
+            INotificationWriter notifications, ICurrentUser user, IClock clock, CancellationToken ct) =>
         {
             if (request.Status is not (OrderStatus.Shipped or OrderStatus.Delivered or OrderStatus.DeliveryFailed)
                 || request.Carrier?.Length > 100 || request.TrackingNumber?.Length > 100)
@@ -70,11 +72,99 @@ public sealed class CustomerCareEndpoints : IEndpoint
             order.Carrier = request.Carrier.Trim();
             order.TrackingNumber = request.TrackingNumber.Trim();
             order.UpdatedAt = clock.UtcNow;
+
             db.AuditLogs.Add(new AuditLog { UserId = user.UserId, Action = "order.delivery_updated", EntityType = nameof(Order),
                 EntityId = id.ToString(), CreatedAt = clock.UtcNow, Details = $"status={request.Status}; carrier={order.Carrier}; tracking={order.TrackingNumber}" });
+
+            var userIds = await db.Users.AsNoTracking()
+                .Where(u => u.IsActive && u.CustomerId == order.CustomerId)
+                .Select(u => u.Id)
+                .ToListAsync(ct);
+
+            var title = $"Order #{order.Id} {request.Status.ToString().ToLowerInvariant()}";
+            var body = request.Status switch
+            {
+                OrderStatus.Delivered => $"Your order #{order.Id} has been successfully delivered. Thank you for shopping with NineCube!",
+                OrderStatus.DeliveryFailed => $"Delivery attempt for order #{order.Id} was unsuccessful. Our support team will reach out to reschedule.",
+                OrderStatus.Shipped => $"Order #{order.Id} has shipped via {order.Carrier} (Tracking: {order.TrackingNumber}).",
+                _ => $"Order #{order.Id} is now {request.Status}."
+            };
+
+            foreach (var userId in userIds)
+            {
+                notifications.Add(userId, NotificationType.OrderStatusChanged, title, body, $"/orders/{order.Id}");
+            }
+
+            var customer = await db.Customers.AsNoTracking().FirstOrDefaultAsync(c => c.Id == order.CustomerId, ct);
+            if (customer is not null && !string.IsNullOrWhiteSpace(customer.Email))
+            {
+                db.EmailDeliveries.Add(new EmailDelivery
+                {
+                    Key = $"delivery-status:{order.Id}:{request.Status.ToString().ToLowerInvariant()}:{clock.UtcNow.Ticks}",
+                    Recipient = customer.Email,
+                    Subject = title,
+                    Body = $"<p>{System.Net.WebUtility.HtmlEncode(body)}</p><p>Carrier: <strong>{System.Net.WebUtility.HtmlEncode(order.Carrier)}</strong><br/>Tracking: <strong>{System.Net.WebUtility.HtmlEncode(order.TrackingNumber)}</strong></p>",
+                    CreatedAt = clock.UtcNow
+                });
+            }
+
             await db.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
             return Results.NoContent();
         }).RequireAuthorization(Policies.StaffOnly);
+
+        app.MapPost("/api/courier/webhook", async (CourierWebhookRequest request, IAppDbContext db, INotificationWriter notifications, IClock clock, CancellationToken ct) =>
+        {
+            var code = request.TrackingCode?.Trim() ?? request.ConsignmentId?.Trim();
+            if (string.IsNullOrWhiteSpace(code))
+                throw new BusinessValidationException("Tracking code or consignment identifier is required.");
+
+            var order = await db.Orders.FirstOrDefaultAsync(o => o.TrackingNumber == code, ct)
+                ?? throw new NotFoundException($"Order with tracking number {code} was not found.");
+
+            var normalized = (request.Status ?? "").ToLowerInvariant().Replace("_", "").Replace("-", "");
+            OrderStatus? target = normalized switch
+            {
+                "delivered" or "partialdelivered" => OrderStatus.Delivered,
+                "failed" or "deliveryfailed" or "cancelled" or "returned" => OrderStatus.DeliveryFailed,
+                "shipped" or "intransit" => OrderStatus.Shipped,
+                _ => null
+            };
+
+            if (target is null || order.Status == target.Value) return Results.Ok(new { updated = false, orderId = order.Id, currentStatus = order.Status });
+
+            if (!OrderStatusRules.CanTransition(order.Status, target.Value))
+                throw new InvalidStateTransitionException(order.Status, target.Value);
+
+            order.Status = target.Value;
+            order.UpdatedAt = clock.UtcNow;
+
+            db.AuditLogs.Add(new AuditLog
+            {
+                Action = "order.courier_webhook_updated",
+                EntityType = nameof(Order),
+                EntityId = order.Id.ToString(),
+                CreatedAt = clock.UtcNow,
+                Details = $"status={target.Value}; tracking={code}; carrier_message={request.Message}"
+            });
+
+            var userIds = await db.Users.AsNoTracking()
+                .Where(u => u.IsActive && u.CustomerId == order.CustomerId)
+                .Select(u => u.Id)
+                .ToListAsync(ct);
+
+            var title = $"Order #{order.Id} {target.Value.ToString().ToLowerInvariant()}";
+            var body = target.Value == OrderStatus.Delivered
+                ? $"Your order #{order.Id} was confirmed delivered by the carrier."
+                : $"Delivery update for order #{order.Id}: {request.Message ?? target.Value.ToString()}";
+
+            foreach (var userId in userIds)
+            {
+                notifications.Add(userId, NotificationType.OrderStatusChanged, title, body, $"/orders/{order.Id}");
+            }
+
+            await db.SaveChangesAsync(ct);
+            return Results.Ok(new { updated = true, orderId = order.Id, status = order.Status });
+        }).AllowAnonymous().WithName("CourierWebhook").WithSummary("Inbound courier webhook from carrier partners.");
     }
 }

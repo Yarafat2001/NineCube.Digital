@@ -198,8 +198,12 @@ export function resolveAssetUrl(url: string | null | undefined): string | undefi
     const pathname = window.location.pathname;
     if (hostname.endsWith('github.io')) {
       const segments = pathname.split('/').filter(Boolean);
-      if (segments.length > 0) {
-        return `/${segments[0]}${normalized}`;
+      if (segments.length > 0 && !segments[0].endsWith('.html') && !segments[0].endsWith('.htm')) {
+        const repo = segments[0];
+        if (normalized === `/${repo}` || normalized.startsWith(`/${repo}/`)) {
+          return normalized;
+        }
+        return `/${repo}${normalized}`;
       }
     }
   }
