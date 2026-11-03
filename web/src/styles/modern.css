@@ -56,11 +56,12 @@ a:not(.btn):not(.filter-chip):focus-visible { outline: var(--focus-ring); outlin
 .menu-separator { border-top: 1px solid var(--border); margin: 6px 4px; }
 .btn { align-items: center; justify-content: center; gap: 8px; background: var(--surface-glass); border: 1px solid var(--border-strong); box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm); color: var(--text); text-decoration: none; }
 .btn--primary { background: var(--accent-gradient); color: var(--on-accent); border-color: var(--accent); box-shadow: var(--shadow-md); }
-.btn--ghost { background: transparent; box-shadow: none; border-color: transparent; }
+.btn--ghost { background: transparent; box-shadow: none; border-color: transparent; color: var(--text); }
+.btn--ghost:hover:not(:disabled) { background: var(--neutral-tint); }
 /* The outline tier is the step below a default button: a hairline edge, no raised fill. Twelve
    elements already carried this class, but no rule ever matched it, so they took the solid default
    paint below and a Cancel looked exactly like the action it was meant to step back from. */
-.btn--outline { background: transparent; box-shadow: none; border-color: var(--opt-edge); }
+.btn--outline { background: transparent; box-shadow: none; border-color: var(--opt-edge); color: var(--text); }
 /* The certificate is dark ink in both themes, so a button inside it takes the card's own edge and
    ink rather than the page's raised fill. */
 .btn--on-cert { background: transparent; box-shadow: none; border-color: var(--cert-rule); color: var(--cert-ink); }
@@ -82,7 +83,11 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
 .product-card__image, .product-card__image--photo { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 0; background: transparent; filter: none; transition: transform 260ms ease; }
 .product-card:hover .product-card__image, .product-card:hover .product-card__image--photo { transform: scale(1.03); }
 .product-card .badge { transform: translateZ(16px); }
-.product-card__footer, .product-card__actions { transform: translateZ(0); }
+.product-card__actions-overlay { transform: translateZ(18px); }
+.product-card__footer, .product-card__actions, .product-card__secondary-bar { transform: translateZ(0); }
+.product-category-chips { display: flex; align-items: center; flex-wrap: nowrap; gap: 6px; overflow: hidden; min-width: 0; }
+.product-category-chips .filter-chip { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 130px; }
+.product-category-chips .filter-chip--extra { flex-shrink: 0; }
 .product-card__media .image-placeholder { background: var(--neutral-tint); color: var(--neutral); height: 100%; }
 .product-card:focus-within { transform: translateY(-4px); outline: var(--focus-ring); outline-offset: 3px; }
 .product-card:focus-within::after { opacity: 1; }
