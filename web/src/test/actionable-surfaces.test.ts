@@ -87,7 +87,7 @@ describe('Actionable chips and one-line actions', () => {
   it('paints a secondary button as a control, not as the surface it sits on', () => {
     // --nav-glass is the material of the card, tray and table behind it, which is why a row action
     // on /inventory or /admin looked like plain text.
-    const button = block(modern, ':root .btn:not(.btn--primary):not(.btn--danger):not(.btn--ghost)');
+    const button = block(modern, ':root .btn:not(.btn--primary):not(.btn--danger):not(.btn--ghost):not(.btn--outline)');
     expect(button).toContain('background: var(--surface-raised)');
     expect(button).toContain('border-color: var(--border-strong)');
     expect(button).not.toContain('var(--nav-glass)');

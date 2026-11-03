@@ -79,7 +79,7 @@ export function ProductViewer({ product }: { product: Product }) {
     {gallery.length > 1 ? <div className="product-detail__thumbs" aria-label={t("Product images")}>
       {gallery.map((image, imageIndex) => <button type="button" key={image.id} aria-pressed={index === imageIndex}
         aria-label={t(`Show ${image.altText ?? `${product.name} angle ${imageIndex + 1}`}`)} onClick={() => { setIndex(imageIndex); setZoom(1); setTilt({ x: 0, y: 0 }); }}>
-        <ProductThumbnail url={image.url} alt={image.altText ?? ''} iconSize={18} />
+        <ProductThumbnail url={image.url} iconSize={18} />
       </button>)}
     </div> : null}
   </section>;

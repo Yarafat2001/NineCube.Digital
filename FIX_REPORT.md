@@ -3,14 +3,15 @@
 # Round 19 — the cart sheet is one plate now: real rows, real icons, a rail you can see
 
 Date: 2026-11-03. Brief: "Your cart- fix this design not looks good, I need to fix this properly", with a
-screenshot of the "Your cart" sheet at a phone width: one line item, a `🚚 Add BDT 2,492.01 more for FREE
+screenshot of the "Your cart" sheet holding one item: a `🚚 Add BDT 2,492.01 more for FREE
 Delivery! / 0%` well with nothing visible under the copy, a `✨ Frequently added together` list where every
 recommendation was a stack of plain text with a solid `+ Add` pill underneath its price, and the sticky
 Total / Place order dock.
 
 ## How I measured it
 
-The sheet needs a basket, and half of its states need a customer, so I ran the app against the MSW stub API
+The sheet needs a basket to show anything at all, and its coupon and gift-card sections only appear for a
+signed-in customer, so I ran the app against the MSW stub API
 in a throwaway harness (deleted before this commit) with a hand-seeded cart and an `/api/auth/me` override
 for the signed-in state. Then I ran the *same* probe against HEAD in a detached worktree, so every pair below
 is the same measurement on the same fixtures: 1440x900 and 390x844, light and dark, with the cart both below
@@ -35,8 +36,9 @@ and above the 2,500 taka free-delivery line, plus the same four combinations as 
   objects pretending to be one.
 - **Every icon in the sheet was a colour emoji.** 🗑️ on Remove, 🚚/🎉 on the delivery row, ✨ on the
   recommendations, 🏷️ on coupons, 🎁 on the gift card, 💵/💳/📱 on the three payment methods, ⚡ on the
-  auto-discount. The sheet held **0 `<svg>` elements** and **7 colour emoji in its own labels** (9 in the
-  unlocked state). They belong to no theme, they are drawn differently on every OS, and as inline boxes they
+  auto-discount. The sheet held **0 `<svg>` elements** and **7 colour emoji in its own labels** - 9 once an
+  auto-applied promotion is on screen, and one of those nine is the campaign's own title, which comes from the
+  API. They belong to no theme, they are drawn differently on every OS, and as inline boxes they
   sit on the text baseline - a step below the copy they are supposed to mark.
 - **`+ Add` was `btn--outline`, a class this project has never defined.** Twelve elements in `src/` carry it
   and not one rule matched it, so the button fell through to the default tier
@@ -87,12 +89,14 @@ and no label text changed. Cart upsell rows still carry no thumbnails - those we
 | guest form at 1440 | 1 column, 761 px, radius 0 px, legend 16 px | **2 columns, 373 px, radius 14 px, legend 13 px** |
 | guest form at 390 | 1 column, 761 px | **1 column, 628 px** |
 
-The outline tier reaches past the cart, as it should - those twelve elements were already declaring it. On the
-customer orders page the `Buy again` row action went from a raised solid face (indistinguishable from the
-primary next to it) to a hairline outline measuring **3.19:1** against its own face in light and **4.54:1** in
-dark, with its text at 15:1. The nine admin buttons take the same treatment; I checked the
-arithmetic in `modern.css`, not each dialog live, so consider those visually confirmed by the two routes above
-rather than by a screenshot each.
+The outline tier reaches past the cart, as it should - those twelve elements were already declaring it, and I
+measured it on both sides of the app. On the customer orders page the `Buy again` row action, and on the admin
+Settings tab the `Discard changes` button, both went from a raised solid face (1.16-1.17:1 against the surface
+behind them - a plate the same weight as the primary beside it) to a hairline outline: flat face, edge
+measuring **3.19:1** against its own surface in light and **4.54:1** in dark, text at **15.2:1** and **16.9:1**,
+at 1440 and at 390. The other eight admin buttons carry the same class against the same single rule, so they
+take the same paint; I measured one per area rather than all nine, because a dialog only exists once somebody
+clicks a row.
 
 ## Tests
 
@@ -105,28 +109,40 @@ rather than by a screenshot each.
   through a probe which blends every colour over what is actually painted behind it. I ran that probe and those
   exact thresholds against the stub build first: **12 of 12 scenarios pass on the fix, 12 of 12 fail at HEAD**,
   each for the reason named in the bullet list above.
+- Running the whole suite, not just my own file, turned up two more. `actionable-surfaces.test.ts` reads the
+  default button rule out of `modern.css` by its exact selector, and my `:not(.btn--outline)` had changed that
+  string under it - the rule it pins is still the same rule, so its lookup now names the outline exclusion too.
+  The second was already red at HEAD before I touched anything: the image-fallback pass put a `ProductThumbnail`
+  into the gallery strip, and `mobile-interactions.test.tsx` found **two** images named "Original front view" -
+  the stage picture and the thumb, inside a button that was already called "Show Original front view". A picture
+  that sits inside a control with its own name should not repeat that name, so the thumb now renders with an
+  empty `alt` (`ProductThumbnail` already defaults to `''`); the stage keeps the description. Suite after both:
+  276 tests in 39 files, all passing.
 
 ## What this did not cover
 
 - **The live run is still yours.** `npm run e2e cart-sheet` needs `NINECUBE_SEED_PASSWORD`, which stays in your
   environment; I cannot sign in to the stack. The thresholds it applies are the ones I just proved in a browser
   against the stub API.
-- Colour emoji are still standing in for icons in ten other files (`GiftCardsPage`, `OrdersPages`,
-  `ProductsPage`, `ProductDetailPage`, `CampaignBanner`, `CompareTray`, `QuickViewModal`, `StockAlertModal`,
-  `CustomerCarePage`, `AdminPage`). Converting them is the same mechanical change as this round's and should be
-  its own pass, screen by screen, so each one gets looked at. Say the word and I will take them in order.
-- One colour emoji can still appear *inside* the sheet: an auto-applied campaign's own title comes from the API
-  (`⚡ Monsoon Deal`), and that is data the shop typed, not chrome. The browser check therefore counts
-  pictographs only in the labels this code writes and excludes the nodes that carry product names, coupon
-  titles and notes.
+- Colour emoji are still standing in for icons in ten other files (`GiftCardsPage` 9, `OrdersPages` 6,
+  `AdminPage` 4, `ProductsPage` 2, and one each in `CampaignBanner`, `CompareTray`, `QuickViewModal`,
+  `StockAlertModal`, `CustomerCarePage`, `ProductDetailPage`). The orders-page check in this round saw it first
+  hand: that row action still reads `🔄 Buy again`. Converting them is the same mechanical change as this
+  round's and should be its own pass, screen by screen, so each one gets looked at. Say the word and I will
+  take them in order.
+- What the shop typed can still carry a pictograph: the seeded auto-promo titles read
+  `⚡ Auto-Promo: 10% OFF on BDT 2,000+ orders`, and product names come from the catalogue. That is data, not
+  chrome, so the browser check counts pictographs only in the labels this code writes and skips the nodes that
+  carry product names, coupon titles and notes.
 - Two cosmetic things I left alone because they are not defects: the long uppercase "Delivery instructions /
   order notes (optional)" label wraps to two lines on a phone, and the sticky dock overlaps content mid-scroll
   by design - the sheet's own scroll now ends 442 px sooner at 1440, so the overlap is far less likely.
 
 ## Gates
 
-`npx tsc --noEmit -p tsconfig.json`, `npm run i18n:check` (1900 entries), `npx vitest run` and `npm run build`,
-each re-run in a detached worktree at HEAD with only this round's eight files copied in, after the last edit.
+`npx tsc --noEmit -p tsconfig.json` clean, `npm run i18n:check` (1986 entries), `npx vitest run` (276 tests in
+39 files) and `npm run build`, each re-run in a detached worktree at HEAD with only this round's nine source
+files plus this report copied in, after the last edit.
 
 # Round 18 — the Settings tab is one plate now, and the search well has one clear button
 
