@@ -34,7 +34,7 @@ export function OrderTimeline({ order }: { order: Order }) {
     return (
       <ul className="timeline" aria-label={t("Order status timeline")}>
         <li data-done={true}>
-          <span aria-hidden="true">{t("◔")}</span> {t(" Pending")}</li>
+          <span aria-hidden="true">{t("â—”")}</span> {t(" Pending")}</li>
         <li data-failed={true}>
           <span aria-hidden="true">{t(orderStatusMeta[order.status].glyph)}</span> {t(orderStatusMeta[order.status].label)}
         </li>
@@ -46,7 +46,7 @@ export function OrderTimeline({ order }: { order: Order }) {
   const createdDate = order.createdAt ? new Date(order.createdAt) : new Date();
   const estDeliveryMin = new Date(createdDate.getTime() + 2 * 24 * 60 * 60 * 1000);
   const estDeliveryMax = new Date(createdDate.getTime() + 4 * 24 * 60 * 60 * 1000);
-  const estDateStr = `${estDeliveryMin.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} – ${estDeliveryMax.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
+  const estDateStr = `${estDeliveryMin.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} â€“ ${estDeliveryMax.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
 
   return (
     <div className="order-timeline-wrap">
@@ -58,7 +58,7 @@ export function OrderTimeline({ order }: { order: Order }) {
         ))}
       </ul>
       <div className="order-delivery-est card-glass" aria-label={t("Estimated Delivery")}>
-        <span aria-hidden="true">🚚</span>
+        <span aria-hidden="true">ðŸšš</span>
         <span>{t("Estimated Delivery:")} <strong>{estDateStr}</strong> ({t("Standard Fulfillment")})</span>
 
       </div>
@@ -80,8 +80,6 @@ export function canCustomerCancel(order: Order, role: string | undefined, custom
 export function MyOrdersPage() {
   useLanguage();
   const navigate = useNavigate();
-  const cart = useCart();
-  const toast = useToast();
 
   const { reorder: handleReorder, busy: reordering } = useReorder();
   const [status, setStatus] = useState<OrderStatus | ''>('');
@@ -180,7 +178,7 @@ export function MyOrdersPage() {
                           onClick={() => void handleReorder(order)}
                           title={t("Add all items back to cart")}
                         >
-                          🔄 {t("Buy again")}</button>
+                          ðŸ”„ {t("Buy again")}</button>
                         <Link className="link-button" to={`/orders/${order.id}/invoice`}>
                           {t("Invoice")}</Link>
                       </div>
@@ -209,7 +207,6 @@ export function OrderDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const toast = useToast();
-  const cart = useCart();
   const { user, hasRole } = useAuth();
 
   const { reorder: handleReorder, busy: reordering } = useReorder();
@@ -250,7 +247,7 @@ export function OrderDetailPage() {
         <div>
           <h1>{t("Order #")}{t(order.id)}</h1>
           <p>
-            {t("Placed ")}{t(formatDateTime(order.createdAt))} {t(" · last updated ")}{t(formatDateTime(order.updatedAt))}
+            {t("Placed ")}{t(formatDateTime(order.createdAt))} {t(" Â· last updated ")}{t(formatDateTime(order.updatedAt))}
           </p>
         </div>
         <div className="row">
@@ -272,7 +269,7 @@ export function OrderDetailPage() {
         <div className="card-glass" style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md, 8px)' }}>
           <span className="muted" style={{ fontSize: 'var(--text-xs)', display: 'block' }}>{t("Payment Method")}</span>
           <strong style={{ fontSize: 'var(--text-sm)' }}>
-            {order.paymentMethod === 'Card' ? `💳 ${t("Card")}` : order.paymentMethod === 'MobileFinancialService' ? `📱 ${t("Mobile Banking (bKash/Nagad)")}` : `💵 ${t("Cash on Delivery")}`}
+            {order.paymentMethod === 'Card' ? `ðŸ’³ ${t("Card")}` : order.paymentMethod === 'MobileFinancialService' ? `ðŸ“± ${t("Mobile Banking (bKash/Nagad)")}` : `ðŸ’µ ${t("Cash on Delivery")}`}
           </strong>
         </div>
 
@@ -373,7 +370,7 @@ export function OrderDetailPage() {
 
       <div className="row-between" style={{ marginTop: 'var(--space-6)', alignItems: 'center' }}>
         <button type="button" className="btn" onClick={() => navigate(-1)}>
-          ← {t("Back")}
+          â† {t("Back")}
         </button>
 
         <div className="row" style={{ gap: 'var(--space-2)' }}>
@@ -384,12 +381,12 @@ export function OrderDetailPage() {
               disabled={reordering}
                           onClick={() => void handleReorder(order)}
             >
-              🔄 {t("Buy again")}
+              ðŸ”„ {t("Buy again")}
             </button>
           ) : null}
           {cancellable ? (
             <button type="button" className="btn btn--danger" onClick={cancel} disabled={action.isPending}>
-            {t(action.isPending ? 'Cancelling…' : 'Cancel order')}
+            {t(action.isPending ? 'Cancellingâ€¦' : 'Cancel order')}
           </button>
         ) : (hasRole('Customer') || order.status === 'Shipped') ? (
           <span className="muted" style={{ fontSize: 'var(--text-sm)' }}>

@@ -2099,5 +2099,22 @@
   "Verify email": "ইমেইল যাচাই করুন",
   "Active sessions": "সক্রিয় সেশনসমূহ",
   "Signing out everywhere revokes access and refresh tokens on all devices.": "সব জায়গা থেকে সাইন আউট করলে সব ডিভাইসের অ্যাক্সেস ও রিফ্রেশ টোকেন বাতিল হয়ে যাবে।",
-  "Sign out everywhere": "সব জায়গা থেকে সাইন আউট করুন"
+  "Sign out everywhere": "সব জায়গা থেকে সাইন আউট করুন",
+  "Delivery availability and fees are checked at checkout.": "চেকআউটে ডেলিভারির প্রাপ্যতা এবং চার্জ যাচাই করা হয়।",
+  "Buying guide": "ক্রয় নির্দেশিকা",
+  "No account needed. Recover your order by email on any device.": "কোনো অ্যাকাউন্টের প্রয়োজন নেই। যেকোনো ডিভাইসে ইমেলের মাধ্যমে আপনার অর্ডার পুনরুদ্ধার করুন।",
+  "Estimated delivery days": "আনুমানিক ডেলিভারির দিন",
+  "net collected payments after settled cash refunds.": "নিষ্পত্তিকৃত নগদ রিফান্ডের পর মোট আদায়কৃত পেমেন্ট।",
+  "Available items added at current prices.": "বর্তমান মূল্যে উপলব্ধ পণ্যসমূহ যোগ করা হয়েছে।",
+  "These items are currently unavailable.": "এই পণ্যগুলি বর্তমানে উপলব্ধ নেই।",
+  "Some items or quantities are unavailable and were skipped.": "কিছু পণ্য বা পরিমাণ অনুপলব্ধ থাকায় বাদ দেওয়া হয়েছে।",
+  "Two-step sign-in": "দ্বি-স্তর বিশিষ্ট সাইন-ইন",
+  "Verify your email before changing two-step sign-in.": "দ্বি-স্তর বিশিষ্ট সাইন-ইন পরিবর্তনের আগে আপনার ইমেল যাচাই করুন।",
+  "Check your email for a sign-in code.": "একটি সাইন-ইন কোডের জন্য আপনার ইমেল চেক করুন।",
+  "Send sign-in code": "সাইন-ইন কোড পাঠান",
+  "Sign-in code": "সাইন-ইন কোড",
+  "Changing two-step sign-in signs you out on every device.": "দ্বি-স্তর বিশিষ্ট সাইন-ইন পরিবর্তন করলে প্রতিটি ডিভাইস থেকে আপনাকে সাইন আউট করা হবে।",
+  "Orders created in this range, with their current payment and refund position. Figures are separated by currency.": "এই সময়ের মধ্যে তৈরি হওয়া অর্ডারসমূহ, তাদের বর্তমান পেমেন্ট এবং রিফান্ডের অবস্থান সহ। পরিসংখ্যান মুদ্রা অনুযায়ী আলাদা।",
+  "Net collected payments": "মোট সংগৃহীত পেমেন্ট",
+  "Collected payments less settled cash refunds. Gift credit is shown separately.": "নিষ্পত্তিকৃত নগদ রিফান্ড বাদে সংগৃহীত পেমেন্ট। গিফট ক্রেডিট আলাদাভাবে দেখানো হয়েছে।"
 }
