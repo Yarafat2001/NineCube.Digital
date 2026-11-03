@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import type { Address, Profile } from '../src/api/types';
 
-test('international address editing works on desktop and mobile', async ({ page }) => {
+test('international address editing works on desktop and mobile', async ({ page }, testInfo) => {
   const user = { id: 501, email: 'address-preview@example.test', role: 'Customer', customerId: 501 };
   const profile: Profile = { ...user, role: 'Customer', name: 'Preview buyer', phone: '+8801700000000', createdAt: '2026-01-01T00:00:00Z', addresses: [] };
   await page.addInitScript(session => sessionStorage.setItem('ninecube.auth.session', JSON.stringify(session)), {
@@ -20,7 +20,13 @@ test('international address editing works on desktop and mobile', async ({ page 
     if (path === '/api/notifications/unread-count') return route.fulfill({ json: { count: 0 } });
     return route.fulfill({ json: [] });
   });
-  await page.goto('/#/account/profile');
+  const release = process.env.E2E_DEPLOYMENT_SHA;
+  await page.goto(release ? `./?v=${encodeURIComponent(release)}#/account/profile` : './#/account/profile');
+  if (release) {
+    const response = await page.request.get(new URL(`version.json?check=${Date.now()}`, testInfo.project.use.baseURL).href);
+    expect(response.ok()).toBe(true);
+    expect((await response.json()).version).toBe(release);
+  }
   const book = page.locator('.delivery-address-book');
   await expect(book.getByRole('heading', { name: 'Saved delivery addresses' })).toBeVisible();
   await book.getByLabel('Country / region', { exact: false }).selectOption('US');
@@ -45,7 +51,7 @@ test('international address editing works on desktop and mobile', async ({ page 
         await page.getByRole('button', { name: `Switch to ${theme} theme`, exact: true }).click();
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-      await book.screenshot({ path: `artifacts/delivery-address-${theme}-${width}.png` });
+      await book.screenshot({ path: testInfo.outputPath(`delivery-address-${theme}-${width}.png`) });
     }
   }
 });

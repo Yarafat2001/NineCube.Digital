@@ -59,7 +59,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => { if (cart.owner !== owner) setCart({ owner, lines: read(owner) }); }, [owner, cart.owner]);
   useEffect(() => {
     if (cart.owner !== owner) return;
-    try { localStorage.setItem(keyFor(owner), JSON.stringify(lines)); } catch { /* Cart remains usable without local storage. */ }
+    try {
+      if (lines.length) localStorage.setItem(keyFor(owner), JSON.stringify(lines));
+      else localStorage.removeItem(keyFor(owner));
+    } catch { /* Cart remains usable without local storage. */ }
   }, [lines, owner, cart.owner]);
   const { syncStatus, reloadSavedCart } = useSavedCart(owner, token, initialising, lines, setLines);
   useEffect(() => {

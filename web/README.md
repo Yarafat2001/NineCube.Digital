@@ -54,6 +54,29 @@ NINECUBE_SEED_PASSWORD='<demo password>' npm run e2e
 Quotes around the value are tolerated, because `.env` files in this repository quote theirs and the
 .NET loader strips them.
 
+## Delivery address release checks
+
+The profile address book supports Bangladesh and international destinations, with
+country-specific fields and required values. Bangladesh locations are searchable
+suggestions; unlisted areas remain valid. Country metadata is bundled in `../shared/`.
+
+The GitHub Pages workflow runs the frontend suite, builds production assets and
+checks address creation/editing at desktop and mobile widths in both themes before
+deployment. A failed build leaves the previous website live even when the commit is
+already on GitHub. Check the workflow result and compare the deployed `version.json`
+with the intended commit before declaring a release complete.
+
+To check the published frontend from PowerShell, run from `web`:
+
+```powershell
+$env:E2E_BASE_URL = 'https://yarafat2001.github.io/NineCube.Digital/'
+npm run e2e -- delivery-addresses.spec.ts
+```
+
+This browser check uses a mock customer and intercepted API responses, so it does
+not change production customer data. Backend address persistence/default handling
+is covered separately by the PostgreSQL `CommerceHttpTests`.
+
 ## Routes
 
 | Path | Screen | Who can see it |

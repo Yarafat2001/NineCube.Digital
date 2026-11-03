@@ -44,13 +44,18 @@ describe('Modern customer controls', () => {
     const user = userEvent.setup(); renderApp('/account/profile');
     const division = await screen.findByRole('combobox', { name: 'Division' });
     const district = screen.getByRole('combobox', { name: 'District' });
-    const upazila = screen.getByRole('combobox', { name: 'Upazila' });
-    expect(district).toBeDisabled(); expect(upazila).toBeDisabled();
-    await user.selectOptions(division, 'Dhaka'); await user.selectOptions(district, 'Dhaka');
-    await user.selectOptions(upazila, 'Savar'); expect(upazila).toHaveValue('Savar');
-    await user.selectOptions(division, 'Sylhet');
-    expect(district).toHaveValue(''); expect(upazila).toHaveValue(''); expect(upazila).toBeDisabled();
-    expect(within(district).queryByRole('option', { name: 'Dhaka' })).not.toBeInTheDocument();
+    const upazila = screen.getByRole('combobox', { name: 'Area / thana / upazila' });
+    // Suggestions remain optional so city thanas and unlisted villages can be entered.
+    expect(district).toBeEnabled(); expect(upazila).toBeEnabled();
+    await user.type(division, 'Dhaka'); await user.type(district, 'Dhaka');
+    await user.type(upazila, 'Savar'); expect(upazila).toHaveValue('Savar');
+    await user.clear(district); await user.type(district, 'Gazipur');
+    expect(upazila).toHaveValue('');
+    await user.type(upazila, 'Unlisted village');
+    await user.clear(division); await user.type(division, 'Sylhet');
+    expect(district).toHaveValue(''); expect(upazila).toHaveValue('');
+    const suggestions = document.getElementById(district.getAttribute('list')!) as HTMLDataListElement;
+    expect(Array.from(suggestions.options, option => option.value)).not.toContain('Dhaka');
   });
 
   it('toggles password visibility without changing its value and supplies a strength hint', async () => {
