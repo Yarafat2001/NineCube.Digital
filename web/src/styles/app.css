@@ -5958,28 +5958,32 @@ body[data-overlay-open='true'] {
   gap: var(--space-4);
 }
 
-.gift-page h1 { display: inline-flex; align-items: center; gap: 12px; }
-.gift-page h1 svg { flex: 0 0 auto; color: var(--brand); }
+.gift-page h1 { display: flex; align-items: flex-start; gap: 12px; font-size: var(--text-xl); line-height: 1.25; }
+.gift-page h1 svg { flex: 0 0 auto; margin-block-start: .12em; color: var(--brand); }
+.gift-page .page-header p { max-width: 65ch; line-height: 1.6; }
 
 .gift-page__switch { display: flex; justify-content: center; }
+.gift-page__switch .segmented { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 440px); }
+.gift-page__switch .segmented__option { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; white-space: normal; text-align: center; }
+.gift-page__switch .segmented__option svg { flex: 0 0 auto; }
 
 .gift-plate { display: flex; flex-direction: column; }
 
 .gift-block { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); }
 .gift-block + .gift-block { border-top: 1px solid var(--row-line); }
 
-.gift-check__row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.gift-check__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; gap: var(--space-2); }
+.gift-check__row > input, .gift-check__row > .btn { min-height: 44px; }
 
-/* The code field and the send form's fields are one control: measured at 42px against 43px while this
-   carried --text-sm, because the shared input's height is set by its line box. */
+/* Keep codes readable while the placeholder uses ordinary form typography. */
 .gift-code {
-  flex: 1 1 260px;
   min-width: 0;
   font-family: var(--font-mono);
   font-size: var(--text-base);
-  letter-spacing: .08em;
+  letter-spacing: .04em;
   text-transform: uppercase;
 }
+.gift-code::placeholder { font-family: var(--font-sans); letter-spacing: normal; text-transform: none; }
 
 .gift-check__row .btn { min-width: 150px; }
 
@@ -6041,6 +6045,9 @@ body[data-overlay-open='true'] {
 }
 
 .gift-preview { display: flex; flex-direction: column; gap: var(--space-2); }
+.gift-send > * { min-width: 0; }
+.gift-faq .policy-group__title { display: flex; align-items: center; gap: 8px; margin: 0; font-size: var(--text-base); line-height: 1.5; letter-spacing: normal; text-transform: none; }
+.gift-faq .policy-group__title svg { flex: 0 0 auto; color: var(--brand); }
 
 .gift-faq__list { display: flex; flex-direction: column; margin: 0; }
 

@@ -130,6 +130,8 @@ main .link-button:is(:hover, :focus-visible, :active),
      columns; on a phone the preview drops below the fields so the certificate keeps its full
      width instead of being squeezed to 292px. */
   .gift-send { grid-template-columns: minmax(0, 1fr); }
+  .gift-block { padding: var(--space-4); }
+  .gift-check__row { grid-template-columns: minmax(0, 1fr); }
   .gift-amounts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gift-faq__item { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .gift-check__row .btn { min-width: 0; flex: 1 1 100%; }

@@ -50,7 +50,7 @@ export function GiftCardsPage() {
 
   const handleCheckBalance = async (codeToCheck?: string) => {
     const code = (codeToCheck || checkCode).trim().toUpperCase();
-    if (!code) return;
+    if (!code || validateCard.isPending) return;
     setCheckError(null);
     setCheckedCard(null);
 
@@ -68,12 +68,13 @@ export function GiftCardsPage() {
     }
   };
 
-  const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code).then(() => {
+  const copyCode = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
       toast.push('success', `${code} ${t("copied to clipboard")}`);
-    }).catch(() => {
+    } catch {
       toast.push('info', code);
-    });
+    }
   };
 
   const handleSendGiftCard = async (e: React.FormEvent) => {
@@ -160,25 +161,27 @@ export function GiftCardsPage() {
             <p className="policy-card__lead">{t("Enter the gift card code from your email to check its balance.")}</p>
 
             {/* Code Input Form */}
-            <div className="gift-check__row">
+            <form className="gift-check__row" onSubmit={event => { event.preventDefault(); void handleCheckBalance(); }}>
               <input
                 className="gift-code"
                 type="text"
                 value={checkCode}
-                onChange={(e) => setCheckCode(e.target.value.toUpperCase())}
+                onChange={(e) => { setCheckCode(e.target.value.toUpperCase()); setCheckError(null); setCheckedCard(null); }}
+                disabled={validateCard.isPending}
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
                 placeholder={t("e.g. GC-WELCOME-1000")}
                 aria-label={t("Gift Card Code")}
-                onKeyDown={(e) => { if (e.key === 'Enter') handleCheckBalance(); }}
               />
               <button
-                type="button"
+                type="submit"
                 className="btn btn--primary"
-                onClick={() => handleCheckBalance()}
                 disabled={validateCard.isPending || !checkCode.trim()}
               >
                 {validateCard.isPending ? t("Checking…") : t("Check Balance")}
               </button>
-            </div>
+            </form>
 
             {/* Quick Demo Test Chips */}
             {import.meta.env.DEV ? (
@@ -186,7 +189,7 @@ export function GiftCardsPage() {
                 <span className="gift-eyebrow"><Icon name="bolt" width={14} height={14} /> {t("Quick Test / Demo Cards (Click to test):")}</span>
                 <div className="row">
                   {DEMO_CARDS.map((demo) => (
-                    <button key={demo.code} type="button" className="btn btn--sm" onClick={() => { setCheckCode(demo.code); handleCheckBalance(demo.code); }}>
+                    <button key={demo.code} type="button" className="btn btn--sm" disabled={validateCard.isPending} onClick={() => { setCheckCode(demo.code); handleCheckBalance(demo.code); }}>
                       <Icon name="tag" width={13} height={13} /> {demo.code} ({demo.label})
                     </button>
                   ))}
