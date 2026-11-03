@@ -191,6 +191,7 @@ describe('Checkout', () => {
       })
     );
 
+    await waitFor(() => expect(screen.getByTestId('place-order')).not.toBeDisabled());
     const button = screen.getByTestId('place-order');
     fireEvent.click(button);
     fireEvent.click(button);

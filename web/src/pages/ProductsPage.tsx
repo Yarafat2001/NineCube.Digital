@@ -74,9 +74,8 @@ function ProductCard({
   const primary = product.categories?.find(c => c.isPrimary) ?? product.categories?.[0];
   // A "Brand: X" tag is duplicate plumbing: the brand already has its own line on the card.
   const tags = (product.tags ?? []).filter(tag => !isBrandTag(tag));
-  const maxTags = primary ? 1 : MAX_TAG_CHIPS;
-  const shownTags = tags.slice(0, maxTags);
-  const hiddenTags = tags.slice(maxTags);
+  const shownTags = tags.slice(0, MAX_TAG_CHIPS);
+  const hiddenTags = tags.slice(MAX_TAG_CHIPS);
   const discountPercent = product.compareAtPrice && product.compareAtPrice > product.price
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
