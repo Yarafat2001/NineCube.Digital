@@ -22,6 +22,43 @@ namespace NineCube.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("NineCube.Domain.AccountChallenge", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.ToTable("AccountChallenges");
+                });
+
             modelBuilder.Entity("NineCube.Domain.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -660,6 +697,35 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.ToTable("GuestCheckoutSessions");
                 });
 
+            modelBuilder.Entity("NineCube.Domain.GuestRecovery", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.ToTable("GuestRecoverys");
+                });
+
             modelBuilder.Entity("NineCube.Domain.InventoryMovement", b =>
                 {
                     b.Property<int>("Id")
@@ -771,6 +837,9 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("DeliveredAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("DeliveryAddressJson")
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
@@ -792,6 +861,9 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<string>("IdempotencyKey")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("integer");
@@ -865,6 +937,10 @@ namespace NineCube.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
@@ -1004,6 +1080,9 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<bool>("NeedsReview")
                         .HasColumnType("boolean");
 
+                    b.Property<int?>("ParentProductId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -1048,14 +1127,24 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VariantLabel")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
 
                     b.HasIndex("Name");
+
+                    b.HasIndex("ParentProductId");
 
                     b.HasIndex("ProductLineId");
 
@@ -1204,6 +1293,10 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsVerifiedBuyer")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("MerchantResponse")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
@@ -1235,6 +1328,74 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("ProductTags", (string)null);
+                });
+
+            modelBuilder.Entity("NineCube.Domain.PurchaseOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SupplierId", "Reference")
+                        .IsUnique();
+
+                    b.ToTable("PurchaseOrders");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.PurchaseOrderLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PurchaseOrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReceivedQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("PurchaseOrderId");
+
+                    b.ToTable("PurchaseOrderLines");
                 });
 
             modelBuilder.Entity("NineCube.Domain.RefreshToken", b =>
@@ -1276,6 +1437,64 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.ToTable("RefreshTokens", (string)null);
                 });
 
+            modelBuilder.Entity("NineCube.Domain.RefundRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("GiftCardAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<string>("Method")
+                        .HasColumnType("text");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int?>("ServiceCaseId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("SettledAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("Reference")
+                        .IsUnique()
+                        .HasFilter("\"Reference\" IS NOT NULL");
+
+                    b.ToTable("RefundRecords");
+                });
+
             modelBuilder.Entity("NineCube.Domain.RestockSubscription", b =>
                 {
                     b.Property<int>("Id")
@@ -1307,6 +1526,93 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("RestockSubscriptions");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.ReturnLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReceivedQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RestockedQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ServiceCaseId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.HasIndex("ServiceCaseId", "OrderItemId")
+                        .IsUnique();
+
+                    b.ToTable("ReturnLines");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.ReviewReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("ReviewId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReviewId", "CustomerId")
+                        .IsUnique();
+
+                    b.ToTable("ReviewReports");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.SavedCart", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CustomerId"));
+
+                    b.Property<string>("ItemsJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("SavedCarts");
                 });
 
             modelBuilder.Entity("NineCube.Domain.ServiceCase", b =>
@@ -1373,6 +1679,35 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.ToTable("Settings", (string)null);
                 });
 
+            modelBuilder.Entity("NineCube.Domain.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Suppliers");
+                });
+
             modelBuilder.Entity("NineCube.Domain.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -1413,7 +1748,13 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<DateTime?>("EmailVerifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("MfaEnabled")
                         .HasColumnType("boolean");
 
                     b.Property<string>("PasswordHash")
@@ -1425,6 +1766,9 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
+
+                    b.Property<int>("SecurityVersion")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -1616,6 +1960,11 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("NineCube.Domain.Product", null)
+                        .WithMany("Variants")
+                        .HasForeignKey("ParentProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("NineCube.Domain.ProductLine", "ProductLine")
                         .WithMany()
                         .HasForeignKey("ProductLineId")
@@ -1705,6 +2054,30 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("NineCube.Domain.PurchaseOrder", b =>
+                {
+                    b.HasOne("NineCube.Domain.Supplier", null)
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NineCube.Domain.PurchaseOrderLine", b =>
+                {
+                    b.HasOne("NineCube.Domain.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("NineCube.Domain.PurchaseOrder", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("NineCube.Domain.RefreshToken", b =>
                 {
                     b.HasOne("NineCube.Domain.User", "User")
@@ -1714,6 +2087,15 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.RefundRecord", b =>
+                {
+                    b.HasOne("NineCube.Domain.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("NineCube.Domain.RestockSubscription", b =>
@@ -1733,6 +2115,21 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.ReturnLine", b =>
+                {
+                    b.HasOne("NineCube.Domain.OrderItem", null)
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("NineCube.Domain.ServiceCase", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceCaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("NineCube.Domain.ServiceCase", b =>
@@ -1817,6 +2214,13 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Tags");
+
+                    b.Navigation("Variants");
+                });
+
+            modelBuilder.Entity("NineCube.Domain.PurchaseOrder", b =>
+                {
+                    b.Navigation("Lines");
                 });
 #pragma warning restore 612, 618
         }
