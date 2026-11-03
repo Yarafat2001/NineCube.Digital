@@ -7,6 +7,7 @@ import { API, order, products } from './handlers';
 import { server } from './server';
 import { renderApp, seedSession, usersByRole } from './utils';
 import { recordRecentView, getRecentViews, clearRecentViews } from '../lib/recentViews';
+import { resolveAssetUrl } from '../api/client';
 
 async function signIn(role: UserRole = 'Customer') {
   seedSession(role);
@@ -98,5 +99,26 @@ describe('Extended Modern Commerce Features', () => {
     expect(within(ribbon).getByText(/active campaigns/i)).toBeInTheDocument();
     expect(within(ribbon).getByText(/total redemptions/i)).toBeInTheDocument();
     expect(within(ribbon).getByText(/banner promoted/i)).toBeInTheDocument();
+  });
+it('resolves product asset URLs robustly across GitHub Pages and API hosts', () => {
+    expect(resolveAssetUrl(null)).toBeUndefined();
+    expect(resolveAssetUrl('')).toBeUndefined();
+    expect(resolveAssetUrl('https://example.com/item.png')).toBe('https://example.com/item.png');
+    expect(resolveAssetUrl('data:image/png;base64,abc')).toBe('data:image/png;base64,abc');
+    expect(resolveAssetUrl('/uploads/phone.png')).toContain('/uploads/phone.png');
+
+    // GitHub Pages subpath resolution
+    const originalLocation = window.location;
+    try {
+      delete (window as any).location;
+      (window as any).location = {
+        hostname: 'yarafat2001.github.io',
+        pathname: '/NineCube.Digital/#/products'
+      };
+      expect(resolveAssetUrl('/products/sourced/112-shoes.jpg')).toBe('/NineCube.Digital/products/sourced/112-shoes.jpg');
+      expect(resolveAssetUrl('products/sourced/112-shoes.jpg')).toBe('/NineCube.Digital/products/sourced/112-shoes.jpg');
+    } finally {
+      (window as any).location = originalLocation;
+    }
   });
 });

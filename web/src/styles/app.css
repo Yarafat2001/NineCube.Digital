@@ -5663,3 +5663,12 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 .coupon-kpi-sub {
   font-size: var(--text-xs);
 }
+
+.thumb-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+}

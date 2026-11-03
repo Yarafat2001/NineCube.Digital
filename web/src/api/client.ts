@@ -175,12 +175,38 @@ export function describeError(error: unknown): string {
  * would point at a file the API does not have - which is how the seeded catalogue photos 404ed.
  */
 export function resolveAssetUrl(url: string | null | undefined): string | undefined {
-  if (!url) return undefined;
-  if (/^(https?:)?\/\//i.test(url) || url.startsWith('data:')) return url;
-  if (url.startsWith('/uploads/')) return `${API_BASE_URL}${url}`;
-  // App-owned static file: prefix the Vite base so it resolves under a subpath host (GitHub Pages).
-  if (url.startsWith('/')) return `${import.meta.env.BASE_URL}${url.slice(1)}`;
-  return url;
+  if (!url || typeof url !== 'string' || !url.trim()) return undefined;
+  const clean = url.trim();
+  if (/^(https?:)?\/\//i.test(clean) || clean.startsWith('data:')) return clean;
+
+  const normalized = clean.startsWith('/') ? clean : `/${clean}`;
+  if (normalized.startsWith('/uploads/')) {
+    const base = API_BASE_URL.replace(/\/+$/, '');
+    return `${base}${normalized}`;
+  }
+
+  // App-owned static file (e.g. /products/...):
+  // When running on GitHub Pages (e.g. user.github.io/NineCube.Digital/),
+  // a root-relative path like "/products/..." resolves against the domain root (404).
+  // Prefix the subpath so assets reliably resolve under the repository path.
+  if (typeof window !== 'undefined' && window.location) {
+    const hostname = window.location.hostname.toLowerCase();
+    const pathname = window.location.pathname;
+    if (hostname.endsWith('github.io')) {
+      const segments = pathname.split('/').filter(Boolean);
+      if (segments.length > 0) {
+        return `/${segments[0]}${normalized}`;
+      }
+    }
+  }
+
+  const base = import.meta.env.BASE_URL;
+  if (base && base !== './' && base !== '.') {
+    const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+    return `${cleanBase}${normalized}`;
+  }
+
+  return normalized;
 }
 
 /** Multipart upload: the browser sets the boundary, so no JSON encoding happens here. */

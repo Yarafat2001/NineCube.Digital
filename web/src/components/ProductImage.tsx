@@ -70,3 +70,52 @@ export function ProductImage({
     </span>
   );
 }
+
+/** Compact product thumbnail with automated asset URL resolution and fallback box icon. */
+export function ProductThumbnail({
+  product,
+  url,
+  alt = '',
+  className = '',
+  style,
+  iconSize = 20
+}: {
+  product?: Partial<Product> | null;
+  url?: string | null;
+  alt?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  iconSize?: number;
+}) {
+  const rawUrl = url ?? (product ? primaryImage(product as Product) : null);
+  const src = resolveAssetUrl(rawUrl);
+  const [broken, setBroken] = useState(false);
+
+  useEffect(() => {
+    setBroken(false);
+  }, [src]);
+
+  if (!src || broken) {
+    return (
+      <span
+        className={`thumb-placeholder ${className}`}
+        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', ...style }}
+        aria-hidden="true"
+      >
+        <Icon name="box" width={iconSize} height={iconSize} />
+      </span>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      style={style}
+      loading="lazy"
+      decoding="async"
+      onError={() => setBroken(true)}
+    />
+  );
+}

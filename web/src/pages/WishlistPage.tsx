@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useWishlist, useToggleWishlist } from '../api/hooks';
 import { EmptyState, ErrorState, LoadingBlock } from '../components/ui';
 import { formatMoney } from '../lib/helpers';
+import { ProductThumbnail } from '../components/ProductImage';
 import { useCart } from '../state/CartContext';
 
 export function WishlistPage() {
@@ -50,17 +51,12 @@ export function WishlistPage() {
           {items.map((item) => (
             <article key={item.id} className="card-glass stack" style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-lg, 12px)' }}>
               <Link to={`/products/${item.productId}`} style={{ textAlign: 'center', marginBottom: 'var(--space-2)' }}>
-                {item.imageUrl ? (
-                  <img
-                    src={item.imageUrl}
-                    alt={item.productName}
-                    style={{ height: '140px', objectFit: 'contain', margin: '0 auto', display: 'block' }}
-                  />
-                ) : (
-                  <div style={{ height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface-muted, rgba(255,255,255,0.05))', borderRadius: '8px' }}>
-                    <span className="muted">{t("No image")}</span>
-                  </div>
-                )}
+                <ProductThumbnail
+                  url={item.imageUrl}
+                  alt={item.productName}
+                  style={{ height: '140px', width: '100%', objectFit: 'contain', margin: '0 auto', display: 'block' }}
+                  iconSize={32}
+                />
               </Link>
 
               <h3 style={{ fontSize: 'var(--text-md)', margin: '0 0 var(--space-1) 0' }}>

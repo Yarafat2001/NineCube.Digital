@@ -10,7 +10,7 @@ import { createIdempotencyKey, formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
 import { useToast } from './ui';
-import { Icon } from './Icon';
+import { ProductThumbnail } from './ProductImage';
 
 export interface CartPanelProps {
   onPlaced: (order: Order) => void;
@@ -390,11 +390,12 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
             {upsellProducts.map((p) => (
               <div key={p.id} className="cart-upsell__item">
                 <div className="cart-upsell__media">
-                  {p.imageUrl ? (
-                    <img src={p.imageUrl} alt="" />
-                  ) : (
-                    <Icon name="tag" width={16} height={16} />
-                  )}
+                  <ProductThumbnail
+                    product={p}
+                    url={p.imageUrl}
+                    alt={p.name}
+                    iconSize={16}
+                  />
                 </div>
                 <div className="cart-upsell__info">
                   <div className="cart-upsell__name">{p.name}</div>

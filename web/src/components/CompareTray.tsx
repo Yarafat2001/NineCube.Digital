@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import type { Product } from '../api/types';
 import { formatMoney } from '../lib/helpers';
 import { Icon } from './Icon';
+import { ProductThumbnail } from './ProductImage';
 
 export interface CompareTrayProps {
   items: Product[];
@@ -44,11 +45,12 @@ export function CompareTray({ items, onRemove, onClear, onAddToCart }: CompareTr
           <div className="compare-dock__thumbs">
             {items.map((item) => (
               <div key={item.id} className="compare-dock__thumb" title={item.name}>
-                {item.imageUrl ? (
-                  <img src={item.imageUrl} alt="" />
-                ) : (
-                  <Icon name="tag" width={14} height={14} />
-                )}
+                <ProductThumbnail
+                  product={item}
+                  url={item.imageUrl}
+                  alt={item.name}
+                  iconSize={14}
+                />
                 <button
                   type="button"
                   className="compare-dock__thumb-remove"
@@ -140,11 +142,12 @@ export function CompareTray({ items, onRemove, onClear, onAddToCart }: CompareTr
                             ✕
                           </button>
                           <div className="compare-product-media">
-                            {item.imageUrl ? (
-                              <img src={item.imageUrl} alt="" />
-                            ) : (
-                              <Icon name="tag" width={24} height={24} />
-                            )}
+                            <ProductThumbnail
+                              product={item}
+                              url={item.imageUrl}
+                              alt={item.name}
+                              iconSize={24}
+                            />
                           </div>
                           <div className="compare-product-name">{item.name}</div>
                           <button

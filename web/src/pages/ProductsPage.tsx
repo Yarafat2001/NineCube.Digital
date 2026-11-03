@@ -3,10 +3,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLowStockThreshold, useProducts, useCategories, useTags, useBrands, useWishlist, useToggleWishlist } from '../api/hooks';
 import type { Brand, Product } from '../api/types';
-import { ProductImage } from '../components/ProductImage';
+import { ProductImage, ProductThumbnail } from '../components/ProductImage';
 import { Icon } from '../components/Icon';
 import { CompareTray } from '../components/CompareTray';
 import { QuickViewModal } from '../components/QuickViewModal';
+import { recordRecentView } from '../lib/recentViews';
 import { RecentlyViewed } from '../components/RecentlyViewed';
 import { StockAlertModal } from '../components/StockAlertModal';
 import { useToast } from '../components/ui';
@@ -384,11 +385,13 @@ export function ProductsPage() {
               {productsQuery.data.items.slice(0, 5).map(item => (
                 <Link key={item.id} className="search-suggestions__row" to={`/products/${item.id}`}
                   onClick={() => setSearch('')}>
-                  {item.imageUrl ? (
-                    <img className="search-suggestions__thumb" src={item.imageUrl} alt="" />
-                  ) : (
-                    <span className="search-suggestions__thumb" aria-hidden="true" />
-                  )}
+                  <ProductThumbnail
+                    product={item}
+                    url={item.imageUrl}
+                    alt=""
+                    className="search-suggestions__thumb"
+                    iconSize={16}
+                  />
                   <span className="search-suggestions__info">
                     <span className="search-suggestions__name">{item.name}</span>
                     <span className="search-suggestions__sku mono">{item.sku}</span>
@@ -489,7 +492,10 @@ export function ProductsPage() {
                     onToggleWishlist={canOrder ? () => toggleWishlist.mutate(product.id) : undefined}
                     isComparing={compareItems.some((x) => x.id === product.id)}
                     onToggleCompare={canOrder ? () => handleToggleCompare(product) : undefined}
-                    onQuickView={setQuickViewProduct}
+                    onQuickView={(p) => {
+                      recordRecentView(p);
+                      setQuickViewProduct(p);
+                    }}
                     onNotifyStock={setStockAlertProduct}
                   />
                 ))}

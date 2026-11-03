@@ -7,6 +7,7 @@ import { formatMoney } from '../lib/helpers';
 import { useCart } from '../state/CartContext';
 import { useToast } from './ui';
 import { Icon } from './Icon';
+import { ProductThumbnail } from './ProductImage';
 
 export interface RecentlyViewedProps {
   currentProductId?: number;
@@ -74,13 +75,13 @@ export function RecentlyViewed({ currentProductId, className = '', style }: Rece
                 className="recently-viewed__thumb-link"
                 aria-label={product.name}
               >
-                {product.imageUrl ? (
-                  <img src={product.imageUrl} alt="" className="recently-viewed__img" />
-                ) : (
-                  <div className="recently-viewed__placeholder">
-                    <Icon name="box" width={22} height={22} />
-                  </div>
-                )}
+                <ProductThumbnail
+                  product={product}
+                  url={product.imageUrl}
+                  alt={product.name}
+                  className="recently-viewed__img"
+                  iconSize={22}
+                />
               </Link>
 
               <div className="recently-viewed__body">
