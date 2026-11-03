@@ -1,5 +1,165 @@
 # FIX_REPORT
 
+# Round 20 — the gift cards page is one plate now, and there is only one certificate
+
+Date: 2026-11-03. Brief: the deployed URL of `#/gift-cards` with "fix this Gifts Cards ages and make more
+dynamic and modern", and a light-theme screenshot of the screen: a `🎁 NineCube Digital Gift Cards` title,
+two loose pills under it (`🔍 Check Card Balance`, `✨ Send a Digital Card`), one glass card holding a
+monospace field and a `Check Balance` button, and a `💡 Frequently Asked Questions About Gift Cards` block
+whose three answers sat in three columns.
+
+## How I measured it
+
+The same way as last round, in a real browser: the app booted against its own MSW fixtures through a
+throwaway harness (deleted before this commit), probed at 1440x900 and 390x844 in light and dark, on each of
+the three states the screen has - the balance tab, the composer, and a card that has just verified. Twelve
+scenarios, all four combinations plus the two extra states.
+
+One correction is worth writing down, because it changed what I believed for most of the round. My first
+probe blended a colour only over the `background-color` of the ancestors above it. The plate paints its glass
+as a `background-image` gradient with a transparent `background-color`, so the probe walked straight past it
+and reported the certificate sitting on plain white in light theme, and the demo well "0 steps from the
+plate". Neither was true. The probe now composites every stop of every gradient from `<html>` down, and the
+numbers below are from that version. The screenshots in `web/artifacts/` are the ones I checked it against.
+
+## What the page resolved to before I touched it
+
+- **It was hand-built.** 75 `style={{ ... }}` blocks in `GiftCardsPage.tsx` alone, carrying 31 hard-coded
+  hex and `rgba()` colour literals. Rendered, that was **26 elements carrying a `style` attribute** on the
+  balance tab, **40** on the composer, and **47** once a card had verified.
+- **Its whole icon set was colour emoji**: 13 of them in the source - 11 on the balance tab, 17 with a
+  verified card, 5 on the composer - and **0 `<svg>` elements**, because the file did not import `Icon` at
+  all. Same defect the cart sheet had last round.
+- **Two of its tokens do not exist anywhere**: `--surface-muted` and `--text-md`. Anything written against
+  them fell back to inherited type or no fill at all, which is why parts of the page looked unstyled rather
+  than styled differently.
+- **The certificate existed four times**: the customer's verified card and live preview in
+  `GiftCardsPage.tsx`, and the staff builder's preview plus the registry detail dialog in `AdminPage.tsx` -
+  four copies of the same object with different inline colours, so the card an operator issues was not the
+  card a customer receives.
+- **Its CSS belonged to no system.** Raw `rgba()` gradient, `1px solid rgba(255,215,0,.3)`, a
+  `box-shadow: 0 16px 40px -8px rgba(0,0,0,.6), 0 0 24px rgba(255,215,0,.15)`, a hover that lifted the card
+  `translateY(-2px)` and grew the shadow to `0 20px 48px -8px rgba(0,0,0,.7), 0 0 32px rgba(255,215,0,.25)`,
+  and a `::before` radial gold glow over the top of it. Its radius resolved to **22 px inside a 22 px plate** -
+  the same corner as the shell holding it, which is what made the page read as a card inside a card.
+- **Two pills, not a switcher**: a `role="tablist"` div with no `aria-selected`, no `aria-pressed` and no
+  shared control behind it, above **three stacked `card-glass` sections**.
+- **Two input heights on one page**: the code field resolved to **47 px** while every field on the composer
+  was **43 px**.
+- The denomination picker was `segmented` - an `inline-flex` pill with `flex-wrap: wrap` and a `999px`
+  radius - holding four `BDT x,xxx` labels, which is how the same control ended up wrapping labels onto a
+  second row inside a rounded shell whenever the column got narrow.
+
+## What I changed
+
+`web/src/components/GiftCardCertificate.tsx` (new): the certificate as one component with a prop for each
+slot - amount, code, copy or scope tag, the two footer pairs, the message. Four call sites, one markup.
+
+`web/src/pages/GiftCardsPage.tsx`: rebuilt on the vocabulary the rest of the shop already uses. One
+`table-surface` plate holding `gift-block` sections divided by `--row-line` instead of three glass cards; the
+pills are the shared `.segmented` control with `aria-pressed`; the picker is a `.gift-amounts` tile grid; the
+FAQ is a `<dl>` of full-width question-over-answer rows; every `style={{}}` and every emoji is gone, replaced
+by `<Icon>` calls (one new glyph, `bulb`, for the FAQ heading). No label text changed.
+
+`web/src/pages/AdminPage.tsx`: the 64 lines of hand-styled certificate markup in the registry detail dialog
+became the same component, so the operator now sees the card the customer gets.
+
+`web/src/styles/tokens.css`: a `--cert-*` block - base, gradient, three ink steps, gold, edge, well, rule,
+chip and two shadows - because the certificate is the one surface in the shop that is deliberately dark in
+both themes, and that needs its own tokens rather than hexes in four places.
+
+`web/src/styles/app.css`: `.gift-card-cert` and its slots read only those tokens; radius `--radius-md`, one
+shadow, no glow, no hover lift. `.gift-code` on `--text-base` so it takes the same line box as the form
+fields, `.gift-amounts` as a four-column grid.
+
+`web/src/styles/modern.css`: a `.btn--on-cert` tier (transparent face, `--cert-rule` edge, `--cert-ink` text)
+and its exclusion from the default button selector, which out-specifies it otherwise.
+
+`web/src/styles/responsive.css`: below 640 px the composer form and its preview stack, the picker goes 2-up,
+the FAQ rows stack, and the Check button takes the line.
+
+## The same probe, after
+
+| what the browser resolved | before | after |
+| --- | --- | --- |
+| elements carrying a `style` attribute (balance / verified / composer) | 26 / 47 / 40 | **0 / 0 / 0** |
+| colour emoji, `<svg>` on the page | 11-17 emoji, 0 svg | **0 emoji, 9 svg on the balance tab, 7 on the composer** |
+| input heights | 47 px against 43 px | **43 px for every field, all four scenarios; the note box 92 px (three rows)** |
+| certificate radius | 22 px inside a 22 px plate | **14 px inside a 22 px plate** |
+| certificate shadow | `0 20px 48px -8px rgba(0,0,0,.7)` + `0 0 32px` gold glow + 2 px lift | **`rgba(24,19,46,.55) 0 10px 22px -14px` light, `rgba(0,0,0,.72) 0 14px 26px -16px` dark, no glow, no lift** |
+| certificate ground | painted from four inline gradients | **resolves `rgb(35,29,59)` - luminance 0.016 - against a plate at 0.862 in light and 0.082 in dark** |
+| gold amount | inherited, hand-coloured | **30.7 px at 1440 (24 px on a phone), 12.51:1** |
+| code / brand line / footer / message | - | **18.2:1, 16.03:1, 16.03:1, 10.21:1** |
+| the control inside the card | default raised button on the dark face | **copy pill: flat (`box-shadow: none`), 18.2:1 text, `999px` edge; the preview's "Storewide" tag 5.59:1** |
+| rejected code | hand-painted box | **`.inline-banner`, 8.2:1 light / 8:1 dark, no certificate left on the page, zero inline styles** |
+| switcher | `role="tablist"`, no state | **`999px` shared pill, `aria-pressed` true/false, active text 6.1:1 light / 9.14:1 dark, idle 17.85 / 14.51, both options 40 px** |
+| denomination picker | `999px` pill, labels wrapped | **`grid`, `14px`, 4 columns in one row at 1440, 2 columns in two rows at 390** |
+| quick-test well | no rule | **`14px`, fill 5 steps below the plate in light (edge 1.65:1), 19 steps in dark (1.59:1)** |
+| FAQ rows | three columns | **1 px `--row-line` between rows, question 15.5:1 light / 7.14:1 dark, answer 6.58 / 5.35, one column on a phone** |
+| page height at 1440, balance / composer | 1056 px / 1373 px | **1167 px / 1513 px** - the FAQ went from three squeezed columns to full-width rows, which is taller by design and reads as one list |
+| horizontal overflow | - | **0 px at every width and theme, in all three states** |
+
+## What "dynamic" means here, in numbers
+
+The composer preview is the same component the shop hands over, and it is driven by what a person types. In
+the browser I typed 3,750 / "Ayesha Rahman" / "Happy Eid!" and the certificate resolved
+`BDT 3,750 · Ayesha Rahman · "Happy Eid!"` with the message at 10.21:1; tapping the 2,500 tile moved
+`aria-pressed` from the first tile to the third and re-rendered the amount to `BDT 2,500`. That exchange is
+now asserted in both suites rather than eyeballed.
+
+## Tests
+
+- `web/src/test/gift-cards-page.test.tsx` (new, 11 tests): no `style={{` left in the page and no hand-styled
+  certificate class in the admin page, no colour emoji with every `<Icon name>` checked against the registry,
+  the component used at all four call sites, the certificate painted only from `--cert-*` (no hex, no
+  `rgba()`, no 48 px shadow), the `.btn--on-cert` tier and the `:not()` exclusion that lets it win, one plate
+  with `--row-line` dividers and a `--well-fill` demo strip, the segmented switcher with `aria-pressed` and no
+  `role="tablist"`, the code field's type size, the picker grid and its 640 px collapse, plus two tests that
+  render the screen and ask the DOM what the switcher, the verified card and the preview actually resolved to.
+- `web/e2e/gift-cards-page.spec.ts` (new, 9 tests): the probe and thresholds above, run in a real browser at
+  1440 and 390 in both themes. It needs no password - the balance check and the composer are both open to a
+  visitor - so it runs against `npm run dev` as written. **9 of 9 pass on the fix**, and I proved the
+  thresholds bite by watching them fail on the two things I got wrong first (the picker's row count on a
+  phone, and the copy control that only exists on a verified card, not on a preview).
+- `web/src/test/actionable-surfaces.test.ts` needed the same update as last round: it reads the default
+  button rule out of `modern.css` by its exact selector string, and my `:not(.btn--on-cert)` changed that
+  string under it. The rule it pins is still the same rule, so its lookup now names the certificate
+  exclusion too, and I added the assertion that a button on the certificate really does opt out.
+
+## What this did not cover
+
+- **Two suite failures are in the tree and they are not mine.** `modern-customer.test.tsx` cannot find the
+  Upazila combobox, and `auth-ui.test.tsx` finds two localStorage keys where it allows one (the cart now
+  writes its own). Both belong to the international address book and saved-cart work that landed while this
+  round was in progress. I did not touch their files; the other 288 tests pass.
+- **This round's files were committed by the other session before I finished writing about them.** They are
+  in `46369ca`, whose message is about wishlist toasts, along with their own address-book and guest-recovery
+  work - so that commit shipped my page, component, styles, contract test and browser spec without this
+  report or my gate run on top of it. This report, the gate record below, and the last corrections to the
+  two specs are the commit that follows it.
+- The verified-card branch of the browser spec depends on data: it asks for `GC-WELCOME-1000`, which
+  `DatabaseSeeder` creates, and asserts the certificate only on the run where the card resolves. On the
+  fixtures it resolved, and that is the branch whose numbers are above. If the demo card has been spent on
+  your stack, that one block reports itself as skipped by simply not being asserted - the composer test
+  covers the same component unconditionally.
+- The `Quick Test / Demo Cards` strip is `import.meta.env.DEV`-only, so it is absent from the deployed Pages
+  build. Its well is measured when present and the spec says nothing when it is not.
+- Colour emoji are still standing in for icons in the files round 19 listed, less this one: `OrdersPages`,
+  `AdminPage` (still 12 of them in source), `ProductsPage`, and one each in `CampaignBanner`, `CompareTray`,
+  `QuickViewModal`, `StockAlertModal`, `CustomerCarePage`, `ProductDetailPage`.
+- The `.NET API` workflow is still red on `main` for the reason already reported: the test harness boots SQL
+  Server while the app requires Postgres.
+
+## Gates
+
+`npx tsc --noEmit -p tsconfig.json` clean (it type-checks `e2e/`, so the new spec is covered),
+`npm run i18n:check` (2101 entries; the count rose because the address-book work added labels),
+`npx vitest run` (290 tests in 41 files - 288 pass, the two named above fail) and `npm run build`
+(20.28 s), in that order, after the last source edit. I did not run them in the usual detached worktree this
+time: the other session's commit already carries every source file of this round, so HEAD *is* the tree the
+gates need, and working in the copy would have measured the same bytes. The only file changed after them is
+this report, which none of the four commands reads.
+
 # Round 19 — the cart sheet is one plate now: real rows, real icons, a rail you can see
 
 Date: 2026-11-03. Brief: "Your cart- fix this design not looks good, I need to fix this properly", with a
