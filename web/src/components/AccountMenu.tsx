@@ -18,15 +18,12 @@ function usePopover(menu = false) {
   useLayoutEffect(() => {
     if (!open) return;
     const place = () => {
-      const rect = trigger.current!.getBoundingClientRect();
-      const width = Math.min(340, window.innerWidth - 24);
+      if (!trigger.current) return;
+      const rect = trigger.current.getBoundingClientRect();
+      const width = menu ? 240 : Math.min(360, window.innerWidth - 24);
       const left = Math.max(12, Math.min(rect.right - width, window.innerWidth - width - 12));
-      let top = rect.bottom + 8;
-      document.querySelectorAll<HTMLElement>('.page-header select, .page-header input').forEach(control => {
-        const r = control.getBoundingClientRect();
-        if (r.left < left + width && r.right > left && r.bottom > top && r.top < top + 300) top = r.bottom + 8;
-      });
-      setPosition({ top, left, width, maxHeight: Math.max(100, window.innerHeight - top - 12) });
+      const top = rect.bottom + 8;
+      setPosition({ top, left, width, maxHeight: Math.max(160, window.innerHeight - top - 16) });
     };
     place();
     if (menu) panel.current?.querySelector<HTMLElement>('[role=menuitem]')?.focus();
@@ -282,10 +279,27 @@ function SheetPanel({ children, onClose, label }: { children: React.ReactNode; o
 
 export function AccountMenu() {
   useLanguage();
-  const { user, logout } = useAuth(); const pop = usePopover(true); const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const pop = usePopover(true);
+  const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 768px)');
+    const onChange = () => setIsMobile(media.matches);
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, []);
+
+  useEffect(() => {
+    if (pop.open) document.documentElement.setAttribute('data-overlay-open', 'true');
+    else document.documentElement.removeAttribute('data-overlay-open');
+  }, [pop.open]);
+
   if (!user) return null;
   const items: { to: string; label: string; icon: IconName }[] = [
-    { to: '/account', label: 'Dashboard', icon: 'grid' }, { to: '/account/profile', label: 'Profile', icon: 'user' },
+    { to: '/account', label: 'Dashboard', icon: 'grid' },
+    { to: '/account/profile', label: 'Profile', icon: 'user' },
     ...(user.role === 'Customer' ? [
       { to: '/orders', label: 'My Orders', icon: 'box' as const },
       { to: '/wishlist', label: 'Wishlist', icon: 'heart' as const },
@@ -293,15 +307,63 @@ export function AccountMenu() {
     ] : []),
     { to: '/notifications', label: 'Notifications', icon: 'bell' }
   ];
-  return <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}>
-    <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label={t("Account")} aria-expanded={pop.open} aria-haspopup="menu"
-      onClick={() => pop.setOpen(!pop.open)} onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pop.setOpen(true); } }}>
-      <span className="avatar avatar--small" aria-hidden="true">{t(user.email[0].toUpperCase())}</span><span className="account-name" title={t(user.email)}>{t(user.email.split('@')[0])}</span><Icon name="chevron" className="account-chevron" data-open={pop.open} />
-    </button>
-    {pop.open ? createPortal(<div ref={pop.panel} style={pop.position} className="nav-pop__panel nav-pop__portal" role="menu" aria-label={t("Account")} onKeyDown={pop.keyboard}>
-      {items.map(item => <NavLink key={item.to} role="menuitem" className="nav-pop__item" to={item.to} end onClick={pop.close}><Icon name={item.icon} />{t(item.label)}</NavLink>)}
+
+  const menuItems = (
+    <>
+      <div className="account-menu__header">
+        <span className="avatar avatar--medium" aria-hidden="true">{t(user.email[0].toUpperCase())}</span>
+        <div className="account-menu__user-info">
+          <strong className="account-menu__name">{t(user.fullName ?? user.email.split('@')[0])}</strong>
+          <span className="account-menu__email muted">{t(user.email)}</span>
+        </div>
+      </div>
       <div role="separator" className="menu-separator" />
-      <button type="button" role="menuitem" className="nav-pop__item nav-pop__item--danger" onClick={() => { pop.close(); logout(); navigate('/login', { replace: true }); }}><Icon name="logout" />{t("Log out")}</button>
-    </div>, document.body) : null}
-  </div>;
+      <div className="account-menu__list">
+        {items.map(item => (
+          <NavLink key={item.to} role="menuitem" className="nav-pop__item" to={item.to} end onClick={pop.close}>
+            <Icon name={item.icon} />
+            <span>{t(item.label)}</span>
+          </NavLink>
+        ))}
+        <div role="separator" className="menu-separator" />
+        <button type="button" role="menuitem" className="nav-pop__item nav-pop__item--danger" onClick={() => { pop.close(); logout(); navigate('/login', { replace: true }); }}>
+          <Icon name="logout" />
+          <span>{t("Log out")}</span>
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}>
+      <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label={t("Account")} aria-expanded={pop.open} aria-haspopup="menu"
+        onClick={() => pop.setOpen(!pop.open)} onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pop.setOpen(true); } }}>
+        <span className="avatar avatar--small" aria-hidden="true">{t(user.email[0].toUpperCase())}</span>
+        <span className="account-name" title={t(user.email)}>{t(user.email.split('@')[0])}</span>
+        <Icon name="chevron" className="account-chevron" data-open={pop.open} />
+      </button>
+
+      {pop.open ? (
+        isMobile ? (
+          createPortal(
+            <div ref={pop.panel} className="sheet-backdrop" onClick={() => pop.setOpen(false)} role="presentation">
+              <SheetPanel onClose={() => pop.setOpen(false)} label={t("Account")}>
+                <div className="account-menu__sheet">
+                  {menuItems}
+                </div>
+              </SheetPanel>
+            </div>,
+            document.body
+          )
+        ) : (
+          createPortal(
+            <div ref={pop.panel} style={pop.position} className="nav-pop__panel nav-pop__portal account-menu-portal" role="menu" aria-label={t("Account")} onKeyDown={pop.keyboard}>
+              {menuItems}
+            </div>,
+            document.body
+          )
+        )
+      ) : null}
+    </div>
+  );
 }

@@ -118,6 +118,59 @@
   cursor: pointer;
 }
 
+.account-menu__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 6px;
+}
+
+.account-menu__user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.account-menu__name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu__email {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu__sheet {
+  padding-bottom: 16px;
+}
+
+.sheet .account-menu__header {
+  padding: 12px 8px 16px;
+}
+
+.sheet .account-menu__name {
+  font-size: var(--text-base);
+}
+
+.sheet .account-menu__email {
+  font-size: var(--text-sm);
+}
+
+.sheet .nav-pop__item {
+  min-height: 48px;
+  padding: 12px 14px;
+  font-size: 15px;
+  gap: 14px;
+}
+
 .notif-list {
   display: flex;
   flex-direction: column;

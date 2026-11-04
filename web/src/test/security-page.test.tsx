@@ -19,9 +19,11 @@ const page = readSource('pages/SecurityPage.tsx');
 
 function block(css: string, selector: string): string {
   const lines = css.split('\n');
-  const at = lines.findIndex(line => line.startsWith(`${selector} {`));
+  // Rules inside a media query are indented, and the two-column grid is one of them, so the selector
+  // is matched against the trimmed line and the body read out from there.
+  const at = lines.findIndex(line => line.trim().startsWith(`${selector} {`));
   if (at < 0) throw new Error(`no rule for "${selector}"`);
-  const from = lines.slice(at).join('\n');
+  const from = lines.slice(at).join('\n').replace(/^\s*/, '');
   let depth = 0;
   for (let index = from.indexOf('{'); index < from.length; index++) {
     if (from[index] === '{') depth++;
@@ -55,8 +57,8 @@ describe('Account security is built on the house settings system', () => {
     }
   });
 
-  it('puts the three decisions on one divided plate, each with its state in words', () => {
-    expect(page).toContain('className="table-surface settings-plate"');
+  it('puts the three decisions on divided plates, each with its state in words', () => {
+    expect(page).toContain('className="table-surface settings-plate security-work"');
     expect(page).not.toContain('card-glass');
     expect(page.match(/<section className="settings-block">/g)).toHaveLength(3);
     expect(page.match(/className="policy-card__head"/g)).toHaveLength(3);
@@ -67,11 +69,30 @@ describe('Account security is built on the house settings system', () => {
     expect(block(app, '.settings-block + .settings-block')).toContain('border-top: 1px solid var(--row-line)');
   });
 
-  it('reads the plate at a measure instead of across the whole column', () => {
-    // Measured live 2026-11-04: in a 1376px .stack the token box resolved 1,270px and the primary
-    // button 1,342px, so a six-digit code was set twelve characters from its own label.
-    expect(block(app, '.security-page .settings-plate')).toContain('max-width: 880px');
+  it('splits the column into the decisions and the live log instead of parking a capped plate in it', () => {
+    // Measured live 2026-11-04: the 880px cap did stop the 1,342px button, but it left a 496px blank
+    // band down the right of a 1,376px column, and 65 sign-in rows still pushed the page to 5,891px.
+    // The width is now spent, not truncated: the cap is gone and the log has its own column.
+    expect(app).not.toMatch(/\.security-page \.settings-plate \{[^}]*max-width/);
+    expect(page).toContain('<div className="security-page__grid">');
+    expect(page).toContain('<aside className="table-surface settings-plate security-page__status" aria-labelledby={`${id}-sessions`}>');
+    expect(block(app, '.security-page__grid')).toContain('grid-template-columns: minmax(0, 1fr)');
+    expect(app).toMatch(/@media \(min-width: 1080px\) \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(360px, 452px\);/);
     expect(block(app, '.security-page .setting-row')).toContain('minmax(190px, 280px)');
+  });
+
+  it('scrolls the sign-in log inside its own panel rather than stretching the page', () => {
+    expect(page).toContain('<div className="security-status__log">');
+    expect(block(app, '.security-status__log')).toContain('overflow-y: auto');
+    expect(block(app, '.security-status__log')).toContain('overscroll-behavior: contain');
+    expect(block(app, '.security-status__log')).toContain('max-height: min(58vh, 460px)');
+    // Only the list shrinks, so the heading, the live count and the revoke row stay where they are.
+    expect(block(app, '.security-page__status .settings-block')).toContain('min-height: 0');
+    expect(block(app, ':root .security-page__status')).toContain('position: sticky');
+    expect(block(app, ':root .security-page__status')).toContain('top: var(--sticky-top)');
+    // In a 452px panel a 280px control column starved the warning to 104px and left the button half
+    // empty, so there the control takes the button's own width.
+    expect(block(app, '.security-page__status .security-danger')).toContain('grid-template-columns: minmax(0, 1fr) auto');
   });
 
   it('numbers the two flows and keeps the step rule above the row it nests in', () => {
@@ -109,8 +130,9 @@ describe('Account security is built on the house settings system', () => {
     const main = await screen.findByRole('main');
     await within(main).findByText(/Active sessions/i);
 
-    const plate = container.querySelector('.table-surface.settings-plate') as HTMLElement;
+    const plate = container.querySelector('.security-page__grid') as HTMLElement;
     expect(plate).not.toBeNull();
+    expect(plate.querySelectorAll('.table-surface.settings-plate')).toHaveLength(2);
     expect(plate.getAttribute('style')).toBeNull();
     expect(within(plate).getAllByRole('heading', { level: 2 })).toHaveLength(3);
     expect(within(plate).getByText('Verified')).toBeInTheDocument();

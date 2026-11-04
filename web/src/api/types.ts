@@ -21,6 +21,7 @@ export interface UserSummary {
   email: string;
   role: UserRole;
   customerId: number | null;
+  fullName?: string | null;
 }
 
 export interface AuthResponse {

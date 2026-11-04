@@ -32,7 +32,8 @@ export function SecurityPage() {
     {security.isLoading && <LoadingBlock label={t('Loading account security')} />}
     {security.isError && <ErrorState error={security.error} onRetry={() => void security.refetch()} />}
 
-    {security.data && <div className="table-surface settings-plate">
+    {security.data && <div className="security-page__grid">
+      <div className="table-surface settings-plate security-work">
       <section className="settings-block">
         <div className="policy-card__head">
           <h2 className="policy-card__title"><Icon name="mail" width={15} height={15} aria-hidden="true" />{t('Email verification')}</h2>
@@ -108,13 +109,16 @@ export function SecurityPage() {
           </div>
         </form>
       </section>
+      </div>
 
+      <aside className="table-surface settings-plate security-page__status" aria-labelledby={`${id}-sessions`}>
       <section className="settings-block">
         <div className="policy-card__head">
-          <h2 className="policy-card__title"><Icon name="clock" width={15} height={15} aria-hidden="true" />{t('Active sessions')}</h2>
+          <h2 className="policy-card__title" id={`${id}-sessions`}><Icon name="clock" width={15} height={15} aria-hidden="true" />{t('Active sessions')}</h2>
           <span className="badge badge--neutral">{security.data.sessions.length} {t('live')}</span>
         </div>
         <p className="policy-card__lead">{t('Each entry is a sign-in whose access has not run out yet.')}</p>
+        <div className="security-status__log">
         {security.data.sessions.length === 0 ? <p className="hint">{t('No device is signed in right now.')}</p> :
           <ul className="security-sessions">
             {security.data.sessions.map((session, index) => <li key={session.id}>
@@ -128,6 +132,7 @@ export function SecurityPage() {
               </div>
             </li>)}
           </ul>}
+        </div>
         <div className="setting-row security-danger">
           <span className="hint">{t('Use this if a device is not yours. It revokes access and refresh tokens everywhere.')}</span>
           <div className="setting-row__control">
@@ -137,6 +142,7 @@ export function SecurityPage() {
           </div>
         </div>
       </section>
+      </aside>
     </div>}
   </div>;
 }

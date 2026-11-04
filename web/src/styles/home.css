@@ -576,6 +576,289 @@
 }
 
 /* ==========================================================================
+   Live Commerce Signals
+   ========================================================================== */
+.home-sale-ticker {
+  width: min(1380px, calc(100% - clamp(32px, 4vw, 96px)));
+  margin: 32px auto 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.08), rgba(255, 255, 255, 0.02), rgba(245, 158, 11, 0.08));
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+}
+
+.home-sale-ticker__track {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  width: max-content;
+  min-width: 100%;
+  padding: 10px 0;
+  animation: home-sale-ticker-scroll 28s linear infinite;
+  white-space: nowrap;
+}
+
+.home-sale-ticker__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+}
+
+.home-sale-ticker__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+.home-recommendations,
+.home-trending-collections,
+.home-best-sellers {
+  width: 100%;
+  max-width: 1380px;
+  margin: 56px auto 0;
+  padding: 0 clamp(16px, 4vw, 48px);
+  box-sizing: border-box;
+}
+
+.home-recommendations__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.home-recommendation-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.home-recommendation-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+.home-recommendation-card__image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+.home-recommendation-card__image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.home-recommendation-card__badge {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.82);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.home-recommendation-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 14px 16px;
+}
+
+.home-recommendation-card__brand {
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-recommendation-card__body strong {
+  font-size: var(--text-sm);
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.home-recommendation-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.home-recommendation-card__meta span {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.home-trending-collections__carousel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.home-trending-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.home-trending-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+
+.home-trending-card__media {
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+.home-trending-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-trending-card__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+}
+
+.home-trending-card__copy span {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.home-trending-card__copy strong {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.home-best-sellers__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.home-best-seller-card {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+  text-decoration: none;
+  color: var(--text);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.home-best-seller-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+.home-best-seller-card__rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--selected-bg);
+  color: var(--accent-text);
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.home-best-seller-card img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: var(--surface-sunken);
+}
+
+.home-best-seller-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.home-best-seller-card strong {
+  font-size: var(--text-sm);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-best-seller-card span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.home-best-seller-card em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+@keyframes home-sale-ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
 @media (max-width: 1024px) {

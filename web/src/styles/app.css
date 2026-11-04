@@ -4262,12 +4262,41 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   color: var(--text-muted);
 }
 
-/* Measured live 2026-11-04: at the full 1376px column a six-digit token box was 1,270px wide and
-   the primary button 1,342px. The plate keeps the house material but takes a reading measure, and
-   the control column is wide enough for a code box and its button on one line. */
-.security-page .settings-plate { max-width: 880px; }
+/* Measured live 2026-11-04: capping the plate at 880px did tame the 1,342px button, but it left a
+   496px blank band down the right of a 1,376px column, and the sign-in log - 65 rows on the live
+   account - pushed the page to 5,891px of scrolling. The column is now split rather than truncated:
+   the two decisions keep a reading measure on the left, the live status log takes the right, and the
+   left track still ends near 900px, which is what stopped the code box drifting from its label. */
+.security-page__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+.security-page__grid > * { min-width: 0; }
 .security-page .setting-row { grid-template-columns: minmax(0, 1fr) minmax(190px, 280px); }
 .security-page .field > strong { font-size: var(--text-sm); font-weight: 600; }
+
+/* Only the log can outgrow the panel, so only the log scrolls: the heading, the live count and the
+   revoke row stay put above and below it, and the page itself stops stretching. */
+.security-page__status .settings-block { flex: 1 1 auto; min-height: 0; }
+.security-status__log {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-height: min(58vh, 460px);
+}
+.security-status__log > .hint { margin: 0; }
+
+@media (min-width: 1080px) {
+  .security-page__grid { grid-template-columns: minmax(0, 1fr) minmax(360px, 452px); }
+  /* Below 1,080px the left track would fall under ~640px and the step rows would squeeze the control
+     column, so the log drops under the decisions instead of beside a cramped form. */
+  /* :root because modern.css loads after this file and paints .table-surface position: relative,
+     which would otherwise outscore a single class and leave the panel un-stuck. */
+  :root .security-page__status { position: sticky; top: var(--sticky-top); }
+  /* 580px is what this panel costs outside the list itself, measured live at 1440x900: 263px of page
+     above the grid plus 315px of panel chrome (heading, lead, revoke row, padding). Subtracting it
+     means the whole panel, revoke row included, is on screen before the visitor scrolls at all; the
+     browser check re-measures the fit so the constant cannot rot quietly. */
+  .security-status__log { max-height: clamp(200px, calc(100dvh - 580px), 560px); }
+}
 
 /* A numbered step is a settings row with its order in front of it, so the same dividing rule the
    policy list uses keeps the steps readable as one flow rather than four loose controls. */
@@ -4317,6 +4346,9 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
 /* The one irreversible action on the page stands apart from the list it acts on. */
 .security-danger { margin-top: var(--space-2); padding-top: var(--space-4); border-top: 1px solid var(--row-line); }
 .security-danger .hint { font-size: var(--text-xs); line-height: 1.45; color: var(--text-muted); max-width: 62ch; }
+/* Inside the 452px status panel a 280px control column leaves the warning 104px wide and the button
+   half empty, so there the control takes the button's own width and the reason keeps the rest. */
+.security-page__status .security-danger { grid-template-columns: minmax(0, 1fr) auto; }
 
 .policy-spend {
   display: flex;

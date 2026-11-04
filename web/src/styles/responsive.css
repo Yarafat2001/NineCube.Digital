@@ -160,98 +160,116 @@ main .link-button:is(:hover, :focus-visible, :active),
 @media (max-width: 600px) {
   .navbar {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-columns: minmax(0, 1fr) auto auto !important;
+    grid-template-areas:
+      "brand theme actions"
+      "tray  tray  tray" !important;
     gap: 8px 6px !important;
     width: calc(100% - 16px) !important;
     max-width: calc(100% - 16px) !important;
-    padding: 8px 12px !important;
+    padding: 8px 10px !important;
     margin: 8px auto 0 !important;
     border-radius: 20px !important;
     position: sticky !important;
     top: var(--header-top, 8px) !important;
   }
-  .navbar .navbar__brand { grid-area: 1 / 1; margin: 0; align-self: center; }
-  .navbar .theme-controls { grid-area: 1 / 2; justify-self: end; align-self: center; }
+  .navbar .navbar__brand {
+    grid-area: brand !important;
+    margin: 0 !important;
+    align-self: center !important;
+    justify-self: start !important;
+  }
+  :root .navbar .theme-controls {
+    grid-area: theme !important;
+    justify-self: end !important;
+    align-self: center !important;
+    padding: 2px !important;
+    gap: 2px !important;
+    width: max-content !important;
+    max-width: none !important;
+    border-radius: 999px !important;
+    overflow: visible !important;
+  }
+  :root .navbar .theme-control {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    flex: 0 0 32px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+  :root .navbar .theme-control svg {
+    width: 15px !important;
+    height: 15px !important;
+    flex-shrink: 0 !important;
+  }
   .navbar .navbar__user { display: none !important; }
-  .navbar .navbar__tray {
-    grid-area: 2 / 1;
-    width: max-content;
-    min-width: 0;
-    max-width: 100%;
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 3px;
-    scroll-padding-inline: 4px;
-    justify-self: start;
-    align-self: center;
-  }
-  .navbar .navbar__link {
-    flex-shrink: 0;
-    min-height: 38px;
-    height: 38px;
-    padding: 6px 12px;
-    font-size: 13px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-pill);
-    white-space: nowrap;
-  }
   .navbar .navbar__actions {
-    grid-area: 2 / 2;
-    gap: 4px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-self: end;
-    align-self: center;
+    grid-area: actions !important;
+    gap: 4px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-self: end !important;
+    align-self: center !important;
   }
   .navbar .navbar__actions .nav-pop__trigger,
   .navbar .navbar__actions .nav-control {
-    min-width: 38px;
-    width: 38px;
-    min-height: 38px;
-    padding: 6px;
-    justify-content: center;
-    align-items: center;
-    display: inline-flex;
-    gap: 0;
-    position: relative;
-    border-radius: 50%;
+    min-width: 34px !important;
+    width: 34px !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 5px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: inline-flex !important;
+    gap: 0 !important;
+    position: relative !important;
+    border-radius: 50% !important;
   }
   .navbar .navbar__cta {
-    min-height: 38px;
-    height: 38px;
-    padding: 6px 14px;
-    font-size: 13px;
-    white-space: nowrap;
-    border-radius: var(--radius-pill);
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    border-radius: var(--radius-pill) !important;
   }
-  .navbar .account-name, .navbar .account-chevron { display: none; }
-  .navbar .nav-pop__badge { position: absolute; right: -2px; top: -4px; }
-  :root .navbar .theme-controls {
-    grid-area: 1 / 2;
-    justify-self: end;
-    padding: 2px 4px;
-    gap: 4px;
-    width: max-content;
-    max-width: none;
-    border-radius: 999px;
-    overflow: visible;
+  .navbar .account-name, .navbar .account-chevron { display: none !important; }
+  .navbar .nav-pop__badge { position: absolute !important; right: -2px !important; top: -4px !important; }
+  .navbar .navbar__tray {
+    grid-area: tray !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    justify-content: stretch !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 2px !important;
+    gap: 6px !important;
+    align-self: center !important;
   }
-  :root .navbar .theme-control {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
-    flex: 0 0 36px;
-    padding: 0;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
+  .navbar .navbar__tray::-webkit-scrollbar { display: none; }
+  .navbar .navbar__link {
+    flex: 1 1 0 !important;
+    min-width: max-content !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    border-radius: var(--radius-pill) !important;
+    white-space: nowrap !important;
   }
-  :root .navbar .theme-control svg { width: 18px; height: 18px; flex-shrink: 0; }
   .dashboard-stats, .sales-stats { grid-template-columns: minmax(0, 1fr); }
   .product-detail__thumbs { flex-wrap: nowrap; overflow-x: auto; padding: 4px; }
 }
