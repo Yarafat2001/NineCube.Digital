@@ -463,3 +463,255 @@
 @media (max-width: 400px) { .home-search__row { flex-direction: column; } }
 @media (prefers-reduced-motion: reduce) { .home-trust-icon, .home-category-card, .home-category-icon, .home-deal-card { transition: none; transform: none !important; } }
 
+
+
+/* ==========================================================================
+   Home Search Trending Pills
+   ========================================================================== */
+.home-search__trending {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.home-search__trending-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.home-search__trending-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.home-search__trending-chip {
+  background: var(--surface-navbar, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.home-search__trending-chip:hover {
+  background: var(--accent-gradient);
+  color: var(--on-accent, #ffffff);
+  border-color: transparent;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Home Deals Tabs
+   ========================================================================== */
+.home-deals-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-navbar, rgba(255, 255, 255, 0.06));
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.home-deals-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.home-deals-tab:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.home-deals-tab--active {
+  background: var(--accent-gradient) !important;
+  color: var(--on-accent, #ffffff) !important;
+  box-shadow: 0 2px 8px rgba(245, 151, 38, 0.35);
+}
+
+/* ==========================================================================
+   VIP Club Newsletter Section
+   ========================================================================== */
+.home-newsletter-section {
+  width: 100%;
+  max-width: 1380px;
+  margin: 56px auto 0;
+  padding: 0 clamp(16px, 4vw, 48px);
+  box-sizing: border-box;
+}
+
+.home-newsletter-card {
+  position: relative;
+  border-radius: 24px;
+  background: var(--product-card-glass, var(--surface));
+  border: 1px solid var(--nav-glass-edge, var(--border));
+  padding: clamp(32px, 5vw, 48px);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--card-shadow);
+  overflow: hidden;
+  text-align: center;
+}
+
+.home-newsletter-content {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.home-newsletter-title {
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin: 8px 0 12px;
+  line-height: 1.2;
+}
+
+.home-newsletter-desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+
+.home-newsletter-form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.home-newsletter-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  padding: 4px 6px 4px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.home-newsletter-input-group:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--selected-bar);
+}
+
+.home-newsletter-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: var(--text-sm);
+  outline: none;
+  min-width: 0;
+}
+
+.home-newsletter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-pill) !important;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.home-newsletter-error {
+  color: #ef4444;
+  font-size: var(--text-xs);
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.home-newsletter-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.home-newsletter-voucher {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--selected-bg);
+  border: 1px dashed var(--accent);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+}
+
+.home-newsletter-voucher-badge {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--accent-text);
+}
+
+.home-newsletter-code {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-md);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--text);
+}
+
+.home-newsletter-copy-btn {
+  border-radius: var(--radius-pill) !important;
+}
+
+.home-newsletter-voucher-note {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .home-deals-tabs {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    justify-content: flex-start;
+  }
+  .home-newsletter-input-group {
+    flex-direction: column;
+    padding: 8px;
+    border-radius: 16px;
+  }
+  .home-newsletter-input {
+    width: 100%;
+    min-height: 40px;
+    text-align: center;
+  }
+  .home-newsletter-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .home-newsletter-voucher {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

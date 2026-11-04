@@ -1,5 +1,5 @@
 import { ErrorState, LoadingBlock } from '../ui';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { t, useLanguage } from '../../i18n/language';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../api/hooks';
@@ -9,15 +9,37 @@ import { Icon } from '../Icon';
 import { formatMoney } from '../../lib/helpers';
 import type { Product } from '../../api/types';
 
+export type MerchandisingTab = 'trending' | 'discounts' | 'new';
+
 export function HomeFeaturedDeals() {
   useLanguage();
-  const { data, isLoading, isError, error, refetch } = useProducts({ q: '', page: 1, pageSize: 8, inStock: true });
+  const [activeTab, setActiveTab] = useState<MerchandisingTab>('trending');
+  const { data, isLoading, isError, error, refetch } = useProducts({ q: '', page: 1, pageSize: 24, inStock: true });
   const cart = useCart();
   const [justAddedId, setJustAddedId] = useState<number | null>(null);
 
-  const products: Product[] = (data?.items ?? [])
-    .filter((p: Product) => p.isActive && p.stockQuantity > 0)
-    .slice(0, 4);
+  const allActiveProducts: Product[] = useMemo(
+    () => (data?.items ?? []).filter((p: Product) => p.isActive && p.stockQuantity > 0),
+    [data?.items]
+  );
+
+  const products: Product[] = useMemo(() => {
+    if (activeTab === 'discounts') {
+      const discounted = allActiveProducts
+        .filter(p => p.compareAtPrice && p.compareAtPrice > p.price)
+        .sort((a, b) => {
+          const discountA = ((a.compareAtPrice! - a.price) / a.compareAtPrice!) * 100;
+          const discountB = ((b.compareAtPrice! - b.price) / b.compareAtPrice!) * 100;
+          return discountB - discountA;
+        });
+      return (discounted.length >= 4 ? discounted : allActiveProducts).slice(0, 4);
+    }
+    if (activeTab === 'new') {
+      return [...allActiveProducts].sort((a, b) => b.id - a.id).slice(0, 4);
+    }
+    // 'trending'
+    return allActiveProducts.slice(0, 4);
+  }, [allActiveProducts, activeTab]);
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.preventDefault();
@@ -27,16 +49,45 @@ export function HomeFeaturedDeals() {
     setTimeout(() => setJustAddedId(null), 1800);
   };
 
-
-
   return (
     <section className="home-deals-section" aria-label={t("Featured Deals")}>
       <div className="home-section-header">
         <div>
-          <span className="home-section-kicker">⚡ {t("Selected from the catalogue")}</span>
+          <span className="home-section-kicker">⚡ {t("Curated Storefront Showcase")}</span>
           <h2 className="home-section-title">{t("Available to shop")}</h2>
-          <p className="home-section-desc">{t("Explore current prices and available options. Stock is checked again at checkout.")}</p>
+          <p className="home-section-desc">{t("Explore current prices and live warehouse stock. Checked again at checkout.")}</p>
         </div>
+
+        <div className="home-deals-tabs" role="tablist" aria-label={t("Product showcase categories")}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'trending'}
+            className={`home-deals-tab ${activeTab === 'trending' ? 'home-deals-tab--active' : ''}`}
+            onClick={() => setActiveTab('trending')}
+          >
+            🔥 {t("Trending Now")}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'discounts'}
+            className={`home-deals-tab ${activeTab === 'discounts' ? 'home-deals-tab--active' : ''}`}
+            onClick={() => setActiveTab('discounts')}
+          >
+            ⚡ {t("Flash Discounts")}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'new'}
+            className={`home-deals-tab ${activeTab === 'new' ? 'home-deals-tab--active' : ''}`}
+            onClick={() => setActiveTab('new')}
+          >
+            ✨ {t("New Arrivals")}
+          </button>
+        </div>
+
         <Link to="/products" className="home-section-link">
           {t("Explore all products")} <span aria-hidden="true">→</span>
         </Link>
@@ -84,15 +135,21 @@ export function HomeFeaturedDeals() {
                     )}
                   </div>
 
-                  {product.hasVariants ? <Link className="btn btn--primary btn--sm" to={`/products/${product.id}`}>{t("Choose options")}</Link> : <button
-                    type="button"
-                    className={`btn btn--primary btn--sm home-deal-add-btn ${isJustAdded ? 'btn--success' : ''}`}
-                    onClick={(e) => handleAddToCart(e, product)}
-                    aria-label={`${t("Add to cart")} ${product.name}`}
-                  >
-                    <Icon name={isJustAdded ? "check" : "cart"} width={14} height={14} />
-                    <span>{isJustAdded ? t("Added!") : t("Add to cart")}</span>
-                  </button>}
+                  {product.hasVariants ? (
+                    <Link className="btn btn--primary btn--sm" to={`/products/${product.id}`}>
+                      {t("Choose options")}
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className={`btn btn--primary btn--sm home-deal-add-btn ${isJustAdded ? 'btn--success' : ''}`}
+                      onClick={(e) => handleAddToCart(e, product)}
+                      aria-label={`${t("Add to cart")} ${product.name}`}
+                    >
+                      <Icon name={isJustAdded ? "check" : "cart"} width={14} height={14} />
+                      <span>{isJustAdded ? t("Added!") : t("Add to cart")}</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </article>

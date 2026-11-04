@@ -10,6 +10,7 @@ import { RecentlyViewed } from '../components/RecentlyViewed';
 import { HomeTrustBar } from '../components/home/HomeTrustBar';
 import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
 import { HomeFeaturedDeals } from '../components/home/HomeFeaturedDeals';
+import { HomeNewsletter } from '../components/home/HomeNewsletter';
 import './showcase.css';
 
 export interface ShowcaseFallbackProps {
@@ -25,6 +26,15 @@ const reasonText: Record<ShowcaseFallbackReason, string> = {
   webgl: 'The animated helix needs WebGL, which this browser does not provide. Every card and the same text are below.',
   error: 'The animated helix could not start here. Every card and the same text are below.'
 };
+
+const TRENDING_KEYWORDS = [
+  'Laptops',
+  'Sneakers',
+  'Wireless',
+  'Kitchen',
+  'Apex',
+  'Acer'
+];
 
 /**
  * Modern E-Commerce Storefront: Featuring live warehouse products, verified trust badges,
@@ -57,7 +67,35 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
         </div>
         <form className="home-search" role="search" aria-label={t("Search the catalogue")} onSubmit={event => { event.preventDefault(); const q = search.trim(); if (q) navigate(`/products?q=${encodeURIComponent(q)}`); }}>
           <label htmlFor="home-search">{t("Find your next favourite")}</label>
-          <div className="home-search__row"><input id="home-search" type="search" value={search} maxLength={200} onChange={event => setSearch(event.target.value)} placeholder={t("Search products, brands or categories")} /><button className="btn btn--primary" disabled={!search.trim()}>{t("Search")}</button></div>
+          <div className="home-search__row">
+            <input
+              id="home-search"
+              type="search"
+              value={search}
+              maxLength={200}
+              onChange={event => setSearch(event.target.value)}
+              placeholder={t("Search products, brands or categories")}
+            />
+            <button className="btn btn--primary" disabled={!search.trim()}>{t("Search")}</button>
+          </div>
+          <div className="home-search__trending">
+            <span className="home-search__trending-label">{t("Trending:")}</span>
+            <div className="home-search__trending-tags">
+              {TRENDING_KEYWORDS.map(keyword => (
+                <button
+                  key={keyword}
+                  type="button"
+                  className="home-search__trending-chip"
+                  onClick={() => {
+                    setSearch(keyword);
+                    navigate(`/products?q=${encodeURIComponent(keyword)}`);
+                  }}
+                >
+                  {t(keyword)}
+                </button>
+              ))}
+            </div>
+          </div>
         </form>
         <HeroPromotions />
       </section>
@@ -66,6 +104,7 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
       <HomeCategoryStrip />
       <HomeFeaturedDeals />
       <div className="home-recent-section"><RecentlyViewed /></div>
+      <HomeNewsletter />
 
       <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
         <div className="showcase__headings">
