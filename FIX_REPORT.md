@@ -118,17 +118,26 @@ change - but it is worth knowing that this test's margin is thin under parallel 
 
 Browser checks against the same build: `security-page` 5/5 and `address-book` 4/4.
 
-## One thing on main is not mine, and it will block the deploy
+## Two things on main are not mine, and together they are holding the deploy
 
-`npm run i18n:check` fails on current `main` for reasons that have nothing to do with this round: commit
-`06a134d` ("Add live-home storefront pulse and modern commerce touches", 21:16 today, not written by me) added
-`web/src/helix/ShowcaseFallback.tsx` with 20 display strings outside `t()` - "Store pulse", "Products ready",
-"Low stock", "needs attention" and the rest. My round adds no new strings, so my five files gate green against
-`ddbd32f`, which is how I measured them. But the Pages workflow runs `i18n:check` as a step, so a push on top of
-`06a134d` will go red there and the site will not update from it. I have not touched that file: it is another
-session's feature in progress, and rewriting their component's copy is not this round's brief. Say the word and
-I will wrap those twenty strings and add the Bengali keys in a separate commit, or leave it to the session that
-wrote it.
+`npm run i18n:check` failed on `main` for reasons that have nothing to do with this round: commit `06a134d`
+("Add live-home storefront pulse and modern commerce touches", 21:16 today, not written by me) added
+`web/src/helix/ShowcaseFallback.tsx` with 20 display strings outside `t()`. My round adds no strings, so my five
+files gate green against `ddbd32f`, which is how I measured them. That session fixed its own blocker in
+`d21dd95`, and `i18n:check` passes on `main` now.
+
+The next CI step does not. Run 41862059828 on `d21dd95` went red at `npx vitest run` on
+`src/test/helix-showcase.test.tsx` - 2 of its 8 tests, both "Found multiple elements with the role list" - which
+is that same new fallback component drawing a second list on the showcase route. Nothing in this round touches
+`helix-showcase.test.tsx`, `ShowcaseFallback.tsx` or the showcase route, and my own suite (308 tests across 43
+files) was green in isolation. The fix is already sitting uncommitted in the shared working tree: the same 8
+tests pass here right now, because that session's in-progress edit to `ShowcaseFallback.tsx` resolves the
+duplicate list.
+
+So the code for this round is on GitHub (`origin/main` = `d21dd95`, and the four Round 23 files are verifiably in
+that tree), while the live site is still serving `ddbd32f` - the Pages workflow only uploads an artifact when the
+suite passes, so a red test in anyone's commit freezes the deployment for everyone. I have not committed another
+session's unfinished component to get the pipeline green; that is their push to make.
 
 # Round 22 — the address type is a field like the others, and Account security is one plate you can work through
 
