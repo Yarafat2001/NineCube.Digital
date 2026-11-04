@@ -85,8 +85,8 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
 .product-card .badge { transform: translateZ(16px); }
 .product-card__actions-overlay { transform: translateZ(18px); }
 .product-card__footer, .product-card__actions, .product-card__secondary-bar { transform: translateZ(0); }
-.product-category-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; }
-.product-category-chips .filter-chip { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 150px; flex-shrink: 0; }
+.product-category-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; margin-block: 6px 2px; }
+.product-category-chips .filter-chip { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 160px; flex-shrink: 0; }
 .product-category-chips .filter-chip--extra { flex-shrink: 0; }
 .product-card__media .image-placeholder { background: var(--neutral-tint); color: var(--neutral); height: 100%; }
 .product-card:focus-within { transform: translateY(-4px); outline: var(--focus-ring); outline-offset: 3px; }

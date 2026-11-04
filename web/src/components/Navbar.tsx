@@ -158,7 +158,7 @@ export function Navbar() {
 
   return (
     <nav ref={navRef}
-      className={`navbar${user ? ' navbar--authenticated' : ''}${location.pathname === '/' && !user ? ' navbar--showcase' : ''}${compact ? ' navbar--compact' : ''}${hidden ? ' navbar--hidden' : ''}`}
+      className={`navbar${user ? ' navbar--authenticated' : ''}${compact ? ' navbar--compact' : ''}${hidden ? ' navbar--hidden' : ''}`}
       aria-label={t("Main")} data-compact={compact} data-hidden={hidden}>
       <Link className="navbar__brand" to={user ? '/products' : '/'}>
         <Brand />
@@ -230,3 +230,4 @@ function CartButton() {
     <CartSheet onOpenChange={setOpen} onPlaced={order => navigate(`${user ? '/orders' : '/guest/orders'}/${order.id}`)} />
   </>;
 }
+
