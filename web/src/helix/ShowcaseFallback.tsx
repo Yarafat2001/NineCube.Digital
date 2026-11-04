@@ -8,6 +8,7 @@ import { CARD_COUNT, cardCategories, describeCardArtwork } from './cardAssets';
 import type { ShowcaseFallbackReason } from './support';
 import type { Product } from '../api/types';
 import { useProducts } from '../api/hooks';
+import { formatMoney } from '../lib/helpers';
 import { RecentlyViewed } from '../components/RecentlyViewed';
 import { HomeTrustBar } from '../components/home/HomeTrustBar';
 import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
@@ -94,43 +95,43 @@ function HomeStorePulse() {
   const peakStock = Math.max(1, ...topMoves.map((product) => product.stockQuantity), 12);
 
   return (
-    <section className="home-store-pulse" aria-label="Live storefront pulse">
+    <section className="home-store-pulse" aria-label={t("Live storefront pulse")}>
       <div className="home-store-pulse__header">
         <div>
-          <span className="home-section-kicker">● live warehouse</span>
-          <h2 className="home-section-title">Store pulse</h2>
+          <span className="home-section-kicker">{t("● live warehouse")}</span>
+          <h2 className="home-section-title">{t("Store pulse")}</h2>
         </div>
-        <p className="home-section-desc">Real-time product health from the current catalogue.</p>
+        <p className="home-section-desc">{t("Real-time product health from the current catalogue.")}</p>
       </div>
 
       <div className="home-store-pulse__stats">
         <div className="home-store-pulse__stat">
-          <span className="home-store-pulse__label">Products ready</span>
+          <span className="home-store-pulse__label">{t("Products ready")}</span>
           <strong>{stats.itemCount}</strong>
-          <small>live offers</small>
+          <small>{t("live offers")}</small>
         </div>
         <div className="home-store-pulse__stat">
-          <span className="home-store-pulse__label">Low stock</span>
+          <span className="home-store-pulse__label">{t("Low stock")}</span>
           <strong>{stats.lowStock}</strong>
-          <small>needs attention</small>
+          <small>{t("needs attention")}</small>
         </div>
         <div className="home-store-pulse__stat">
-          <span className="home-store-pulse__label">Avg. item</span>
-          <strong>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'BDT', maximumFractionDigits: 0 }).format(stats.avgPrice)}</strong>
-          <small>current price</small>
+          <span className="home-store-pulse__label">{t("Avg. item")}</span>
+          <strong>{formatMoney(stats.avgPrice)}</strong>
+          <small>{t("current price")}</small>
         </div>
         <div className="home-store-pulse__stat home-store-pulse__stat--highlight">
-          <span className="home-store-pulse__label">Top category</span>
+          <span className="home-store-pulse__label">{t("Top category")}</span>
           <strong>{stats.topCategory}</strong>
-          <small>most active mix</small>
+          <small>{t("most active mix")}</small>
         </div>
       </div>
 
       <div className="home-store-pulse__insights">
         <div className="home-store-pulse__panel">
-          <h3>Smart picks</h3>
+          <h3>{t("Smart picks")}</h3>
           {topMoves.length === 0 ? (
-            <p className="home-store-pulse__empty">Inventory is refreshing.</p>
+            <p className="home-store-pulse__empty">{t("Inventory is refreshing.")}</p>
           ) : (
             <ul className="home-store-pulse__list">
               {topMoves.map((product) => {
@@ -139,7 +140,7 @@ function HomeStorePulse() {
                   <li key={product.id} className="home-store-pulse__item">
                     <div className="home-store-pulse__item-top">
                       <span>{product.name}</span>
-                      <strong>{product.stockQuantity} left</strong>
+                      <strong>{product.stockQuantity} {t("left")}</strong>
                     </div>
                     <div className="home-store-pulse__bar">
                       <span style={{ width: `${share}%` }} />
@@ -151,12 +152,12 @@ function HomeStorePulse() {
           )}
         </div>
         <div className="home-store-pulse__panel home-store-pulse__panel--accent">
-          <h3>Modern commerce</h3>
+          <h3>{t("Modern commerce")}</h3>
           <ul className="home-store-pulse__features">
-            <li>Dynamic category-led discovery</li>
-            <li>Live stock confidence signals</li>
-            <li>Fast path from hero to product detail</li>
-            <li>Compare, cart, and trust-first UX</li>
+            <li>{t("Dynamic category-led discovery")}</li>
+            <li>{t("Live stock confidence signals")}</li>
+            <li>{t("Fast path from hero to product detail")}</li>
+            <li>{t("Compare, cart, and trust-first UX")}</li>
           </ul>
         </div>
       </div>
