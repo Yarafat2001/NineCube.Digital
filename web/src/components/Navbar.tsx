@@ -214,7 +214,17 @@ function CartButton() {
   const { itemCount } = useCart();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [pulse, setPulse] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    if (itemCount > 0) {
+      setPulse(true);
+      const timer = setTimeout(() => setPulse(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [itemCount]);
+
   useEffect(() => {
     if (new URLSearchParams(location.search).get('focus') === 'cart') {
       document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet'));
@@ -225,7 +235,11 @@ function CartButton() {
       onClick={event => document.dispatchEvent(new CustomEvent('ninecube:open-cart-sheet', {detail: {trigger: event.currentTarget}}))}
       aria-label={t(`Cart, ${itemCount} item${itemCount === 1 ? '' : 's'}`)} title={t("Your cart")}>
       <Icon name="cart" />
-      {itemCount > 0 ? <span className="nav-pop__badge" data-testid="cart-count">{t(itemCount > 9 ? '9+' : itemCount)}</span> : null}
+      {itemCount > 0 ? (
+        <span className={`nav-pop__badge ${pulse ? 'nav-pop__badge--pulse' : ''}`} data-testid="cart-count">
+          {t(itemCount > 9 ? '9+' : itemCount)}
+        </span>
+      ) : null}
     </button>
     <CartSheet onOpenChange={setOpen} onPlaced={order => navigate(`${user ? '/orders' : '/guest/orders'}/${order.id}`)} />
   </>;

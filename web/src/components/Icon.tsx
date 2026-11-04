@@ -1,5 +1,6 @@
 import type { SVGProps } from 'react';
 const paths = {
+  home: 'm3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10',
   bell: 'M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4',
   phone: 'M6 2h12v20H6zM10 18h4',
   shoe: 'M3 15c4 0 6-2 7-5l3 4 7 2c2 1 2 5 0 5H3v-6Zm0 3h18M11 12l-2 2M14 14l-2 2',

@@ -443,10 +443,21 @@ export function ProductsPage() {
       {categoryNotice || brandNotice ? <p role="status">{t([categoryNotice, brandNotice].filter(Boolean).join(' '))}</p> : null}
 
       <div className="filter-chips filter-chips--active" aria-label={t("Active filters")} hidden={chips.length === 0}>
+        <span className="active-filters-label">{t("Active filters:")}</span>
         {chips.map(chip => (
           <button className="filter-chip" type="button" key={chip.key} onClick={() => changeFilters(chip.clear)}
             aria-label={t(`Remove ${chip.label} filter`)}>{t(chip.label)} <span aria-hidden="true">{t("×")}</span></button>
         ))}
+        {chips.length > 0 ? (
+          <button
+            type="button"
+            className="filter-chip filter-chip--clear-all"
+            onClick={() => setParams(new URLSearchParams(), { replace: true })}
+            aria-label={t("Clear all filters")}
+          >
+            {t("Clear all filters")} <span aria-hidden="true">↺</span>
+          </button>
+        ) : null}
       </div>
 
       <div className={`catalogue-layout${canOrder ? " catalogue-layout--cart-on-demand" : ""}`}>

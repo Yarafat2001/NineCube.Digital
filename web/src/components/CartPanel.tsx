@@ -390,7 +390,11 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
                 <button
                   type="button"
                   className="link-button cart-line-remove"
-                  onClick={() => cart.remove(line.productId)}
+                  onClick={() => {
+                    const item = line;
+                    cart.remove(item.productId);
+                    toast.push('info', `${t("Removed")} ${item.name} ${t("from cart.")}`);
+                  }}
                   aria-label={t(`Remove ${line.name} from the cart`)}
                 >
                   <Icon name="trash" /> {t("Remove")}</button>

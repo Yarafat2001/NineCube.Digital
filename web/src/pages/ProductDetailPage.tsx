@@ -1,7 +1,7 @@
 import { t, useLanguage } from '../i18n/language';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useLowStockThreshold, useProduct, useProductReviews, useAddReview, useWishlist, useToggleWishlist } from '../api/hooks';
+import { useLowStockThreshold, useProduct, useProductReviews, useAddReview, useWishlist, useToggleWishlist, useProducts } from '../api/hooks';
 import { formatDateTime } from '../lib/helpers';
 import { EmptyState, ErrorState, LoadingBlock, QuantityStepper, StockBadge, useToast } from '../components/ui';
 import { RecentlyViewed } from '../components/RecentlyViewed';
@@ -10,7 +10,7 @@ import { useRestockSubscriptions } from '../api/hooks';
 import { Icon } from '../components/Icon';
 import { recordRecentView } from '../lib/recentViews';
 import { ProductViewer } from '../components/ProductViewer';
-import { primaryImage } from '../components/ProductImage';
+import { primaryImage, ProductImage, ProductThumbnail } from '../components/ProductImage';
 import { cardPresentation } from '../lib/catalog';
 import { formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -34,6 +34,8 @@ export function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [copied, setCopied] = useState(false);
   const [added, setAdded] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const purchaseRef = useRef<HTMLDivElement>(null);
 
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -51,6 +53,32 @@ export function ProductDetailPage() {
   const threshold = thresholdQuery.data?.lowStockThreshold ?? 5;
   const ratingSummary = reviewsQuery.data;
   const isInWishlist = wishlistQuery.data?.some(item => item.productId === productId);
+
+  const primaryCategory = product?.categories?.find(c => c.isPrimary) ?? product?.categories?.[0];
+  const relatedCategorySlug = primaryCategory?.slug ?? '';
+  const relatedQuery = useProducts({
+    q: '',
+    categorySlug: relatedCategorySlug || undefined,
+    page: 1,
+    pageSize: 6
+  });
+
+  const relatedProducts = useMemo(() => {
+    return (relatedQuery.data?.items ?? [])
+      .filter(p => p.id !== productId && p.isActive && p.stockQuantity > 0)
+      .slice(0, 4);
+  }, [relatedQuery.data, productId]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!purchaseRef.current) return;
+      const rect = purchaseRef.current.getBoundingClientRect();
+      setShowStickyBar(rect.bottom < 60);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [product?.id]);
 
   useEffect(() => {
     if (!product) return;
@@ -289,6 +317,38 @@ export function ProductDetailPage() {
           </div>
           <StockBadge product={product} threshold={threshold} />
 
+          {/* Regional Fulfillment & Trust Strip */}
+          <div className="pdp-trust-grid" role="region" aria-label={t("Fulfillment & guarantees")}>
+            <div className="pdp-trust-item">
+              <span className="pdp-trust-icon" aria-hidden="true">🚀</span>
+              <div>
+                <strong>{t("Fast Regional Delivery")}</strong>
+                <p>{t("24–48h Dhaka · 3–5 days Nationwide")}</p>
+              </div>
+            </div>
+            <div className="pdp-trust-item">
+              <span className="pdp-trust-icon" aria-hidden="true">💳</span>
+              <div>
+                <strong>{t("Cash on Delivery (COD)")}</strong>
+                <p>{t("bKash, Nagad, Visa & Mastercard")}</p>
+              </div>
+            </div>
+            <div className="pdp-trust-item">
+              <span className="pdp-trust-icon" aria-hidden="true">🛡️</span>
+              <div>
+                <strong>{t("100% Genuine Guaranteed")}</strong>
+                <p>{t("Direct warehouse stock verification")}</p>
+              </div>
+            </div>
+            <div className="pdp-trust-item">
+              <span className="pdp-trust-icon" aria-hidden="true">🔄</span>
+              <div>
+                <strong>{t("7-Day Easy Returns")}</strong>
+                <p>{t("Instant replacement or refund")}</p>
+              </div>
+            </div>
+          </div>
+
           <div className="product-detail__description"><h2>{t("About this product")}</h2>{product.description ? <p>{t(product.description)}</p> : <p className="muted">{t("No description yet.")}</p>}</div>
 
           {product.categories && product.categories.length > 0 ? (
@@ -318,7 +378,7 @@ export function ProductDetailPage() {
               </button>
             </div>
           ) : !user || hasRole('Customer') ? (
-            <div className="product-detail__purchase">
+            <div className="product-detail__purchase" ref={purchaseRef}>
               <QuantityStepper value={quantity} max={product.stockQuantity} onChange={setQuantity} label={t(fullName)} />
               <button type="button" className="btn btn--primary" onClick={() => { cart.add(product, quantity); setQuantity(1); setAdded(true); }}>{t("Add to cart")}</button>
             </div>
@@ -331,6 +391,54 @@ export function ProductDetailPage() {
           </div>
         </section>
       </div>
+
+      {/* Related Products Recommendation Carousel/Grid */}
+      {relatedProducts.length > 0 ? (
+        <section className="card-glass pdp-related-section" aria-labelledby="related-products-heading">
+          <div className="row-between" style={{ borderBottom: '1px solid var(--border)', paddingBottom: 'var(--space-3)' }}>
+            <div>
+              <h2 id="related-products-heading" style={{ fontSize: 'var(--text-xl)', margin: 0 }}>
+                {t("You May Also Like")}
+              </h2>
+              <p className="muted" style={{ margin: 0, fontSize: 'var(--text-sm)' }}>
+                {t("More popular picks from this category")}
+              </p>
+            </div>
+            <Link to={`/products?category=${encodeURIComponent(relatedCategorySlug)}`} className="btn btn--sm btn--ghost">
+              {t("View all")} →
+            </Link>
+          </div>
+          <div className="pdp-related-grid">
+            {relatedProducts.map(item => {
+              const meta = cardPresentation(item);
+              return (
+                <Link
+                  key={item.id}
+                  to={`/products/${item.slug}`}
+                  className="pdp-related-card"
+                  aria-label={t(`${item.name}, ${formatMoney(item.price, item.currency)}`)}
+                >
+                  <div className="pdp-related-card__image">
+                    <ProductImage product={item} images={item.images} frame="card" />
+                  </div>
+                  <div className="pdp-related-card__content">
+                    <span className="pdp-related-card__brand muted">{t(meta.brand ?? '')}</span>
+                    <h3 className="pdp-related-card__title">{t(item.name)}</h3>
+                    <div className="pdp-related-card__price">
+                      <strong>{t(formatMoney(item.price, item.currency))}</strong>
+                      {item.compareAtPrice && item.compareAtPrice > item.price ? (
+                        <span className="pdp-related-card__compare muted">
+                          {t(formatMoney(item.compareAtPrice, item.currency))}
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       {/* Customer Reviews & Feedback Section */}
       <section className="card-glass stack" style={{ marginTop: 'var(--space-6)', padding: 'var(--space-5)' }} aria-labelledby="reviews-heading">
@@ -420,6 +528,37 @@ export function ProductDetailPage() {
       ) : null}
 
       <RecentlyViewed currentProductId={productId} />
+
+      {/* Mobile / Compact Sticky Purchase Dock */}
+      {product && !outOfStock && (!user || hasRole('Customer')) ? (
+        <div
+          className={`pdp-sticky-bar ${showStickyBar ? 'pdp-sticky-bar--visible' : ''}`}
+          role="region"
+          aria-label={t("Quick purchase")}
+        >
+          <div className="pdp-sticky-bar__container">
+            <div className="pdp-sticky-bar__thumb">
+              <ProductThumbnail url={primaryImage(product)} alt={product.name} />
+            </div>
+            <div className="pdp-sticky-bar__info">
+              <strong className="pdp-sticky-bar__title">{t(product.name)}</strong>
+              <span className="pdp-sticky-bar__price">{t(formatMoney(product.price, product.currency))}</span>
+            </div>
+            <div className="pdp-sticky-bar__action">
+              <button
+                type="button"
+                className="btn btn--primary btn--sm"
+                onClick={() => {
+                  cart.add(product, 1);
+                  setAdded(true);
+                }}
+              >
+                {t("Add to cart")}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

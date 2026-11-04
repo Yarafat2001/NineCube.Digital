@@ -5,6 +5,7 @@ import { useAuth } from './state/AuthContext';
 import { CampaignBanner } from './components/CampaignBanner';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { MobileNav } from './components/MobileNav';
 import { RequireAuth, RequireRole } from './components/guards';
 import { LoadingBlock } from './components/ui';
 import { AuthPage } from './pages/AuthPages';
@@ -204,6 +205,7 @@ export function App() {
       </main>
 
       {isShowcase || isAuth ? null : <Footer />}
+      <MobileNav />
     </div>
   );
 }
