@@ -42,6 +42,8 @@ describe('Modern customer controls', () => {
 
   it('clears dependent location fields when their parent changes', async () => {
     const user = userEvent.setup(); renderApp('/account/profile');
+    // The editor is a task, not a fixture: the fields only exist once it has been asked for.
+    await user.click(await screen.findByRole('button', { name: /^add an address$/i }));
     const division = await screen.findByRole('combobox', { name: 'Division' });
     const district = screen.getByRole('combobox', { name: 'District' });
     const upazila = screen.getByRole('combobox', { name: 'Area / thana / upazila' });

@@ -1,5 +1,162 @@
 # FIX_REPORT
 
+# Round 21 — the saved address book is a list again, and the form only appears when you ask for it
+
+Date: 2026-11-04. Brief: the deployed URL of `#/account/profile` with "Saved delivery addresses in this pages
+this form part not user-friendly it comes very big-scrolling pages give it more improved design alignment to
+the system using hover and other operations that will be the best in your analysing and decisionary result",
+and three dark-theme screenshots of the plate.
+
+## How I measured it
+
+Same method as the last two rounds: the app booted against stubbed API responses in a throwaway harness
+(deleted before this commit), opened at 1440x900 and 390x844 in light and dark, with two saved addresses in
+the book, and the probe asked the browser what it had actually resolved - geometry, computed paint blended
+over whatever is really behind it, and the state after a pointer move and after a keyboard focus.
+
+Two measurement corrections came out of this round and both are worth keeping, because each one made me
+believe something false for a while.
+
+The first is about hover. My earlier probe read `getComputedStyle` immediately after moving the pointer, and
+in headless Chromium that catches the 150 ms transition mid-flight: the tile reported its resting border with
+a transform of `matrix(1, 0, 0, 1, 0, 0)`, which looked like "hover does nothing on a laptop". It does
+something. With the transition switched off for the reading, all four combinations resolved identically. A
+test that polls until the state settles is now what the suite uses.
+
+The second is about the cascade. `AddressBook.css` is bundled *before* `app.css` and `modern.css`, so a rule
+of mine that merely tied with a global one lost. `modern.css:273` paints every shared surface from
+`:root :is(.card, .card-glass, .category-filter-panel, .address-card, ...)`, and `:is()` takes the
+specificity of its most specific argument, so that selector computes to (0,3,0). My tile rule had to grow a
+fourth term - `:root .delivery-address-book .address-list .address-card`, (0,4,0) - before the well material
+landed at all. My first "after" run showed the new look in one scenario out of four for exactly this reason.
+
+## What the page resolved to before I touched it
+
+| measurement | laptop 1440 | phone 390 |
+| --- | --- | --- |
+| whole page height | 2630 px | 3878 px |
+| the address plate alone | 1453 px | 1983 px |
+| the editor, always open | 812 px | 1325 px |
+| controls per row x column | 13 in 7 rows x 4 cols | 13 in 13 rows x 1 col |
+| resolved field width | 211 px | 316 px |
+| plate after pressing Edit | 2837 px | 4085 px |
+
+So the plate the owner came to read was 55% of a laptop page and 51% of a phone page, and the reason was not
+the addresses - the list itself was only 445 px. Thirteen controls that nobody had asked for were parked
+underneath it, permanently, and pressing Edit grew the form to 1019 px because the address preview block
+added another 207 px below the grid.
+
+Depth and feedback were the other half of the complaint:
+
+- A saved address resolved to `border rgb(119, 133, 154)` over `background rgb(239, 243, 249)`, on a plate at
+  luminance 0.876. Blended, the tile and the plate came out **0 steps apart** - the list read as one grey
+  block with text on it. Dark mode: `rgb(87, 91, 109)` on a plate at 0.06, also 0 steps.
+- **Hover changed nothing at all.** Border, transform, shadow and the quiet action button were byte-identical
+  rest to over, in both themes and both widths.
+- Home / Work / Other were three `filter-chip` pills at a 20 px radius, 34 px tall - the same markup the app
+  uses for active catalogue filters, standing in for a choice between three named options.
+- The address preview block had a hard-coded `.75rem` radius (12 px, matching nothing else on the page) and a
+  background identical to the plate: 0 steps again.
+- Nothing was hand-painted: 0 inline styles, 0 emoji. This was a layout, depth and feedback defect, not an
+  inline-style one.
+
+## What I changed
+
+**Writing an address is a task, so the editor is now a task.** The plate opens as a list with one action in
+its head - `+ Add an address`, the house plus icon, on the amber button. The form is not in the DOM until
+that is pressed; Edit puts it in place with the address loaded and the tile's own name as its accessible
+label; Save, Update and Cancel all close it again. An empty book is the exception and opens straight up,
+because adding a first address is the only reason to be looking at an empty book.
+
+**A saved address is now a well cut into the plate**, from the same tokens the rest of the app uses:
+`--well-fill` for the fill, `--edge-well` for the edge, `--well-shadow`, `--radius-md`. The default address
+keeps the accent edge `app.css:2573` already gives it - my first version painted over that signal and the
+browser check caught it.
+
+**The tile answers the pointer.** Hovering (or tabbing into) a saved address brings its accent edge, lifts it
+2 px and adds `--card-shadow-hover`; its quiet operations, which sit at `transparent` at rest, come forward as
+raised surfaces at `--surface-raised` / `--border-strong`. On a touchscreen, where there is no hover to earn,
+they start raised. The lift is the only part that moves, and `prefers-reduced-motion` takes even that away.
+
+**Set as default moved onto the tile**, in the one action row with Edit and Delete, instead of sitting alone
+on its own centred line under the address.
+
+**Home / Work / Other went through the app's segmented control** - the same `segmented` /
+`segmented__option--active` / `aria-pressed` component the gift cards page and the coupon builder use - which
+also brought the control up to the height of the fields around it.
+
+**Fields on one side, live preview on the other.** Above 1024 px the preview is a 300 px rail beside the grid
+rather than a block under it, so showing a person what they have typed no longer costs 207 px of scrolling.
+The grid itself is set by the book now - three columns at a laptop, two on a phone - because `app.css` was
+resolving it to four columns of 211 px, and only the lines that genuinely carry a whole street address span.
+The checkout sheet keeps the shared layout untouched; the rules are scoped inside `.delivery-address-book`.
+
+## The same probe, after
+
+| measurement | before | after laptop 1440 | before | after phone 390 |
+| --- | --- | --- | --- | --- |
+| whole page height, at rest | 2630 px | **1724 px** | 3878 px | **2535 px** |
+| the address plate, at rest | 1453 px | **547 px** | 1983 px | **640 px** |
+| editor in the DOM at rest | yes, 812 px | **no** | yes, 1325 px | **no** |
+| whole page with the editor open | 2837 px | 2514 px | 4085 px | 3719 px |
+| editor height while editing | 1019 px | **767 px** | 1533 px | **1204 px** |
+| controls per row x column | 7 x 4 | 7 rows x **3 cols** | 13 x 1 | 10 rows x **2 cols** |
+| resolved field width | 211 px | **328 px** | 316 px | **152 px** |
+| tile fill vs plate | 0 steps | **--well-fill / --edge-well, both resolved** | 0 steps | same |
+| hover | no change anywhere | **accent edge, -2 px, operations raised - 4 of 4** | (touch) | **operations raised without hover** |
+| preview block | 12 px radius, 0 steps | **14 px (--radius-md), 8 steps light / 14 dark** | same | beside the fields at >= 1024 only |
+| horizontal overflow | - | **0 px at every width and theme, in both states** | - | 0 px |
+
+Text on a tile resolves to 15.19:1 in light and 16.9:1 in dark. The selected segment reads 6.1:1 in light and
+9.14:1 in dark, at the house pill radius (999 px). Still 0 inline styles and 0 emoji in the plate.
+
+The phone editor is worth one honest note: two columns of 152 px is deliberate. It is what turned thirteen
+single-field rows into ten rows, which is the whole complaint. The fields that carry a street address -
+Address line, Apartment, Landmark, Instructions - still span the full width, and nothing spills sideways.
+
+## Tests
+
+- `web/src/test/address-book-design.test.tsx` (new, 7 tests): the tile rule and its hover partner read out of
+  `AddressBook.css` as whole blocks, so the assertions cannot be satisfied by a rule that would lose the
+  cascade; the well tokens, the default tile's accent edge, the `@media (hover: none)` and
+  `prefers-reduced-motion` branches, the 2/3-column cadence and the preview rail, no `.75rem` left in the
+  file, the segmented markup, and three that render the book and ask the DOM what it produced - no form at
+  rest, the form after `Add an address`, the form gone again after Cancel, an empty book open from the start,
+  and all three operations on the tile itself.
+- `web/e2e/address-book.spec.ts` (new, 4 checks): the same questions in a real browser at 1440 and 390 in both
+  themes, comparing resolved paint against the design tokens resolved to `rgb()` in the page, so a rule that
+  is written but loses the cascade fails. It needs no password - the API is stubbed - and it runs against
+  `npm run dev`. Hover and keyboard focus are polled until they settle, for the reason above. **4 of 4 pass.**
+- Three existing profile tests typed into the editor without opening it, which the collapsed form correctly
+  broke: `account.test.tsx` (create-and-remove, and the incomplete-address guard) and `modern-customer.test.tsx`
+  (the dependent-location test) now press `Add an address` first. That is the whole fix for them - the
+  behaviour they assert is unchanged.
+
+## What this did not cover
+
+- **This round was reverted by the other session working in this tree, and I have put it back.** The first
+  version landed, then commit `3eb6fbf` ("restore full inline address form to ensure account profile tests
+  pass") rolled the component, its CSS and the icon back, because those three profile tests were failing.
+  That is why my earlier "after" numbers came back looking like the old page - the files really had gone. I
+  agree with the diagnosis and not the treatment: the tests were the defect, not the design, so this commit
+  restores the rebuild and updates the three tests instead of the screen. If the other session still has that
+  screen open, the same collision can happen again.
+- The two failures reported as foreign last round are both gone from the suite. One of them
+  (`modern-customer.test.tsx`) was in fact this round's own test collision, and I have fixed it here rather
+  than left it; the other (`auth-ui.test.tsx`) passes now and I did not touch its file.
+- Guest checkout's address sheet is the same `AddressFields` component with `checkout` set, and I left its
+  layout alone on purpose: it is a short sheet inside a dialog, not a plate on a long page.
+- The tiles stay full-width rows because `app.css:2558` makes `.address-list` a column everywhere in the app.
+  Changing that shape is a system decision, not one for this plate.
+- Still not run: the real-stack e2e passes that need the demo password, and the walkthrough (task #40).
+
+## Gates
+
+Run from `web` after the last file was written, in CI's order: `npx tsc --noEmit -p tsconfig.json` clean;
+`npm run i18n:check` - 2183 entries, all literal labels covered; `npx vitest run` - 298 tests across 42 files,
+all passing; `npm run build` succeeded. The two Playwright specs above ran against a dev server on the
+stubbed API and passed 5 of 5.
+
 # Round 20 — the gift cards page is one plate now, and there is only one certificate
 
 Date: 2026-11-03. Brief: the deployed URL of `#/gift-cards` with "fix this Gifts Cards ages and make more

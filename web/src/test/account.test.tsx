@@ -167,7 +167,8 @@ describe('Profile page', () => {
     await signIn();
     renderApp('/account/profile');
 
-    await user.type(await screen.findByLabelText('Label'), 'Office');
+    await user.click(await screen.findByRole('button', { name: /add an address/i }));
+    await user.type(screen.getByLabelText('Label'), 'Office');
     await user.type(screen.getByLabelText('Division'), 'Dhaka');
     await user.type(screen.getByLabelText('District'), 'Dhaka');
     await user.type(screen.getByLabelText('Area / thana / upazila'), 'Savar');
@@ -187,7 +188,8 @@ describe('Profile page', () => {
     await signIn();
     renderApp('/account/profile');
 
-    await user.type(await screen.findByLabelText('Label'), 'Cabin');
+    await user.click(await screen.findByRole('button', { name: /add an address/i }));
+    await user.type(screen.getByLabelText('Label'), 'Cabin');
     await user.click(screen.getByRole('button', { name: /save address/i }));
 
     const alerts = await screen.findAllByRole('alert');
