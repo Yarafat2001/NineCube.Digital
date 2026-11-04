@@ -133,11 +133,11 @@ function HomeStorePulse() {
           {topMoves.length === 0 ? (
             <p className="home-store-pulse__empty">{t("Inventory is refreshing.")}</p>
           ) : (
-            <ul className="home-store-pulse__list">
+            <ul className="home-store-pulse__list" role="presentation">
               {topMoves.map((product) => {
                 const share = Math.max(18, (product.stockQuantity / peakStock) * 100);
                 return (
-                  <li key={product.id} className="home-store-pulse__item">
+                  <li key={product.id} className="home-store-pulse__item" role="presentation">
                     <div className="home-store-pulse__item-top">
                       <span>{product.name}</span>
                       <strong>{product.stockQuantity} {t("left")}</strong>
@@ -153,11 +153,11 @@ function HomeStorePulse() {
         </div>
         <div className="home-store-pulse__panel home-store-pulse__panel--accent">
           <h3>{t("Modern commerce")}</h3>
-          <ul className="home-store-pulse__features">
-            <li>{t("Dynamic category-led discovery")}</li>
-            <li>{t("Live stock confidence signals")}</li>
-            <li>{t("Fast path from hero to product detail")}</li>
-            <li>{t("Compare, cart, and trust-first UX")}</li>
+          <ul className="home-store-pulse__features" role="presentation">
+            <li role="presentation">{t("Dynamic category-led discovery")}</li>
+            <li role="presentation">{t("Live stock confidence signals")}</li>
+            <li role="presentation">{t("Fast path from hero to product detail")}</li>
+            <li role="presentation">{t("Compare, cart, and trust-first UX")}</li>
           </ul>
         </div>
       </div>

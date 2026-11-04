@@ -52,11 +52,25 @@ main .link-button:is(:hover, :focus-visible, :active),
   box-shadow: var(--shadow-sm) !important;
   outline: none !important;
 }
+:root[data-theme='dark'] .viewer-modes .btn[aria-pressed='true'],
+:root[data-theme='dark'] .viewer-controls .btn[aria-pressed='true'] {
+  background: linear-gradient(135deg, #FFB020, #F59E0B) !important;
+  color: #111827 !important;
+  border-color: #FCD34D !important;
+  box-shadow: 0 2px 14px rgba(245, 158, 11, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  font-weight: 700 !important;
+}
 :root[data-theme='dark'] .viewer-modes .btn:not([aria-pressed='true']),
 :root[data-theme='dark'] .viewer-controls .btn:not([aria-pressed='true']) {
   background: #232022 !important;
   color: #FFFFFF !important;
   border: 1px solid rgba(255, 255, 255, 0.22) !important;
+}
+:root[data-theme='dark'] .viewer-modes .btn:not([aria-pressed='true']):hover,
+:root[data-theme='dark'] .viewer-controls .btn:not([aria-pressed='true']):hover {
+  background: #2d292c !important;
+  color: #FFFFFF !important;
+  border-color: #F59E0B !important;
 }
 :root .viewer-modes .btn:not([aria-pressed='true']):hover,
 :root .viewer-controls .btn:not([aria-pressed='true']):hover {
