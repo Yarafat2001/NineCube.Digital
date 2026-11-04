@@ -1,85 +1,12 @@
 .delivery-address-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); padding: 0; list-style: none; }
 .delivery-address-book address { display: flex; flex-direction: column; gap: .2rem; font-style: normal; overflow-wrap: anywhere; }
+.delivery-address-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .delivery-address-fields .field { min-width: 0; }
 .delivery-address-fields label:has(+ input:required)::after { content: " *"; color: var(--accent-text); }
 .delivery-address-fields input:not([type="checkbox"]), .delivery-address-fields select, .delivery-address-fields textarea { width: 100%; }
 .delivery-address-fields > .checkbox { display: flex; align-items: center; justify-content: flex-start; gap: .6rem; }
 .delivery-address-fields input[type="checkbox"] { flex: 0 0 auto; width: 1.1rem; height: 1.1rem; margin: 0; }
+.delivery-address-fields [aria-pressed="true"] { border-color: var(--accent); }
 @media (max-width: 640px) { .delivery-address-fields { grid-template-columns: minmax(0, 1fr); } .delivery-address-book .row-between { flex-wrap: wrap; gap: .5rem; } }
 
-/* The heading carries the one action that opens the editor, so the resting screen is a list of
-   addresses rather than a list plus a form nobody has asked for yet. */
-.delivery-address-book__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
-.delivery-address-book__head > div:first-child { min-width: 0; }
-.delivery-address-book__head .btn { flex: 0 0 auto; }
-
-/* A saved address is a well cut into the plate. Measured live 2026-11-04: a --border outline over a
-   fill one luminance step from the plate resolved to 0 steps of separation, so the list read as one
-   grey block with text on it; the house well tokens give every tile a fill, an edge and a shadow. */
-:root .delivery-address-book .address-card {
-  background: var(--well-fill);
-  border: 1px solid var(--edge-well);
-  box-shadow: var(--well-shadow);
-  border-radius: var(--radius-md);
-  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-}
-
-/* The pointer is on the address, not on a 28px button, so hovering the tile is what brings its
-   operations forward. :focus-within is the same path for a keyboard. */
-:root .delivery-address-book .address-card:is(:hover, :focus-within) {
-  border-color: var(--accent);
-  box-shadow: var(--well-shadow), var(--card-shadow-hover);
-  transform: translateY(-2px);
-}
-
-/* Quiet at rest, raised when the tile is raised, accent under the pointer itself - and always
-   raised on a screen with no hover to earn it. */
-:root .delivery-address-book .address-card .btn--ghost:not(:disabled) { background: transparent; border-color: var(--edge-well); }
-:root .delivery-address-book .address-card:is(:hover, :focus-within) .btn--ghost:not(:disabled) {
-  background: var(--surface-raised);
-  border-color: var(--border-strong);
-  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
-}
-:root .delivery-address-book .address-card .btn--ghost:is(:hover, :focus-visible) { border-color: var(--accent-text); color: var(--accent-text); }
-@media (hover: none) {
-  :root .delivery-address-book .address-card .btn--ghost:not(:disabled) { background: var(--surface-raised); border-color: var(--border-strong); }
-}
-@media (prefers-reduced-motion: reduce) {
-  :root .delivery-address-book .address-card { transition: none; }
-  :root .delivery-address-book .address-card:is(:hover, :focus-within) { transform: none; }
-}
-
-.address-card strong { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.address-card__tag { flex: 0 0 auto; }
-.address-card__actions { flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
-
-/* Fields on one side, the live preview on the other: showing a person what they have typed costs no
-   vertical space. Measured before, the preview sat under the grid and added 207px to a form that was
-   already 812px tall. */
-.address-form { border-top: 1px solid var(--row-line); }
-.address-form__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-items: start; }
-@media (min-width: 1024px) { .address-form__body:has(.delivery-address-preview) { grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); } }
-
-/* app.css lays these fields out on auto-fit columns, which measured six columns of 211px on a
-   laptop and one column of 316px on a phone - thirteen rows of single fields. The book sets its own
-   cadence instead: three columns on a laptop, two on a phone, and only the lines that genuinely
-   carry a whole street address span. The checkout sheet keeps the shared layout untouched. */
-:root .delivery-address-book .delivery-address-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@media (min-width: 700px) {
-  :root .delivery-address-book .delivery-address-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  :root .delivery-address-book .delivery-address-fields > .address-fields__wide:is(:has(select), :has(.segmented), :has(input[autocomplete='shipping address-line2'])) { grid-column: span 1; }
-}
-
-/* The address type is a choice between three named options, which is what the app's segmented
-   control is for; it also brings the control to the 42px height every other input here resolves to. */
-.address-type .segmented__option { min-height: 34px; padding: 6px 16px; }
-
-/* The preview is the same well material as the tiles, at the house radius instead of a hard-coded
-   .75rem that matched nothing else on the page. */
-:root .delivery-address-preview {
-  padding: var(--space-3);
-  border: 1px solid var(--edge-well);
-  border-radius: var(--radius-md);
-  background: var(--well-fill);
-  box-shadow: var(--well-shadow);
-}
+.delivery-address-preview { padding: 1rem; border: 1px solid var(--border); border-radius: .75rem; }

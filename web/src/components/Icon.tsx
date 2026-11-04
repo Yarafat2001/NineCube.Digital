@@ -42,7 +42,6 @@ const paths = {
   crown: 'M3 19h18M4.5 19 3 8.5l5.5 4L12 5l3.5 7.5L21 8.5 19.5 19',
   share: 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8m-4-6-4-4-4 4m4-4v13',
   bulb: 'M12 3a7 7 0 0 0-4.1 12.6c.7.5 1.1 1.3 1.1 2.2V19h6v-1.2c0-.9.4-1.7 1.1-2.2A7 7 0 0 0 12 3ZM9.5 22h5',
-  plus: 'M12 5v14M5 12h14',
 };
 export type IconName = keyof typeof paths;
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {

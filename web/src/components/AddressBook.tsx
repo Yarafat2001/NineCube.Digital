@@ -3,7 +3,6 @@ import type { Address } from '../api/types';
 import { useCreateAddress, useUpdateAddress, useDeleteAddress, type AddressInput } from '../api/hooks';
 import { ApiError, describeError } from '../api/client';
 import { useToast } from './ui';
-import { Icon } from './Icon';
 import { t, useLanguage } from '../i18n/language';
 import { addressCountries, addressLines, addressRules, countryName } from '../lib/addresses';
 import divisions from '../data/divisions.json';
@@ -18,19 +17,11 @@ export function AddressBook({ addresses, recipientName, phone }: { addresses: Ad
     postalCode: '', deliveryInstructions: '', isDefault: addresses.length === 0 });
   const [draft, setDraft] = useState<AddressInput>(empty);
   const [editing, setEditing] = useState<number | null>(null);
-  // Writing an address is a task, not a fixture. Measured live 2026-11-04: with the editor always
-  // open the book alone was 1453px on a laptop and 1983px on a phone, so the page the person came
-  // to read was pushed off the bottom of the screen. The editor now exists only while it is in use,
-  // and an empty book opens it because adding the first address is the only reason to be here.
-  const [open, setOpen] = useState(() => addresses.length === 0);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const create = useCreateAddress(); const update = useUpdateAddress(); const remove = useDeleteAddress();
   const toast = useToast();
   const busy = create.isPending || update.isPending || remove.isPending;
-  const showForm = open || editing !== null;
-  const close = () => { setDraft({ ...empty(), isDefault: false }); setEditing(null); setErrors({ }); setOpen(false); };
-  const add = () => { setDraft(empty()); setEditing(null); setErrors({}); setOpen(true); };
-  const edit = (address: Address) => { setDraft({ ...empty(), ...address, countryCode: address.countryCode ?? 'BD' }); setEditing(address.id); setErrors({}); setOpen(true); };
+  const reset = () => { setDraft({ ...empty(), isDefault: false }); setEditing(null); setErrors({}); };
   const failed = (error: unknown) => setErrors(error instanceof ApiError && Object.keys(error.fieldErrors).length
     ? error.fieldErrors : { form: [describeError(error)] });
   const save = (event: React.FormEvent) => {
@@ -44,44 +35,37 @@ export function AddressBook({ addresses, recipientName, phone }: { addresses: Ad
     ] as const) if (required && !String(draft[key] ?? '').trim()) next[key] = [t(label) + ' ' + t('is required.')];
     setErrors(next);
     if (Object.keys(next).length) return;
-    const options = { onSuccess: () => { close(); toast.push('success', editing === null ? 'Address saved.' : 'Address updated.'); }, onError: failed };
+    const options = { onSuccess: () => { reset(); toast.push('success', editing === null ? 'Address saved.' : 'Address updated.'); }, onError: failed };
     if (editing === null) create.mutate(draft, options);
     else update.mutate({ ...draft, id: editing }, options);
   };
   return <section className="card-glass stack delivery-address-book" aria-labelledby="address-book">
-    <div className="delivery-address-book__head">
-      <div>
-        <h2 id="address-book">{t('Saved delivery addresses')}</h2>
-        <p className="muted">{t('Save home, work or international addresses. Choose a saved address at checkout.')}</p>
-      </div>
-      {!showForm && <button className="btn btn--primary btn--sm" type="button" onClick={add}><Icon name="plus" width={14} height={14} />{t('Add an address')}</button>}
-    </div>
+    <h2 id="address-book">{t('Saved delivery addresses')}</h2>
+    <p className="muted">{t('Save home, work or international addresses. Choose a saved address at checkout.')}</p>
     {!addresses.length ? <p className="muted">{t('No addresses saved yet. Add one below and it will be offered at checkout.')}</p> :
       <ul className="address-list delivery-address-list">{addresses.map(address => <li key={address.id} className="address-card" data-default={address.isDefault}>
-        <div className="row-between"><strong>{address.label}{address.isDefault && <span className="filter-chip address-card__tag">{t('Default')}</span>}</strong>
-          <div className="row address-card__actions">
-            {!address.isDefault && <button type="button" className="btn btn--sm btn--ghost" disabled={busy} onClick={() => update.mutate({ ...address, isDefault: true }, {
-              onSuccess: () => { if (editing === address.id) setDraft(current => ({ ...current, isDefault: true })); toast.push('success', 'Default address updated.'); }, onError: error => toast.pushError(error)
-            })}>{t('Set as default')}</button>}
-            <button className="btn btn--sm btn--ghost" type="button" disabled={busy} onClick={() => edit(address)}>{t('Edit')}</button>
+        <div className="row-between"><strong>{address.label} {address.isDefault && <span className="filter-chip">{t('Default')}</span>}</strong>
+          <div className="row">
+            <button className="btn btn--sm btn--ghost" type="button" disabled={busy} onClick={() => { setDraft({ ...empty(), ...address, countryCode: address.countryCode ?? 'BD' }); setEditing(address.id); setErrors({}); }}>{t('Edit')}</button>
             <button className="btn btn--sm btn--danger" type="button" disabled={busy} aria-label={`${t('Delete')} ${address.label}`} onClick={() => remove.mutate(address.id, {
-              onSuccess: () => { if (editing === address.id) close(); toast.push('success', 'Address removed.'); }, onError: error => toast.pushError(error)
+              onSuccess: () => { if (editing === address.id) reset(); toast.push('success', 'Address removed.'); }, onError: error => toast.pushError(error)
             })}>{t('Delete')}</button>
           </div></div>
         <address>{addressLines(address).map((line, index) => <span key={index}>{line}</span>)}</address>
         {address.deliveryInstructions && <p className="muted">{address.deliveryInstructions}</p>}
         {(address.countryCode ?? 'BD') !== 'BD' && <small>{t('Delivery availability and fees are checked at checkout.')}</small>}
+        {!address.isDefault && <button type="button" className="btn btn--sm btn--ghost" disabled={busy} onClick={() => update.mutate({ ...address, isDefault: true }, {
+          onSuccess: () => { if (editing === address.id) setDraft(current => ({ ...current, isDefault: true })); toast.push('success', 'Default address updated.'); }, onError: error => toast.pushError(error)
+        })}>{t('Set as default')}</button>}
       </li>)}</ul>}
-    {showForm && <form className="address-form" onSubmit={save} noValidate aria-label={t(editing === null ? 'Add address' : 'Edit address')}>
+    <form className="address-form" onSubmit={save} noValidate aria-label={t(editing === null ? 'Add address' : 'Edit address')}>
       <h3>{t(editing === null ? 'Add an address' : 'Edit address')}</h3>
-      <div className="address-form__body">
-        <AddressFields draft={draft} setDraft={setDraft} errors={errors} />
-        {draft.addressLine.trim() && <div className="delivery-address-preview"><strong>{t('Address preview')}</strong><address>{addressLines(draft).map((line, index) => <span key={index}>{line}</span>)}</address></div>}
-      </div>
+      <AddressFields draft={draft} setDraft={setDraft} errors={errors} />
+      {draft.addressLine.trim() && <div className="delivery-address-preview"><strong>{t('Address preview')}</strong><address>{addressLines(draft).map((line, index) => <span key={index}>{line}</span>)}</address></div>}
       {errors.form && <p role="alert" className="error">{errors.form.join(' ')}</p>}
-      <div className="row address-form__foot"><button className="btn btn--primary" disabled={busy}>{t(editing === null ? 'Save address' : 'Update address')}</button>
-        {(editing !== null || addresses.length > 0) && <button className="btn btn--ghost" type="button" disabled={busy} onClick={close}>{t('Cancel')}</button>}</div>
-    </form>}
+      <div className="row"><button className="btn btn--primary" disabled={busy}>{t(editing === null ? 'Save address' : 'Update address')}</button>
+        {editing !== null && <button className="btn btn--ghost" type="button" disabled={busy} onClick={reset}>{t('Cancel')}</button>}</div>
+    </form>
   </section>;
 }
 
@@ -114,8 +98,8 @@ export function AddressFields({ draft, setDraft, errors, checkout = false }: { d
       {(draft.countryCode ?? 'BD') !== 'BD' && <small className="muted">{t('Delivery availability and fees are checked at checkout.')}</small>}
       {errors.countryCode && <span role="alert" className="error">{errors.countryCode.map(message => t(message)).join(' ')}</span>}
     </div>
-    {!checkout && <div className="field address-fields__wide"><div className="segmented address-type" role="group" aria-label={t('Address type')}>
-      {['Home', 'Work', 'Other'].map(label => <button key={label} type="button" className={`segmented__option ${draft.label === label ? 'segmented__option--active' : ''}`} aria-pressed={draft.label === label} onClick={() => setDraft({ ...draft, label })}>{t(label)}</button>)}
+    {!checkout && <div className="field address-fields__wide"><div className="row" role="group" aria-label={t('Address type')}>
+      {['Home', 'Work', 'Other'].map(label => <button key={label} type="button" className="filter-chip" aria-pressed={draft.label === label} onClick={() => setDraft({ ...draft, label })}>{t(label)}</button>)}
     </div></div>}
     {!checkout && input('label', 'Label', { required: true, maxLength: 60 })}
     {input('recipientName', 'Recipient name', { autoComplete: 'shipping name' })}
