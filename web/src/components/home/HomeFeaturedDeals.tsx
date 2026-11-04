@@ -1,3 +1,4 @@
+import { ErrorState, LoadingBlock } from '../ui';
 import { useState } from 'react';
 import { t, useLanguage } from '../../i18n/language';
 import { Link } from 'react-router-dom';
@@ -10,7 +11,7 @@ import type { Product } from '../../api/types';
 
 export function HomeFeaturedDeals() {
   useLanguage();
-  const { data, isLoading } = useProducts({ q: '', page: 1, pageSize: 8, inStock: true });
+  const { data, isLoading, isError, error, refetch } = useProducts({ q: '', page: 1, pageSize: 8, inStock: true });
   const cart = useCart();
   const [justAddedId, setJustAddedId] = useState<number | null>(null);
 
@@ -26,21 +27,24 @@ export function HomeFeaturedDeals() {
     setTimeout(() => setJustAddedId(null), 1800);
   };
 
-  if (isLoading || products.length === 0) return null;
+
 
   return (
     <section className="home-deals-section" aria-label={t("Featured Deals")}>
       <div className="home-section-header">
         <div>
-          <span className="home-section-kicker">⚡ {t("Special Warehouse Offers")}</span>
-          <h2 className="home-section-title">{t("Featured Deals & Trending Picks")}</h2>
-          <p className="home-section-desc">{t("Live stock straight from warehouse inventory. Prices guaranteed.")}</p>
+          <span className="home-section-kicker">⚡ {t("Selected from the catalogue")}</span>
+          <h2 className="home-section-title">{t("Available to shop")}</h2>
+          <p className="home-section-desc">{t("Explore current prices and available options. Stock is checked again at checkout.")}</p>
         </div>
         <Link to="/products" className="home-section-link">
           {t("Explore all products")} <span aria-hidden="true">→</span>
         </Link>
       </div>
 
+      {isLoading && <LoadingBlock label={t("Loading products")} variant="card" count={4} />}
+      {isError && <ErrorState error={error} onRetry={() => void refetch()} />}
+      {!isLoading && !isError && products.length === 0 && <p>{t("No available products to feature right now.")}</p>}
       <div className="home-deals-grid">
         {products.map((product) => {
           const discount = product.compareAtPrice && product.compareAtPrice > product.price
@@ -80,7 +84,7 @@ export function HomeFeaturedDeals() {
                     )}
                   </div>
 
-                  <button
+                  {product.hasVariants ? <Link className="btn btn--primary btn--sm" to={`/products/${product.id}`}>{t("Choose options")}</Link> : <button
                     type="button"
                     className={`btn btn--primary btn--sm home-deal-add-btn ${isJustAdded ? 'btn--success' : ''}`}
                     onClick={(e) => handleAddToCart(e, product)}
@@ -88,7 +92,7 @@ export function HomeFeaturedDeals() {
                   >
                     <Icon name={isJustAdded ? "check" : "cart"} width={14} height={14} />
                     <span>{isJustAdded ? t("Added!") : t("Add to cart")}</span>
-                  </button>
+                  </button>}
                 </div>
               </div>
             </article>

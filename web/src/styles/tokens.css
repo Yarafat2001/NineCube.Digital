@@ -329,7 +329,14 @@
   --danger: var(--bad-text); --danger-tint: var(--bad-bg);
 }
 
-:root { --product-photo-surface: #F4F5F7; --product-photo-ink: #334155; }
+:root {
+  --product-photo-surface: #F4F5F7;
+  --product-photo-ink: #334155;
+}
+:root[data-theme='dark'] {
+  --product-photo-surface: #14181f;
+  --product-photo-ink: #edf2ff;
+}
 
 /* ------------------------------------------------------ gift certificate --
    The certificate is an object the shop hands over, not a surface of the page, so its ink stays

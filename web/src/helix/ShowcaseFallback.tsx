@@ -1,11 +1,12 @@
 import { t, useLanguage } from '../i18n/language';
-import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo, useState }  from 'react';
+import { Link, useNavigate }  from 'react-router-dom';
 import { HeroPromotions } from './HeroPromotions';
 import { ShowcaseFooterContent } from './ShowcaseFooterContent';
 import { showcaseCopy } from './showcaseCopy';
 import { CARD_COUNT, cardCategories, describeCardArtwork } from './cardAssets';
 import type { ShowcaseFallbackReason } from './support';
+import { RecentlyViewed } from '../components/RecentlyViewed';
 import { HomeTrustBar } from '../components/home/HomeTrustBar';
 import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
 import { HomeFeaturedDeals } from '../components/home/HomeFeaturedDeals';
@@ -31,6 +32,8 @@ const reasonText: Record<ShowcaseFallbackReason, string> = {
  */
 export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFallbackProps) {
   useLanguage();
+  const navigate = useNavigate();
+  const [search, setSearch] = useState('');
   const cards = useMemo(
     () => Array.from({ length: CARD_COUNT }, (_, index) => ({ index, src: cardAssets[index] ?? '' })),
     [cardAssets]
@@ -52,12 +55,17 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
             </button>
           ) : null}
         </div>
+        <form className="home-search" role="search" aria-label={t("Search the catalogue")} onSubmit={event => { event.preventDefault(); const q = search.trim(); if (q) navigate(`/products?q=${encodeURIComponent(q)}`); }}>
+          <label htmlFor="home-search">{t("Find your next favourite")}</label>
+          <div className="home-search__row"><input id="home-search" type="search" value={search} maxLength={200} onChange={event => setSearch(event.target.value)} placeholder={t("Search products, brands or categories")} /><button className="btn btn--primary" disabled={!search.trim()}>{t("Search")}</button></div>
+        </form>
         <HeroPromotions />
       </section>
 
       <HomeTrustBar />
       <HomeCategoryStrip />
       <HomeFeaturedDeals />
+      <div className="home-recent-section"><RecentlyViewed /></div>
 
       <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
         <div className="showcase__headings">

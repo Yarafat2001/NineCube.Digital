@@ -1,6 +1,7 @@
 import { t, useLanguage } from '../i18n/language';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { apiRequest } from '../api/client';
 import type { Product } from '../api/types';
 import { clearRecentViews, getRecentViews } from '../lib/recentViews';
 import { formatMoney } from '../lib/helpers';
@@ -23,6 +24,21 @@ export function RecentlyViewed({ currentProductId, className = '', style }: Rece
   });
   const cart = useCart();
   const toast = useToast();
+  const navigate = useNavigate();
+  const [addingId, setAddingId] = useState<number | null>(null);
+
+  const addCurrentProduct = async (id: number) => {
+    if (addingId !== null) return;
+    setAddingId(id);
+    try {
+      const product = await apiRequest<Product>(`/api/products/${id}`);
+      if (product.hasVariants) { navigate(`/products/${id}`); return; }
+      if (!product.isActive || product.stockQuantity <= 0) { toast.push('info', t('These items are currently unavailable.')); return; }
+      cart.add(product, 1);
+      toast.push('success', `${t("Added")} ${product.name} ${t("to your cart.")}`);
+    } catch (error) { toast.pushError(error); }
+    finally { setAddingId(null); }
+  };
 
   const refresh = () => {
     const list = getRecentViews();
@@ -102,14 +118,12 @@ export function RecentlyViewed({ currentProductId, className = '', style }: Rece
                 </div>
               </div>
 
-              {inStock ? (
+              {product.hasVariants ? <Link className="btn btn--primary recently-viewed__add-btn" to={`/products/${product.id}`}>{t('Choose options')}</Link> : inStock ? (
                 <button
                   type="button"
                   className="btn btn--xs btn--primary recently-viewed__add-btn"
-                  onClick={() => {
-                    cart.add(product, 1);
-                    toast.push('success', `${t("Added")} ${product.name} ${t("to your cart.")}`);
-                  }}
+                  disabled={addingId !== null}
+                  onClick={() => void addCurrentProduct(product.id)}
                   aria-label={`${t("Add")} ${product.name}`}
                 >
                   + {t("Add to cart")}

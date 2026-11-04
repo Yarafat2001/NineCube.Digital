@@ -29,6 +29,13 @@ main .link-button:is(:hover, :focus-visible, :active),
 .viewer-modes, .viewer-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .viewer-modes .btn,
 .viewer-controls .btn { min-height: 40px; border-radius: var(--radius-pill); background: var(--surface); border: 1px solid var(--border-strong); color: var(--text); box-shadow: var(--shadow-sm); }
+:root[data-theme='dark'] .viewer-modes .btn,
+:root[data-theme='dark'] .viewer-controls .btn,
+:root[data-theme='dark'] .viewer-backdrops button {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--text);
+}
 .viewer-modes .btn[aria-pressed='true'],
 .viewer-controls .btn[aria-pressed='true'],
 .viewer-backdrops [aria-pressed='true'] {
@@ -37,6 +44,14 @@ main .link-button:is(:hover, :focus-visible, :active),
   color: var(--accent-text);
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+:root[data-theme='dark'] .viewer-modes .btn[aria-pressed='true'],
+:root[data-theme='dark'] .viewer-controls .btn[aria-pressed='true'],
+:root[data-theme='dark'] .viewer-backdrops [aria-pressed='true'] {
+  background: rgba(255, 171, 77, 0.18);
+  border-color: rgba(255, 171, 77, 0.8);
+  color: #ffd39f;
+  outline-color: rgba(255, 171, 77, 0.85);
 }
 .viewer-backdrops { display: flex; align-items: center; flex-wrap: nowrap; gap: 8px; overflow-x: auto; }
 .viewer-modes .muted { margin-left: auto; font-size: var(--text-sm); }

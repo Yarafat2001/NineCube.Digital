@@ -79,7 +79,7 @@ describe('Gift cards page is built from the house system', () => {
     expect(onCert).toContain('border-color: var(--cert-rule)');
     expect(onCert).toContain('color: var(--cert-ink)');
     // The default button paint is more specific than .btn--on-cert, so it has to opt out by name.
-    expect(modern).toContain(':not(.btn--on-cert) {');
+    expect(modern).toContain(':not(.btn--on-cert)');
   });
 
   it('sits the whole screen on one divided plate instead of stacked glass cards', () => {
