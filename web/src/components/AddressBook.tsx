@@ -114,7 +114,8 @@ export function AddressFields({ draft, setDraft, errors, checkout = false }: { d
       {(draft.countryCode ?? 'BD') !== 'BD' && <small className="muted">{t('Delivery availability and fees are checked at checkout.')}</small>}
       {errors.countryCode && <span role="alert" className="error">{errors.countryCode.map(message => t(message)).join(' ')}</span>}
     </div>
-    {!checkout && <div className="field address-fields__wide"><div className="segmented address-type" role="group" aria-label={t('Address type')}>
+    {!checkout && <div className="field address-fields__wide"><span className="field__label-row" id={`${prefix}-type`}>{t('Address type')}</span>
+      <div className="segmented address-type" role="group" aria-labelledby={`${prefix}-type`}>
       {['Home', 'Work', 'Other'].map(label => <button key={label} type="button" className={`segmented__option ${draft.label === label ? 'segmented__option--active' : ''}`} aria-pressed={draft.label === label} onClick={() => setDraft({ ...draft, label })}>{t(label)}</button>)}
     </div></div>}
     {!checkout && input('label', 'Label', { required: true, maxLength: 60 })}

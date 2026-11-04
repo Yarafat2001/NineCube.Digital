@@ -11,7 +11,12 @@ import type { Product } from '../../api/types';
 
 export type MerchandisingTab = 'trending' | 'discounts' | 'new';
 
-export function HomeFeaturedDeals() {
+export interface HomeFeaturedDealsProps {
+  onToggleCompare?: (product: Product) => void;
+  compareItems?: Product[];
+}
+
+export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFeaturedDealsProps) {
   useLanguage();
   const [activeTab, setActiveTab] = useState<MerchandisingTab>('trending');
   const { data, isLoading, isError, error, refetch } = useProducts({ q: '', page: 1, pageSize: 24, inStock: true });
@@ -102,6 +107,7 @@ export function HomeFeaturedDeals() {
             ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
             : 0;
           const isJustAdded = justAddedId === product.id;
+          const isComparing = compareItems.some(x => x.id === product.id);
 
           return (
             <article key={product.id} className="home-deal-card">
@@ -135,21 +141,39 @@ export function HomeFeaturedDeals() {
                     )}
                   </div>
 
-                  {product.hasVariants ? (
-                    <Link className="btn btn--primary btn--sm" to={`/products/${product.id}`}>
-                      {t("Choose options")}
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      className={`btn btn--primary btn--sm home-deal-add-btn ${isJustAdded ? 'btn--success' : ''}`}
-                      onClick={(e) => handleAddToCart(e, product)}
-                      aria-label={`${t("Add to cart")} ${product.name}`}
-                    >
-                      <Icon name={isJustAdded ? "check" : "cart"} width={14} height={14} />
-                      <span>{isJustAdded ? t("Added!") : t("Add to cart")}</span>
-                    </button>
-                  )}
+                  <div className="home-deal-btn-group">
+                    {product.hasVariants ? (
+                      <Link className="btn btn--primary btn--sm" to={`/products/${product.id}`}>
+                        {t("Choose options")}
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        className={`btn btn--primary btn--sm home-deal-add-btn ${isJustAdded ? 'btn--success' : ''}`}
+                        onClick={(e) => handleAddToCart(e, product)}
+                        aria-label={`${t("Add to cart")} ${product.name}`}
+                      >
+                        <Icon name={isJustAdded ? "check" : "cart"} width={14} height={14} />
+                        <span>{isJustAdded ? t("Added!") : t("Add to cart")}</span>
+                      </button>
+                    )}
+
+                    {onToggleCompare ? (
+                      <button
+                        type="button"
+                        className={`home-deal-compare-btn ${isComparing ? 'home-deal-compare-btn--active' : ''}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onToggleCompare(product);
+                        }}
+                        aria-pressed={isComparing}
+                        title={t(isComparing ? "Remove from comparison" : "Compare")}
+                      >
+                        <span aria-hidden="true">⇄</span> {isComparing ? t("Comparing") : t("Compare")}
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </article>

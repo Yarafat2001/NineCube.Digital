@@ -715,3 +715,373 @@
     box-sizing: border-box;
   }
 }
+
+
+/* ==========================================================================
+   Flagship Brand Lounges Ribbon
+   ========================================================================== */
+.home-brands-section {
+  width: 100%;
+  max-width: 1380px;
+  margin: 56px auto 0;
+  padding: 0 clamp(16px, 4vw, 48px);
+  box-sizing: border-box;
+}
+
+.home-brand-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.home-brand-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 14px;
+  border-radius: 16px;
+  background: var(--product-card-glass, var(--surface));
+  border: 1px solid var(--nav-glass-edge, var(--border));
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+  text-decoration: none;
+  color: var(--text);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.home-brand-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+.home-brand-monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--selected-bg);
+  color: var(--accent-text);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--selected-bar);
+  transition: transform var(--transition-fast);
+}
+
+.home-brand-card:hover .home-brand-monogram {
+  transform: scale(1.1);
+}
+
+.home-brand-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.home-brand-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.home-brand-name {
+  font-size: var(--text-sm);
+  font-weight: 750;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-brand-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-pill);
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+.home-brand-count {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Home Deals Comparison Group
+   ========================================================================== */
+.home-deal-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.home-deal-compare-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  font-weight: 650;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-navbar, rgba(255, 255, 255, 0.06));
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.home-deal-compare-btn:hover {
+  background: var(--selected-bg);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.home-deal-compare-btn--active {
+  background: var(--accent-gradient) !important;
+  color: var(--on-accent, #ffffff) !important;
+  border-color: transparent !important;
+}
+
+/* ==========================================================================
+   Live Regional Fulfillment Pulse & Reviews Radar
+   ========================================================================== */
+.home-pulse-section {
+  width: 100%;
+  max-width: 1380px;
+  margin: 56px auto 0;
+  padding: 0 clamp(16px, 4vw, 48px);
+  box-sizing: border-box;
+}
+
+.home-pulse-ticker-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  border-radius: 16px;
+  background: var(--product-card-glass, var(--surface));
+  border: 1px solid var(--nav-glass-edge, var(--border));
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.home-pulse-radar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.home-pulse-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: radarPulse 2s infinite ease-in-out;
+}
+
+@keyframes radarPulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.home-pulse-radar-text {
+  font-size: var(--text-xs);
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #10b981;
+}
+
+.home-pulse-message-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+  color: var(--text);
+  flex-wrap: wrap;
+}
+
+.home-pulse-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--selected-bg);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--selected-bar);
+}
+
+.home-pulse-item-text {
+  font-size: var(--text-sm);
+}
+
+.home-pulse-time {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* Reviews Block */
+.home-reviews-score-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.home-reviews-stars {
+  color: #f59e0b;
+  font-size: var(--text-sm);
+  letter-spacing: 2px;
+}
+
+.home-reviews-rating {
+  font-size: var(--text-md);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.home-reviews-sub {
+  font-size: 11px;
+  color: #10b981;
+  font-weight: 700;
+}
+
+.home-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.home-review-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--product-card-glass, var(--surface));
+  border: 1px solid var(--nav-glass-edge, var(--border));
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--card-shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.home-review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.home-review-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.home-review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: var(--on-accent, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.home-review-author-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.home-review-author {
+  font-size: var(--text-sm);
+  font-weight: 750;
+  color: var(--text);
+}
+
+.home-review-loc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.home-review-badge {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.home-review-card-stars {
+  color: #f59e0b;
+  font-size: var(--text-xs);
+  letter-spacing: 1px;
+}
+
+.home-review-quote {
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0 0 16px;
+  font-style: italic;
+}
+
+.home-review-product-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--text-muted);
+  background: var(--surface-navbar, rgba(255, 255, 255, 0.05));
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  width: fit-content;
+}
+
+@media (max-width: 900px) {
+  .home-brand-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .home-reviews-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .home-brand-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .home-pulse-ticker-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .home-reviews-score-pill {
+    align-items: flex-start;
+  }
+}

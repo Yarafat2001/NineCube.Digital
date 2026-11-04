@@ -6,11 +6,17 @@ import { ShowcaseFooterContent } from './ShowcaseFooterContent';
 import { showcaseCopy } from './showcaseCopy';
 import { CARD_COUNT, cardCategories, describeCardArtwork } from './cardAssets';
 import type { ShowcaseFallbackReason } from './support';
+import type { Product } from '../api/types';
 import { RecentlyViewed } from '../components/RecentlyViewed';
 import { HomeTrustBar } from '../components/home/HomeTrustBar';
 import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
+import { HomeBrandStrip } from '../components/home/HomeBrandStrip';
 import { HomeFeaturedDeals } from '../components/home/HomeFeaturedDeals';
+import { HomeDeliveryPulse } from '../components/home/HomeDeliveryPulse';
 import { HomeNewsletter } from '../components/home/HomeNewsletter';
+import { CompareTray } from '../components/CompareTray';
+import { useToast } from '../components/ui';
+import { useCart } from '../state/CartContext';
 import './showcase.css';
 
 export interface ShowcaseFallbackProps {
@@ -43,11 +49,28 @@ const TRENDING_KEYWORDS = [
 export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFallbackProps) {
   useLanguage();
   const navigate = useNavigate();
+  const toast = useToast();
+  const cart = useCart();
   const [search, setSearch] = useState('');
+  const [compareItems, setCompareItems] = useState<Product[]>([]);
+
   const cards = useMemo(
     () => Array.from({ length: CARD_COUNT }, (_, index) => ({ index, src: cardAssets[index] ?? '' })),
     [cardAssets]
   );
+
+  const handleToggleCompare = (p: Product) => {
+    setCompareItems((prev) => {
+      if (prev.some((x) => x.id === p.id)) {
+        return prev.filter((x) => x.id !== p.id);
+      }
+      if (prev.length >= 4) {
+        toast.push('info', t('You can compare up to 4 products at once.'));
+        return prev;
+      }
+      return [...prev, p];
+    });
+  };
 
   return (
     <div className="showcase showcase--static" data-testid="showcase">
@@ -102,7 +125,9 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
 
       <HomeTrustBar />
       <HomeCategoryStrip />
-      <HomeFeaturedDeals />
+      <HomeBrandStrip />
+      <HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} />
+      <HomeDeliveryPulse />
       <div className="home-recent-section"><RecentlyViewed /></div>
       <HomeNewsletter />
 
@@ -134,6 +159,16 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
       <footer className="showcase__outro" aria-label={t("NineCube home footer")}>
         <div className="showcase-footer-content"><ShowcaseFooterContent /></div>
       </footer>
+
+      <CompareTray
+        items={compareItems}
+        onRemove={(id) => setCompareItems((prev) => prev.filter((x) => x.id !== id))}
+        onClear={() => setCompareItems([])}
+        onAddToCart={(p) => {
+          cart.add(p, 1);
+          toast.push('success', `${t("Added")} ${p.name} ${t("to your cart.")}`);
+        }}
+      />
     </div>
   );
 }
