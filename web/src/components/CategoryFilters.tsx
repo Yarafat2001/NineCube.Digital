@@ -8,7 +8,9 @@ import { formatMoneyWhole } from '../lib/helpers';
 import { LoadingBlock, Modal } from './ui';
 import { useCategoryFacets, useTagFacets } from '../lib/useCategoryFacets';
 
-export function flattenCategories(tree: Category[]): Category[] { return tree.flatMap(c => [c, ...flattenCategories(c.children)]); }
+export function flattenCategories(tree?: Category[] | null): Category[] {
+  return (tree ?? []).flatMap(c => [c, ...flattenCategories(c?.children ?? [])]);
+}
 
 /**
  * "Brand: Walton" tags are leftover plumbing from the seeded catalogue: the brand lives on the
@@ -43,19 +45,20 @@ export function CategoryTree({ tree, selected, onSelect, directOnly = false, inS
     }
   };
   const nodes = (list: Category[]) => list.map(c => {
-    const activeBranch = flattenCategories(c.children).some(x => x.slug === selected);
+    const activeBranch = flattenCategories(c?.children).some(x => x.slug === selected);
     const open = expanded.get(c.id) ?? (activeBranch || selected === c.slug);
     const count = categoryCount(c, directOnly, inStockOnly);
-    return <li key={c.id} role="treeitem" tabIndex={0} aria-selected={selected === c.slug} aria-expanded={c.children.length ? open : undefined}
+    const hasChildren = Boolean(c?.children && c.children.length > 0);
+    return <li key={c.id} role="treeitem" tabIndex={0} aria-selected={selected === c.slug} aria-expanded={hasChildren ? open : undefined}
       aria-label={t(`${c.name}, ${count.label}`)} onKeyDown={event => key(event, c)}>
       <div className="category-tree__row" data-selected={selected === c.slug} data-branch={activeBranch}>
-        {c.children.length ? <button type="button" className="category-tree__toggle" aria-label={t(`${open ? 'Collapse' : 'Expand'} ${c.name}`)} onClick={() => toggle(c.id)}>{t(open ? '−' : '+')}</button> : <span className="category-tree__spacer" aria-hidden="true" />}
+        {hasChildren ? <button type="button" className="category-tree__toggle" aria-label={t(`${open ? 'Collapse' : 'Expand'} ${c.name}`)} onClick={() => toggle(c.id)}>{t(open ? '−' : '+')}</button> : <span className="category-tree__spacer" aria-hidden="true" />}
         <button type="button" onClick={() => onSelect(c.slug)} className="category-tree__select">
           <span className="category-tree__label">{selected === c.slug && <span aria-hidden="true">{t("✓ ")}</span>}{t(c.name)}</span>
           <span className="category-tree__count">{t(count.value)}{count.hint ? <span className="category-tree__hint">{t(count.hint)}</span> : null}</span>
         </button>
       </div>
-      {c.children.length > 0 && open && <ul role="group">{t(nodes(c.children))}</ul>}
+      {hasChildren && open && <ul role="group">{t(nodes(c.children!))}</ul>}
     </li>;
   });
   return <div>

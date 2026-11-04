@@ -1252,3 +1252,239 @@ main .link-button:is(:hover, :focus-visible, :active),
     transform: scale(0.97);
   }
 }
+
+/* ==========================================================================
+   Modern Mobile 2-Column Catalogue Grid & Card UX (<= 640px)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .grid-products {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    perspective: none !important;
+  }
+
+  .product-card {
+    border-radius: 14px !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .product-card__media {
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 10px !important;
+    transform: none !important;
+  }
+
+  .product-card__media img {
+    object-fit: contain !important;
+    padding: 6px !important;
+  }
+
+  .product-card__body {
+    padding: 8px 8px 4px !important;
+    gap: 3px !important;
+    flex: 1 1 auto !important;
+  }
+
+  .product-card__brand {
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+  }
+
+  .product-card__name {
+    font-size: 12px !important;
+    line-height: 1.25 !important;
+    max-height: 30px !important;
+    margin: 2px 0 4px !important;
+    -webkit-line-clamp: 2 !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .product-card__price {
+    font-size: 13px !important;
+    font-weight: 750 !important;
+  }
+
+  .product-card__footer {
+    padding: 0 8px 8px !important;
+    margin-top: auto !important;
+  }
+
+  .product-card__btn-add {
+    width: 100% !important;
+    min-height: 34px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 6px 8px !important;
+    border-radius: var(--radius-pill) !important;
+    justify-content: center !important;
+  }
+
+  /* Quick View button explicitly visible on touch / mobile devices */
+  .product-card__quick-view-btn {
+    opacity: 1 !important;
+    visibility: visible !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    border-radius: var(--radius-pill) !important;
+    background: var(--surface-glass, rgba(255, 255, 255, 0.85)) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .product-card__wishlist-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    border-radius: var(--radius-pill) !important;
+  }
+
+  /* Hide verbose tag clouds and secondary bars on mobile to keep 2-column cards clean */
+  .product-category-chips,
+  .product-card__secondary-bar {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Active Filters Single-Row Horizontal Swipe Rail (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .filter-chips--active {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 6px !important;
+    padding: 6px 4px 8px !important;
+    margin-inline: 0 !important;
+    border-radius: var(--radius-md) !important;
+    margin-bottom: 10px !important;
+  }
+
+  .filter-chips--active::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-chips--active .filter-chip {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+    border-radius: var(--radius-pill) !important;
+  }
+
+  .filter-chip--clear-all {
+    flex-shrink: 0 !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* ==========================================================================
+   Recently Viewed Horizontal Swipe Shelf - Low Scrolling Time (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .recently-viewed__grid {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    scrollbar-width: none !important;
+    gap: 10px !important;
+    padding: 6px 2px 10px !important;
+  }
+
+  .recently-viewed__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .recently-viewed__card {
+    flex: 0 0 135px !important;
+    width: 135px !important;
+    min-width: 135px !important;
+    max-width: 135px !important;
+    scroll-snap-align: start !important;
+    padding: 8px !important;
+    border-radius: var(--radius-md) !important;
+  }
+
+  .recently-viewed__thumb-link {
+    height: 105px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .recently-viewed__brand {
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+  }
+
+  .recently-viewed__name {
+    font-size: 11px !important;
+    max-height: 28px !important;
+    -webkit-line-clamp: 2 !important;
+    margin: 2px 0 4px !important;
+    line-height: 1.25 !important;
+  }
+
+  .recently-viewed__price {
+    font-size: 12px !important;
+  }
+
+  .recently-viewed__add-btn {
+    min-height: 28px !important;
+    font-size: 10px !important;
+    padding: 3px 6px !important;
+    border-radius: var(--radius-pill) !important;
+  }
+}
+
+/* ==========================================================================
+   Mobile Filter Drawer Touch Bottom Sheet
+   ========================================================================== */
+@media (max-width: 768px) {
+  .modal-backdrop:has(.filter-drawer) {
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+
+  .modal:has(.filter-drawer) {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 90dvh !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-bottom: 0 !important;
+    margin: 0 !important;
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .filter-drawer__actions {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 10 !important;
+    display: flex !important;
+    gap: 10px !important;
+    padding: 10px 0 4px !important;
+    background: var(--surface) !important;
+    border-top: 1px solid var(--border) !important;
+  }
+
+  .filter-drawer__actions .btn--primary {
+    flex: 2 !important;
+    min-height: 44px !important;
+    border-radius: var(--radius-pill) !important;
+  }
+
+  .filter-drawer__actions .btn--ghost {
+    flex: 1 !important;
+    min-height: 44px !important;
+    border-radius: var(--radius-pill) !important;
+  }
+}

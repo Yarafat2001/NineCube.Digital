@@ -118,6 +118,21 @@
   cursor: pointer;
 }
 
+.account-menu-portal {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+
+.account-menu-portal::-webkit-scrollbar {
+  width: 5px;
+}
+
+.account-menu-portal::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+}
+
 .account-menu__header {
   display: flex;
   align-items: center;

@@ -13,39 +13,69 @@ function usePopover(menu = false) {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ top: 0, left: 0, width: 320, maxHeight: 600 });
+  const [position, setPosition] = useState<React.CSSProperties>({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: menu ? 248 : 340,
+    maxHeight: 520,
+    zIndex: 9999,
+  });
   const close = () => { setOpen(false); trigger.current?.focus(); };
+
   useLayoutEffect(() => {
     if (!open) return;
     const place = () => {
       if (!trigger.current) return;
       const rect = trigger.current.getBoundingClientRect();
-      const width = menu ? 240 : Math.min(360, window.innerWidth - 24);
-      const left = Math.max(12, Math.min(rect.right - width, window.innerWidth - width - 12));
-      const top = rect.bottom + 8;
-      setPosition({ top, left, width, maxHeight: Math.max(160, window.innerHeight - top - 16) });
+      const width = menu ? 248 : Math.min(360, window.innerWidth - 24);
+      const left = Math.max(12, Math.min(Math.round(rect.right - width), window.innerWidth - width - 12));
+      const top = Math.round(rect.bottom + 8);
+      const maxHeight = Math.max(180, Math.min(540, window.innerHeight - top - 16));
+
+      setPosition({
+        position: 'fixed',
+        top: `${top}px`,
+        left: `${left}px`,
+        width: `${width}px`,
+        maxHeight: `${maxHeight}px`,
+        zIndex: 9999,
+      });
     };
+
     place();
-    if (menu) panel.current?.querySelector<HTMLElement>('[role=menuitem]')?.focus();
-    window.addEventListener('resize', place); window.addEventListener('scroll', place, true);
-    return () => { window.removeEventListener('resize', place); window.removeEventListener('scroll', place, true); };
+    if (menu) {
+      panel.current?.querySelector<HTMLElement>('[role=menuitem]')?.focus({ preventScroll: true });
+    }
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', place, true);
+    return () => {
+      window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', place, true);
+    };
   }, [open, menu]);
+
   useEffect(() => {
     if (!open) return;
     const pointer = (event: PointerEvent) => {
       if (!panel.current?.contains(event.target as Node) && !trigger.current?.contains(event.target as Node)) close();
     };
     const key = (event: globalThis.KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); close(); } };
-    document.addEventListener('pointerdown', pointer); document.addEventListener('keydown', key);
-    return () => { document.removeEventListener('pointerdown', pointer); document.removeEventListener('keydown', key); };
+    document.addEventListener('pointerdown', pointer);
+    document.addEventListener('keydown', key);
+    return () => {
+      document.removeEventListener('pointerdown', pointer);
+      document.removeEventListener('keydown', key);
+    };
   }, [open]);
+
   const keyboard = (event: KeyboardEvent) => {
     if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
     const items = Array.from(panel.current?.querySelectorAll<HTMLElement>('[role=menuitem]') ?? []);
     const index = items.indexOf(document.activeElement as HTMLElement);
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowUp' ? -1 : 1) + items.length) % items.length;
-    items[next]?.focus();
+    items[next]?.focus({ preventScroll: true });
   };
   return { open, setOpen, close, trigger, panel, position, keyboard };
 }
@@ -283,12 +313,39 @@ export function AccountMenu() {
   const pop = usePopover(true);
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverOpenedAt = useRef<number>(0);
+
+  const handleMouseEnter = () => {
+    if (isMobile) return;
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverOpenedAt.current = Date.now();
+    pop.setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (isMobile) return;
+    hoverTimer.current = setTimeout(() => {
+      pop.setOpen(false);
+    }, 240);
+  };
+
+  const handleTriggerClick = () => {
+    // If just opened via hover (e.g. mouse movement right before click), don't close it immediately
+    if (pop.open && Date.now() - hoverOpenedAt.current < 500) {
+      return;
+    }
+    pop.setOpen(!pop.open);
+  };
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 768px)');
     const onChange = () => setIsMobile(media.matches);
     media.addEventListener('change', onChange);
-    return () => media.removeEventListener('change', onChange);
+    return () => {
+      media.removeEventListener('change', onChange);
+      if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -335,9 +392,10 @@ export function AccountMenu() {
   );
 
   return (
-    <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}>
+    <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}
+      onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label={t("Account")} aria-expanded={pop.open} aria-haspopup="menu"
-        onClick={() => pop.setOpen(!pop.open)} onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pop.setOpen(true); } }}>
+        onClick={handleTriggerClick} onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pop.setOpen(true); } }}>
         <span className="avatar avatar--small" aria-hidden="true">{t(user.email[0].toUpperCase())}</span>
         <span className="account-name" title={t(user.email)}>{t(user.email.split('@')[0])}</span>
         <Icon name="chevron" className="account-chevron" data-open={pop.open} />
@@ -357,7 +415,8 @@ export function AccountMenu() {
           )
         ) : (
           createPortal(
-            <div ref={pop.panel} style={pop.position} className="nav-pop__panel nav-pop__portal account-menu-portal" role="menu" aria-label={t("Account")} onKeyDown={pop.keyboard}>
+            <div ref={pop.panel} style={pop.position} className="nav-pop__panel nav-pop__portal account-menu-portal" role="menu" aria-label={t("Account")} onKeyDown={pop.keyboard}
+              onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
               {menuItems}
             </div>,
             document.body
