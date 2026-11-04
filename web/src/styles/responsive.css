@@ -171,27 +171,29 @@ main .link-button:is(:hover, :focus-visible, :active),
   .recent-list li > .row { flex-wrap: wrap; }
   .viewer-controls .btn, .viewer-modes .btn { min-height: 44px; }
 }
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  /* Sleek, Single-Row Mobile Header (no duplicate bottom tabs) */
   .navbar {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto auto !important;
-    grid-template-areas:
-      "brand theme actions"
-      "tray  tray  tray" !important;
-    gap: 8px 6px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 48px !important;
+    min-height: 48px !important;
     width: calc(100% - 16px) !important;
     max-width: calc(100% - 16px) !important;
-    padding: 8px 10px !important;
+    padding: 0 12px !important;
     margin: 8px auto 0 !important;
-    border-radius: 20px !important;
+    border-radius: 9999px !important;
     position: sticky !important;
     top: var(--header-top, 8px) !important;
+    gap: 8px !important;
+    z-index: var(--z-nav, 100) !important;
   }
   .navbar .navbar__brand {
-    grid-area: brand !important;
     margin: 0 !important;
     align-self: center !important;
-    justify-self: start !important;
+    flex: 0 0 auto !important;
     min-width: 0 !important;
   }
   .navbar .navbar__brand .brand {
@@ -211,16 +213,24 @@ main .link-button:is(:hover, :focus-visible, :active),
   .navbar .navbar__brand .brand__digital {
     display: none !important;
   }
+  /* On mobile <=768px, Row 2 tray is completely hidden: thumb bottom bar provides Explore & Account! */
+  .navbar .navbar__tray {
+    display: none !important;
+  }
+  /* Redundant Cart and Account buttons are hidden from top bar on mobile: bottom bar has live Cart & Account! */
+  .navbar .navbar__cart-desktop,
+  .navbar .navbar__account-desktop,
+  .navbar .navbar__cta--desktop,
+  .navbar .navbar__user {
+    display: none !important;
+  }
   :root .navbar .theme-controls {
-    grid-area: theme !important;
-    justify-self: end !important;
     align-self: center !important;
     padding: 1px !important;
     gap: 2px !important;
     width: max-content !important;
-    max-width: none !important;
-    border-radius: 999px !important;
-    overflow: visible !important;
+    border-radius: 9999px !important;
+    margin: 0 !important;
   }
   :root .navbar .theme-control {
     width: 30px !important;
@@ -238,15 +248,12 @@ main .link-button:is(:hover, :focus-visible, :active),
     height: 15px !important;
     flex-shrink: 0 !important;
   }
-  .navbar .navbar__user { display: none !important; }
   .navbar .navbar__actions {
-    grid-area: actions !important;
-    gap: 3px !important;
-    padding: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
-    justify-self: end !important;
-    align-self: center !important;
+    gap: 4px !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   .navbar .navbar__actions .nav-pop__trigger,
   .navbar .navbar__actions .nav-control {
@@ -262,59 +269,10 @@ main .link-button:is(:hover, :focus-visible, :active),
     position: relative !important;
     border-radius: 50% !important;
   }
-  .navbar .avatar--small {
-    width: 26px !important;
-    height: 26px !important;
-    min-width: 26px !important;
-    min-height: 26px !important;
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    line-height: 26px !important;
-    border-radius: 50% !important;
-    display: grid !important;
-    place-items: center !important;
-    flex-shrink: 0 !important;
-    margin: 0 !important;
-  }
-  .navbar .navbar__cta {
-    min-height: 32px !important;
-    height: 32px !important;
-    padding: 4px 10px !important;
-    font-size: 12px !important;
-    white-space: nowrap !important;
-    border-radius: var(--radius-pill) !important;
-  }
-  .navbar .account-name, .navbar .account-chevron { display: none !important; }
-  .navbar .nav-pop__badge { position: absolute !important; right: -2px !important; top: -4px !important; }
-  .navbar .navbar__tray {
-    grid-area: tray !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    display: flex !important;
-    justify-content: stretch !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    scrollbar-width: none !important;
-    -webkit-overflow-scrolling: touch !important;
-    padding: 2px !important;
-    gap: 6px !important;
-    align-self: center !important;
-  }
-  .navbar .navbar__tray::-webkit-scrollbar { display: none; }
-  .navbar .navbar__link {
-    flex: 1 1 0 !important;
-    min-width: max-content !important;
-    min-height: 36px !important;
-    height: 36px !important;
-    padding: 6px 14px !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    border-radius: var(--radius-pill) !important;
-    white-space: nowrap !important;
+  .navbar .nav-pop__badge {
+    position: absolute !important;
+    right: -2px !important;
+    top: -4px !important;
   }
   .dashboard-stats, .sales-stats { grid-template-columns: minmax(0, 1fr); }
   .product-detail__thumbs { flex-wrap: nowrap; overflow-x: auto; padding: 4px; }
@@ -1137,5 +1095,160 @@ main .link-button:is(:hover, :focus-visible, :active),
     min-height: 42px !important;
     font-size: 12px !important;
     padding: 6px 10px !important;
+  }
+}
+
+/* ==========================================================================
+   Dynamic Category Quick-Pill Rail & Mobile Catalogue Utility Toolbar
+   ========================================================================== */
+
+.category-pill-rail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 0 10px;
+  margin-bottom: 4px;
+}
+
+.category-pill-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.category-pill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong, rgba(0, 0, 0, 0.12));
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.category-pill-item:active {
+  transform: scale(0.96);
+}
+
+.category-pill-item--active {
+  background: var(--accent-gradient, linear-gradient(135deg, #f59e0b, #d97706)) !important;
+  color: #111827 !important;
+  border-color: #fcd34d !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35) !important;
+}
+
+.category-pill-count {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.08);
+  line-height: 1.2;
+}
+
+:root[data-theme='dark'] .category-pill-count {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+:root[data-theme='dark'] .category-pill-item--active .category-pill-count {
+  background: rgba(0, 0, 0, 0.2);
+  color: #111827;
+}
+
+/* Mobile Catalogue Toolbar (Filter & Sort) */
+.catalogue-mobile-toolbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .catalogue-mobile-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    border-radius: var(--radius-lg, 12px);
+    background: var(--surface-muted, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--border);
+  }
+
+  .catalogue-mobile-toolbar__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .toolbar-badge {
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent, #d97706);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: inline-grid;
+    place-items: center;
+    padding: 0 4px;
+  }
+
+  .catalogue-mobile-toolbar__sort {
+    flex: 1;
+    max-width: 170px;
+  }
+
+  .catalogue-mobile-toolbar__select {
+    width: 100%;
+    min-height: 36px;
+    padding: 0 10px;
+    border-radius: 9999px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .catalogue-mobile-toolbar__count {
+    font-size: 11px;
+    white-space: nowrap;
+    align-self: center;
+  }
+}
+
+/* Touch & Android Hover Suppression */
+@media (hover: none) {
+  .btn:hover,
+  .nav-pop__item:hover,
+  .filter-chip:hover,
+  .product-card:hover {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn:active,
+  .category-pill-item:active,
+  .filter-chip:active {
+    transform: scale(0.97);
   }
 }

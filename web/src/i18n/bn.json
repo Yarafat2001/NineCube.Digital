@@ -2282,5 +2282,10 @@
   "More popular picks from this category": "এই ক্যাটাগরির আরও জনপ্রিয় পণ্য",
   "Quick purchase": "দ্রুত ক্রয়",
   "Active filters:": "সক্রিয় ফিল্টারসমূহ:",
-  "Clear all filters": "সব ফিল্টার মুছুন"
+  "Clear all filters": "সব ফিল্টার মুছুন",
+  "Filter": "ফিল্টার",
+  "Sort: Name": "সাজান: নাম",
+  "Sort: Price Low-High": "সাজান: দাম কম-বেশি",
+  "Sort: Stock High-Low": "সাজান: মজুত বেশি-কম",
+  "Sort: Newest": "সাজান: নতুনতম"
 }

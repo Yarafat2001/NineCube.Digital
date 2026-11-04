@@ -442,6 +442,71 @@ export function ProductsPage() {
       </div>
       {categoryNotice || brandNotice ? <p role="status">{t([categoryNotice, brandNotice].filter(Boolean).join(' '))}</p> : null}
 
+      {/* Dynamic Mobile & Touch Category Rail */}
+      {tree.length > 0 ? (
+        <nav className="category-pill-rail" aria-label={t("Product categories")}>
+          <button
+            type="button"
+            className={`category-pill-item ${!params.get('category') ? 'category-pill-item--active' : ''}`}
+            onClick={() => changeFilters({ category: null })}
+            aria-pressed={!params.get('category')}
+          >
+            <span>{t("All")}</span>
+          </button>
+          {tree.map(cat => {
+            const isActive = params.get('category') === cat.slug;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                className={`category-pill-item ${isActive ? 'category-pill-item--active' : ''}`}
+                onClick={() => changeFilters({ category: cat.slug })}
+                aria-pressed={isActive}
+              >
+                <span>{t(cat.name)}</span>
+                {cat.productCount > 0 ? (
+                  <span className="category-pill-count">{cat.productCount}</span>
+                ) : null}
+              </button>
+            );
+          })}
+        </nav>
+      ) : null}
+
+      {/* Mobile Toolbar: Quick Filter trigger & Quick Sort */}
+      <div className="catalogue-mobile-toolbar">
+        <button
+          type="button"
+          className="btn btn--sm catalogue-mobile-toolbar__btn"
+          onClick={() => document.dispatchEvent(new CustomEvent('ninecube:open-filters'))}
+          aria-label={t("Filter products")}
+        >
+          <Icon name="grid" width={14} height={14} />
+          <span>{t("Filter")}</span>
+          {chips.length > 0 ? <span className="toolbar-badge">{chips.length}</span> : null}
+        </button>
+
+        <div className="catalogue-mobile-toolbar__sort">
+          <label htmlFor="mobile-sort-select" className="visually-hidden">{t("Sort by")}</label>
+          <select
+            id="mobile-sort-select"
+            className="catalogue-mobile-toolbar__select"
+            value={params.get('sort') ?? ''}
+            onChange={e => changeFilters({ sort: e.target.value || null })}
+            aria-label={t("Sort by")}
+          >
+            <option value="">{t("Sort: Name")}</option>
+            <option value="price">{t("Sort: Price Low-High")}</option>
+            <option value="stock">{t("Sort: Stock High-Low")}</option>
+            <option value="newest">{t("Sort: Newest")}</option>
+          </select>
+        </div>
+
+        <span className="catalogue-mobile-toolbar__count muted">
+          {productsQuery.data?.totalCount ?? 0} {t("items")}
+        </span>
+      </div>
+
       <div className="filter-chips filter-chips--active" aria-label={t("Active filters")} hidden={chips.length === 0}>
         <span className="active-filters-label">{t("Active filters:")}</span>
         {chips.map(chip => (

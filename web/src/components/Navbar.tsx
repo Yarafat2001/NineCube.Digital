@@ -190,16 +190,16 @@ export function Navbar() {
               cart + bell + account — same container effect as Products/My Orders. */}
           <span className="navbar__actions" role="group" aria-label={t("Cart, notifications and account")}>
             <GlobalSearch />
-            {user.role === 'Customer' ? <CartButton /> : null}
+            {user.role === 'Customer' ? <span className="navbar__cart-desktop"><CartButton /></span> : null}
             <NotificationBell />
-            <AccountMenu />
+            <span className="navbar__account-desktop"><AccountMenu /></span>
           </span>
         </>
       ) : (
         <span className="navbar__actions" role="group" aria-label={t("Cart, notifications and account")}>
           <GlobalSearch />
-          <CartButton />
-          <Link className="btn btn--primary navbar__cta" to="/login">
+          <span className="navbar__cart-desktop"><CartButton /></span>
+          <Link className="btn btn--primary navbar__cta navbar__cta--desktop" to="/login">
             {t("Sign in")}</Link>
         </span>
       )}
