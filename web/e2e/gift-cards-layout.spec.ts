@@ -37,7 +37,7 @@ test('gift card controls align and both views fit desktop and mobile', async ({ 
       }
     }
     expect(version).toBeDefined();
-    expect((await version.json()).version).toBe(release);
+    expect((await version!.json()).version).toBe(release);
   }
   const gift = page.locator('.gift-page');
   await expect(gift.getByRole('heading', { level: 1 })).toBeVisible();
