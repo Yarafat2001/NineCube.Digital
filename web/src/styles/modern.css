@@ -289,7 +289,7 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
    sits on, so a secondary button on a translucent row read as plain text - most visibly in the
    Actions columns. A solid raised surface with the strong edge is what makes it a button on every
    page at once, which is the only way the language stays universal. */
-:root .btn:not(.btn--primary):not(.btn--danger):not(.btn--ghost):not(.btn--outline):not(.btn--on-cert) {
+:root :where(.btn:not(.btn--primary):not(.btn--danger):not(.btn--ghost):not(.btn--outline):not(.btn--on-cert)) {
   background: var(--surface-raised);
   border-color: var(--border-strong);
   box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
@@ -558,3 +558,4 @@ main :is(a[href]:not(.btn):not(.filter-chip):not(.navbar__link), .link-button):h
 .staff-toolbar [hidden], .staff-orders :is(th, td)[hidden] { display: none !important; }
 
 .order-role-notice { padding: 16px 20px; border-left: 3px solid var(--info); line-height: 1.6; }
+@media (prefers-color-scheme: dark) { .recently-viewed__price, .recently-viewed__brand, .recently-viewed__name { color: var(--text); } }

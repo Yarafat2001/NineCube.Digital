@@ -440,3 +440,25 @@
     align-items: flex-start;
   }
 }
+
+/* Theme-aware storefront surfaces; the animated art direction keeps its own palette. */
+.showcase.showcase--static { background: var(--bg-page); color: var(--text); font-family: var(--font-sans); }
+.showcase--static :is(.showcase__hero, .showcase__outro) { background: var(--bg-page); color: var(--text); }
+.showcase--static .showcase__hero { min-height: auto; padding-top: clamp(160px, 18vh, 220px); padding-bottom: 48px; }
+.home-trust-card { text-decoration: none; color: var(--text); border-radius: 12px; }
+.home-trust-card:focus-visible { outline: var(--focus-ring); outline-offset: 6px; }
+.home-deal-card { min-width: 0; background: var(--product-card-glass); backdrop-filter: blur(16px) saturate(140%); }
+.home-deal-pricing { flex-wrap: wrap; }
+.home-category-name { white-space: normal; overflow-wrap: anywhere; }
+.home-search { display: flex; flex-direction: column; gap: 8px; width: min(100%, 640px); margin-top: 24px; }
+.home-search label { font-weight: 650; }
+.home-search__row { display: flex; gap: 8px; }
+.home-search input { flex: 1; min-width: 0; min-height: 48px; }
+.home-search .btn { min-height: 48px; }
+.home-recent-section { max-width: 1380px; width: 100%; margin: 0 auto; padding: 0 clamp(16px, 4vw, 48px); box-sizing: border-box; }
+.showcase--static .showcase__headings { margin-bottom: 24px; }
+.showcase--static .showcase__outro, .showcase--static .showcase-footer-content { min-height: auto; }
+.showcase--static .showcase__outro { padding-top: 48px; }
+@media (max-width: 600px) { .showcase--static .showcase__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 400px) { .home-search__row { flex-direction: column; } }
+@media (prefers-reduced-motion: reduce) { .home-trust-icon, .home-category-card, .home-category-icon, .home-deal-card { transition: none; transform: none !important; } }
