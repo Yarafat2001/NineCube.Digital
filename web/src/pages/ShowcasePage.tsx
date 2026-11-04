@@ -48,6 +48,7 @@ export function ShowcasePage() {
   const [fallback] = useState<ShowcaseFallbackReason | null>(() => detectShowcaseFallback());
   const [sceneFailed, setSceneFailed] = useState(false);
   const [cardAssets, setCardAssets] = useState<readonly string[] | null>(null);
+  const [experienceMode, setExperienceMode] = useState<'storefront' | 'helix'>('storefront');
 
   useEffect(() => {
     let cancelled = false;
@@ -91,14 +92,34 @@ export function ShowcasePage() {
 
   if (reason) return <ShowcaseFallback cardAssets={cardAssets} reason={reason} />;
 
+  if (experienceMode === 'helix') {
+    return (
+      <div className="helix-view-wrapper">
+        <button
+          type="button"
+          className="btn btn--sm helix-back-btn"
+          onClick={() => setExperienceMode('storefront')}
+          aria-label={t("Back to Storefront")}
+        >
+          {t("← Back to Storefront")}
+        </button>
+        <ErrorBoundary
+          fallback={<ShowcaseFallback cardAssets={cardAssets} reason="error" />}
+          onError={onSceneFailure}
+        >
+          <Suspense fallback={<ShowcaseLoading />}>
+            <HelixCanvas cardAssets={cardAssets} onFailure={onSceneFailure} />
+          </Suspense>
+        </ErrorBoundary>
+      </div>
+    );
+  }
+
   return (
-    <ErrorBoundary
-      fallback={<ShowcaseFallback cardAssets={cardAssets} reason="error" />}
-      onError={onSceneFailure}
-    >
-      <Suspense fallback={<ShowcaseLoading />}>
-        <HelixCanvas cardAssets={cardAssets} onFailure={onSceneFailure} />
-      </Suspense>
-    </ErrorBoundary>
+    <ShowcaseFallback
+      cardAssets={cardAssets}
+      reason="reduced-motion"
+      onLaunch3D={() => setExperienceMode('helix')}
+    />
   );
 }

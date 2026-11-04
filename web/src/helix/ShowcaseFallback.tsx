@@ -6,12 +6,16 @@ import { ShowcaseFooterContent } from './ShowcaseFooterContent';
 import { showcaseCopy } from './showcaseCopy';
 import { CARD_COUNT, cardCategories, describeCardArtwork } from './cardAssets';
 import type { ShowcaseFallbackReason } from './support';
+import { HomeTrustBar } from '../components/home/HomeTrustBar';
+import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
+import { HomeFeaturedDeals } from '../components/home/HomeFeaturedDeals';
 import './showcase.css';
 
 export interface ShowcaseFallbackProps {
   /** The same nine images the helix would have used. */
   cardAssets: readonly string[];
   reason: ShowcaseFallbackReason;
+  onLaunch3D?: () => void;
 }
 
 const reasonText: Record<ShowcaseFallbackReason, string> = {
@@ -22,11 +26,10 @@ const reasonText: Record<ShowcaseFallbackReason, string> = {
 };
 
 /**
- * Static counterpart to the scene: the same nine cards, the same copy, no animation. It is a real
- * part of the page rather than a degraded one - it is what a visitor with reduced motion or
- * without WebGL sees, and it is what the showcase falls back to if the scene fails to start.
+ * Modern E-Commerce Storefront: Featuring live warehouse products, verified trust badges,
+ * category discovery shortcuts, and the editorial collection showcase.
  */
-export function ShowcaseFallback({ cardAssets, reason }: ShowcaseFallbackProps) {
+export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFallbackProps) {
   useLanguage();
   const cards = useMemo(
     () => Array.from({ length: CARD_COUNT }, (_, index) => ({ index, src: cardAssets[index] ?? '' })),
@@ -41,9 +44,20 @@ export function ShowcaseFallback({ cardAssets, reason }: ShowcaseFallbackProps) 
           {t(showcaseCopy.brand.line1)} {t(showcaseCopy.brand.line2)}
         </h1>
         <p className="showcase__hero-copy">{t(showcaseCopy.intro)}</p>
-        <Link className="btn btn--primary showcase__hero-cta" to="/products">{t("Explore the collection ")}<span aria-hidden="true">{t("↗")}</span></Link>
+        <div className="showcase__hero-actions">
+          <Link className="btn btn--primary showcase__hero-cta" to="/products">{t("Explore the collection ")}<span aria-hidden="true">{t("↗")}</span></Link>
+          {onLaunch3D ? (
+            <button type="button" className="btn btn--ghost showcase__3d-btn" onClick={onLaunch3D}>
+              {t("✨ 3D Helix Experience")}
+            </button>
+          ) : null}
+        </div>
         <HeroPromotions />
       </section>
+
+      <HomeTrustBar />
+      <HomeCategoryStrip />
+      <HomeFeaturedDeals />
 
       <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
         <div className="showcase__headings">
