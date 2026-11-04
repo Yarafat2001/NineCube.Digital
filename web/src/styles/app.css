@@ -795,6 +795,19 @@
   color: var(--on-accent);
 }
 
+.btn--success {
+  background: var(--ok-bg);
+  border-color: var(--ok-border);
+  color: var(--ok-text);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.18);
+}
+
+.btn--success:hover:not(:disabled) {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: var(--surface);
+}
+
 .btn--ghost {
   background: transparent;
   box-shadow: none;
@@ -815,6 +828,18 @@
 :root[data-theme="dark"] .btn--ghost:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.18);
+}
+
+:root[data-theme="dark"] .btn--success {
+  background: rgba(87, 211, 160, 0.16);
+  border-color: rgba(87, 211, 160, 0.45);
+  color: var(--ok-text);
+}
+
+:root[data-theme="dark"] .btn--success:hover:not(:disabled) {
+  background: rgba(87, 211, 160, 0.28);
+  border-color: rgba(87, 211, 160, 0.6);
+  color: #dffef0;
 }
 
 .btn--outline {
