@@ -7,6 +7,7 @@ import { showcaseCopy } from './showcaseCopy';
 import { CARD_COUNT, cardCategories, describeCardArtwork } from './cardAssets';
 import type { ShowcaseFallbackReason } from './support';
 import type { Product } from '../api/types';
+import { useProducts } from '../api/hooks';
 import { RecentlyViewed } from '../components/RecentlyViewed';
 import { HomeTrustBar } from '../components/home/HomeTrustBar';
 import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
@@ -41,6 +42,127 @@ const TRENDING_KEYWORDS = [
   'Apex',
   'Acer'
 ];
+
+function HomeStorePulse() {
+  const { data } = useProducts({ q: '', page: 1, pageSize: 24, inStock: true });
+  const products = useMemo(
+    () => (data?.items ?? []).filter((product: Product) => product.isActive && product.stockQuantity > 0),
+    [data?.items]
+  );
+
+  const stats = useMemo(() => {
+    if (!products.length) {
+      return {
+        itemCount: 0,
+        lowStock: 0,
+        avgPrice: 0,
+        topCategory: 'Warehouse'
+      };
+    }
+
+    const categoryCounts = new Map<string, number>();
+    products.forEach((product) => {
+      const names = (product.categories ?? []).map((category) => category.name).filter(Boolean);
+      if (!names.length) {
+        categoryCounts.set('General', (categoryCounts.get('General') ?? 0) + 1);
+        return;
+      }
+      names.forEach((name) => categoryCounts.set(name, (categoryCounts.get(name) ?? 0) + 1));
+    });
+
+    const topCategory = [...categoryCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'Warehouse';
+    const avgPrice = products.reduce((sum, product) => sum + product.price, 0) / products.length;
+    const lowStock = products.filter((product) => product.stockQuantity <= 4).length;
+
+    return {
+      itemCount: products.length,
+      lowStock,
+      avgPrice,
+      topCategory
+    };
+  }, [products]);
+
+  const topMoves = useMemo(() => {
+    const sorted = [...products].sort((a, b) => {
+      const discountA = a.compareAtPrice && a.compareAtPrice > a.price ? ((a.compareAtPrice - a.price) / a.compareAtPrice) * 100 : 0;
+      const discountB = b.compareAtPrice && b.compareAtPrice > b.price ? ((b.compareAtPrice - b.price) / b.compareAtPrice) * 100 : 0;
+      return (discountB + b.stockQuantity) - (discountA + a.stockQuantity);
+    });
+    return sorted.slice(0, 3);
+  }, [products]);
+
+  const peakStock = Math.max(1, ...topMoves.map((product) => product.stockQuantity), 12);
+
+  return (
+    <section className="home-store-pulse" aria-label="Live storefront pulse">
+      <div className="home-store-pulse__header">
+        <div>
+          <span className="home-section-kicker">● live warehouse</span>
+          <h2 className="home-section-title">Store pulse</h2>
+        </div>
+        <p className="home-section-desc">Real-time product health from the current catalogue.</p>
+      </div>
+
+      <div className="home-store-pulse__stats">
+        <div className="home-store-pulse__stat">
+          <span className="home-store-pulse__label">Products ready</span>
+          <strong>{stats.itemCount}</strong>
+          <small>live offers</small>
+        </div>
+        <div className="home-store-pulse__stat">
+          <span className="home-store-pulse__label">Low stock</span>
+          <strong>{stats.lowStock}</strong>
+          <small>needs attention</small>
+        </div>
+        <div className="home-store-pulse__stat">
+          <span className="home-store-pulse__label">Avg. item</span>
+          <strong>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'BDT', maximumFractionDigits: 0 }).format(stats.avgPrice)}</strong>
+          <small>current price</small>
+        </div>
+        <div className="home-store-pulse__stat home-store-pulse__stat--highlight">
+          <span className="home-store-pulse__label">Top category</span>
+          <strong>{stats.topCategory}</strong>
+          <small>most active mix</small>
+        </div>
+      </div>
+
+      <div className="home-store-pulse__insights">
+        <div className="home-store-pulse__panel">
+          <h3>Smart picks</h3>
+          {topMoves.length === 0 ? (
+            <p className="home-store-pulse__empty">Inventory is refreshing.</p>
+          ) : (
+            <ul className="home-store-pulse__list">
+              {topMoves.map((product) => {
+                const share = Math.max(18, (product.stockQuantity / peakStock) * 100);
+                return (
+                  <li key={product.id} className="home-store-pulse__item">
+                    <div className="home-store-pulse__item-top">
+                      <span>{product.name}</span>
+                      <strong>{product.stockQuantity} left</strong>
+                    </div>
+                    <div className="home-store-pulse__bar">
+                      <span style={{ width: `${share}%` }} />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+        <div className="home-store-pulse__panel home-store-pulse__panel--accent">
+          <h3>Modern commerce</h3>
+          <ul className="home-store-pulse__features">
+            <li>Dynamic category-led discovery</li>
+            <li>Live stock confidence signals</li>
+            <li>Fast path from hero to product detail</li>
+            <li>Compare, cart, and trust-first UX</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /**
  * Modern E-Commerce Storefront: Featuring live warehouse products, verified trust badges,
@@ -125,6 +247,7 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
 
       <HomeTrustBar />
       <HomeCategoryStrip />
+      <HomeStorePulse />
       <HomeBrandStrip />
       <HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} />
       <HomeDeliveryPulse />

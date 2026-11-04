@@ -409,6 +409,173 @@
 }
 
 /* ==========================================================================
+   Live Store Pulse
+   ========================================================================== */
+.home-store-pulse {
+  width: 100%;
+  max-width: 1380px;
+  margin: 48px auto 0;
+  padding: 0 clamp(16px, 4vw, 48px);
+  box-sizing: border-box;
+}
+
+.home-store-pulse__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.home-store-pulse__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.home-store-pulse__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 18px 18px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+}
+
+.home-store-pulse__stat--highlight {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.10), rgba(255, 255, 255, 0.02));
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.home-store-pulse__label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-muted);
+}
+
+.home-store-pulse__stat strong {
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.home-store-pulse__stat small {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.home-store-pulse__insights {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+}
+
+.home-store-pulse__panel {
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+}
+
+.home-store-pulse__panel h3 {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.home-store-pulse__panel--accent {
+  background: linear-gradient(135deg, rgba(255, 171, 77, 0.08), rgba(255, 255, 255, 0.02));
+  border-color: rgba(255, 171, 77, 0.35);
+}
+
+.home-store-pulse__list,
+.home-store-pulse__features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.home-store-pulse__item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-store-pulse__item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.home-store-pulse__item-top span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-store-pulse__item-top strong {
+  color: var(--accent-text);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.home-store-pulse__bar {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.home-store-pulse__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-text));
+}
+
+.home-store-pulse__features li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--text);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+.home-store-pulse__features li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.home-store-pulse__empty {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+/* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
 @media (max-width: 1024px) {
@@ -420,6 +587,12 @@
   }
   .home-deals-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .home-store-pulse__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .home-store-pulse__insights {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -433,6 +606,9 @@
     gap: 10px;
   }
   .home-deals-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .home-store-pulse__stats {
     grid-template-columns: minmax(0, 1fr);
   }
   .home-section-header {
