@@ -4242,6 +4242,82 @@ td.check input { width: 18px; height: 18px; accent-color: var(--accent); }
   pointer-events: none;
 }
 
+/* ------------------------------------------- account security -----
+   The page used to be three translucent cards of one paragraph each, hand-painted with an inline
+   padding, dropped in a .stack that stretched every button to the full 1376px plate, and a sessions
+   list of bare <li> text: "Nov 4, 2026, 12:12 PM — Nov 11, 2026, 12:12 PM", where the dash said
+   nothing. It now sits on the solid plate the settings tab uses, one block per decision, each with
+   its state in words beside the heading, and the two flows numbered because the server really does
+   need the password and the emailed code in that order. */
+/* The heading is the same flex row the gift cards title uses, so the shield keeps its own column and
+   the caption sits on the heading's first baseline instead of under the icon. */
+.security-page__head h1 { display: flex; align-items: flex-start; gap: 10px; }
+.security-page__head h1 svg { flex: 0 0 auto; margin-block-start: .12em; color: var(--brand); }
+
+.security-page__head p {
+  margin: 0;
+  max-width: 74ch;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* Measured live 2026-11-04: at the full 1376px column a six-digit token box was 1,270px wide and
+   the primary button 1,342px. The plate keeps the house material but takes a reading measure, and
+   the control column is wide enough for a code box and its button on one line. */
+.security-page .settings-plate { max-width: 880px; }
+.security-page .setting-row { grid-template-columns: minmax(0, 1fr) minmax(190px, 280px); }
+.security-page .field > strong { font-size: var(--text-sm); font-weight: 600; }
+
+/* A numbered step is a settings row with its order in front of it, so the same dividing rule the
+   policy list uses keeps the steps readable as one flow rather than four loose controls. */
+.security-steps { display: flex; flex-direction: column; }
+:root .security-page .setting-row.security-step {
+  grid-template-columns: 26px minmax(0, 1fr) minmax(190px, 280px);
+  gap: 6px var(--space-5);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--row-line);
+}
+.security-step:first-child { padding-top: 0; }
+.security-step:last-child { padding-bottom: 0; border-bottom: 0; }
+.security-step__number {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  background: var(--well-fill);
+  border: 1px solid var(--edge-well);
+  box-shadow: var(--well-shadow);
+  font-size: var(--text-label);
+  font-weight: 750;
+  color: var(--text-muted);
+}
+
+/* A block-level reason, in words, next to the shield it comes from. */
+.security-block__note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--warn-text, var(--text));
+}
+.security-block__note svg { flex: 0 0 auto; }
+
+/* A session is a list entry, so it divides with a rule instead of becoming a box inside the plate,
+   and each timestamp carries its own word so the pair is never read as a range. */
+.security-sessions { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.security-sessions li { display: grid; gap: 3px; padding: 12px 0; border-bottom: 1px solid var(--row-line); }
+.security-sessions li:first-child { padding-top: 0; }
+.security-sessions li:last-child { padding-bottom: 0; border-bottom: 0; }
+.security-session__head { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; font-size: var(--text-sm); }
+.security-session__times { display: flex; gap: var(--space-4); flex-wrap: wrap; font-size: var(--text-xs); color: var(--text-muted); }
+
+/* The one irreversible action on the page stands apart from the list it acts on. */
+.security-danger { margin-top: var(--space-2); padding-top: var(--space-4); border-top: 1px solid var(--row-line); }
+.security-danger .hint { font-size: var(--text-xs); line-height: 1.45; color: var(--text-muted); max-width: 62ch; }
+
 .policy-spend {
   display: flex;
   flex-direction: column;

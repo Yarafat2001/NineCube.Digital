@@ -1,5 +1,144 @@
 # FIX_REPORT
 
+# Round 22 — the address type is a field like the others, and Account security is one plate you can work through
+
+Date: 2026-11-04. Brief: a dark-theme screenshot of `Add an address` on the deployed site with "here text box
+on the top not in the proper position", plus the URL of `#/account/security` and "make more user friendly. Fix
+these all properly".
+
+## How I measured it
+
+Same throwaway harness as the last four rounds: the app booted against stubbed `/api/*` answers, opened at
+1440x900 and 390x844 in light and dark, and the probe asked the browser what it had resolved - the rectangle of
+every caption and control in row 1 of the address editor, the grid columns each settings row actually got, the
+width of every button on the security page, and the paint the badges blended to. The harness is deleted before
+the commit; the two Playwright specs in `web/e2e` are the permanent version of the same questions.
+
+One thing worth recording because it changed my reading of the numbers: the caption line lands on a quarter
+pixel (`23.25px`), so rounding each edge of a rectangle on its own reported a "1px difference" between two
+fields the browser had laid out identically. The spec now reads the caption-to-control gap unrounded and
+compares that, which is what the eye is actually given.
+
+## What the two screens resolved to before I touched them
+
+`Add an address`, laptop 1440, dark, row 1:
+
+| field | caption | control top | control height |
+| --- | --- | --- | --- |
+| Country / region | 23 px line, 4 px gap | 1084 px | 42 px |
+| Address type | **none** | **1056 px** | 42 px |
+| Label | 23 px line, 4 px gap | 1084 px | 43 px |
+
+The owner's "text box on the top" was the Home / Work / Other track. It is a `.field` like its two neighbours,
+but it had no caption element, so its control started 28 px higher than theirs - exactly where the caption
+would have been. And it was `inline-flex` with three chips hugging the left edge: 71, 67 and 69 px of chips
+inside a 434 px track, i.e. **219 px of empty well** on a laptop and 101 px on a phone. An empty rounded well
+with three small pills at one end is what a text box looks like.
+
+`#/account/security`, before:
+
+- three `card-glass` cards, each painted with `style={{ padding: 'var(--space-4)' }}` - **3 inline styles**, the
+  only hand-painting left anywhere on the customer routes;
+- the page column stretches its children, so every button resolved to the full plate: **1342 px wide at 1440**,
+  332 px at 390. A six-digit token box was set about twelve characters away from its own label;
+- the two-step card was 502-544 px tall and held four controls with nothing saying which comes first, although
+  the server really does need the password and then the emailed code in that order;
+- a session was one `<li>` of 16 px text: `Nov 4, 2026, 12:12 PM — Nov 11, 2026, 12:12 PM`. The dash was the
+  only thing distinguishing "signed in at" from "access runs out at", there was no relative time, no state, and
+  no sign of which device was the current one.
+
+## What I changed
+
+- `AddressFields` now wraps the segmented control in the same caption element the app uses elsewhere
+  (`.field__label-row`), and the group takes its accessible name from that visible caption through
+  `aria-labelledby` instead of carrying a second, hidden `aria-label`. The track is a three-column grid, so the
+  options divide the well instead of parking at one end.
+- The option height is 34 px, not the 35 px I first wrote: `input`/`select` resolve to `min-height: 42px` in
+  border-box, and the shared `.segmented` well adds 3 px of padding and 1 px of border on each side, so 34 px is
+  what makes the three surfaces the same height to the pixel. The first run measured 43 against 42 and I called
+  it a pass until the spec refused it.
+- `SecurityPage` is rebuilt on the house settings system the admin Discount policy panel uses: one
+  `.table-surface.settings-plate` capped at 880 px, three `.settings-block` sections divided by `--row-line`,
+  each with a `.policy-card__head` (icon, name, state badge) and a plain-language lead.
+- Both flows are numbered steps - a `.security-step` row is a settings row with the order in front of it - so
+  the email is "ask, then paste", and two-step is "password, code, turn it on". The locked flow says why: while
+  the email is unverified the two-step controls are disabled and a shield note reads "Verify your email above
+  before changing this."
+- A session is a row, not a sentence: `Signed in 7 hours ago` with a `Most recent` badge on the newest, and the
+  two absolute times each carrying their own word (`Started`, `Runs out`) inside a `<time datetime>` so the
+  machine-readable stamp survives the rewrite. An empty list answers "No device is signed in right now."
+  The one irreversible action sits under a rule of its own, away from the list it acts on.
+- 28 new Bengali entries. This exposed a blind spot in `scripts/check-translations.mjs`: a ternary *inside*
+  `t(...)` is not checked, which is how `Enable two-step sign-in` and `Disable two-step sign-in` had never had
+  keys. Both are in the catalogue now.
+
+## The same probe, after
+
+Address editor, row 1 (identical in light and dark):
+
+| measurement | laptop 1440 | phone 390 |
+| --- | --- | --- |
+| caption over the track | `Address type`, 23 px | same |
+| caption-to-control gap | 4 px, same as both neighbours | 4 px, same |
+| control tops on the row | 873 / 873 / 873 px | one field per line, gap 4 px |
+| track height vs select | 42 px vs 42 px | 42 px vs 42 px |
+| option widths | 139 / 139 / 139 px in a 434 px track | 100 / 100 / 100 px in 316 px |
+| empty well left | 1 px | 0 px |
+
+Account security:
+
+| measurement | before | after, laptop 1440 | after, phone 390 |
+| --- | --- | --- | --- |
+| inline styles on the screen | 3 | **0** | 0 |
+| plate width | full column | 880 px | 366 px |
+| widest button | 1342 px | 200 px | 195 px |
+| step rows | 4 undifferentiated controls | 74-75 px, 3 grid columns | 124-143 px, 2 columns |
+| state per block | none | `Verified` / `On` / `3 live` (or `Not verified` / `Off` / `0 live`) | same |
+| a session row | one 16 px dash range | relative time + badge + two named timestamps | same, no sideways scroll |
+| sideways spill | - | none | none |
+
+## Tests
+
+- `web/src/test/address-book-design.test.tsx` - the segmented-control test was rewritten. It was asserting the
+  old markup string, and the other session in this tree had just edited the component to match it
+  (`57c1bbf`); the caption is the fix, so the test now asserts the captioned markup, the `aria-labelledby`
+  link, the three-column grid and the matched caption metrics. 7 tests.
+- `web/src/test/security-page.test.tsx` (new, 9 tests): no inline styles and no colour emoji, every icon named
+  exists in the registry, one plate with three blocks each carrying a head, a lead and a state badge, the
+  880 px measure, the numbered steps written with enough specificity to beat the row they nest in, the phone
+  collapse rules, then three that render the page and ask the DOM: a verified account's state and session rows,
+  an unverified account's disabled two-step controls, a wrong token answered with the server's own words, and
+  the whole two-step flow taken in order - after which the fixture shows `mfaEnabled` on and every session
+  revoked, exactly as `AccountSecurityEndpoints.cs` does it.
+- `web/e2e/security-page.spec.ts` (new, 4 checks) and `web/e2e/address-book.spec.ts` (extended): the same
+  questions in Chromium at 1440 and 390 in both themes. **4 of 4 and 4 of 4 pass.**
+- `web/src/test/handlers.ts` grew a `/api/me/security` fixture with the four POST endpoints behind it, mirroring
+  the real contract: a challenge is issued for one use, and turning two-step on or off revokes every refresh
+  token. Session times are derived from the clock at call time and expire fourteen days after sign-in, the way
+  `AuthService.cs` issues them, so the list can never show a session the real query would have filtered out.
+
+## What this did not cover
+
+- The Label input resolves 42.8 px against the select's 42 px. That is the native input's own line box, it
+  predates this round, and it is not what the screenshot was about; the segmented track matches the select
+  exactly.
+- Guest checkout uses the same `AddressFields` with `checkout` set, and that variant does not render the address
+  type at all, so it is untouched.
+- The five other `.segmented` surfaces in the app already carry a caption; only this one was missing it. I
+  checked that by grepping every use rather than by eye.
+- Verification ran against the stubbed harness, which is what lets me test an unverified email, a three-device
+  account and a wrong token without a password. The live stack still needs `NINECUBE_SEED_PASSWORD` for the
+  real e2e passes (task #54) and the walkthrough (task #40).
+- The admin routes came back blank in my audit harness because the stub returns `[]` for every admin endpoint,
+  so the segmented-control sweep there was done by reading the markup, not the painted page.
+
+## Gates
+
+Run from `web` after the last file was written, in CI's order: `npx tsc --noEmit -p tsconfig.json` clean;
+`npm run i18n:check` - 2249 entries, all literal labels covered; `npx vitest run` - 307 tests across 43 files,
+all green (the suite was 298 across 42 before this round); `npm run build` - built in 23 s. The two browser
+specs are not part of CI's four commands and were run by hand against a dev server, as documented above.
+
 # Round 21 — the saved address book is a list again, and the form only appears when you ask for it
 
 Date: 2026-11-04. Brief: the deployed URL of `#/account/profile` with "Saved delivery addresses in this pages

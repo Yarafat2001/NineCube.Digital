@@ -74,11 +74,23 @@ describe('Saved address book design contract', () => {
     expect(css.replace(/\/\*[\s\S]*?\*\//g, '')).not.toContain('.75rem');
   });
 
-  it('keeps the address type on the shared segmented control', () => {
-    expect(source).toContain('<div className="segmented address-type" role="group" aria-label={t(\'Address type\')}>');
+  it('keeps the address type on the shared segmented control, built like the fields beside it', () => {
+    // The control shares row 1 with the country select and the Label field, so it is wrapped in the
+    // same .field with the same caption, and the group names itself after that caption instead of
+    // carrying a second hidden label. Without the caption the track sat 28px above its neighbours and
+    // read as a stray text box.
+    expect(source).toContain('<div className="field address-fields__wide"><span className="field__label-row" id={`${prefix}-type`}>{t(\'Address type\')}</span>');
+    expect(source).toContain('<div className="segmented address-type" role="group" aria-labelledby={`${prefix}-type`}>');
+    expect(source).not.toContain('role="group" aria-label={t(\'Address type\')}');
     expect(source).toMatch(/className=\{`segmented__option \$\{draft\.label === label \? 'segmented__option--active' : ''\}`\}/);
     expect(source).toContain('aria-pressed={draft.label === label}');
-    expect(source).not.toContain('<div className="row" role="group" aria-label={t(\'Address type\')}');
+    // Three options that fill the track rather than hugging its left edge, at the height every other
+    // input in this editor resolves to.
+    expect(block(':root .delivery-address-book .address-type')).toContain('display: grid');
+    expect(block(':root .delivery-address-book .address-type')).toContain('grid-template-columns: repeat(3, minmax(0, 1fr))');
+    expect(block(':root .delivery-address-book .field .field__label-row')).toContain('font-size: var(--text-sm)');
+    expect(block('.address-type .segmented__option')).toContain('min-height: 34px');
+    expect(block('.address-type .segmented__option')).toContain('justify-self: stretch');
   });
 
   it('shows the resting book as a list and opens the editor only when it is asked for', async () => {

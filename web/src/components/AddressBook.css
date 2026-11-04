@@ -75,13 +75,15 @@
 }
 
 /* The address type shares row 1 with the country select and the label field, so it has to be built
-   like them: the same caption over the same control height, and the three options filling the track
-   rather than hugging its left edge. Measured live 2026-11-04 with no caption the track sat 28px
-   above the two inputs beside it and left 219px of empty well on a laptop, 101px on a phone, which
-   is what read as a stray text box. */
+   like them: the same caption over a control of the same height, and the three options filling the
+   track rather than hugging its left edge. Measured live 2026-11-04: with no caption the track sat
+   28px above the two inputs beside it and left 219px of empty well on a laptop, 101px on a phone,
+   which is what read as a stray text box. input/select resolve to min-height 42px in border-box,
+   and the shared well adds 3px of padding and 1px of border on each side, so 34px is what makes the
+   three surfaces the same height instead of three millimetres apart. */
 :root .delivery-address-book .field .field__label-row { margin-bottom: 0; font-size: var(--text-sm); font-weight: 600; color: inherit; }
 :root .delivery-address-book .address-type { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.address-type .segmented__option { min-height: 35px; padding: 6px 12px; justify-self: stretch; }
+.address-type .segmented__option { min-height: 34px; padding: 6px 12px; justify-self: stretch; }
 
 /* The preview is the same well material as the tiles, at the house radius instead of a hard-coded
    .75rem that matched nothing else on the page. */

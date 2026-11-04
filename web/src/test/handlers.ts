@@ -298,12 +298,59 @@ const profileSeed: Profile = {
   role: 'Customer', createdAt: '2026-09-01T09:00:00Z', addresses: addressSeed
 };
 
+/**
+ * Account security, mirrored on the real endpoint's contract: GET /api/me/security answers
+ * { verified, mfaEnabled, sessions } and lists only a refresh token that is neither revoked nor past
+ * its expiry, so every seeded session has to be a live one. The times hang off the clock at call time
+ * because the page puts "Signed in 7 hours ago" beside an absolute time, and a frozen seed would
+ * eventually show a session that the real endpoint would never have returned.
+ */
+export type SecurityFixture = { verified: boolean; mfaEnabled: boolean;
+  sessions: { id: number; createdAtUtc: string; expiresAtUtc: string }[] };
+
+function securitySeed(): SecurityFixture {
+  // AuthService issues every refresh token for fourteen days from sign-in.
+  const session = (id: number, signedInHoursAgo: number) => {
+    const started = Date.now() - signedInHoursAgo * 3_600_000;
+    return { id, createdAtUtc: new Date(started).toISOString(), expiresAtUtc: new Date(started + 14 * 86_400_000).toISOString() };
+  };
+  return { verified: true, mfaEnabled: false, sessions: [session(3, 7), session(2, 52), session(1, 190)] };
+}
+
+export let security = securitySeed();
+
+/** The one challenge the stub will accept, in place of the email the real API writes to a table. */
+const VERIFY_TOKEN = 'verify-204816';
+const SIGNIN_CODE = '204816';
+let securityCode = '';
+
+/** What the last issued challenge was, so a test can fill the field with the value that works. */
+export function issuedSecurityCode(kind: 'verification' | 'signin') {
+  return kind === 'verification' ? VERIFY_TOKEN : SIGNIN_CODE;
+}
+
+/** Where the account's security state stands now, read rather than assumed from a live binding. */
+export function securityState(): SecurityFixture {
+  return security;
+}
+
 export let inbox = inboxSeed.map(entry => ({ ...entry }));
 export let profile: Profile = { ...profileSeed, addresses: addressSeed.map(entry => ({ ...entry })) };
 
 export function resetAccountFixtures() {
   inbox = inboxSeed.map(entry => ({ ...entry }));
   profile = { ...profileSeed, addresses: addressSeed.map(entry => ({ ...entry })) };
+  security = securitySeed();
+  securityCode = '';
+}
+
+/** Put the account in a state the real endpoint could answer: an unverified email, two-step on, no devices. */
+export function seedSecurity(over: Partial<Pick<SecurityFixture, 'verified' | 'mfaEnabled'>> & { sessions?: number } = {}) {
+  security = {
+    verified: over.verified ?? security.verified,
+    mfaEnabled: over.mfaEnabled ?? security.mfaEnabled,
+    sessions: securitySeed().sessions.slice(0, over.sessions ?? 3)
+  };
 }
 
 /** Derived, so the dashboard totals can never drift from the order fixture. */
@@ -742,6 +789,47 @@ export const handlers = [
   }),
 
   http.get(`${API}/api/me/dashboard`, () => HttpResponse.json(dashboardFixture())),
+
+  // Account security. Same shapes and same consequences as AccountSecurityEndpoints.cs: a challenge
+  // is issued for one use, turning two-step on or off revokes every refresh token, and so does
+  // signing out everywhere.
+  http.get(`${API}/api/me/security`, () => HttpResponse.json(security)),
+
+  http.post(`${API}/api/me/security/verification`, () => {
+    if (!security.verified) securityCode = VERIFY_TOKEN;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post(`${API}/api/me/security/verification/confirm`, async ({ request }) => {
+    const body = (await request.json()) as { code: string };
+    if (security.verified || body.code !== securityCode) {
+      return HttpResponse.json(problem(400, 'invalid_request', 'Bad request.', 'Verification token is invalid or expired.'), { status: 400 });
+    }
+    securityCode = '';
+    security = { ...security, verified: true };
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post(`${API}/api/auth/signin-code`, async ({ request }) => {
+    const body = (await request.json()) as { email?: string; password?: string };
+    if (body.password === 'correct horse battery staple') securityCode = SIGNIN_CODE;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post(`${API}/api/me/security/mfa`, async ({ request }) => {
+    const body = (await request.json()) as { enabled: boolean; password: string; code?: string };
+    if (body.password !== 'correct horse battery staple' || !security.verified || body.code !== securityCode) {
+      return HttpResponse.json(problem(400, 'invalid_request', 'Bad request.', 'Verify your email and enter your current password first.'), { status: 400 });
+    }
+    securityCode = '';
+    security = { ...security, mfaEnabled: body.enabled, sessions: [] };
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.post(`${API}/api/me/security/revoke-sessions`, () => {
+    security = { ...security, sessions: [] };
+    return new HttpResponse(null, { status: 204 });
+  }),
 
   http.get(`${API}/api/me/addresses`, () => HttpResponse.json(profile.addresses)),
 

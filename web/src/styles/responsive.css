@@ -262,6 +262,12 @@ main .link-button:is(:hover, :focus-visible, :active),
   .setting-row__control { justify-content: flex-start; }
   .setting-row__number { flex: 1 1 auto; width: auto; min-width: 0; }
   .policy-input { width: 100%; }
+  /* The security page's rows carry a wider control column than the admin dials, so the same
+     collapse has to reach them: the name takes the line, the control drops under it. A numbered
+     step keeps its number in front of the name, so the control lands in the second column. */
+  :root .security-page .setting-row { grid-template-columns: minmax(0, 1fr); }
+  :root .security-page .setting-row.security-step { grid-template-columns: 26px minmax(0, 1fr); }
+  .security-step > .setting-row__control { grid-column: 2; }
 }
 
 /* Guest checkout pairs its short fields two-up, but only while the sheet is wide enough to keep a

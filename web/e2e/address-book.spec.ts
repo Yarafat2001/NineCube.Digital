@@ -80,6 +80,50 @@ const readTile = (index: number) => (page: Page): Promise<Tile> => page.evaluate
 
 const quiet = 'rgba(0, 0, 0, 0)';
 
+type Field = { caption: string; captionTop: number; controlTop: number; controlHeight: number; gap: number };
+type AddressType = Field & { options: number[]; slack: number };
+
+/**
+ * The three fields the editor opens with, as the browser placed them. The address type shares this
+ * row with a select and a text input, so it has to carry the same caption in the same place and
+ * resolve to the same control height - without it the track sat 28px above its neighbours and read
+ * as a stray text box. `slack` is what the track still has left over once its own padding, border
+ * and gaps are paid for, so it measures the empty well rather than the width the control happens to
+ * have been given.
+ */
+const rowOne = (page: Page): Promise<{ country: Field; addressType: AddressType; label: Field }> =>
+  page.evaluate(() => {
+    const fields = [...document.querySelectorAll<HTMLElement>('.delivery-address-fields > .field')];
+    const read = (field: HTMLElement): Field => {
+      const caption = field.querySelector<HTMLElement>('.field label, .field .field__label-row')!;
+      const control = field.querySelector<HTMLElement>('select, input, .segmented')!;
+      const cap = caption.getBoundingClientRect();
+      const ctl = control.getBoundingClientRect();
+      // The gap is read unrounded: the row lands on a quarter pixel, and rounding each edge on its
+      // own would report a 1px difference where the browser laid the two fields out identically.
+      return {
+        caption: caption.textContent?.trim() ?? '',
+        captionTop: Math.round(cap.top),
+        controlTop: Math.round(ctl.top),
+        controlHeight: Math.round(ctl.height),
+        gap: Math.round((ctl.top - cap.bottom) * 100) / 100
+      };
+    };
+    const type = read(fields[1]);
+    const track = fields[1].querySelector<HTMLElement>('.segmented')!;
+    const style = getComputedStyle(track);
+    const options = [...track.querySelectorAll<HTMLElement>('.segmented__option')].map(option => option.getBoundingClientRect().width);
+    const inner = track.getBoundingClientRect().width
+      - Number.parseFloat(style.borderLeftWidth) - Number.parseFloat(style.borderRightWidth)
+      - Number.parseFloat(style.paddingLeft) - Number.parseFloat(style.paddingRight);
+    const gap = Number.parseFloat(style.columnGap) || 0;
+    return {
+      country: read(fields[0]),
+      label: read(fields[2]),
+      addressType: { ...type, options: options.map(width => Math.round(width)), slack: Math.round(inner - options.reduce((sum, width) => sum + width, 0) - gap * (options.length - 1)) }
+    };
+  });
+
 for (const theme of ['light', 'dark'] as const) {
   test(`the saved address book reads as wells and opens on demand (${theme})`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -146,6 +190,23 @@ for (const theme of ['light', 'dark'] as const) {
       getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length),
       'a laptop lays the fields out in three columns').toBe(3);
 
+    // Row 1: a caption over every control, and all three controls on the same line at the same height.
+    const laptop = await rowOne(page);
+    expect(laptop.addressType.caption, 'the address type is named the way the fields beside it are').toBe('Address type');
+    expect(laptop.addressType.captionTop, 'its caption sits where the other captions sit').toBe(laptop.country.captionTop);
+    expect(Math.abs(laptop.addressType.controlTop - laptop.country.controlTop),
+      `the track resolved at top ${laptop.addressType.controlTop}, the select at ${laptop.country.controlTop}`).toBeLessThanOrEqual(1);
+    expect(Math.abs(laptop.addressType.controlTop - laptop.label.controlTop),
+      'and the third field on the row is on the same line').toBeLessThanOrEqual(1);
+    expect(laptop.addressType.controlHeight, 'the track is as tall as the input beside it').toBe(laptop.country.controlHeight);
+    expect(laptop.addressType.gap, 'the caption clears the control by the same margin').toBe(laptop.country.gap);
+    // Three options that fill the well instead of hugging its left edge.
+    expect(laptop.addressType.options).toHaveLength(3);
+    expect(Math.max(...laptop.addressType.options) - Math.min(...laptop.addressType.options),
+      `options of ${laptop.addressType.options.join('/')}px are the same width`).toBeLessThanOrEqual(1);
+    expect(Math.abs(laptop.addressType.slack),
+      `the track leaves ${laptop.addressType.slack}px of empty well beside its options`).toBeLessThanOrEqual(1);
+
     // The address type is the app's segmented control, not a row of loose chips. A new address has
     // no type yet, so choosing one is what lights the option up.
     await form.locator('.segmented.address-type').getByRole('button', { name: 'Home', exact: true }).click();
@@ -181,6 +242,17 @@ for (const theme of ['light', 'dark'] as const) {
     }));
     expect(phone.columns, 'a phone gets two columns of fields').toBe(2);
     expect(phone.spills, 'the book does not scroll sideways on a phone').toBe(false);
+
+    // The same row-1 contract on a phone. Every wide field takes the whole line here, so the check is
+    // that the control sits the same way under its own caption, at the same height as the input.
+    const phoneRow = await rowOne(page);
+    expect(phoneRow.addressType.caption).toBe('Address type');
+    expect(phoneRow.addressType.gap,
+      `at 390 the caption cleared the track by ${phoneRow.addressType.gap}px, the select by ${phoneRow.country.gap}px`)
+      .toBe(phoneRow.country.gap);
+    expect(phoneRow.addressType.controlHeight, 'and still matches the select height').toBe(phoneRow.country.controlHeight);
+    expect(Math.abs(phoneRow.addressType.slack),
+      `the phone track leaves ${phoneRow.addressType.slack}px of empty well`).toBeLessThanOrEqual(1);
   });
 
   test(`an empty book opens the editor straight away (${theme})`, async ({ page }) => {
