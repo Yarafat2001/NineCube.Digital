@@ -1,5 +1,135 @@
 # FIX_REPORT
 
+# Round 23 — Account security spends its width: the decisions on the left, the live sign-in log on the right
+
+Date: 2026-11-04. Brief: two screenshots of `#/account/security` on the deployed site at laptop width - one of
+the top of the page, one scrolled to the sessions - with "see this is one sided part page where unnecessary
+blank space make it handling properly two partioned live log status takes in the right side as you think that
+will be better apply this".
+
+## How I measured it
+
+The same throwaway harness as the last rounds: the SPA booted against stubbed `/api/*` answers and the probe
+asked the browser for rectangles rather than reading my own CSS back. This time I also gave it the account in
+the screenshot - 65 live sessions - because the number of rows is what turns a list into a wall, and I measured
+1440x900, 1440x1080, 1280x720, 1024x900 and 390x844 in both themes. The harness and the probe scripts are
+deleted before the commit; `web/e2e/security-page.spec.ts` is the permanent version of the same questions.
+
+## What the page resolved to before I touched it
+
+| width | plate | column | blank band on the right | page height, 3 devices | page height, 65 devices |
+| --- | --- | --- | --- | --- | --- |
+| 1440 | 880 px | 1,376 px | **496 px** | 1,369 px | **5,891 px** |
+| 390 | 366 px | 366 px | 0 px | 2,046 px | 8,879 px |
+
+Two defects, and the second one only shows up on a real account. The 880px cap I put on the plate last round was
+the right answer to the wrong question: it stopped a six-digit token box being set 1,270px from its label, but it
+did that by pushing the whole page into the left two thirds of the column and leaving 496px of nothing beside
+every row - which is the blank space in the screenshot. And the sign-in list was the full page: on the account
+in the screenshot, 65 rows made the sessions block 4,934px tall, so the two decisions a customer actually came
+to make sat under a wall of timestamps and the document ran to 5,891px.
+
+I checked whether any other screen shares the first defect: `max-width` on a `.settings-plate` appears exactly
+once in the whole stylesheet set, at the line quoted above, and it is scoped to `.security-page`. The admin
+Settings plate and the saved-address plate both fill their column. So this is one page's problem, not a system
+rule to propagate.
+
+## What I changed
+
+`SecurityPage.tsx` now renders a `.security-page__grid` with two plates in it instead of one: the decisions
+(email verification, two-step sign-in) stay in `.security-work`, and the sign-in log moves into its own
+`<aside className="table-surface settings-plate security-page__status">`, named by the "Active sessions" heading
+through `aria-labelledby`. The "Sign out everywhere" row went with the list, because that is the row it acts on.
+Nothing new was invented: every line in the right panel is a field `/api/me/security` already answers.
+
+In `app.css` the cap is gone and the width is spent instead:
+
+- `.security-page__grid` is one column by default and `minmax(0, 1fr) minmax(360px, 452px)` from 1080px up. That
+  resolves to 900px + 452px at 1440 - the decisions keep almost exactly the measure the cap was protecting, and
+  the leftover 496px becomes the log.
+- The log scrolls inside its own panel: `.security-status__log` is `overflow-y: auto` with
+  `overscroll-behavior: contain`, and `.security-page__status .settings-block` is the only child allowed to
+  shrink, so the heading, the `65 live` count and the revoke row stay put around it.
+- At 1080px and above the panel is `position: sticky` at `var(--sticky-top)` - written with `:root`, because
+  modern.css loads after app.css and paints `.table-surface { position: relative }`, which outscored a plain
+  class and left the panel un-stuck until I raised it.
+- The log's height at laptop is `clamp(200px, calc(100dvh - 580px), 560px)`. The 580px is what this page costs
+  outside the list itself, measured live: 263px above the grid plus 315px of panel chrome. Without it the panel
+  ran to 978px in a 900px viewport and the revoke row sat half-cut at the fold, which is the other thing the
+  screenshot showed.
+- Inside a 452px panel the shared `.setting-row` control column (up to 280px) starved the revoke warning to
+  104px and left the button half empty, so `.security-page__status .security-danger` gives the control
+  `auto` width and the sentence the rest.
+
+## The same probe, after
+
+| width | decisions | live log | blank band | page height, 3 devices | page height, 65 devices | log at rest |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1440x900 | 900 px | 452 px | **0 px** | 957 px | **1,039 px** | 320 px of 5,323 px, scrolls |
+| 1440x1080 | 900 px | 452 px | 0 px | - | 1,219 px | 500 px, scrolls |
+| 1280x720 | 756 px | 452 px | 0 px | - | 976 px | 200 px, scrolls |
+| 1024x900 | 976 px | 976 px below | 0 px | - | 1,656 px | 460 px, scrolls |
+| 390x844 | 366 px | 366 px below | 0 px | 2,046 px | 2,194 px | 460 px, scrolls |
+
+The 65-device account went from 5,891px of scrolling to 1,039px, all 65 rows are still in the DOM (the browser
+check counts them), and the panel - revoke row included - is fully on screen before any scrolling at 900, 1080
+and 720 tall. The step rows still resolve three columns at laptop and two on a phone, nothing is painted with an
+inline style, and no width spills sideways.
+
+## Tests
+
+- `web/src/test/security-page.test.tsx` - 10 tests, all pass. Two new ones read the split out of `app.css`: that
+  no `.settings-plate` on this page carries a `max-width` any more, that the grid's second track is
+  `minmax(360px, 452px)` inside the 1080px block, and that the log owns the scrolling (`overflow-y: auto`,
+  `overscroll-behavior: contain`) while the panel's block is the only shrinking child. The CSS reader now matches
+  a trimmed line, because a rule inside a media query is indented and the old reader could not see one at all.
+  The DOM tests now ask the grid rather than the single plate, since the sessions live in the aside.
+- `web/e2e/security-page.spec.ts` - 5 checks, all pass. It compares the two resolved rectangles: same top line
+  (within 1px), the log's left edge past the decisions' right edge, and the column ending within 1px of the
+  panel's right edge, which is the assertion that would have failed on the screenshot. A new check seeds 65
+  devices and asks the DOM how tall the page and the log actually are, that the log's `scrollHeight` exceeds its
+  `clientHeight`, that the panel bottom is inside the viewport at rest, and that its position resolves to
+  `sticky`. The phone pass asserts the log drops *under* the decisions at the same left edge.
+- The address-book spec still passes 4/4 against the same build, so the shared CSS edits did not disturb the
+  saved-address plate.
+
+## What this did not cover
+
+- The log scrolls inside its panel rather than paginating or filtering. Sixty-five rows is the account in the
+  screenshot; if that grows much further the honest next step is a server-side window, not a longer scrollbar.
+- I did not touch the sticky behaviour below 1080px. At 1024 the left track would fall under ~640px and squeeze
+  the step rows' control column, so the log drops below the decisions there - measured at 1,656px of page, which
+  is the price of a single column at that width.
+- The stub harness cannot show a real device list's machine names: `AccountSecurityEndpoints.cs` returns only
+  the two timestamps per session, so that is all the rows carry. Nothing in the panel is invented.
+- Still not run: the real-stack e2e passes that need the demo password (#54), and the walkthrough (#40).
+
+## Gates
+
+Run from `web` after the last file was written, in CI's order, in a detached worktree so the other session's
+in-progress navbar edits in the shared tree could not be swept into my commit or my numbers:
+`npx tsc --noEmit -p tsconfig.json` clean; `npm run i18n:check` - 2249 entries, all literal labels covered;
+`npx vitest run` - 308 tests across 43 files green; `npm run build` - built in 27.14s.
+
+The first full-suite pass had one red: a `checkout`-family test that waits on a deliberately delayed API
+release timed out while the machine was running the whole suite at once (337s). Those three files pass on their
+own (26/26) and the next full run was 308/308, so I am calling it a load flake in a wait, not a behaviour
+change - but it is worth knowing that this test's margin is thin under parallel load.
+
+Browser checks against the same build: `security-page` 5/5 and `address-book` 4/4.
+
+## One thing on main is not mine, and it will block the deploy
+
+`npm run i18n:check` fails on current `main` for reasons that have nothing to do with this round: commit
+`06a134d` ("Add live-home storefront pulse and modern commerce touches", 21:16 today, not written by me) added
+`web/src/helix/ShowcaseFallback.tsx` with 20 display strings outside `t()` - "Store pulse", "Products ready",
+"Low stock", "needs attention" and the rest. My round adds no new strings, so my five files gate green against
+`ddbd32f`, which is how I measured them. But the Pages workflow runs `i18n:check` as a step, so a push on top of
+`06a134d` will go red there and the site will not update from it. I have not touched that file: it is another
+session's feature in progress, and rewriting their component's copy is not this round's brief. Say the word and
+I will wrap those twenty strings and add the Bengali keys in a separate commit, or leave it to the session that
+wrote it.
+
 # Round 22 — the address type is a field like the others, and Account security is one plate you can work through
 
 Date: 2026-11-04. Brief: a dark-theme screenshot of `Add an address` on the deployed site with "here text box
