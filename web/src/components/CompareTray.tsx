@@ -128,7 +128,7 @@ export function CompareTray({ items, onRemove, onClear, onAddToCart }: CompareTr
                   <div
                     className="compare-grid"
                     style={{
-                      gridTemplateColumns: `120px repeat(${items.length}, minmax(180px, 1fr))`
+                      gridTemplateColumns: `var(--compare-col-label, 120px) repeat(${items.length}, minmax(var(--compare-col-item, 180px), 1fr))`
                     }}
                   >
                     {/* Header Row: Products */}

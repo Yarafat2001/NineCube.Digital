@@ -114,7 +114,7 @@ export function QuickViewModal({
             ) : null}
 
             {outOfStock ? (
-              <div className="row" style={{ alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <div className="quickview-modal__cta-row" style={{ alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 <p className="muted" style={{ fontSize: 'var(--text-sm)', margin: '8px 0' }}>
                   {t("Not currently orderable.")}
                 </p>
@@ -132,7 +132,7 @@ export function QuickViewModal({
                 ) : null}
               </div>
             ) : (
-              <div className="row" style={{ alignItems: 'center', gap: '12px', marginTop: '8px' }}>
+              <div className="quickview-modal__cta-row">
                 <QuantityStepper
                   value={quantity}
                   max={product.stockQuantity}
@@ -153,11 +153,10 @@ export function QuickViewModal({
                 {onToggleWishlist ? (
                   <button
                     type="button"
-                    className={`btn btn--ghost ${isWishlisted ? 'btn--primary' : ''}`}
+                    className={`btn btn--ghost quickview-modal__wishlist-btn ${isWishlisted ? 'btn--primary' : ''}`}
                     onClick={onToggleWishlist}
                     aria-label={t(isWishlisted ? "Remove from wishlist" : "Add to wishlist")}
                     title={t(isWishlisted ? "Saved in wishlist" : "Save to wishlist")}
-                    style={{ padding: '0 10px', height: '40px' }}
                   >
                     <Icon name="heart" width={16} height={16} />
                   </button>
