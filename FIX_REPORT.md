@@ -118,7 +118,7 @@ change - but it is worth knowing that this test's margin is thin under parallel 
 
 Browser checks against the same build: `security-page` 5/5 and `address-book` 4/4.
 
-## Two things on main are not mine, and together they are holding the deploy
+## The two things on main that were not mine, and how the deploy finally went out
 
 `npm run i18n:check` failed on `main` for reasons that have nothing to do with this round: commit `06a134d`
 ("Add live-home storefront pulse and modern commerce touches", 21:16 today, not written by me) added
@@ -126,18 +126,27 @@ Browser checks against the same build: `security-page` 5/5 and `address-book` 4/
 files gate green against `ddbd32f`, which is how I measured them. That session fixed its own blocker in
 `d21dd95`, and `i18n:check` passes on `main` now.
 
-The next CI step does not. Run 41862059828 on `d21dd95` went red at `npx vitest run` on
+The next CI step then went red. Run 41862059828 on `d21dd95` failed at `npx vitest run` on
 `src/test/helix-showcase.test.tsx` - 2 of its 8 tests, both "Found multiple elements with the role list" - which
 is that same new fallback component drawing a second list on the showcase route. Nothing in this round touches
 `helix-showcase.test.tsx`, `ShowcaseFallback.tsx` or the showcase route, and my own suite (308 tests across 43
-files) was green in isolation. The fix is already sitting uncommitted in the shared working tree: the same 8
-tests pass here right now, because that session's in-progress edit to `ShowcaseFallback.tsx` resolves the
-duplicate list.
+files) was green in isolation. The Pages workflow only uploads an artifact when the suite passes, so a red test
+in anyone's commit freezes the deployment for everyone: my code was on GitHub but the live site was still
+serving `ddbd32f`.
 
-So the code for this round is on GitHub (`origin/main` = `d21dd95`, and the four Round 23 files are verifiably in
-that tree), while the live site is still serving `ddbd32f` - the Pages workflow only uploads an artifact when the
-suite passes, so a red test in anyone's commit freezes the deployment for everyone. I have not committed another
-session's unfinished component to get the pipeline green; that is their push to make.
+I did not commit another session's unfinished component to get the pipeline green; that was their push to make,
+and I said so here rather than quietly borrowing their work. They made it an hour later. `86a2f42` ("fix(storefront):
+enhance viewer mode button contrast in dark mode and preserve single list role in showcase fallback") carries
+the fallback fix, and run 41867822718 on that commit passed every gate in CI's own order - `tsc --noEmit`,
+`i18n:check`, `vitest run`, `build` - ran the production-build browser checks, and deployed. `https://yarafat2001.github.io/
+NineCube.Digital/version.json` now answers `86a2f4239a1bd94abf887788d372e38a07cdb394`, and `git grep security-page__grid
+86a2f42` hits all four of this round's files plus the report, so the split layout is the one being served.
+
+One honest limit on that: CI's browser step runs only `delivery-addresses.spec.ts` and `gift-cards-layout.spec.ts`
+(`.github/workflows/pages.yml:53`). This round's `security-page.spec.ts` - the five checks that ask the live DOM
+for the column widths, the 0px blank band, and the 65-device panel fitting on screen - passed 5/5 locally against
+the same production build, but the workflow has never been told to run it, so GitHub has not confirmed those
+numbers on its own machine.
 
 # Round 22 — the address type is a field like the others, and Account security is one plate you can work through
 
