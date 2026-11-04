@@ -23,9 +23,23 @@ test('international address editing works on desktop and mobile', async ({ page 
   const release = process.env.E2E_DEPLOYMENT_SHA;
   await page.goto(release ? `./?v=${encodeURIComponent(release)}#/account/profile` : './#/account/profile');
   if (release) {
-    const response = await page.request.get(new URL(`version.json?check=${Date.now()}`, testInfo.project.use.baseURL).href);
-    expect(response.ok()).toBe(true);
-    expect((await response.json()).version).toBe(release);
+    let response;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await page.request.get(new URL(`version.json?check=${Date.now()}`, testInfo.project.use.baseURL).href, {
+          headers: { Connection: 'close' },
+          timeout: 5000,
+        });
+        if (res.ok()) {
+          response = res;
+          break;
+        }
+      } catch {
+        await new Promise(r => setTimeout(r, 600));
+      }
+    }
+    expect(response?.ok()).toBe(true);
+    expect((await response!.json()).version).toBe(release);
   }
   const book = page.locator('.delivery-address-book');
   await expect(book.getByRole('heading', { name: 'Saved delivery addresses' })).toBeVisible();

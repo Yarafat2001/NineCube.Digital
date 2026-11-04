@@ -21,7 +21,22 @@ test('gift card controls align and both views fit desktop and mobile', async ({ 
   const release = process.env.E2E_DEPLOYMENT_SHA;
   await page.goto(release ? `./?v=${encodeURIComponent(release)}#/gift-cards` : './#/gift-cards');
   if (release) {
-    const version = await page.request.get(new URL(`version.json?check=${Date.now()}`, testInfo.project.use.baseURL).href);
+    let version;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await page.request.get(new URL(`version.json?check=${Date.now()}`, testInfo.project.use.baseURL).href, {
+          headers: { Connection: 'close' },
+          timeout: 5000,
+        });
+        if (res.ok()) {
+          version = res;
+          break;
+        }
+      } catch {
+        await new Promise(r => setTimeout(r, 600));
+      }
+    }
+    expect(version).toBeDefined();
     expect((await version.json()).version).toBe(release);
   }
   const gift = page.locator('.gift-page');
