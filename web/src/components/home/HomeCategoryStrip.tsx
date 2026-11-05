@@ -26,6 +26,9 @@ export function HomeCategoryStrip() {
 
       {query.isLoading && <LoadingBlock label={t("Loading categories")} variant="tile" count={3} />}
       {query.isError && <ErrorState error={query.error} onRetry={() => void query.refetch()} />}
+      {!query.isLoading && !query.isError && categories.length === 0 && (
+        <p className="home-category-empty">{t("The catalogue has no stocked categories yet.")}</p>
+      )}
       <div className="home-category-strip">
         {categories.map((cat) => (
           <Link

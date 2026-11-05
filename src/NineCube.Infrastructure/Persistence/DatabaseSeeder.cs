@@ -227,6 +227,28 @@ public static class DatabaseSeeder
             db.Settings.Add(new Setting { Key = SettingKeys.LowStockThreshold, Value = threshold.ToString() });
             await db.SaveChangesAsync(ct);
         }
+
+        // Store policy text, word-for-word the copy the storefront's policy pages already publish.
+        // The chat assistant quotes these rows and nothing else - no policy answer is ever invented.
+        var policies = new (string Key, string Value)[]
+        {
+            (SettingKeys.PolicyDelivery,
+                "Standard delivery is BDT 60 below a merchandise subtotal of BDT 2,500 and free at or above BDT 2,500. Your final delivery charge is shown before placing the order. Standard fulfillment typically delivers within 2-4 business days depending on location. Courier tracking references are accessible under My Orders once your package is dispatched. Reverse courier pickups for approved returns or store-error exchanges are free of charge."),
+            (SettingKeys.PolicyReturns,
+                "Footwear and lifestyle gear: 7-day return or exchange window from delivery, unworn with original packaging and tags, plus a 30-day warranty covering verified manufacturing defects. Electronics and laptops: 1-2 year official brand warranty; report dead-on-arrival or transit damage within 7 days for a store replacement. Grocery: report damaged or expired deliveries within 24 hours. Hygiene items: non-returnable once the factory seal is broken. Submit claims via Help with your order number."),
+            (SettingKeys.PolicyPrivacy,
+                "The store processes your account details, contact information, addresses, orders and support messages to provide shopping and order support. Cart and appearance preferences are stored in your browser. Online payment takes place on SSLCOMMERZ; card details are not entered in NineCube checkout."),
+            (SettingKeys.PolicyTerms,
+                "Prices and availability are rechecked by the server when you place an order. Placing an order does not guarantee dispatch. Online payments count as paid after verification by the payment provider. Keep your order reference for support.")
+        };
+
+        var existing = await db.Settings.Where(s => s.Key.StartsWith("Policy.")).Select(s => s.Key).ToListAsync(ct);
+        var missing = policies.Where(p => !existing.Contains(p.Key)).Select(p => new Setting { Key = p.Key, Value = p.Value }).ToList();
+        if (missing.Count > 0)
+        {
+            db.Settings.AddRange(missing);
+            await db.SaveChangesAsync(ct);
+        }
     }
 
     private static async Task SeedProductsAsync(AppDbContext db, CancellationToken ct)

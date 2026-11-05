@@ -5,7 +5,7 @@
  * reduced motion, the page must still show the same nine cards and the same text as a static grid.
  * Ordering never depends on this module - the catalogue is a separate route.
  */
-export type ShowcaseFallbackReason = 'reduced-motion' | 'webgl' | 'error';
+export type ShowcaseFallbackReason = 'reduced-motion' | 'webgl' | 'error' | 'storefront';
 
 /** True when the visitor has asked the operating system to reduce motion. */
 export function prefersReducedMotion(): boolean {

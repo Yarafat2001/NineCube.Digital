@@ -42,18 +42,34 @@ const HOME_COMPONENTS = [
 ].map(path => read(...path.split('/')));
 
 describe('Navigation glass is its own material, page cards are another', () => {
-  it('puts a neutral backing under the bar tint in both themes', () => {
+  // The bar paints its veil over its backing colour, so what actually hides the page is the
+  // composite of the two alphas. 1 means a solid slab; the old .96-over-.72 bar measured .989.
+  const compositeAlpha = (veil: string, base: string): number => {
+    const stops = [...veil.matchAll(/rgba\([^)]*,\s*([\d.]+)\)/g)].map(m => Number(m[1]));
+    const a = Math.max(...stops);
+    const b = Number(/--nav-glass-base:\s*rgba\([^)]*,\s*([\d.]+)\);/.exec(base)?.[1]);
+    return a + b * (1 - a);
+  };
+
+  it('lets the page show through the bar in both themes', () => {
     const light = tokens.slice(tokens.indexOf(':root, :root[data-theme="light"] {'), tokens.indexOf(':root[data-theme="dark"], .navbar--showcase {'));
     const dark = tokens.slice(tokens.indexOf(':root[data-theme="dark"], .navbar--showcase {'), tokens.indexOf('--product-card-glass'));
-    // A tint with nothing under it lets the page glow through and the bar warms into the background.
-    expect(light).toContain('--nav-glass-base: rgba(255,255,255,.72);');
-    expect(dark).toContain('--nav-glass-base: rgba(21,19,21,.72);');
-    expect(light.match(/rgba\(255,255,255,\.96\)[\s\S]*rgba\(206,220,240,\.78\)/)).toBeTruthy();
+    expect(light).toContain('--nav-glass-base: rgba(255,255,255,.38);');
+    expect(dark).toContain('--nav-glass-base: rgba(14,13,17,.68);');
+    const lightVeil = /--nav-bar-veil: ([^;]+);/.exec(light)?.[1] ?? '';
+    const darkVeil = /--nav-bar-veil: ([^;]+);/.exec(dark)?.[1] ?? '';
+    expect(lightVeil).toBeTruthy();
+    expect(darkVeil).toBeTruthy();
+    // Glass, not paint: at rest at least 40% of whatever scrolls behind has to survive.
+    expect(compositeAlpha(lightVeil, light)).toBeLessThan(0.6);
+    expect(compositeAlpha(darkVeil, dark)).toBeLessThan(0.75);
+    // The controls inside stay frosted so they still read as controls on the see-through bar.
+    expect(light).toContain('--nav-glass: linear-gradient(135deg, rgba(255,255,255,.62)');
   });
 
   it('keeps the card material separate from the bar material', () => {
     expect(tokens).toContain('--product-card-glass: var(--card-glass);');
-    expect(tokens).toContain('--navbar-glass: var(--nav-glass);');
+    expect(tokens).not.toContain('--navbar-glass');
     // Lifting both at once painted a blue diagonal over every product card.
     expect(tokens).not.toContain('--product-card-glass: var(--nav-glass)');
   });
@@ -62,8 +78,9 @@ describe('Navigation glass is its own material, page cards are another', () => {
     const bar = block(modern, '.navbar');
     const compact = block(modern, '.navbar--compact');
     expect(bar).toContain('background-color: var(--nav-glass-base);');
-    expect(bar).toContain('background-image: var(--navbar-glass);');
+    expect(bar).toContain('background-image: var(--nav-bar-veil);');
     expect(compact).toContain('background-color: var(--nav-glass-base-scroll);');
+    expect(compact).toContain('background-image: var(--nav-bar-veil);');
     expect(compact).not.toContain('var(--surface)');
   });
 

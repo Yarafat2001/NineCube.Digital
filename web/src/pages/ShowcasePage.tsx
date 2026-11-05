@@ -118,7 +118,7 @@ export function ShowcasePage() {
   return (
     <ShowcaseFallback
       cardAssets={cardAssets}
-      reason="reduced-motion"
+      reason="storefront"
       onLaunch3D={() => setExperienceMode('helix')}
     />
   );

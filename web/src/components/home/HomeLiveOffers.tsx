@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useActiveCampaigns } from '../../api/hooks';
 import { t, useLanguage } from '../../i18n/language';
 import { formatDate, formatMoneyWhole } from '../../lib/helpers';
@@ -16,12 +17,42 @@ const offerScope = (coupon: Coupon) => {
   return `${t('Discount on')} ${t(coupon.targetType)}`;
 };
 
+/** Where the offer can actually be spent: its first named scope, else the whole catalogue. */
+const offerLink = (coupon: Coupon): string => {
+  const scopeName = coupon.scopeRules?.find((rule) => rule.entityNames?.length)?.entityNames[0];
+  return scopeName ? `/products?q=${encodeURIComponent(scopeName)}` : '/products';
+};
+
+function useNow(intervalMs = 1000): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), intervalMs);
+    return () => window.clearInterval(id);
+  }, [intervalMs]);
+  return now;
+}
+
+const pad = (value: number) => String(value).padStart(2, '0');
+
+function countdown(expiresAt: string, now: number): string | null {
+  const left = new Date(expiresAt).getTime() - now;
+  if (!Number.isFinite(left) || left <= 0) return null;
+  const totalSeconds = Math.floor(left / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return days > 0 ? `${days}d ${pad(hours)}h ${pad(minutes)}m` : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
 export function HomeLiveOffers() {
   useLanguage();
   const { data, isLoading } = useActiveCampaigns();
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const campaigns = (data ?? []).filter((coupon) => coupon.isActive);
+  const hasExpiry = campaigns.some((coupon) => coupon.expiresAt);
+  const now = useNow(hasExpiry ? 1000 : 60000);
   if (!isLoading && campaigns.length === 0) return null;
 
   const handleCopy = async (code: string) => {
@@ -54,6 +85,7 @@ export function HomeLiveOffers() {
         <ul className="home-offers-grid">
           {campaigns.map((coupon) => {
             const copied = copiedCode === coupon.code;
+            const left = coupon.expiresAt ? countdown(coupon.expiresAt, now) : null;
             return (
               <li key={coupon.id} className="home-offer-card">
                 <div className="home-offer-head">
@@ -67,6 +99,12 @@ export function HomeLiveOffers() {
                 </div>
 
                 <ul className="home-offer-terms">
+                  {left && (
+                    <li className="home-offer-countdown">
+                      <Icon name="clock" width={14} height={14} />
+                      {t('Ends in')} {left}
+                    </li>
+                  )}
                   {coupon.minOrderAmount > 0 && (
                     <li>
                       <Icon name="wallet" width={14} height={14} />
@@ -79,7 +117,7 @@ export function HomeLiveOffers() {
                       {t('Max savings')} {formatMoneyWhole(coupon.maxDiscountCap, 'BDT')}
                     </li>
                   ) : null}
-                  {coupon.expiresAt && (
+                  {coupon.expiresAt && !left && (
                     <li>
                       <Icon name="calendar" width={14} height={14} />
                       {t('Until')} {formatDate(coupon.expiresAt)}
@@ -94,6 +132,9 @@ export function HomeLiveOffers() {
                 </ul>
 
                 <div className="home-offer-action">
+                  <Link className="btn btn--sm btn--outline home-offer-shop" to={offerLink(coupon)}>
+                    {t('Shop this offer')}
+                  </Link>
                   {coupon.isAutomatic ? (
                     <span className="home-offer-auto">{t('Applied automatically at checkout')}</span>
                   ) : (

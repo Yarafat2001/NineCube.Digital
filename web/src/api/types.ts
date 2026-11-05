@@ -589,3 +589,39 @@ export interface CartPromotionsEvaluationResult {
   amountNeededForFreeShipping: number;
   appliedDiscounts?: CouponValidationResult[] | null;
 }
+
+export type ChatAuthorKind = 'customer' | 'staff' | 'assistant';
+export type ChatConversationStatus = 'open' | 'closed';
+
+export interface ChatMessage {
+  id: number;
+  conversationId: number;
+  authorKind: ChatAuthorKind;
+  authorName: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface ChatConversationSummary {
+  id: number;
+  subject: string;
+  status: ChatConversationStatus;
+  createdAt: string;
+  updatedAt: string;
+  /* The API omits null values, so an empty conversation arrives without this key. */
+  lastMessage?: { body: string; authorKind: ChatAuthorKind; createdAt: string } | null;
+  unreadCount: number;
+}
+
+export interface ChatAssistantMatch {
+  kind: 'product' | 'order' | 'policy';
+  id?: number | null;
+  title: string;
+  detail: string;
+  link: string;
+}
+
+export interface ChatAssistantReply {
+  reply: ChatMessage;
+  matches: ChatAssistantMatch[];
+}

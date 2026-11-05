@@ -1,5 +1,76 @@
 # FIX_REPORT
 
+# Round 28 - a navbar that reads as glass, a home that works for signed-in customers, an account hub with only real destinations, and a store chat
+
+Date: 2026-11-06. Brief, in your words: "this navbar color make clear glassy so that behind background visible like
+real glass behavior. In the home page many previously applied features not active and here which type improvement need
+add here as add as the modern e-commerce home page standard make proper R&D to improve it. In the mobile screen account
+pages only include existing features as the other systems does like alibaba. Please add chating system proeprly and also
+Ai chat is possibility adjust here proeprly".
+
+## What the probe measured before the change
+
+The build served through the stub harness in headless Chromium at 1440x900 and 390x844, both themes; geometry and colour
+read from the DOM. "Painted alpha" is what the eye gets: the bar's fill and its gradient veil composited into one number,
+1 = fully opaque. The photographic check hides every navbar control, then photographs the same strip of the bar at two
+scroll positions with different content behind it; an opaque bar photographs identically (delta 0), a glass bar does not.
+
+| surface | before | after |
+| --- | --- | --- |
+| navbar painted alpha, light | .989 - the solid grey slab in the screenshot | .566 at rest, .846 scrolled |
+| navbar painted alpha, dark | .866 | .712 at rest, .856 scrolled |
+| photographic strip delta, 1440, one clip, two scroll depths | 0 for an opaque bar | dark 15.01, light 10.09 mean channel delta; blur(26px) saturate(1.7) active in both themes |
+| home for a signed-in customer | redirected to #/products before it painted, so offers, countdown, categories, store pulse and recents were unreachable | lands on #/ with the collection, 2 campaign offer cards, countdown "Ends in 3d 04h 59m", shop links into the filtered catalogue, 3 smart picks linking to products |
+| category strip with no stocked category | empty rail | one honest line instead |
+| account hub at 390 | 13 controls offering the same five destinations three times | orders card with 4 status shortcuts (Pending shows the real count 1), 7 destination tiles + log out, no horizontal overflow |
+| orders status shortcut | none | lands on #/orders?status=Pending with the filter select reading "Pending" |
+| chat | did not exist | launcher 56x56 with unread badge 1; at 390 the panel sits 8px from the top and ends above the 61px bottom nav; composer input 16px; desktop panel 380x468 |
+| assistant answer | - | "Show me iphone" answers with 3 real catalogue links; policy questions link the returns policy instead of inventing rows |
+
+## What changed and why
+
+The navbar was two layers: a 72%-opaque base and a near-opaque gradient doing the control material (96% light, 52% dark).
+Composited, the light bar was 98.9% opaque - the solid slab in the screenshot - and the dark bar 86.6%. The control
+material and the bar's own veil are now separate surfaces: the bar keeps a translucent veil over a translucent base
+(light .38 base / .30 veil, dark .68 base / .10 veil) and blur(26px) saturate(1.7) does the glass work, while buttons
+keep their hover and fill states on their own backgrounds. Both themes and widths read from the same tokens, and the
+scrolled (compact) bar stays above .84 in both themes so labels never sit on raw page pixels. The strip photographs
+confirm real see-through: the same bar pixels change by 15.01 mean channel delta (dark) and 10.09 (light) when the
+content behind them scrolls.
+
+The home page's "inactive" features had one root cause: the signed-in home route redirected every customer to
+#/products, so the offers, countdowns, category strip, store pulse and recents - all working for a signed-out visitor -
+could never be seen by the person the brief describes. The redirect is gone; the storefront is the home for everyone,
+with the campaign offers (countdown, "shop this offer" into the filtered catalogue) and the catalogue sections live
+between the hero and the footer. Where a section has nothing honest to show - an empty category, a missing 3D showcase -
+it says so in one line instead of painting an empty rail.
+
+The mobile account dashboard offered the same five destinations three times (header buttons, hub tiles, quick-action
+band). It now lists only what exists: an orders card with four status shortcuts that carry real counts and write the
+filter into the URL (the orders page reads it, so the shortcut lands on the filtered list), and tiles for products,
+wishlist, gift cards, profile & addresses, security, notifications and help - destinations verified against the router,
+with log out as its own control. The quick-actions band and its phantom links are gone.
+
+The chat is new end to end: backend endpoints for conversations, messages and an assistant (EF migration, 9 xUnit
+tests), and a storefront widget with an unread badge on the launcher, an assistant tab and a support tab. The assistant
+only answers from the live catalogue and the store policy settings - a product question returns real product links, a
+policy question returns the store's actual terms, and anything else is refused rather than invented. It polls on the
+house pattern (no new infrastructure), and on a phone the panel clears the bottom navigation using the safe-area inset.
+
+## Tests that keep it honest
+
+`web/src/test/round28-surfaces.test.tsx` (14 tests): the signed-in home shows the storefront (not the catalogue
+redirect), every smart pick links to /products/{id}, the countdown format and its shop link, the honest empty-category
+state, the account hub links only to routes that exist in the router with the four status shortcuts and their counts,
+the orders filter reads ?status=, the chat dock renders only for signed-in users, the seeded thread and unread badge,
+the assistant's product and policy answers with their links, and the dock's token-based layering (z-index, 56px
+launcher, 16px input, safe-area offsets). The MSW handlers answer the chat endpoints the same way the API does. The
+browser probe above answers the same questions from the DOM in real Chromium at 1440 and 390, both themes.
+
+Gates, re-run after the last edit in a clean worktree: `npx tsc --noEmit`, `npm run i18n:check` (2334 entries),
+`npx vitest run` (48 files, 358 tests, up from 343), `npm run build`, then against the preview build CI's two customer
+specs `delivery-addresses.spec.ts` and `gift-cards-layout.spec.ts` - 2 passed.
+
 # Round 27 - one account nav surface on a phone, an uncovered photo, a search sheet that fits the screen
 
 Date: 2026-11-05. Brief, in your words: "go on and consider these Here first four image serially mobile screen-

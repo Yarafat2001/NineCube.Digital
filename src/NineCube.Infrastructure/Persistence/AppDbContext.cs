@@ -63,6 +63,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     public DbSet<ServiceCase> ServiceCases => Set<ServiceCase>();
     public DbSet<EmailDelivery> EmailDeliveries => Set<EmailDelivery>();
     public DbSet<GiftCardPurchase> GiftCardPurchases => Set<GiftCardPurchase>();
+    public DbSet<ChatConversation> ChatConversations => Set<ChatConversation>();
+    public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -109,6 +111,30 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.Property(s => s.TokenHash).HasMaxLength(64).IsRequired();
             e.HasIndex(s => s.TokenHash).IsUnique();
             e.HasOne(s => s.Customer).WithMany().HasForeignKey(s => s.CustomerId).OnDelete(DeleteBehavior.Cascade);
+        });
+        // ---------------------------------------------------------------- Customer chat
+        modelBuilder.Entity<ChatConversation>(e =>
+        {
+            e.ToTable("ChatConversations");
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Subject).HasMaxLength(200).IsRequired();
+            e.Property(c => c.Status).HasConversion<string>().HasMaxLength(16).IsRequired();
+            // The customer inbox is "my threads, most recent activity first"; the staff queue is "everything, most recent first".
+            e.HasIndex(c => new { c.CustomerId, c.UpdatedAt });
+            e.HasIndex(c => c.UpdatedAt);
+            e.HasOne(c => c.Customer).WithMany().HasForeignKey(c => c.CustomerId).OnDelete(DeleteBehavior.Restrict);
+        });
+        modelBuilder.Entity<ChatMessage>(e =>
+        {
+            e.ToTable("ChatMessages");
+            e.HasKey(m => m.Id);
+            e.Property(m => m.AuthorKind).HasConversion<string>().HasMaxLength(16).IsRequired();
+            e.Property(m => m.AuthorName).HasMaxLength(200).IsRequired();
+            e.Property(m => m.Body).HasMaxLength(2000).IsRequired();
+            // The transcript is always read "one conversation, oldest first" and polled with ?afterId.
+            e.HasIndex(m => new { m.ConversationId, m.Id });
+            e.HasOne(m => m.Conversation).WithMany(c => c.Messages).HasForeignKey(m => m.ConversationId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<User>().WithMany().HasForeignKey(m => m.AuthorUserId).OnDelete(DeleteBehavior.Restrict);
         });
         modelBuilder.Entity<Order>().Property(o => o.DeliveryAddressJson).HasMaxLength(2000);
         modelBuilder.Entity<Order>().Property(o => o.DeliveryInstructions).HasMaxLength(1000);

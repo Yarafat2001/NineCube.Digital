@@ -164,3 +164,32 @@ public sealed record AuditLogDto(
     string? Details);
 
 public sealed record SettingsDto(int LowStockThreshold);
+
+// ---------------------------------------------------------------- chat
+
+/// <summary>The contract fixes status/authorKind to lowercase strings ("open", "closed",
+/// "customer", "staff", "assistant"), so the DTOs carry strings rather than the domain enums
+/// (the global JSON options would serialise those PascalCase).</summary>
+public sealed record ChatLastMessageDto(string Body, string AuthorKind, DateTime CreatedAt);
+
+public sealed record ChatConversationSummaryDto(
+    int Id,
+    string Subject,
+    string Status,
+    DateTime CreatedAt,
+    DateTime UpdatedAt,
+    ChatLastMessageDto? LastMessage,
+    int UnreadCount);
+
+public sealed record ChatMessageDto(
+    int Id,
+    int ConversationId,
+    string AuthorKind,
+    string AuthorName,
+    string Body,
+    DateTime CreatedAt);
+
+/// <summary>One grounded catalogue hit behind an assistant answer. Kind is "product", "order" or "policy".</summary>
+public sealed record ChatAssistantMatchDto(string Kind, int? Id, string Title, string Detail, string Link);
+
+public sealed record ChatAssistantResultDto(ChatMessageDto Reply, IReadOnlyList<ChatAssistantMatchDto> Matches);

@@ -1,11 +1,12 @@
 import { t, useLanguage } from './i18n/language';
 import { Suspense, lazy } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './state/AuthContext';
 import { CampaignBanner } from './components/CampaignBanner';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { MobileNav } from './components/MobileNav';
+import { ChatWidget } from './components/ChatWidget';
 import { RequireAuth, RequireRole } from './components/guards';
 import { LoadingBlock } from './components/ui';
 import { AuthPage } from './pages/AuthPages';
@@ -48,19 +49,20 @@ function RouteFallback() {
 
 function PublicHome() {
   useLanguage();
-  const { user, initialising } = useAuth();
+  const { initialising } = useAuth();
   if (initialising) return <RouteFallback />;
-  if (user) return <Navigate to="/products" replace />;
+  // The home is the shop window for everyone. Bouncing signed-in customers to the catalogue
+  // made every home feature (offers, deals, categories, pulse, recents) unreachable for them.
   return <ShowcasePage />;
 }
 
 export function App() {
   useLanguage();
   const { pathname } = useLocation();
-  const { user, initialising } = useAuth();
+  const { initialising } = useAuth();
 
   // The showcase ends on its own dark footer blend, so the shell footer would break that section.
-  const isShowcase = pathname === '/' && !user && !initialising;
+  const isShowcase = pathname === '/' && !initialising;
   const isAuth = pathname === '/login' || pathname === '/register';
 
   return (
@@ -206,6 +208,7 @@ export function App() {
 
       {isShowcase || isAuth ? null : <Footer />}
       <MobileNav />
+      {isAuth ? null : <ChatWidget />}
     </div>
   );
 }

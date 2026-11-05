@@ -71,6 +71,8 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         await db.Notifications.ExecuteDeleteAsync();
+        await db.ChatMessages.ExecuteDeleteAsync();
+        await db.ChatConversations.ExecuteDeleteAsync();
         await db.Addresses.ExecuteDeleteAsync();
         await db.InventoryMovements.ExecuteDeleteAsync();
         await db.OrderItems.ExecuteDeleteAsync();

@@ -22,11 +22,23 @@ describe('Round 27: one account nav surface on a phone', () => {
 
   it('lists every destination once in the hub, including the catalogue', () => {
     const hub = dashboard.slice(dashboard.indexOf('className="account-hub-grid"'), dashboard.indexOf('dashboard-stats'));
-    for (const to of ['"/products"', '"/orders"', '"/wishlist"', '"/gift-cards"', '"/account/profile"', '"/notifications"']) {
+    // Round 28 moved the order destinations into their own card above the hub, with a real count per
+    // status, so the hub rows are the remaining features - each one a route the router declares.
+    for (const to of ['"/products"', '"/wishlist"', '"/gift-cards"', '"/account/profile"', '"/account/security"', '"/notifications"', '"/help"']) {
       expect(hub).toContain(`to=${to}`);
     }
-    // Six links plus the log-out tile: a seventh row would be a duplicate again.
-    expect(hub.match(/account-hub-tile card-glass/g)).toHaveLength(6);
+    expect(hub).not.toContain('to="/orders"');
+    // Seven link rows; the log-out tile carries its own modifier class, so an eighth row here would
+    // be a duplicate again.
+    expect(hub.match(/account-hub-tile card-glass/g)).toHaveLength(7);
+
+    const orders = dashboard.slice(dashboard.indexOf('account-hub-orders'), dashboard.indexOf('className="account-hub-grid"'));
+    expect(orders).toContain('to="/orders"');
+    // The four shortcuts are generated from one template, so the statuses are proved as a list.
+    expect(orders).toContain("to={`/orders?status=${shortcut.status}`}");
+    for (const status of ['Pending', 'Confirmed', 'Shipped', 'Delivered']) {
+      expect(orders).toContain(`{ status: '${status}'`);
+    }
   });
 
   it('yields the quick-actions band and the two-column grid to the single column', () => {

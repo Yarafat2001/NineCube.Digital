@@ -16,6 +16,7 @@ const read = (file: string) => readFileSync(join(root, 'src', 'styles', file), '
 const app = read('app.css');
 const modern = read('modern.css');
 const responsive = read('responsive.css');
+const tokens = read('tokens.css');
 
 /**
  * These are the declarations a browser resolves into paint and stacking, so the contract worth
@@ -158,12 +159,19 @@ describe('Search surfaces follow the system plate', () => {
   });
 
   it('covers a scrolling row instead of smearing it through the pill', () => {
-    // The tint is approved material and stays; what is underneath it has to be opaque enough that
+    // The veil is approved material and stays; what is underneath it has to be opaque enough that
     // the row of cards scrolling past cannot read through the bar. That is the bar's own backing
     // colour, which is darker than the card surface in light mode and lighter in dark.
     const compact = block(modern, '.navbar--compact');
     expect(compact).toContain('background-color: var(--nav-glass-base-scroll);');
-    expect(compact).toContain('background-image: var(--navbar-glass)');
+    expect(compact).toContain('background-image: var(--nav-bar-veil)');
+    const light = tokens.slice(tokens.indexOf(':root, :root[data-theme="light"] {'), tokens.indexOf(':root[data-theme="dark"], .navbar--showcase {'));
+    const dark = tokens.slice(tokens.indexOf(':root[data-theme="dark"], .navbar--showcase {'), tokens.indexOf('--product-card-glass'));
+    const veil = [...(/--nav-bar-veil: ([^;]+);/.exec(light)?.[1] ?? '').matchAll(/rgba\([^)]*,\s*([\d.]+)\)/g)].map(m => Number(m[1]));
+    const scrollLight = Number(/--nav-glass-base-scroll:\s*rgba\([^)]*,\s*([\d.]+)\);/.exec(light)?.[1]);
+    const scrollDark = Number(/--nav-glass-base-scroll:\s*rgba\([^)]*,\s*([\d.]+)\);/.exec(dark)?.[1]);
+    expect(Math.max(...veil) + scrollLight * (1 - Math.max(...veil))).toBeGreaterThan(0.8);
+    expect(Math.max(...veil) + scrollDark * (1 - Math.max(...veil))).toBeGreaterThan(0.8);
   });
 });
 

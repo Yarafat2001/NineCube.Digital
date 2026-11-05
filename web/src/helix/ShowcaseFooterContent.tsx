@@ -1,11 +1,13 @@
 import { t, useLanguage } from '../i18n/language';
 import { Link } from 'react-router-dom';
 import { Brand } from '../components/Brand';
+import { useAuth } from '../state/AuthContext';
 import { showcaseCopy } from './showcaseCopy';
 
 /** Shared closing content for the animated and static public home. */
 export function ShowcaseFooterContent() {
   useLanguage();
+  const { user } = useAuth();
   return <>
     <div className="showcase-footer__lead">
       <p className="kicker">{t("Your next everyday favourite")}</p>
@@ -20,8 +22,17 @@ export function ShowcaseFooterContent() {
         <Link to="/" className="showcase-footer__brand"><Brand /></Link>
         <nav aria-label={t("Home footer")} className="showcase-footer__links">
           <Link to="/products">{t("Collection")}</Link>
-          <Link to="/login">{t("Sign in")}</Link>
-          <Link to="/register">{t("Create account")}</Link>
+          {user ? (
+            <>
+              <Link to="/orders">{t("Your orders")}</Link>
+              <Link to="/account">{t("Your account")}</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login">{t("Sign in")}</Link>
+              <Link to="/register">{t("Create account")}</Link>
+            </>
+          )}
         </nav>
       </div>
       <div className="showcase-footer__legal">

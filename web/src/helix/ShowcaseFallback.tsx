@@ -32,7 +32,9 @@ const reasonText: Record<ShowcaseFallbackReason, string> = {
   'reduced-motion':
     'The animated helix is paused because your system asks for reduced motion. Every card and the same text are below.',
   webgl: 'The animated helix needs WebGL, which this browser does not provide. Every card and the same text are below.',
-  error: 'The animated helix could not start here. Every card and the same text are below.'
+  error: 'The animated helix could not start here. Every card and the same text are below.',
+  storefront:
+    'This is the storefront view: the collection as cards with the live catalogue sections between them. The animated 3D helix is one button away.'
 };
 
 const TRENDING_KEYWORDS = [
@@ -133,18 +135,20 @@ function HomeStorePulse() {
           {topMoves.length === 0 ? (
             <p className="home-store-pulse__empty">{t("Inventory is refreshing.")}</p>
           ) : (
-            <ul className="home-store-pulse__list" role="presentation">
+            <ul className="home-store-pulse__list">
               {topMoves.map((product) => {
                 const share = Math.max(18, (product.stockQuantity / peakStock) * 100);
                 return (
-                  <li key={product.id} className="home-store-pulse__item" role="presentation">
-                    <div className="home-store-pulse__item-top">
-                      <span>{product.name}</span>
-                      <strong>{product.stockQuantity} {t("left")}</strong>
-                    </div>
-                    <div className="home-store-pulse__bar">
-                      <span style={{ width: `${share}%` }} />
-                    </div>
+                  <li key={product.id} className="home-store-pulse__item">
+                    <Link className="home-store-pulse__item-link" to={`/products/${product.id}`}>
+                      <div className="home-store-pulse__item-top">
+                        <span>{product.name}</span>
+                        <strong>{product.stockQuantity} {t("left")}</strong>
+                      </div>
+                      <div className="home-store-pulse__bar">
+                        <span style={{ width: `${share}%` }} />
+                      </div>
+                    </Link>
                   </li>
                 );
               })}

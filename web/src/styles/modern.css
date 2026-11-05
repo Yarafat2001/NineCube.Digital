@@ -246,20 +246,20 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
 }
 .navbar {
   background-color: var(--nav-glass-base);
-  background-image: var(--navbar-glass);
+  background-image: var(--nav-bar-veil);
   border-color: var(--nav-glass-edge);
-  backdrop-filter: blur(24px) saturate(145%);
-  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  backdrop-filter: blur(26px) saturate(170%);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
   box-shadow: var(--nav-glass-shadow);
 }
-/* Past 8px of scroll the page starts passing behind the pill. The tint is the approved
-   material, so it stays exactly as drawn - it just gets a slightly more opaque version of
-   its own backing colour under it, which covers the row instead of smearing a half-clipped
-   line of text through the blur. Painting var(--surface) here was the bug: an opaque card
-   colour under a translucent gradient cancels the glass, and the bar went flat mid-scroll. */
+/* Past 8px of scroll the page starts passing behind the pill. The veil is the approved
+   material, so it stays exactly as drawn - it just gets a more opaque version of its own
+   backing colour under it, which covers the row instead of smearing a half-clipped line of
+   text through the blur. Painting var(--surface) here was the bug: an opaque card colour
+   under a translucent gradient cancels the glass, and the bar went flat mid-scroll. */
 .navbar--compact {
   background-color: var(--nav-glass-base-scroll);
-  background-image: var(--navbar-glass);
+  background-image: var(--nav-bar-veil);
 }
 :root .navbar :is(.navbar__link:not([aria-current='page']), .theme-control:not([aria-pressed='true']), .navbar__actions .nav-pop__trigger):is([aria-expanded='true'], :active),
 .nav-pop__portal .nav-pop__item:not(.nav-pop__item--danger):is([aria-current='page']) {

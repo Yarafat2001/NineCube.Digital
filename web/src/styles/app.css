@@ -6681,3 +6681,345 @@ body[data-overlay-open='true'] {
     padding: 8px 12px;
   }
 }
+
+/* ==========================================================================
+   Round 28 - account hub order shortcuts (mobile only, existing features only)
+   ========================================================================== */
+.account-hub-orders {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  :root .account-hub-orders {
+    display: block;
+    margin: 4px 0 10px;
+    padding: 14px;
+    border-radius: var(--radius-lg, 14px);
+  }
+
+  .account-hub-orders__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .account-hub-orders__head strong {
+    font-size: var(--text-sm);
+  }
+
+  .account-hub-orders__all {
+    font-size: var(--text-label);
+    font-weight: 700;
+    color: var(--accent-text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .account-hub-orders__statuses {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .account-hub-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 64px;
+    padding: 8px 4px;
+    border-radius: var(--radius-md, 10px);
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .account-hub-status:active {
+    background: var(--surface-sunken);
+  }
+
+  .account-hub-status__icon {
+    position: relative;
+    display: inline-flex;
+    color: var(--accent-text);
+  }
+
+  .account-hub-status__count {
+    position: absolute;
+    top: -7px;
+    inset-inline-end: -11px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .account-hub-status__label {
+    font-size: var(--text-label);
+    color: var(--text-muted);
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   Round 28 - store chat dock (assistant + support thread)
+   ========================================================================== */
+.chat-dock {
+  position: fixed;
+  inset-inline-end: 18px;
+  bottom: 18px;
+  z-index: var(--z-menu);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.chat-launcher {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--nav-glass-edge);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+}
+
+.chat-launcher__badge {
+  position: absolute;
+  top: -4px;
+  inset-inline-end: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--nav-glass-edge);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(380px, calc(100vw - 24px));
+  max-height: min(560px, calc(100dvh - 120px));
+  border: 1px solid var(--nav-glass-edge);
+  border-radius: var(--radius-lg, 14px);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.chat-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--nav-glass-edge);
+}
+
+.chat-panel__head strong {
+  display: block;
+  font-size: var(--text-sm);
+}
+
+.chat-panel__head .muted {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-label);
+}
+
+.chat-panel__close {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--nav-glass-edge);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.chat-panel__modes {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px 0;
+}
+
+.chat-panel__modes button {
+  flex: 1;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--nav-glass-edge);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--text-label);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-panel__modes button[aria-selected='true'] {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: var(--accent-text);
+}
+
+.chat-thread {
+  flex: 1;
+  list-style: none;
+  margin: 0;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.chat-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 85%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--nav-glass-edge);
+  background: var(--surface-sunken);
+}
+
+.chat-bubble--self {
+  align-self: flex-end;
+  background: var(--surface);
+  border-color: var(--accent-text);
+}
+
+.chat-bubble__who {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.chat-bubble p {
+  margin: 0;
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.chat-bubble time {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.chat-match {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--nav-glass-edge);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.chat-match strong {
+  font-size: var(--text-label);
+}
+
+.chat-match span {
+  font-size: var(--text-label);
+  color: var(--text-muted);
+}
+
+.chat-empty p {
+  margin: 0 0 10px;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.chat-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chat-suggestion {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px dashed var(--nav-glass-edge);
+  background: transparent;
+  color: var(--text);
+  font-size: var(--text-label);
+  text-align: left;
+  cursor: pointer;
+}
+
+.chat-composer {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--nav-glass-edge);
+}
+
+.chat-composer input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--nav-glass-edge);
+  background: var(--surface-sunken);
+  color: var(--text);
+  font-size: 16px;
+}
+
+.chat-composer .btn {
+  min-height: 44px;
+}
+
+@media (max-width: 640px) {
+  .chat-dock {
+    inset-inline-end: 12px;
+    bottom: calc(var(--mobile-nav-h, 60px) + 12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .chat-panel {
+    position: fixed;
+    inset: 8px 8px calc(var(--mobile-nav-h, 60px) + 8px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-height: none;
+  }
+}

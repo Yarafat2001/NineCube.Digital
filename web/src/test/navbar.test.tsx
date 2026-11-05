@@ -43,14 +43,24 @@ describe('Navbar', () => {
     expect(nav.querySelector('.navbar__highlight')).toBeNull();
   });
 
-  it('sends signed-in home visits to products and omits showcase navigation', async () => {
+  // Round 28: a signed-in home visit stays on the storefront instead of being pushed to /products,
+  // so nothing in the navbar is current there; the current-tab rule is proved on the catalogue.
+  it('leaves the signed-in home visit on the storefront with no current tab', async () => {
     signIn('Customer');
     renderApp('/');
 
     const nav = await screen.findByRole('navigation', { name: /main/i });
-
-    await screen.findByRole('heading', { name: /catalogue/i });
+    await screen.findByTestId('showcase');
     expect(within(nav).queryByRole('link', { name: 'Showcase' })).not.toBeInTheDocument();
+    expect(nav.querySelectorAll('[aria-current="page"]')).toHaveLength(0);
+  });
+
+  it('marks only the catalogue tab current on a signed-in /products visit', async () => {
+    signIn('Customer');
+    renderApp('/products');
+
+    const nav = await screen.findByRole('navigation', { name: /main/i });
+    await screen.findByRole('heading', { name: /catalogue/i });
     expect(within(nav).getByRole('link', { name: 'Products' })).toHaveAttribute('aria-current', 'page');
     expect(nav.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
   });

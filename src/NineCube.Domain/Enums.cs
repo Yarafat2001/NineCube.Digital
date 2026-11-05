@@ -22,7 +22,8 @@ public enum NotificationType
     OrderStatusChanged = 1,
     OrderCancelled = 2,
     NewOrder = 3,
-    LowStock = 4
+    LowStock = 4,
+    ChatMessage = 5
 }
 
 /// <summary>

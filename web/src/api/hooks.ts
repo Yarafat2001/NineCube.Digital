@@ -37,7 +37,10 @@ import type {
   CreateGiftCardInput,
   ValidateGiftCardResult,
   EvaluateCartPromotionsRequest,
-  CartPromotionsEvaluationResult
+  CartPromotionsEvaluationResult,
+  ChatAssistantReply,
+  ChatConversationSummary,
+  ChatMessage
 } from './types';
 import { useAuth } from '../state/AuthContext';
 
@@ -68,7 +71,9 @@ export const queryKeys = {
   wishlist: ['wishlist'] as const,
   coupons: ['coupons'] as const,
   orderPayments: (orderId: number) => ['order-payments', orderId] as const,
-  giftCards: ['gift-cards'] as const
+  giftCards: ['gift-cards'] as const,
+  chatConversations: ['chat', 'conversations'] as const,
+  chatMessages: (conversationId: number) => ['chat', 'messages', conversationId] as const
 };
 
 /** Thin wrapper so every hook uses the current access token without repeating itself. */
@@ -929,5 +934,68 @@ export function useEvaluateCartPromotions() {
   return useMutation({
     mutationFn: (payload: EvaluateCartPromotionsRequest) =>
       apiRequest<CartPromotionsEvaluationResult>('/api/coupons/evaluate-cart', { method: 'POST', body: payload })
+  });
+}
+
+// ------------------------------------------------------------------ chat
+
+/** The launcher badge polls the conversation list; the open thread polls its messages. */
+export function useChatConversations(enabled: boolean) {
+  const request = useAuthedRequest();
+  return useQuery({
+    queryKey: queryKeys.chatConversations,
+    queryFn: () => request<ChatConversationSummary[]>('/api/chat/conversations'),
+    enabled,
+    refetchInterval: 15_000
+  });
+}
+
+export function useChatMessages(conversationId: number | null, enabled: boolean) {
+  const request = useAuthedRequest();
+  return useQuery({
+    queryKey: conversationId === null ? ['chat', 'messages', 'none'] : queryKeys.chatMessages(conversationId),
+    queryFn: () => request<ChatMessage[]>(`/api/chat/conversations/${conversationId}/messages`),
+    enabled: enabled && conversationId !== null,
+    refetchInterval: 6_000,
+    placeholderData: (previous) => previous
+  });
+}
+
+function useChatInvalidation() {
+  const invalidate = useInvalidate();
+  return (conversationId?: number) =>
+    invalidate(conversationId === undefined ? [['chat']] : [['chat', 'conversations'], ['chat', 'messages', conversationId]]);
+}
+
+export function useCreateChatConversation() {
+  const request = useAuthedRequest();
+  const invalidate = useChatInvalidation();
+  return useMutation({
+    mutationFn: (body: { subject?: string; message: string }) =>
+      request<{ id: number }>('/api/chat/conversations', { method: 'POST', body }),
+    onSuccess: () => invalidate()
+  });
+}
+
+export function useSendChatMessage() {
+  const request = useAuthedRequest();
+  const invalidate = useChatInvalidation();
+  return useMutation({
+    mutationFn: (input: { conversationId: number; body: string }) =>
+      request<{ message: ChatMessage }>(`/api/chat/conversations/${input.conversationId}/messages`, {
+        method: 'POST',
+        body: { body: input.body }
+      }),
+    onSuccess: (_data, input) => invalidate(input.conversationId)
+  });
+}
+
+export function useAskAssistant() {
+  const request = useAuthedRequest();
+  const invalidate = useChatInvalidation();
+  return useMutation({
+    mutationFn: (input: { question: string; conversationId?: number }) =>
+      request<ChatAssistantReply>('/api/chat/assistant', { method: 'POST', body: input }),
+    onSuccess: (_data, input) => invalidate(input.conversationId)
   });
 }

@@ -54,21 +54,44 @@ export function AccountDashboardPage() {
         </div>
       </header>
 
-      {/* The single account navigation surface: one row per destination. */}
+      {/* The single account navigation surface, grouped the way marketplace apps do it:
+          orders first with their live status counts, then every existing account feature. */}
+      <section className="account-hub-orders card-glass" aria-label={t("My Orders")}>
+        <div className="account-hub-orders__head">
+          <strong>{t("My Orders")}</strong>
+          <Link className="account-hub-orders__all" to="/orders">{t("View all")} <span aria-hidden="true">→</span></Link>
+        </div>
+        <div className="account-hub-orders__statuses">
+          {([
+            { status: 'Pending', icon: 'clock' },
+            { status: 'Confirmed', icon: 'check' },
+            { status: 'Shipped', icon: 'truck' },
+            { status: 'Delivered', icon: 'box' }
+          ] as const).map((shortcut) => (
+            <Link
+              key={shortcut.status}
+              className="account-hub-status"
+              to={`/orders?status=${shortcut.status}`}
+            >
+              <span className="account-hub-status__icon">
+                <Icon name={shortcut.icon} width={20} height={20} />
+                {(() => {
+                  const count = data.ordersByStatus.find(entry => entry.status === shortcut.status)?.count ?? 0;
+                  return count > 0 ? <span className="account-hub-status__count">{count}</span> : null;
+                })()}
+              </span>
+              <span className="account-hub-status__label">{t(shortcut.status)}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <nav className="account-hub-grid" aria-label={t("Account Navigation")}>
         <Link className="account-hub-tile card-glass" to="/products">
           <div className="account-hub-tile__icon"><Icon name="grid" /></div>
           <div className="account-hub-tile__info">
             <strong>{t("Browse products")}</strong>
             <span className="muted">{t("Search the catalogue")}</span>
-          </div>
-          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
-        </Link>
-        <Link className="account-hub-tile card-glass" to="/orders">
-          <div className="account-hub-tile__icon"><Icon name="box" /></div>
-          <div className="account-hub-tile__info">
-            <strong>{t("My Orders")}</strong>
-            <span className="muted">{t(`${data.totalOrders} total orders`)}</span>
           </div>
           <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
         </Link>
@@ -96,11 +119,27 @@ export function AccountDashboardPage() {
           </div>
           <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
         </Link>
+        <Link className="account-hub-tile card-glass" to="/account/security">
+          <div className="account-hub-tile__icon"><Icon name="shield" /></div>
+          <div className="account-hub-tile__info">
+            <strong>{t("Account security")}</strong>
+            <span className="muted">{t("Password and sign-in sessions")}</span>
+          </div>
+          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
+        </Link>
         <Link className="account-hub-tile card-glass" to="/notifications">
           <div className="account-hub-tile__icon"><Icon name="bell" /></div>
           <div className="account-hub-tile__info">
             <strong>{t("Notifications")}</strong>
             <span className="muted">{t(data.unreadNotifications > 0 ? `${data.unreadNotifications} unread` : 'All caught up')}</span>
+          </div>
+          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
+        </Link>
+        <Link className="account-hub-tile card-glass" to="/help">
+          <div className="account-hub-tile__icon"><Icon name="phone" /></div>
+          <div className="account-hub-tile__info">
+            <strong>{t("Help & support")}</strong>
+            <span className="muted">{t("Raise a service case")}</span>
           </div>
           <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
         </Link>

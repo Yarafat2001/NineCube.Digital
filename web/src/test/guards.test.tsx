@@ -12,12 +12,15 @@ function signIn(role: UserRole) {
 }
 
 describe('Route guards', () => {
-  it.each<UserRole>(['Customer', 'Staff', 'InventoryManager', 'Administrator'])('keeps the public home out of the %s workspace', async (role) => {
+  // Round 28: the home page used to bounce every signed-in visitor to /products, which is why the
+  // offers, the store pulse and the smart picks were never seen by a logged-in customer. The
+  // storefront is public space, not a workspace, so all four roles land on it.
+  it.each<UserRole>(['Customer', 'Staff', 'InventoryManager', 'Administrator'])('keeps the public home reachable for a signed-in %s', async (role) => {
     signIn(role);
     renderApp('/');
-    expect(await screen.findByRole('heading', { name: /catalogue/i })).toBeInTheDocument();
-    expect(screen.queryByTestId('showcase')).not.toBeInTheDocument();
-    expect(document.body).not.toHaveClass('showcase-active');
+    expect(await screen.findByTestId('showcase')).toBeInTheDocument();
+    // The storefront talks about the catalogue, so the redirect is disproved by its own heading.
+    expect(screen.queryByRole('heading', { level: 1, name: 'Catalogue' })).not.toBeInTheDocument();
   });
   it('lets an anonymous visitor browse products', async () => {
     renderApp('/products');

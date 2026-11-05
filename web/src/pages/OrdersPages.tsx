@@ -2,7 +2,7 @@ import { apiRequest } from '../api/client';
 import { OrderAftercare } from '../components/OrderAftercare';
 import { t, useLanguage } from '../i18n/language';
 import { useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useOrder, useOrderAction, useOrders } from '../api/hooks';
 import type { Product, Order, OrderStatus } from '../api/types';
 import {
@@ -82,8 +82,17 @@ export function MyOrdersPage() {
   const navigate = useNavigate();
 
   const { reorder: handleReorder, busy: reordering } = useReorder();
-  const [status, setStatus] = useState<OrderStatus | ''>('');
+  // The status lives in the URL so the account hub's status shortcuts, a shared link and the
+  // browser back button all agree with the filter select.
+  const [params, setParams] = useSearchParams();
+  const requested = params.get('status') as OrderStatus | '' | null;
+  const status: OrderStatus | '' = requested && STATUS_FILTERS.includes(requested) ? requested : '';
   const [page, setPage] = useState(1);
+
+  const changeStatus = (next: OrderStatus | '') => {
+    setPage(1);
+    setParams(next ? { status: next } : {}, { replace: true });
+  };
 
   const ordersQuery = useOrders({ status, page, pageSize: 10 });
 
@@ -101,8 +110,7 @@ export function MyOrdersPage() {
             id="order-status-filter"
             value={status}
             onChange={(event) => {
-              setStatus(event.target.value as OrderStatus | '');
-              setPage(1);
+              changeStatus(event.target.value as OrderStatus | '');
             }}
           >
             {STATUS_FILTERS.map((value) => (

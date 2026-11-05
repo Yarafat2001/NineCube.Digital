@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { Address, AdminUser, Brand, BulkItemResult, BulkProductAction, BrandLines, Dashboard, Notification, Order, Product, ProductImage, Profile, Tag, UserSummary } from '../api/types';
+import type { Address, AdminUser, Brand, BulkItemResult, BulkProductAction, BrandLines, ChatAssistantMatch, ChatConversationSummary, ChatMessage, Dashboard, Notification, Order, Product, ProductImage, Profile, Tag, UserSummary } from '../api/types';
 
 export const API = 'http://localhost:5080';
 
@@ -289,6 +289,28 @@ const inboxSeed: Notification[] = [
   { id: 3, type: 'OrderCancelled', title: 'Order #455 cancelled', body: 'The reserved stock was released.', link: '/orders/455', isRead: true, createdAt: '2026-09-20T12:00:00Z', readAt: '2026-09-20T12:10:00Z' }
 ];
 
+/**
+ * Chat threads are mutable for the same reason the inbox is: a test that sends a message has to see
+ * it come back on the next poll, otherwise it only proves the request left the browser.
+ * `resetAccountFixtures` restores the seed.
+ */
+const chatConversationSeed: ChatConversationSummary[] = [
+  {
+    id: 1, subject: 'Delivery in Sylhet', status: 'open',
+    createdAt: '2026-10-28T09:00:00Z', updatedAt: '2026-10-28T09:40:00Z',
+    lastMessage: { body: 'We deliver to Sylhet in 2-3 working days.', authorKind: 'staff', createdAt: '2026-10-28T09:40:00Z' },
+    unreadCount: 1
+  }
+];
+
+const chatMessageSeed: ChatMessage[] = [
+  { id: 1, conversationId: 1, authorKind: 'customer', authorName: 'Demo Customer', body: 'Do you deliver to Sylhet?', createdAt: '2026-10-28T09:00:00Z' },
+  { id: 2, conversationId: 1, authorKind: 'staff', authorName: 'NineCube Support', body: 'We deliver to Sylhet in 2-3 working days.', createdAt: '2026-10-28T09:40:00Z' }
+];
+
+let chatConversations = chatConversationSeed.map(entry => ({ ...entry }));
+let chatMessages = chatMessageSeed.map(entry => ({ ...entry }));
+
 const addressSeed: Address[] = [
   { id: 7, label: 'Home', division: 'Dhaka', district: 'Dhaka', upazila: 'Dhanmondi', addressLine: 'House 12, Road 5', phone: '01712345678', isDefault: true }
 ];
@@ -342,6 +364,8 @@ export function resetAccountFixtures() {
   profile = { ...profileSeed, addresses: addressSeed.map(entry => ({ ...entry })) };
   security = securitySeed();
   securityCode = '';
+  chatConversations = chatConversationSeed.map(entry => ({ ...entry }));
+  chatMessages = chatMessageSeed.map(entry => ({ ...entry }));
 }
 
 /** Put the account in a state the real endpoint could answer: an unverified email, two-step on, no devices. */
@@ -1498,7 +1522,95 @@ export const handlers = [
 
   http.post(`${API}/api/auth/logout`, () =>
     HttpResponse.json({ success: true })
-  )
+  ),
+
+  // Chat: the assistant answers from the seeded products, the support thread is a real conversation row.
+  http.get(`${API}/api/chat/conversations`, () => HttpResponse.json(chatConversations)),
+
+  http.post(`${API}/api/chat/conversations`, async ({ request }) => {
+    const body = (await request.json()) as { subject?: string; message?: string };
+    if (!body.message?.trim()) {
+      return HttpResponse.json(problem(400, 'invalid_request', 'Bad request.', 'Write a message first.'), { status: 400 });
+    }
+    const id = chatConversations.length + 1;
+    const now = new Date().toISOString();
+    chatConversations.push({
+      id,
+      subject: body.subject?.slice(0, 200) || 'Support chat',
+      status: 'open',
+      createdAt: now,
+      updatedAt: now,
+      lastMessage: { body: body.message, authorKind: 'customer', createdAt: now },
+      unreadCount: 0
+    });
+    chatMessages.push({ id: chatMessages.length + 1, conversationId: id, authorKind: 'customer', authorName: 'Customer', body: body.message, createdAt: now });
+    return HttpResponse.json({ id });
+  }),
+
+  http.get(`${API}/api/chat/conversations/:id/messages`, ({ params }) => {
+    const id = Number(params.id);
+    return HttpResponse.json(chatMessages.filter(message => message.conversationId === id));
+  }),
+
+  http.post(`${API}/api/chat/conversations/:id/messages`, async ({ params, request }) => {
+    const body = (await request.json()) as { body?: string };
+    if (!body.body?.trim()) {
+      return HttpResponse.json(problem(400, 'invalid_request', 'Bad request.', 'Write a message first.'), { status: 400 });
+    }
+    const conversationId = Number(params.id);
+    const message: ChatMessage = {
+      id: chatMessages.length + 1,
+      conversationId,
+      authorKind: 'customer',
+      authorName: 'Customer',
+      body: body.body,
+      createdAt: new Date().toISOString()
+    };
+    chatMessages.push(message);
+    return HttpResponse.json({ message });
+  }),
+
+  http.post(`${API}/api/chat/assistant`, async ({ request }) => {
+    const body = (await request.json()) as { question?: string; conversationId?: number };
+    const question = body.question?.trim() ?? '';
+    if (!question) {
+      return HttpResponse.json(problem(400, 'invalid_request', 'Bad request.', 'Ask a question first.'), { status: 400 });
+    }
+    const conversationId = body.conversationId ?? 0;
+    if (conversationId) {
+      chatMessages.push({ id: chatMessages.length + 1, conversationId, authorKind: 'customer', authorName: 'Customer', body: question, createdAt: new Date().toISOString() });
+    }
+    const lower = question.toLowerCase();
+    const matches: ChatAssistantMatch[] = products
+      .filter(product => lower.split(/\s+/).some(word => word.length > 2 && product.name.toLowerCase().includes(word)))
+      .slice(0, 3)
+      .map(product => ({ kind: 'product' as const, id: product.id, title: product.name, detail: `৳${product.price}`, link: `/products/${product.id}` }));
+    const reply = lower.includes('order')
+      ? 'Your orders are listed on the orders page with their current status.'
+      : lower.includes('return') || lower.includes('policy')
+        ? 'Returns are accepted within the store return window; the full text is on the policies page.'
+        : matches.length
+          ? `Here is what the catalogue has for "${question}".`
+          : `I could not find "${question}" in the live catalogue. Try another word, or write to the support team.`;
+    if (lower.includes('return') || lower.includes('policy')) {
+      matches.length = 0;
+      matches.push({ kind: 'policy', title: 'Returns', detail: 'Store return policy', link: '/policies/returns' });
+    }
+    if (lower.includes('order')) {
+      matches.length = 0;
+      matches.push({ kind: 'order', title: 'My orders', detail: 'Every order and its status', link: '/orders' });
+    }
+    const persisted: ChatMessage = {
+      id: conversationId ? chatMessages.length + 1 : 0,
+      conversationId,
+      authorKind: 'assistant',
+      authorName: 'NineCube Assistant',
+      body: reply,
+      createdAt: new Date().toISOString()
+    };
+    if (conversationId) chatMessages.push(persisted);
+    return HttpResponse.json({ reply: persisted, matches });
+  })
 ];
 
 /** Same required-field rule the API applies before it writes an address row. */

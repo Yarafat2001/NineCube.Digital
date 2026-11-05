@@ -52,6 +52,8 @@ public interface IAppDbContext
     DbSet<ServiceCase> ServiceCases { get; }
     DbSet<EmailDelivery> EmailDeliveries { get; }
     DbSet<GiftCardPurchase> GiftCardPurchases { get; }
+    DbSet<ChatConversation> ChatConversations { get; }
+    DbSet<ChatMessage> ChatMessages { get; }
 
     DatabaseFacade Database { get; }
     Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker ChangeTracker { get; }
@@ -134,6 +136,13 @@ public static class SettingKeys
     public const string WeeklySpendCap = "DiscountPolicy.WeeklySpendCap";
     public const string ApprovalAbovePercentage = "DiscountPolicy.ApprovalAbovePercentage";
     public const string ApprovalAboveAmount = "DiscountPolicy.ApprovalAboveAmount";
+
+    /// <summary>Store policy text the chat assistant is allowed to quote. The only source of
+    /// policy answers - anything not stored under these keys is never stated.</summary>
+    public const string PolicyDelivery = "Policy.Delivery";
+    public const string PolicyReturns = "Policy.Returns";
+    public const string PolicyPrivacy = "Policy.Privacy";
+    public const string PolicyTerms = "Policy.Terms";
 }
 
 public static class AuditActions
