@@ -7,6 +7,7 @@ import { Icon } from '../components/Icon';
 import { formatDateTime, timeAgo } from '../lib/helpers';
 import { t, useLanguage } from '../i18n/language';
 import { apiRequest } from '../api/client';
+import { AccountSection } from '../components/AccountNav';
 
 type Security = {
   verified: boolean; mfaEnabled: boolean;
@@ -23,7 +24,8 @@ export function SecurityPage() {
     setBusy(true); try { await request(path, { method: 'POST', body }); await security.refetch(); return true; }
     catch (error) { toast.pushError(error); return false; } finally { setBusy(false); }
   };
-  return <div className="page container stack security-page">
+  return <div className="page container security-page">
+    <AccountSection>
     <header className="security-page__head">
       <h1><Icon name="shield" width={24} height={24} aria-hidden="true" /> {t('Account security')}</h1>
       <p>{t('Three things keep an account yours: a verified email, a code at sign-in, and knowing which devices can still reach it.')}</p>
@@ -144,5 +146,6 @@ export function SecurityPage() {
       </section>
       </aside>
     </div>}
+    </AccountSection>
   </div>;
 }

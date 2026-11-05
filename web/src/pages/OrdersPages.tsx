@@ -19,6 +19,7 @@ import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
 import { PaymentActions } from '../components/PaymentActions';
 import { DeliveryManagement } from '../components/DeliveryManagement';
+import { AccountSection } from '../components/AccountNav';
 
 const STATUS_FILTERS: (OrderStatus | '')[] = ['', 'Pending', 'Confirmed', 'Shipped', 'Delivered', 'DeliveryFailed', 'Rejected', 'Cancelled'];
 
@@ -98,6 +99,7 @@ export function MyOrdersPage() {
 
   return (
     <div className="page container">
+      <AccountSection>
       <header className="page-header">
         <div>
           <h1>{t("My orders")}</h1>
@@ -206,6 +208,7 @@ export function MyOrdersPage() {
           />
         </div>
       ) : null}
+      </AccountSection>
     </div>
   );
 }

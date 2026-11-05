@@ -33,6 +33,7 @@ export function ChatWidget() {
   const [localReplies, setLocalReplies] = useState<ChatMessage[]>([]);
   const [matchesByMessage, setMatchesByMessage] = useState<Record<string, ChatAssistantMatch[]>>({});
   const threadRef = useRef<HTMLOListElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   // The unread badge has to be readable before the panel is ever opened, so the conversation list is
   // fetched for any signed-in customer; only the thread waits for the panel.
@@ -45,6 +46,20 @@ export function ChatWidget() {
   const createConversation = useCreateChatConversation();
   const sendMessage = useSendChatMessage();
   const askAssistant = useAskAssistant();
+
+  // Chat notifications link to the panel, not a route: any surface can ask for it.
+  useEffect(() => {
+    const onOpenChat = () => {
+      setOpen(true);
+      setMode('support');
+    };
+    window.addEventListener('ninecube:open-chat', onOpenChat);
+    return () => window.removeEventListener('ninecube:open-chat', onOpenChat);
+  }, []);
+
+  useEffect(() => {
+    if (open) closeRef.current?.focus();
+  }, [open]);
 
   const busy = createConversation.isPending || sendMessage.isPending || askAssistant.isPending;
   const unread = (conversations.data ?? []).reduce((total, conversation) => total + conversation.unreadCount, 0);
@@ -98,7 +113,7 @@ export function ChatWidget() {
               <strong>{t('Chat with NineCube')}</strong>
               <span className="muted">{active ? active.subject : t('Answers from the live catalogue')}</span>
             </div>
-            <button type="button" className="chat-panel__close" onClick={() => setOpen(false)} aria-label={t('Close chat')}>
+            <button type="button" ref={closeRef} className="chat-panel__close" onClick={() => setOpen(false)} aria-label={t('Close chat')}>
               <Icon name="x" width={16} height={16} />
             </button>
           </header>
@@ -166,16 +181,17 @@ export function ChatWidget() {
         </section>
       ) : null}
 
-      <button
-        type="button"
-        className="chat-launcher"
-        onClick={() => setOpen((value) => !value)}
-        aria-expanded={open}
-        aria-label={t('Chat with NineCube')}
-      >
-        <Icon name={open ? 'x' : 'chat'} width={22} height={22} />
-        {unread > 0 && !open ? <span className="chat-launcher__badge">{unread}</span> : null}
-      </button>
+      {!open ? (
+        <button
+          type="button"
+          className="chat-launcher"
+          onClick={() => setOpen(true)}
+          aria-label={t('Chat with NineCube')}
+        >
+          <Icon name="chat" width={22} height={22} />
+          {unread > 0 ? <span className="chat-launcher__badge">{unread}</span> : null}
+        </button>
+      ) : null}
     </div>
   );
 }

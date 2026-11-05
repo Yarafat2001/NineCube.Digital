@@ -9,6 +9,7 @@ import { useAuth } from '../state/AuthContext';
 import { apiRequest } from '../api/client';
 import { Icon } from '../components/Icon';
 import { GiftCardCertificate } from '../components/GiftCardCertificate';
+import { AccountSection } from '../components/AccountNav';
 
 const PRESETS = [500, 1000, 2500, 5000];
 const DEMO_CARDS = [
@@ -123,6 +124,7 @@ export function GiftCardsPage() {
 
   return (
     <div className="page container gift-page">
+      <AccountSection>
       {/* Hero Header */}
       <header className="page-header">
         <div>
@@ -342,6 +344,7 @@ export function GiftCardsPage() {
           </dl>
         </div>
       </section>
+      </AccountSection>
     </div>
   );
 }

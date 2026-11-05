@@ -5925,14 +5925,16 @@ body[data-overlay-open='true'] {
   z-index: 3;
 }
 
+/* Solid chips, not glass: --surface-glass is 62% white in light mode, so frosted chips
+   dissolve into white product photos. A solid surface, strong border and a small shadow
+   keep both buttons readable over any photo in either theme. */
 .product-card__wishlist-btn {
   width: 32px;
   height: 32px;
   border-radius: var(--radius-pill);
-  background: var(--surface-glass, rgba(15, 23, 42, 0.65));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-sm);
   color: var(--text-muted);
   display: inline-flex;
   align-items: center;
@@ -5967,10 +5969,9 @@ body[data-overlay-open='true'] {
   width: 32px;
   height: 32px;
   border-radius: var(--radius-pill);
-  background: var(--surface-glass, rgba(15, 23, 42, 0.65));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-sm);
   color: var(--text);
   display: inline-flex;
   align-items: center;
@@ -7021,5 +7022,102 @@ body[data-overlay-open='true'] {
     inset: 8px 8px calc(var(--mobile-nav-h, 60px) + 8px + env(safe-area-inset-bottom, 0px));
     width: auto;
     max-height: none;
+  }
+}
+
+/* ==========================================================================
+   Account Navigation Rail - one linked surface across every account page.
+   Phones get a horizontal chip row; from 1024px it becomes a sticky rail
+   beside the page, the way marketplace account centres lay themselves out.
+   The dashboard keeps its own tile hub and does not render this rail.
+   ========================================================================== */
+.account-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.account-section__main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.account-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 6px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.account-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  min-height: 40px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--opt-edge, var(--border));
+  background: var(--surface-glass, var(--surface));
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.account-nav__link:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.account-nav__link--active {
+  background: var(--selected-bg);
+  color: var(--accent-text);
+  border-color: var(--selected-bar);
+}
+
+@media (min-width: 1024px) {
+  .account-section {
+    grid-template-columns: 224px minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .account-nav {
+    position: sticky;
+    top: var(--sticky-top, 80px);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    overflow-x: visible;
+    padding: 8px;
+    background: var(--product-card-glass, var(--surface));
+    border: 1px solid var(--nav-glass-edge, var(--border));
+    border-radius: var(--radius-lg);
+    box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
+  }
+
+  .account-nav__link {
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-md);
+    justify-content: flex-start;
+  }
+
+  .account-nav__link:hover {
+    background: var(--nav-hover, rgba(119, 133, 154, 0.2));
+    border-color: transparent;
+  }
+
+  .account-nav__link--active {
+    background: var(--selected-bg);
+    color: var(--accent-text);
+    border-color: transparent;
   }
 }

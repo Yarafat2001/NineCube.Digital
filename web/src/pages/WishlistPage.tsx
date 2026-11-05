@@ -5,6 +5,7 @@ import { EmptyState, ErrorState, LoadingBlock, useToast } from '../components/ui
 import { formatMoney } from '../lib/helpers';
 import { ProductThumbnail } from '../components/ProductImage';
 import { useCart } from '../state/CartContext';
+import { AccountSection } from '../components/AccountNav';
 
 export function WishlistPage() {
   useLanguage();
@@ -33,6 +34,7 @@ export function WishlistPage() {
 
   return (
     <div className="page container">
+      <AccountSection>
       <header className="page-header">
         <div>
           <h1>{t("My Wishlist")}</h1>
@@ -120,6 +122,7 @@ export function WishlistPage() {
           ))}
         </div>
       )}
+      </AccountSection>
     </div>
   );
 }

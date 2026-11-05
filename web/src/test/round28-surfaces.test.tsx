@@ -122,15 +122,15 @@ describe('The store chat', () => {
     renderApp('/orders');
 
     const launcher = await screen.findByRole('button', { name: 'Chat with NineCube' });
-    expect(launcher).toHaveAttribute('aria-expanded', 'false');
     await waitFor(() => expect(launcher.querySelector('.chat-launcher__badge')).toHaveTextContent('1'));
 
     await user.click(launcher);
     const panel = await screen.findByRole('dialog', { name: 'Chat with NineCube' });
-    expect(launcher).toHaveAttribute('aria-expanded', 'true');
+    // The launcher unmounts while the panel is open so the two can never overlap on a phone.
+    expect(screen.queryByRole('button', { name: 'Chat with NineCube' })).toBeNull();
     expect(within(panel).getByText('Do you deliver to Sylhet?')).toBeInTheDocument();
     expect(within(panel).getByText('We deliver to Sylhet in 2-3 working days.')).toBeInTheDocument();
-    expect(launcher.querySelector('.chat-launcher__badge')).toBeNull();
+    expect(within(panel).getByRole('button', { name: 'Close chat' })).toHaveFocus();
   });
 
   it('answers from the live catalogue and links the products it found', async () => {

@@ -518,3 +518,58 @@ body.showcase-active {
   .showcase-footer__lead h2 { font-size: 38px; }
   .showcase-footer__links { gap: 8px 20px; }
 }
+
+/* ------------------------------------------------- static collection cards -- */
+
+/* Each artwork card is a real search link into the catalogue, with the category
+   name as a glass chip over the photo - the same honest navigation the trending
+   chips already offer. */
+.showcase__card {
+  position: relative;
+  display: block;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(36, 36, 36, 0.06);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+.showcase__card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.showcase__card:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.showcase__card img {
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.showcase__card:hover img {
+  transform: scale(1.04);
+}
+
+.showcase__card .showcase__category-name {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(10, 15, 31, 0.78);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 650;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase__card, .showcase__card img { transition: none; }
+  .showcase__card:hover { transform: none; }
+  .showcase__card:hover img { transform: none; }
+}

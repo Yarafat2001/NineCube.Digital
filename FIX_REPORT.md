@@ -1,5 +1,76 @@
 # FIX_REPORT
 
+# Round 29 - a bell that survives a chat alert, a phone chat that never collides, uncovered product photos, one filter surface, a home that moves, and account pages on one Alibaba-style rail
+
+Date: 2026-11-06. Brief, in your words: "In the notification icon clicik issues create session issues for messages
+check alert. In mobile screen message option cancel cross icon and screen collusion created and the and also in the
+catalogue page product card some product image are collusion on the wishlist and quick view icon you check this here
+also some issues for the filtering in the mobile has double time please make it more user friendly. Home page screen
+for both and mobile give more modern and unique style and animation that normally famous e-commerce system use please
+add this all properly. Account pages screen make make more efficeint and hyperlinked styled page linked format as like
+alibaba and others style. As R&D you find out more imorvenment and gap and fix these all properly."
+
+## What the probe measured before the change
+
+The build served through the stub harness in headless Chromium at 1440x900 and 390x844, both themes; geometry,
+colours and console errors read from the DOM.
+
+| surface | before | after |
+| --- | --- | --- |
+| notification bell with a live chat alert | the backend now writes `NotificationType.ChatMessage` (value 5) with link `/chat`, and the frontend had no entry for it: the bell popover, the account dashboard and the notifications page each threw `TypeError` and the surfaces went blank | bell opens with 4 items and zero console errors; the chat item carries an "Open chat" action that opens the store chat on the Support tab; the dashboard and notifications page render the same item with a mail glyph instead of crashing |
+| chat launcher vs composer at 390x844 | the launcher stayed mounted while the panel was open and overlapped the composer by **1225 px²**, sitting on top of the send row | overlap **0 px²** - the launcher unmounts while the panel is open and the close cross takes focus on open |
+| wishlist / quick-view chips on the cards | frosted glass chips at 62% white (--surface-glass) dissolved into white product photos in light mode | solid surface chips, border colour rgb(119,133,154), measured on every card at 1440 and 390: 0 px overlap with badges, both chips fully inside the photo frame |
+| mobile catalogue filter surfaces | two filter surfaces were in flight | one surface - the unified mobile toolbar (0 px horizontal overflow), verified in the browser; this piece belongs to the parallel catalogue-filter workstream and this commit deliberately leaves its two files untouched |
+| home page motion | every section painted statically at once; the collection grid carded invented categories that linked nowhere | 8 sections reveal on scroll (all gain `data-revealed` after a real scroll), hero lines enter one by one (`home-rise` stagger), an amber-blue aurora breathes behind the hero, deal photos zoom on hover, the store pulse counts up from zero, and all 9 collection cards are real links into the catalogue search (e.g. `#/products?q=Coffee` lands on the filtered catalogue) |
+| account pages navigation | profile had a lone "Back to dashboard" ghost link and a standalone security link; the other account pages had no shared way around | one 8-link rail on all six account pages (profile, orders, wishlist, gift cards, notifications, security): sticky beside the content on desktop, a scrollable chip row on phones that brings the active chip into view |
+| a chat alert's destination | `/chat` was never a frontend route, so following the link landed on the 404 fallback | the notification opens the chat widget directly through a `ninecube:open-chat` event - no dead route, no navigation |
+
+## What changed and why
+
+The bell crash had one root cause: the backend began emitting a sixth notification type (`ChatMessage = 5`) that the
+frontend's glyph map did not know, so any surface that rendered a live chat notification crashed on the lookup. The
+lookup now goes through `notificationMetaFor()`, which knows all six types and falls back to a generic mail glyph for
+anything it has never seen, so a future seventh type degrades to a label instead of a white screen. The chat alert
+itself links to the widget, not a route, because the widget is not a route.
+
+The chat collision came from the launcher staying mounted underneath the open panel: at a 390px width the two
+overlapped by 1225px² right where the composer lives. The launcher now unmounts while the panel is open and remounts
+when it closes, and the close cross receives focus on open so Escape/Enter work immediately.
+
+The card chips were frosted glass over white product photos - a 62%-white chip on a white photo is a white-on-white
+button. Both overlay chips now sit on the solid surface token with a strong border and a shadow, and both stay inside
+the photo frame on every card at both widths.
+
+The mobile catalogue's double filter surfaces were already being collapsed into one toolbar by the parallel
+workstream (uncommitted `ProductsPage.tsx` / `responsive.css`); the probe confirms one visible surface and zero
+horizontal overflow, and this round's commit leaves those files untouched so the two tracks cannot collide.
+
+The home page got its motion in layers, each with a reduced-motion off-switch: sections reveal as they scroll into
+view (IntersectionObserver, and a guard so older browsers and the test DOM simply show the content), the hero enters
+line by line, a slow aurora gradient breathes behind the hero, deal photos zoom on hover, and the store pulse numbers
+count up from zero with a rAF ease-out. The collection grid now navigates: each card is a link into the catalogue
+search for the category it names, with a glass label chip, instead of carding invented categories that went nowhere.
+
+The account pages share one navigation rail (`AccountNav`): eight destinations, the current page filled with the
+amber selected treatment, sticky beside content on desktop and a scrollable chip row on phones that scrolls the active
+chip into view on arrival. The dashboard keeps its own tile hub rather than duplicating the rail.
+
+## Tests that keep it honest
+
+`web/src/test/round29-surfaces.test.tsx` (14 tests): the bell, dashboard and notifications page each render a live
+`ChatMessage` notification without crashing, the bell's "Open chat" opens the chat panel on the Support tab, the
+launcher unmounts while the panel is open and the close button takes focus, the chip blocks in the stylesheet carry
+the solid surface and no `backdrop-filter`, every account page renders exactly one rail with the current route active
+(and the dashboard renders none), the rail keeps the active chip in view and declares the sticky/selected treatment
+in CSS, the reveal layer shows everything where IntersectionObserver is missing, and the motion CSS carries its
+reduced-motion guard. One Round 28 assertion was updated to the new launcher contract (it no longer has
+`aria-expanded`; it unmounts instead). The browser probes above answer the same questions from the DOM in real
+Chromium at 1440 and 390, both themes.
+
+Gates, re-run after the last edit in a clean worktree: `npx tsc --noEmit`, `npm run i18n:check` (2335 entries, up one
+for "Open chat"), `npx vitest run` (49 files, 372 tests), `npm run build`, then against the preview build CI's two
+customer specs `delivery-addresses.spec.ts` and `gift-cards-layout.spec.ts` - 2 passed.
+
 # Round 28 - a navbar that reads as glass, a home that works for signed-in customers, an account hub with only real destinations, and a store chat
 
 Date: 2026-11-06. Brief, in your words: "this navbar color make clear glassy so that behind background visible like

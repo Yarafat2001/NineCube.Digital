@@ -1,0 +1,222 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { HttpResponse, http } from 'msw';
+import { beforeEach, describe, expect, it } from 'vitest';
+import type { Notification } from '../api/types';
+import { API, resetAccountFixtures } from './handlers';
+import { server } from './server';
+import { renderApp, seedSession } from './utils';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const read = (...parts: string[]) => readFileSync(join(root, ...parts), 'utf8');
+
+// The backend now emits NotificationType.ChatMessage (value 5) with link "/chat". Before this
+// round the frontend had no entry for it, so the bell popover, the account dashboard and the
+// notifications page all crashed on a live notification.
+const chatNotif: Notification = {
+  id: 90,
+  type: 'ChatMessage',
+  title: 'New chat reply',
+  body: 'Support replied in "Delivery in Sylhet": We deliver to Sylhet in 2-3 working days.',
+  link: '/chat',
+  isRead: false,
+  createdAt: '2026-11-06T09:00:00Z',
+  readAt: null
+};
+
+beforeEach(() => resetAccountFixtures());
+
+async function signInAsCustomer() {
+  const user = seedSession('Customer');
+  server.use(http.get(`${API}/api/auth/me`, () => HttpResponse.json(user)));
+}
+
+function serveChatNotification() {
+  server.use(http.get(`${API}/api/notifications`, () => HttpResponse.json({
+    items: [chatNotif], page: 1, pageSize: 20, totalCount: 1, totalPages: 1, hasNext: false, hasPrevious: false
+  })));
+  server.use(http.get(`${API}/api/notifications/unread-count`, () => HttpResponse.json({ count: 1 })));
+}
+
+describe('A ChatMessage notification renders instead of crashing', () => {
+  it('shows the bell popover with an Open chat action', async () => {
+    const user = userEvent.setup();
+    await signInAsCustomer();
+    serveChatNotification();
+    renderApp('/');
+
+    await user.click(await screen.findByRole('button', { name: 'Notifications, 1 unread' }));
+    const panel = await screen.findByRole('dialog', { name: 'Notifications' });
+    expect(within(panel).getByText('New chat reply')).toBeInTheDocument();
+    expect(within(panel).getByText('✉')).toBeInTheDocument();
+    expect(within(panel).getByRole('button', { name: 'Open chat' })).toBeInTheDocument();
+  });
+
+  it('opens the chat panel on the support tab from the bell', async () => {
+    const user = userEvent.setup();
+    await signInAsCustomer();
+    serveChatNotification();
+    renderApp('/');
+
+    await user.click(await screen.findByRole('button', { name: 'Notifications, 1 unread' }));
+    const panel = await screen.findByRole('dialog', { name: 'Notifications' });
+    await user.click(within(panel).getByRole('button', { name: 'Open chat' }));
+
+    const chat = await screen.findByRole('dialog', { name: 'Chat with NineCube' });
+    expect(screen.queryByRole('dialog', { name: 'Notifications' })).toBeNull();
+    expect(within(chat).getByRole('tab', { name: 'Support team' })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('renders the dashboard notification list with the chat glyph', async () => {
+    await signInAsCustomer();
+    server.use(http.get(`${API}/api/me/dashboard`, () => HttpResponse.json({
+      totalOrders: 0,
+      ordersByStatus: ['Pending', 'Confirmed', 'Shipped', 'Cancelled', 'Rejected'].map(status => ({ status, count: 0 })),
+      totalSpent: 0, currency: 'BDT', totalItems: 0,
+      recentOrders: [], recentNotifications: [chatNotif], unreadNotifications: 1
+    })));
+    renderApp('/account');
+
+    expect(await screen.findByRole('heading', { level: 1, name: /Dashboard|Account/i })).toBeInTheDocument();
+    expect(screen.getByText('New chat reply')).toBeInTheDocument();
+    expect(screen.getByText('✉')).toBeInTheDocument();
+  });
+
+  it('renders the notifications page row with an Open chat button that opens the panel', async () => {
+    const user = userEvent.setup();
+    await signInAsCustomer();
+    serveChatNotification();
+    renderApp('/notifications');
+
+    expect(await screen.findByText('New chat reply')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Open chat' }));
+    const chat = await screen.findByRole('dialog', { name: 'Chat with NineCube' });
+    expect(within(chat).getByRole('tab', { name: 'Support team' })).toHaveAttribute('aria-selected', 'true');
+  });
+});
+
+describe('The chat panel and launcher never share the corner', () => {
+  it('unmounts the launcher while the panel is open', async () => {
+    const user = userEvent.setup();
+    await signInAsCustomer();
+    renderApp('/orders');
+
+    await user.click(await screen.findByRole('button', { name: 'Chat with NineCube' }));
+    await screen.findByRole('dialog', { name: 'Chat with NineCube' });
+    expect(screen.queryByRole('button', { name: 'Chat with NineCube' })).toBeNull();
+    // The close control takes focus so Escape and Enter work without a search.
+    expect(screen.getByRole('button', { name: 'Close chat' })).toHaveFocus();
+  });
+});
+
+describe('The product card chips are solid, not glass', () => {
+  const app = read('src', 'styles', 'app.css');
+  const block = (css: string, selector: string) => {
+    const match = css.match(new RegExp(`${selector}\\s*\\{[^}]*\\}`));
+    if (!match) throw new Error(`${selector} block not found`);
+    return match[0];
+  };
+  const wishlist = block(app, '\\.product-card__wishlist-btn');
+  const quickView = block(app, '\\.product-card__quick-view-btn');
+
+  it('gives both overlay chips an opaque surface and a visible edge', () => {
+    // --surface-glass is 62% white in light mode, so frosted chips dissolved into white product
+    // photos. Both chips now sit on the solid surface with a strong border.
+    for (const chip of [wishlist, quickView]) {
+      expect(chip).toContain('background: var(--surface)');
+      expect(chip).toContain('border: 1px solid var(--border-strong)');
+      expect(chip).not.toContain('backdrop-filter');
+    }
+  });
+});
+
+describe('The account pages share one hyperlinked navigation rail', () => {
+  const nav = read('src', 'components', 'AccountNav.tsx');
+  const app = read('src', 'styles', 'app.css');
+
+  const ACCOUNT_ROUTES: [string, string][] = [
+    ['/account/profile', 'Profile & Addresses'],
+    ['/orders', 'My Orders'],
+    ['/wishlist', 'Wishlist'],
+    ['/gift-cards', 'Gift Cards'],
+    ['/notifications', 'Notifications'],
+    ['/account/security', 'Account security']
+  ];
+
+  it('renders exactly one rail with the current route active on every account page', async () => {
+    await signInAsCustomer();
+    for (const [route, label] of ACCOUNT_ROUTES) {
+      const view = renderApp(route);
+      await waitFor(() => expect(document.querySelectorAll('.account-nav')).toHaveLength(1));
+      const links = [...document.querySelectorAll('.account-nav__link')];
+      expect(links).toHaveLength(8);
+      const active = links.filter((link) => link.classList.contains('account-nav__link--active'));
+      expect(active).toHaveLength(1);
+      expect(active[0]).toHaveTextContent(label);
+      // HashRouter renders "#/route" in a browser; jsdom keeps the bare path.
+      expect(active[0]).toHaveAttribute('href', expect.stringMatching(new RegExp(`#?${route}$`)));
+      view.unmount();
+    }
+  });
+
+  it('leaves the dashboard hub alone, without a duplicate rail', async () => {
+    await signInAsCustomer();
+    renderApp('/account');
+    await screen.findByRole('heading', { level: 1 });
+    expect(document.querySelector('.account-nav')).toBeNull();
+  });
+
+  it('keeps the active chip in view on the scrollable phone row', () => {
+    expect(nav).toContain('nav.scrollLeft = active.offsetLeft');
+    expect(nav).toContain('nav.scrollWidth <= nav.clientWidth');
+  });
+
+  it('declares the rail layout and the selected fill in the stylesheet', () => {
+    expect(app).toContain('.account-section');
+    expect(app).toContain('grid-template-columns: 224px minmax(0, 1fr)');
+    expect(app).toContain('position: sticky');
+    const activeBlock = app.match(/\.account-nav__link--active\s*\{[^}]*\}/)?.[0] ?? '';
+    expect(activeBlock).toContain('var(--selected-bg)');
+    expect(activeBlock).toContain('var(--accent-text)');
+  });
+});
+
+describe('The home page motion is guarded and grounded', () => {
+  const homeCss = read('src', 'styles', 'home.css');
+  const reveal = read('src', 'components', 'home', 'Reveal.tsx');
+  const fallback = read('src', 'helix', 'ShowcaseFallback.tsx');
+
+  it('reveals every section even where IntersectionObserver is missing, as in jsdom', async () => {
+    renderApp('/');
+    await screen.findByTestId('showcase-fallback-reason');
+    await waitFor(() => {
+      const total = document.querySelectorAll('.reveal').length;
+      expect(total).toBeGreaterThan(0);
+      expect(document.querySelectorAll('.reveal[data-revealed]')).toHaveLength(total);
+    });
+  });
+
+  it('turns the entrance off for reduced-motion readers', () => {
+    expect(reveal).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
+    expect(reveal).toContain("typeof IntersectionObserver === 'undefined'");
+    expect(homeCss).toContain('@keyframes hero-aurora');
+    expect(homeCss).toContain('.reveal[data-revealed]');
+    expect(homeCss).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*\.reveal/);
+  });
+
+  it('links every showcase collection card to a search the catalogue can answer', () => {
+    expect(fallback).toContain('data-testid="showcase-grid"');
+    expect(fallback).toContain('to={`/products?q=${encodeURIComponent(cardCategories[card.index])}`}');
+    expect(fallback).toContain('aria-label={`${t("Browse products")}:');
+  });
+
+  it('handles every notification type the backend can emit, and unknown ones politely', () => {
+    const helpers = read('src', 'lib', 'helpers.ts');
+    expect(helpers).toContain("ChatMessage: { label: 'Chat message', glyph: '✉', tone: 'info' }");
+    expect(helpers).toContain("?? { label: 'Message', glyph: '✉', tone: 'info' }");
+    expect(helpers).toContain("window.dispatchEvent(new CustomEvent('ninecube:open-chat'))");
+  });
+});

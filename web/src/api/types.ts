@@ -197,7 +197,7 @@ export interface Settings {
 
 // ------------------------------------------------------------------ account area
 
-export type NotificationType = 'OrderPlaced' | 'OrderStatusChanged' | 'OrderCancelled' | 'NewOrder' | 'LowStock';
+export type NotificationType = 'OrderPlaced' | 'OrderStatusChanged' | 'OrderCancelled' | 'NewOrder' | 'LowStock' | 'ChatMessage';
 
 export interface Notification {
   id: number;

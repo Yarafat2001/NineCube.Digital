@@ -1,5 +1,5 @@
 import { t, useLanguage } from '../i18n/language';
-import { useMemo, useState }  from 'react';
+import { useEffect, useMemo, useState }  from 'react';
 import { Link, useNavigate }  from 'react-router-dom';
 import { HeroPromotions } from './HeroPromotions';
 import { ShowcaseFooterContent } from './ShowcaseFooterContent';
@@ -15,6 +15,7 @@ import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
 import { HomeBrandStrip } from '../components/home/HomeBrandStrip';
 import { HomeFeaturedDeals } from '../components/home/HomeFeaturedDeals';
 import { HomeLiveOffers } from '../components/home/HomeLiveOffers';
+import { Reveal } from '../components/home/Reveal';
 import { CompareTray } from '../components/CompareTray';
 import { Icon } from '../components/Icon';
 import { useToast } from '../components/ui';
@@ -45,6 +46,29 @@ const TRENDING_KEYWORDS = [
   'Apex',
   'Acer'
 ];
+
+/** Counts a number up once, the way live storefront dashboards do. Static under reduced motion. */
+function CountUp({ value, format, duration = 900 }: { value: number; format?: (n: number) => string; duration?: number }) {
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setShown(value);
+      return;
+    }
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      setShown(value * (1 - Math.pow(1 - progress, 3)));
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+
+  return <>{format ? format(shown) : Math.round(shown)}</>;
+}
 
 function HomeStorePulse() {
   const { data } = useProducts({ q: '', page: 1, pageSize: 24, inStock: true });
@@ -109,17 +133,17 @@ function HomeStorePulse() {
       <div className="home-store-pulse__stats">
         <div className="home-store-pulse__stat">
           <span className="home-store-pulse__label">{t("Products ready")}</span>
-          <strong>{stats.itemCount}</strong>
+          <strong><CountUp value={stats.itemCount} /></strong>
           <small>{t("in stock now")}</small>
         </div>
         <div className="home-store-pulse__stat">
           <span className="home-store-pulse__label">{t("Low stock")}</span>
-          <strong>{stats.lowStock}</strong>
+          <strong><CountUp value={stats.lowStock} /></strong>
           <small>{t("needs attention")}</small>
         </div>
         <div className="home-store-pulse__stat">
           <span className="home-store-pulse__label">{t("Avg. item")}</span>
-          <strong>{formatMoney(stats.avgPrice)}</strong>
+          <strong><CountUp value={stats.avgPrice} format={formatMoney} /></strong>
           <small>{t("current price")}</small>
         </div>
         <div className="home-store-pulse__stat home-store-pulse__stat--highlight">
@@ -254,38 +278,46 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
         <HeroPromotions />
       </section>
 
-      <HomeTrustBar />
-      <HomeCategoryStrip />
-      <HomeStorePulse />
-      <HomeBrandStrip />
-      <HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} />
-      <HomeLiveOffers />
-      <div className="home-recent-section"><RecentlyViewed /></div>
+      <Reveal><HomeTrustBar /></Reveal>
+      <Reveal delay={60}><HomeCategoryStrip /></Reveal>
+      <Reveal delay={120}><HomeStorePulse /></Reveal>
+      <Reveal delay={180}><HomeBrandStrip /></Reveal>
+      <Reveal delay={240}><HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} /></Reveal>
+      <Reveal delay={300}><HomeLiveOffers /></Reveal>
+      <Reveal delay={360}><div className="home-recent-section"><RecentlyViewed /></div></Reveal>
 
-      <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
-        <div className="showcase__headings">
-          <h2 id="showcase-cards-heading">{t(showcaseCopy.transitionTitle)}</h2>
-        </div>
+      <Reveal delay={420}>
+        <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
+          <div className="showcase__headings">
+            <h2 id="showcase-cards-heading">{t(showcaseCopy.transitionTitle)}</h2>
+          </div>
 
-        <p className="showcase__note visually-hidden" role="note" data-testid="showcase-fallback-reason">
-          {t(reasonText[reason])}
-        </p>
+          <p className="showcase__note visually-hidden" role="note" data-testid="showcase-fallback-reason">
+            {t(reasonText[reason])}
+          </p>
 
-        <ul className="showcase__grid" data-testid="showcase-grid">
-          {cards.map((card) => (
-            <li key={card.index}>
-              <img
-                src={card.src}
-                alt={t(describeCardArtwork(card.src, card.index))}
-                width={1200}
-                height={800}
-                loading={card.index < 3 ? 'eager' : 'lazy'}
-              />
-              <span className="showcase__category-name">{t(cardCategories[card.index])}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+          <ul className="showcase__grid" data-testid="showcase-grid">
+            {cards.map((card) => (
+              <li key={card.index}>
+                <Link
+                  className="showcase__card"
+                  to={`/products?q=${encodeURIComponent(cardCategories[card.index])}`}
+                  aria-label={`${t("Browse products")}: ${t(cardCategories[card.index])}`}
+                >
+                  <img
+                    src={card.src}
+                    alt={t(describeCardArtwork(card.src, card.index))}
+                    width={1200}
+                    height={800}
+                    loading={card.index < 3 ? 'eager' : 'lazy'}
+                  />
+                  <span className="showcase__category-name">{t(cardCategories[card.index])}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </Reveal>
 
       <footer className="showcase__outro" aria-label={t("NineCube home footer")}>
         <div className="showcase-footer-content"><ShowcaseFooterContent /></div>

@@ -101,8 +101,22 @@ export const notificationTypeMeta: Record<NotificationType, { label: string; gly
   OrderStatusChanged: { label: 'Order updated', glyph: '➜', tone: 'info' },
   OrderCancelled: { label: 'Order cancelled', glyph: '⊘', tone: 'neutral' },
   NewOrder: { label: 'New order', glyph: '◔', tone: 'warn' },
-  LowStock: { label: 'Low stock', glyph: '⚠', tone: 'danger' }
+  LowStock: { label: 'Low stock', glyph: '⚠', tone: 'danger' },
+  ChatMessage: { label: 'Chat message', glyph: '✉', tone: 'info' }
 };
+
+/**
+ * The same lookup that can never throw: a notification type the app has not met yet renders as a
+ * generic message instead of crashing the inbox.
+ */
+export function notificationMetaFor(type: string): { label: string; glyph: string; tone: StatusMeta['tone'] } {
+  return notificationTypeMeta[type as NotificationType] ?? { label: 'Message', glyph: '✉', tone: 'info' };
+}
+
+/** Opens the floating store chat; the chat widget listens for this event. */
+export function openChatWidget(): void {
+  window.dispatchEvent(new CustomEvent('ninecube:open-chat'));
+}
 
 export const roleLabels: Record<UserRole, string> = {  Customer: 'Customer',
   Staff: 'Staff (Sales Manager)',

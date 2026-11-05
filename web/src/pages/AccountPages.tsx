@@ -2,6 +2,7 @@ import { t, useLanguage } from '../i18n/language';
 import { useState } from 'react';
 import { Icon, type IconName } from '../components/Icon';
 import { AddressBook } from '../components/AddressBook';
+import { AccountSection } from '../components/AccountNav';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
 import {
@@ -11,7 +12,7 @@ import {
 } from '../api/hooks';
 import { ApiError, describeError } from '../api/client';
 import { EmptyState, ErrorState, LoadingBlock, useToast } from '../components/ui';
-import { formatDate, formatDateTime, formatMoney, timeAgo, notificationTypeMeta, orderStatusMeta } from '../lib/helpers';
+import { formatDate, formatDateTime, formatMoney, timeAgo, notificationMetaFor, openChatWidget, orderStatusMeta } from '../lib/helpers';
 import type { OrderStatus, Profile } from '../api/types';
 
 // ------------------------------------------------------------------ dashboard
@@ -226,7 +227,7 @@ export function AccountDashboardPage() {
           <ul className="notif-list">
             {data.recentNotifications.slice(0, 5).map(notification => (
               <li key={notification.id} className="notif-item" data-read={notification.isRead}>
-                <span className="notif-item__type" aria-hidden="true">{t(notificationTypeMeta[notification.type].glyph)}</span>
+                <span className="notif-item__type" aria-hidden="true">{t(notificationMetaFor(notification.type).glyph)}</span>
                 <span>
                   <span className="notif-item__title">{t(notification.title)}</span>
                   <span className="muted">{t(notification.body)}</span>
@@ -261,13 +262,13 @@ export function ProfilePage() {
   const canEditProfile = data.role === 'Customer';
 
   return (
-    <div className="page container stack">
+    <div className="page container">
+      <AccountSection>
       <header className="page-header">
         <div>
           <h1>{t("Profile")}</h1>
           <p>{t("Your contact details, password and saved delivery addresses.")}</p>
         </div>
-        <Link className="btn btn--ghost" to="/account">{t("Back to dashboard")}</Link>
       </header>
 
       <section className="card-glass profile-header" aria-label={t("Profile summary")}><span className="avatar" aria-hidden="true">{t((data.name || data.email)[0].toUpperCase())}</span><div><h2>{t(data.name)}</h2><p>{t(data.email)}</p><p className="muted">{t("Member since ")}{t(formatDate(data.createdAt))}</p></div></section>
@@ -276,10 +277,10 @@ export function ProfilePage() {
         <PasswordForm onDone={() => toast.push('success', 'Password changed.')} />
       </div>
 
-      <Link to="/account/security">{t("Account security")}</Link>
       {canEditProfile ? <AddressBook addresses={data.addresses} recipientName={data.name} phone={data.phone} /> : (
         <p className="muted">{t("Saved delivery addresses belong to a customer account. This sign-in is a staff account.")}</p>
       )}
+      </AccountSection>
     </div>
   );
 }
@@ -488,7 +489,8 @@ export function NotificationsPage() {
   );
 
   return (
-    <div className="page container stack">
+    <div className="page container">
+      <AccountSection>
       <header className="page-header">
         <div>
           <h1>{t("Notifications")}</h1>
@@ -574,7 +576,7 @@ export function NotificationsPage() {
             {items.map(notification => (
               <li key={notification.id} className="notif-item notif-item--row" data-read={notification.isRead}>
                 <input type="checkbox" aria-label={t(`Select ${notification.title}`)} checked={checked.has(notification.id)} onChange={() => toggle(notification.id)} />
-                <span aria-hidden="true">{t(notificationTypeMeta[notification.type].glyph)}</span>
+                <span aria-hidden="true">{t(notificationMetaFor(notification.type).glyph)}</span>
                 <span className="notif-item__body">
                   <span className="notif-item__title">
                     {t(notification.title)}
@@ -584,7 +586,13 @@ export function NotificationsPage() {
                   <span className="notif-item__time">{t(timeAgo(notification.createdAt))}</span>
                 </span>
                 <span className="row">
-                  {notification.link ? <Link className="link-button" to={notification.link}>{t(notification.link.startsWith('/orders/') ? 'Order' : 'Open')}</Link> : null}
+                  {notification.link ? (
+                    notification.link === '/chat' ? (
+                      <button type="button" className="link-button" onClick={() => openChatWidget()}>{t("Open chat")}</button>
+                    ) : (
+                      <Link className="link-button" to={notification.link}>{t(notification.link.startsWith('/orders/') ? 'Order' : 'Open')}</Link>
+                    )
+                  ) : null}
                   {notification.isRead ? null : (
                     <button type="button" className="btn btn--sm btn--ghost" onClick={() => markRead.mutate(notification.id)}>{t("Mark read")}</button>
                   )}
@@ -606,6 +614,7 @@ export function NotificationsPage() {
           </div>
         </>
       ) : null}
+      </AccountSection>
     </div>
   );
 }

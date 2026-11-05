@@ -1102,3 +1102,77 @@
     gap: 10px;
   }
 }
+
+/* ==========================================================================
+   Motion: reveal-on-scroll, hero entrance, aurora wash, deal media zoom.
+   Every rule here steps aside under prefers-reduced-motion.
+   ========================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal[data-revealed] {
+  opacity: 1;
+  transform: none;
+}
+
+/* The hero enters line by line instead of all at once. */
+@keyframes home-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.showcase--static .showcase__hero-intro > * {
+  animation: home-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.showcase--static .showcase__hero-intro > *:nth-child(2) { animation-delay: 0.08s; }
+.showcase--static .showcase__hero-intro > *:nth-child(3) { animation-delay: 0.16s; }
+.showcase--static .showcase__hero-intro > *:nth-child(4) { animation-delay: 0.24s; }
+.showcase--static .showcase__hero-intro > *:nth-child(5) { animation-delay: 0.32s; }
+
+/* A slow aurora wash so the static hero has a signature backdrop in both themes. */
+.showcase--static .showcase__hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.showcase--static .showcase__hero::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 38% at 78% 20%, rgba(255, 171, 77, 0.14), transparent 70%),
+    radial-gradient(38% 34% at 16% 82%, rgba(96, 165, 250, 0.10), transparent 70%);
+  animation: hero-aurora 16s ease-in-out infinite alternate;
+}
+
+@keyframes hero-aurora {
+  from { transform: translate3d(-2%, -1%, 0) scale(1); }
+  to { transform: translate3d(2%, 1.5%, 0) scale(1.07); }
+}
+
+.showcase--static .showcase__hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.home-deal-media img {
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.home-deal-card:hover .home-deal-media img {
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .showcase--static .showcase__hero-intro > * { animation: none; }
+  .showcase--static .showcase__hero::before { animation: none; }
+  .home-deal-media img { transition: none; }
+  .home-deal-card:hover .home-deal-media img { transform: none; }
+}

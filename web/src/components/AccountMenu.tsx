@@ -6,7 +6,7 @@ import { useAuth } from '../state/AuthContext';
 import { useMarkAllNotificationsRead, useMarkNotificationRead, useNotifications, useUnreadCount } from '../api/hooks';
 import type { Notification, NotificationType } from '../api/types';
 import { useToast } from './ui';
-import { notificationTypeMeta, timeAgo } from '../lib/helpers';
+import { notificationMetaFor, openChatWidget, timeAgo } from '../lib/helpers';
 import { Icon, type IconName } from './Icon';
 
 function usePopover(menu = false) {
@@ -107,6 +107,10 @@ export function NotificationBell() {
   const openItem = (item: Notification) => {
     if (!item.isRead) markRead.mutate(item.id);
     pop.setOpen(false);
+    if (item.link === '/chat') {
+      openChatWidget();
+      return;
+    }
     navigate(item.link || '/notifications');
   };
 
@@ -129,7 +133,7 @@ export function NotificationBell() {
           <ul className="notif-list">
             {group.items.map((n) => (
               <li key={n.id} className="notif-item" data-read={n.isRead}>
-                <span className="notif-item__type" aria-hidden="true">{t(notificationTypeMeta[n.type].glyph)}</span>
+                <span className="notif-item__type" aria-hidden="true">{t(notificationMetaFor(n.type).glyph)}</span>
                 <span>
                   <span className="notif-item__title">
                     {t(n.title)}
@@ -207,6 +211,7 @@ function priorityOf(type: NotificationType): number {
 }
 
 function actionLabel(n: Notification): string {
+  if (n.link === '/chat') return 'Open chat';
   if (n.link?.startsWith('/orders/')) return n.type === 'OrderCancelled' ? 'Reorder' : 'Track order';
   if (n.type === 'LowStock') return 'View product';
   return 'Open';
