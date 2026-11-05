@@ -52,14 +52,18 @@ export function AccountDashboardPage() {
           <h1>{t("Dashboard")}</h1>
           <p>{t("Your orders, spending and latest account news in one place.")}</p>
         </div>
-        <div className="row" style={{ gap: '8px' }}>
-          <Link className="btn btn--ghost" to="/account/profile">{t("Edit profile")}</Link>
-          <button type="button" className="btn btn--ghost btn--danger-text" onClick={handleLogout}>{t("Log out")}</button>
-        </div>
       </header>
 
-      {/* Mobile-Friendly Account Hub Shortcuts Grid */}
+      {/* The single account navigation surface: one row per destination. */}
       <nav className="account-hub-grid" aria-label={t("Account Navigation")}>
+        <Link className="account-hub-tile card-glass" to="/products">
+          <div className="account-hub-tile__icon"><Icon name="grid" /></div>
+          <div className="account-hub-tile__info">
+            <strong>{t("Browse products")}</strong>
+            <span className="muted">{t("Search the catalogue")}</span>
+          </div>
+          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
+        </Link>
         <Link className="account-hub-tile card-glass" to="/orders">
           <div className="account-hub-tile__icon"><Icon name="box" /></div>
           <div className="account-hub-tile__info">

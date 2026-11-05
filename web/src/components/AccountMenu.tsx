@@ -407,7 +407,7 @@ export function AccountMenu() {
       <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label={t("Account")} aria-expanded={pop.open} aria-haspopup="menu"
         onClick={handleTriggerClick} onKeyDown={handleTriggerKeyDown}>
         <span className="avatar avatar--small" aria-hidden="true">{t(user.email[0].toUpperCase())}</span>
-        <span className="account-name" title={t(user.email)}>{t(user.email.split('@')[0])}</span>
+        <span className="account-name">{t(user.email.split('@')[0])}</span>
         <Icon name="chevron" className="account-chevron" data-open={pop.open} />
       </button>
 

@@ -1,5 +1,84 @@
 # FIX_REPORT
 
+# Round 27 - one account nav surface on a phone, an uncovered photo, a search sheet that fits the screen
+
+Date: 2026-11-05. Brief, in your words: "go on and consider these Here first four image serially mobile screen-
+1. double filter option exist in the mobile screen that i marked as red 2. Product card icon show quick and wishlist
+icon bigger and product images are sorrounded by it and compare icon not showed. 3. In the account duplicate page link
+button exist in the mobile screen I mean the dashboard- make it once for one pages and give it proper position and
+design in the mobile screen modern format for ration and position the all 4. It in the desktop screen(5 th image) in
+the profile bar navbar with hovour text give accurate size of font and also all desktop pages footer fix properly
+5. In the mobile search bar( 6th image) not looks proper fix these properly adjustable to the mobile screen standard
+and proper alignment and positioning".
+
+Item 1, the doubled filter/sort toolbar on the catalogue, is mid-rebuild in the same two files by another session's
+uncommitted work (`ProductsPage.tsx`'s mobile toolbar and `responsive.css`), so this round measures it, leaves those
+files untouched, and delivers items 2 to 5.
+
+## What the probe measured before the change
+
+Production build served by `vite preview`, `/api/*` stubbed in headless Chromium, geometry read from the DOM at
+1440x900 and 390x844 in both themes. One probe bug worth naming: my harness wrote the theme to `ninecube.theme`
+while the app reads `ninecube-theme`, so the first pass measured the light theme twice; the key is fixed and every
+number below is re-measured.
+
+| surface | before | after |
+| --- | --- | --- |
+| account dashboard nav controls at 390 | 13: two header buttons + six hub tiles + five quick-action buttons | 7 hub tiles, one row each |
+| hub grid at 390 | two 178px columns; "Gift Cards", "Profile & Addresses" and "Log out" labels ellipsised | one 366px column; zero ellipsised labels |
+| card affordances over the 152px photo at 390 | two 44px circles stacked = 94px of the photo (62%) | two 32px circles in one row = 32px (21%) |
+| compare on a phone | 0x0, `display:none` | 81x25 pill under Add to cart |
+| search dialog at 390 | floating card at x=16 y=67, 79px header, category label beside its chips in a 192px column | top sheet at x=8 y=8, 374px wide, 65px header, 44px well, label above full-width chips |
+| profile hover at 1440 | an OS tooltip in the browser's own ~11px face over a popover whose email was 11.5px | no `title` attribute; popover name 14px, email 13px |
+| footer tagline centre at 1440 | x=823, 103px right of the footer's 720 centreline | x=720.5 |
+| footer policy row at 1440 | 472px wide, hugging the left of a 1376px band | spans the 1376px band, centred |
+
+## What changed and why
+
+The dashboard offered the same five destinations three times on a phone: a header button row ("Edit profile",
+"Log out"), the six-tile hub, and the quick-actions band ("Browse products", "My orders", "Profile", "Gift Cards",
+"Log out"). The header row is gone from the markup entirely - on a laptop the quick-actions band already carries
+those two actions - and on a phone the band yields to the hub, which gains a "Browse products" tile so no destination
+is lost. The hub becomes a single column of full-width rows: at 366px nothing needs an ellipsis, which is what the
+two-column grid could never offer. Thirteen controls became seven.
+
+The card's wishlist and Quick View buttons were 44px painted circles because Round 25 forced a 44px finger target on
+touch; stacked, they covered 62% of a 152px photo. The painted control returns to 32px, laid out as a horizontal pair
+at the photo's corner, and the 44px target survives as a transparent 12px collar (`inset: -6px`) around each button -
+the finger gets its size, the photo gets its surface back. The compare pill, which `responsive.css` hid below 640px,
+is visible again on phones.
+
+The search dialog stops being a desktop card shrunk onto a phone: an 8px-gutter top sheet, a 44px well, a 16px input
+(so iOS does not zoom on focus), and the "Quick Categories:" label above its chips instead of squeezed beside them,
+which is what left the chip column ragged and half-empty.
+
+On the desktop navbar the profile trigger carried a native `title` tooltip, so hovering painted the browser's own
+tiny tooltip on top of a popover that already shows the same email - two surfaces for one fact. The `title` is gone;
+the popover is the hover text, and its two lines move onto the house type ladder (14px name, 13px email) instead of
+the hardcoded 13.5/11.5px. The footer's top band becomes a symmetric `1fr auto 1fr` grid, which puts the tagline on
+the footer's true centreline, and the policy row spans the whole band centred rather than five links adrift on the
+left of 1376px. Both are in the shared `Footer` component, so every route that renders a footer inherits them; the
+probe confirms identical geometry on `#/products`, `#/account`, `#/orders` and `#/gift-cards`.
+
+## Tests that keep it honest
+
+`web/src/test/round27-surfaces.test.tsx` (10 tests): the dashboard header carries no button row, the hub lists all six
+destinations plus log-out exactly once, the phone rules that hide the quick-actions band and single-column the hub are
+in the cascade, the overlay pair is a 32px row whose 44px collar is unpainted while the coarse-pointer rule stays in
+force, the compare pill is un-hidden, the sheet's 8px gutter / 44px well / 16px input / stacked label are present, the
+native tooltip is gone from the trigger, the popover lines sit on tokens, and the footer grid centres its tagline and
+spans its policy row. `web/e2e/round27-surfaces.spec.ts` answers the same questions from the DOM against the production
+build with a stubbed API: at 390 the seven tiles each span more than 300px with no ellipsised label, the quick-actions
+band computes `display: none`, the sheet's well is at least 44px with the label above full-width chips, and the overlay
+pair is one 32px row covering less than a quarter of the photo while compare is visible; at 1440 the hub is hidden while
+the button band shows, the tagline centres within 2px of the footer centreline on three routes, and hovering the trigger
+opens the popover at 14px/13px with no `title` attribute anywhere on it.
+
+Gates, re-run after the last edit in a clean worktree: `npx tsc --noEmit`, `npm run i18n:check` (2309 entries),
+`npx vitest run` (47 files, 343 tests, up from 333), `npm run build`, then against the preview build
+`npx playwright test delivery-addresses.spec.ts gift-cards-layout.spec.ts round27-surfaces.spec.ts` - CI's two customer
+specs plus the new one, 4 passed.
+
 # Round 26 - the home page says only what the store can back up, and its glass keeps an edge
 
 Date: 2026-11-05. Brief, in your words: "Check the home page if any design nedd to more attractive do that as you
