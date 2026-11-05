@@ -14,9 +14,9 @@ import { HomeTrustBar } from '../components/home/HomeTrustBar';
 import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
 import { HomeBrandStrip } from '../components/home/HomeBrandStrip';
 import { HomeFeaturedDeals } from '../components/home/HomeFeaturedDeals';
-import { HomeDeliveryPulse } from '../components/home/HomeDeliveryPulse';
-import { HomeNewsletter } from '../components/home/HomeNewsletter';
+import { HomeLiveOffers } from '../components/home/HomeLiveOffers';
 import { CompareTray } from '../components/CompareTray';
+import { Icon } from '../components/Icon';
 import { useToast } from '../components/ui';
 import { useCart } from '../state/CartContext';
 import './showcase.css';
@@ -95,20 +95,20 @@ function HomeStorePulse() {
   const peakStock = Math.max(1, ...topMoves.map((product) => product.stockQuantity), 12);
 
   return (
-    <section className="home-store-pulse" aria-label={t("Live storefront pulse")}>
+    <section className="home-store-pulse" aria-label={t("Store pulse")}>
       <div className="home-store-pulse__header">
         <div>
-          <span className="home-section-kicker">{t("● live warehouse")}</span>
+          <span className="home-section-kicker"><Icon name="box" width={13} height={13} /> {t("From the catalogue")}</span>
           <h2 className="home-section-title">{t("Store pulse")}</h2>
         </div>
-        <p className="home-section-desc">{t("Real-time product health from the current catalogue.")}</p>
+        <p className="home-section-desc">{t("Counted from the in-stock products the catalogue returns for this page.")}</p>
       </div>
 
       <div className="home-store-pulse__stats">
         <div className="home-store-pulse__stat">
           <span className="home-store-pulse__label">{t("Products ready")}</span>
           <strong>{stats.itemCount}</strong>
-          <small>{t("live offers")}</small>
+          <small>{t("in stock now")}</small>
         </div>
         <div className="home-store-pulse__stat">
           <span className="home-store-pulse__label">{t("Low stock")}</span>
@@ -166,8 +166,9 @@ function HomeStorePulse() {
 }
 
 /**
- * Modern E-Commerce Storefront: Featuring live warehouse products, verified trust badges,
- * category discovery shortcuts, and the editorial collection showcase.
+ * The home page without WebGL: the same nine collection cards as a static grid, plus the storefront
+ * sections - trust bar, category shortcuts, store pulse, brands, deals, live campaigns and recents.
+ * Every figure in it is counted from what the catalogue API returns.
  */
 export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFallbackProps) {
   useLanguage();
@@ -198,51 +199,54 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
   return (
     <div className="showcase showcase--static" data-testid="showcase">
       <section className="showcase__hero">
-        <p className="kicker">{t(showcaseCopy.kicker)}</p>
-        <h1>
-          {t(showcaseCopy.brand.line1)} {t(showcaseCopy.brand.line2)}
-        </h1>
-        <p className="showcase__hero-copy">{t(showcaseCopy.intro)}</p>
-        <div className="showcase__hero-actions">
-          <Link className="btn btn--primary showcase__hero-cta" to="/products">{t("Explore the collection ")}<span aria-hidden="true">{t("↗")}</span></Link>
-          {onLaunch3D ? (
-            <button type="button" className="btn btn--ghost showcase__3d-btn" onClick={onLaunch3D}>
-              {t("✨ 3D Helix Experience")}
-            </button>
-          ) : null}
-        </div>
-        <form className="home-search" role="search" aria-label={t("Search the catalogue")} onSubmit={event => { event.preventDefault(); const q = search.trim(); if (q) navigate(`/products?q=${encodeURIComponent(q)}`); }}>
-          <label htmlFor="home-search">{t("Find your next favourite")}</label>
-          <div className="home-search__row">
-            <input
-              id="home-search"
-              type="search"
-              value={search}
-              maxLength={200}
-              onChange={event => setSearch(event.target.value)}
-              placeholder={t("Search products, brands or categories")}
-            />
-            <button className="btn btn--primary" disabled={!search.trim()}>{t("Search")}</button>
+        <div className="showcase__hero-intro">
+          <p className="kicker">{t(showcaseCopy.kicker)}</p>
+          <h1>
+            {t(showcaseCopy.brand.line1)} {t(showcaseCopy.brand.line2)}
+          </h1>
+          <p className="showcase__hero-copy">{t(showcaseCopy.intro)}</p>
+          <div className="showcase__hero-actions">
+            <Link className="btn btn--primary showcase__hero-cta" to="/products">{t("Explore the collection ")}<span aria-hidden="true">{t("↗")}</span></Link>
+            {onLaunch3D ? (
+              <button type="button" className="btn btn--ghost showcase__3d-btn" onClick={onLaunch3D}>
+                <Icon name="spark" width={15} height={15} />
+                <span>{t("3D Helix Experience")}</span>
+              </button>
+            ) : null}
           </div>
-          <div className="home-search__trending">
-            <span className="home-search__trending-label">{t("Trending:")}</span>
-            <div className="home-search__trending-tags">
-              {TRENDING_KEYWORDS.map(keyword => (
-                <button
-                  key={keyword}
-                  type="button"
-                  className="home-search__trending-chip"
-                  onClick={() => {
-                    setSearch(keyword);
-                    navigate(`/products?q=${encodeURIComponent(keyword)}`);
-                  }}
-                >
-                  {t(keyword)}
-                </button>
-              ))}
+          <form className="home-search" role="search" aria-label={t("Search the catalogue")} onSubmit={event => { event.preventDefault(); const q = search.trim(); if (q) navigate(`/products?q=${encodeURIComponent(q)}`); }}>
+            <label htmlFor="home-search">{t("Find your next favourite")}</label>
+            <div className="home-search__row">
+              <input
+                id="home-search"
+                type="search"
+                value={search}
+                maxLength={200}
+                onChange={event => setSearch(event.target.value)}
+                placeholder={t("Search products, brands or categories")}
+              />
+              <button className="btn btn--primary" disabled={!search.trim()}>{t("Search")}</button>
             </div>
-          </div>
-        </form>
+            <div className="home-search__trending">
+              <span className="home-search__trending-label">{t("Trending:")}</span>
+              <div className="home-search__trending-tags">
+                {TRENDING_KEYWORDS.map(keyword => (
+                  <button
+                    key={keyword}
+                    type="button"
+                    className="home-search__trending-chip"
+                    onClick={() => {
+                      setSearch(keyword);
+                      navigate(`/products?q=${encodeURIComponent(keyword)}`);
+                    }}
+                  >
+                    {t(keyword)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </form>
+        </div>
         <HeroPromotions />
       </section>
 
@@ -251,9 +255,8 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
       <HomeStorePulse />
       <HomeBrandStrip />
       <HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} />
-      <HomeDeliveryPulse />
+      <HomeLiveOffers />
       <div className="home-recent-section"><RecentlyViewed /></div>
-      <HomeNewsletter />
 
       <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
         <div className="showcase__headings">
@@ -264,7 +267,7 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
           {t(reasonText[reason])}
         </p>
 
-        <ul className="showcase__grid">
+        <ul className="showcase__grid" data-testid="showcase-grid">
           {cards.map((card) => (
             <li key={card.index}>
               <img

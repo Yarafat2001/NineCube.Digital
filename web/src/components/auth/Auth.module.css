@@ -38,7 +38,7 @@
   padding: var(--space-5) clamp(var(--space-5), 3vw, var(--space-6));
   border-radius: calc(var(--radius-lg) + var(--radius-sm));
   border: 1px solid var(--nav-glass-edge);
-  background: var(--nav-glass);
+  background: var(--card-glass);
   box-shadow: var(--nav-glass-shadow), var(--shadow-lg);
   backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(var(--glass-saturate));
   -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(var(--glass-saturate));
@@ -59,7 +59,7 @@
   width: 48px; height: 48px; border-radius: var(--radius-pill);
   display: grid; place-items: center; color: var(--accent-text);
   border: 1px solid var(--nav-glass-edge);
-  background: var(--nav-glass); box-shadow: var(--auth-small);
+  background: var(--card-glass); box-shadow: var(--auth-small);
   margin-bottom: var(--space-2);
 }
 .badge svg { width: 24px; height: 24px; stroke-linecap: round; stroke-linejoin: round; }
@@ -92,7 +92,7 @@
   width: 44px; height: 44px; min-height: 44px; flex: 0 0 44px; padding: 0;
   border: 1px solid var(--nav-glass-edge); border-radius: var(--radius-pill);
   display: inline-grid; place-items: center;
-  background: var(--nav-glass); color: var(--accent-text); box-shadow: var(--auth-small);
+  background: var(--card-glass); color: var(--accent-text); box-shadow: var(--auth-small);
   font-weight: 700; font-size: 1.4rem; text-decoration: none; cursor: pointer;
   transition: transform var(--transition), box-shadow var(--transition);
 }

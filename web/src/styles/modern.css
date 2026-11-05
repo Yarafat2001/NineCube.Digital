@@ -245,17 +245,20 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
   border-color: var(--nav-glass-edge);
 }
 .navbar {
-  background: var(--navbar-glass);
+  background-color: var(--nav-glass-base);
+  background-image: var(--navbar-glass);
   border-color: var(--nav-glass-edge);
   backdrop-filter: blur(24px) saturate(145%);
   -webkit-backdrop-filter: blur(24px) saturate(145%);
-  box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-lg);
+  box-shadow: var(--nav-glass-shadow);
 }
 /* Past 8px of scroll the page starts passing behind the pill. The tint is the approved
-   material, so it stays exactly as drawn - it just gets the card colour under it, which
-   covers the row instead of smearing a half-clipped line of text through the blur. */
+   material, so it stays exactly as drawn - it just gets a slightly more opaque version of
+   its own backing colour under it, which covers the row instead of smearing a half-clipped
+   line of text through the blur. Painting var(--surface) here was the bug: an opaque card
+   colour under a translucent gradient cancels the glass, and the bar went flat mid-scroll. */
 .navbar--compact {
-  background-color: var(--surface);
+  background-color: var(--nav-glass-base-scroll);
   background-image: var(--navbar-glass);
 }
 :root .navbar :is(.navbar__link:not([aria-current='page']), .theme-control:not([aria-pressed='true']), .navbar__actions .nav-pop__trigger):is([aria-expanded='true'], :active),
@@ -282,7 +285,7 @@ input, select, textarea { background: var(--surface-sunken); border-color: var(-
   gap: 6px;
   border: 1px solid var(--nav-glass-edge);
   border-radius: var(--radius-lg);
-  background: var(--nav-glass);
+  background: var(--card-glass);
   box-shadow: var(--nav-glass-shadow);
 }
 /* A control has to look like a control. --nav-glass is the material of the card, tray and table it
@@ -387,7 +390,7 @@ main :is(a[href]:not(.btn):not(.filter-chip):not(.navbar__link), .link-button):h
 
 /* Applied filters use the same glass shell and readable amber chips. */
 .filter-chips--active {
-  background: var(--nav-glass);
+  background: var(--card-glass);
   border-color: var(--nav-glass-edge);
   box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
 }
@@ -559,7 +562,7 @@ main :is(a[href]:not(.btn):not(.filter-chip):not(.navbar__link), .link-button):h
   border-color: var(--accent-text);
   box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
 }
-.order-queues { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid var(--nav-glass-edge); border-radius: 20px; background: var(--nav-glass); align-self: flex-start; }
+.order-queues { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; border: 1px solid var(--nav-glass-edge); border-radius: 20px; background: var(--card-glass); align-self: flex-start; }
 .staff-toolbar [hidden], .staff-orders :is(th, td)[hidden] { display: none !important; }
 
 .order-role-notice { padding: 16px 20px; border-left: 3px solid var(--info); line-height: 1.6; }

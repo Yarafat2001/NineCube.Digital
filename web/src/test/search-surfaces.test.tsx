@@ -10,7 +10,9 @@ import { server } from './server';
 import { renderApp, seedSession } from './utils';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const read = (file: string) => readFileSync(join(root, 'src', 'styles', file), 'utf8');
+// Windows checkouts hand these files over with CRLF, and a rule is matched by its closing "}" line,
+// so the readers normalise before parsing; CI's checkout is already LF.
+const read = (file: string) => readFileSync(join(root, 'src', 'styles', file), 'utf8').replace(/\r\n/g, '\n');
 const app = read('app.css');
 const modern = read('modern.css');
 const responsive = read('responsive.css');
@@ -156,9 +158,11 @@ describe('Search surfaces follow the system plate', () => {
   });
 
   it('covers a scrolling row instead of smearing it through the pill', () => {
-    // The tint is approved material and stays; the card colour underneath is what stops the bleed.
+    // The tint is approved material and stays; what is underneath it has to be opaque enough that
+    // the row of cards scrolling past cannot read through the bar. That is the bar's own backing
+    // colour, which is darker than the card surface in light mode and lighter in dark.
     const compact = block(modern, '.navbar--compact');
-    expect(compact).toContain('background-color: var(--surface)');
+    expect(compact).toContain('background-color: var(--nav-glass-base-scroll);');
     expect(compact).toContain('background-image: var(--navbar-glass)');
   });
 });

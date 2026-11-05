@@ -1,5 +1,82 @@
 # FIX_REPORT
 
+# Round 26 - the home page says only what the store can back up, and its glass keeps an edge
+
+Date: 2026-11-05. Brief, in your words: "Check the home page if any design nedd to more attractive do that as you
+making add in relevency and the light mode navbar and frontend effect not properly visible in thr both mobile and pc
+desktop screen fix thes' Oh in dark mode mobile screen navbar glassy mode not more visible fix these also". The navbar
+half of that was measured and fixed first (Round 25's follow-up, task 108); this round is the home page half.
+
+## What was actually on the home page
+
+Before touching the look, I read what the page claimed. Two of its most decorative sections were invented: a
+"live dispatch" ticker inside an `aria-live` region that announced parcels nobody had shipped, a 4.9/5.0 rating with
+testimonials no order history supports, brand tiles whose counts came from a `FALLBACK_BRANDS` constant in the source,
+and a `WELCOME10` voucher code that exists in no campaign the checkout would honour. The newsletter form wrote to
+`localStorage` and nowhere else. Attractiveness built on that is a liability, not a design, so those two components
+(`HomeDeliveryPulse`, `HomeNewsletter`) are deleted, and one server-derived section takes their place.
+
+`HomeLiveOffers` reads `/api/coupons/campaigns` - the same endpoint the checkout prices from - and prints each live
+campaign with its own terms: the percentage or taka value, the scope ("Discount on Category"), the minimum order, the
+cap, the expiry date, and either the code with a copy button or "Applied automatically at checkout" for automatic ones.
+When the store has no live campaign the section renders nothing at all, which is the honest answer. `HomeBrandStrip`
+now lists only brands the catalogue reports with `productCount > 0`, and the count on each tile is that same number.
+The store pulse lost its "live warehouse" / "Real-time" framing: it is counted client-side from the in-stock products
+the catalogue returns for the page, and it now says exactly that.
+
+The rest of "more attractive" is structure, not invention. At 900px and wider the hero is a two-column grid, so the
+collection cards that used to sit below the fold fill the empty right half (measured: intro column 634px, promotion
+column 420px at x=806, a 57px gutter); on a phone they stack under the copy. The stacked child margins that doubled the
+hero's own gap are reset to zero, so CTA to search is one 16px gap at 1440. Emoji-as-icons became the house `Icon` set.
+
+## What the probe measured after the change
+
+Production build (`npm run build`), served by `vite preview`, stubbed `/api/*` in the browser, screenshots decoded in
+Node. Widths 1440x900 and 390x844, both themes, at rest and after the page scrolls under the bar.
+
+| | light 1440 | light 390 | dark 1440 | dark 390 |
+| --- | --- | --- | --- | --- |
+| navbar fill vs page behind, L* | 96.9 vs 87.9 (dL 9.0) | 96.6 vs 87.9 (dL 8.7) | 38.1 vs 4.3 (dL 33.8) | 36.9 vs 4.1 (dL 32.8) |
+| navbar edge vs its own fill / vs page | 3.47 / 2.74 | 3.44 / 2.74 | 3.94 / 10.89 | 4.07 / 10.80 |
+| offer card edge vs page / vs fill | 3.02 / 3.48 | 3.02 / 3.48 | 9.40 / 5.13 | 9.40 / 5.27 |
+| offer icon well, ink vs card | 18.81 | 18.81 | 9.34 | 9.34 |
+| voucher code text vs its well | 16.19 | 16.19 | 16.90 | 16.90 |
+| 3D launch button edge vs page | 3.46 | 3.46 | 16.13 | 16.13 |
+| offer grid columns / tiles | 3 / 5 | 1 / 5 | 3 / 5 | 1 / 5 |
+| copy button height | 40px | 44px | 40px | 44px |
+| sideways spill | 0px | 0px | 0px | 0px |
+
+The home cards used to draw `--border`, which measured 1.51:1 against the light page - an outline nobody could follow.
+They now take the raised shell edges (`--nav-glass-edge` on cards and stat tiles, `--opt-edge` on chips and controls,
+`--edge-well` on the pulse bars), and the pixel probe confirms the painted line: 3.02:1 against the light page, 9.4:1
+against the dark one. The dark theme's ghost button, which was a 12%-white border on a dark page, now paints
+`rgba(226,237,251,.72)` over a 10% light fill - 16.13:1 against the page. The 3D launch button only exists when the
+browser can actually run the scene, so it was measured in a WebGL-capable headless Chromium rather than the reduced
+motion path.
+
+## Tests that keep it honest
+
+`web/src/test/home-storefront.test.tsx` (11 tests): the glass tokens stay two materials (bar vs card), the bar paints
+its backing colour at rest and on scroll, no home surface falls back to `--border`, the hero grid and the margin reset
+are present, the deleted fabrications stay deleted (`WELCOME10`, `FALLBACK_BRANDS`, the review wall), no pictographs in
+the home sources, the five stubbed campaigns render with their own terms and copy to the clipboard, and with an empty
+campaign list the section is absent rather than empty. `web/e2e/home-showcase-layout.spec.ts` walks 1280 and 390 in both
+themes against the production build with a stubbed API: hero column placement, the one-gap hero, five offer tiles and
+their column count, the 40/44px copy button, the icon centred in its well, three brand tiles, a painted navbar edge
+after scrolling, and zero sideways spill. Two older suites needed updating to the new reality: `helix-showcase` now
+finds the nine-card gallery by its own test id (the page has other lists now), and `search-surfaces` reads CSS with CRLF
+normalised, because a Windows checkout hands the files over with CRLF and one of its rules is matched by its closing
+brace line - that was a false failure on this box, not a regression. The gate earned its keep on the way out: the new
+spec's stub helper took an implicitly typed parameter, which `tsc --noEmit` rejects under this project's strict
+settings, and two older suites that open the home page (`navbar`, `account`) flaked while 46 files ran at once on this
+box. Both pass on their own and pass in the full run; the home page now resolves its own catalogue, campaign and brand
+queries, so a one-second wait on the navbar is tighter than it used to be. The suite already budgets ten seconds
+(`asyncUtilTimeout` in `src/test/setup.ts`), and that budget is what makes them pass - shortening it per test, which I
+tried first, reproduces the failure every time.
+
+Nothing invented was added anywhere: no new prices, no new certifications, no campaigns the checkout does not honour.
+
+
 # Round 25 - the phone surfaces, the detail page's double gaps, and one savings widget instead of none
 
 Date: 2026-11-05. Brief, in your words: the mobile filter use "double time" and needs fixing properly; the product

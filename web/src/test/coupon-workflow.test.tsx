@@ -84,7 +84,7 @@ describe('Condensed coupon workflow', () => {
     // --nav-glass-edge paints the border of every card, tray, table and panel on every route.
     expect(light).toContain('--nav-glass-edge: #77859A;');
     expect(tokens).toContain('--edge-shell: #77859A');
-    expect(tokens).toContain('--nav-glass-edge: rgba(216,229,250,.46);');
+    expect(tokens).toContain('--nav-glass-edge: rgba(226,237,251,.72);');
   });
 
   it('ships the optional steps folded, each stating its value on the closed row', async () => {

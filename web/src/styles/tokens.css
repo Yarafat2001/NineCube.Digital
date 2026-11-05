@@ -280,21 +280,35 @@
 }
 
 
-/* One glass material for every navigation group. */
+/* One glass material for every navigation group.
+   Two things made the bar invisible: the stops were close enough to the page colour that no
+   sheen was perceivable across it (a flat 240 on a 224 page), and there was nothing under the
+   tint, so the amber page glow bled straight through and warmed the glass into the background.
+   The ramps now span a real luminance range and --nav-glass-base sits underneath as a neutral
+   backing, so the bar reads as lifted cool glass at 1440 and at 390 in both themes. */
 :root, :root[data-theme="light"] {
-  --nav-glass: linear-gradient(135deg, rgba(255,255,255,.88), rgba(218,228,243,.66));
+  --nav-glass: linear-gradient(135deg, rgba(255,255,255,.96) 0%, rgba(240,246,253,.86) 46%, rgba(206,220,240,.78) 100%);
+  --nav-glass-base: rgba(255,255,255,.72);
+  --nav-glass-base-scroll: rgba(255,255,255,.88);
   /* The tint stays translucent; only the edge was too soft. At .64 alpha the border blends to
      2.0:1 against its own card, so every panel, table and cart read as flat. The opaque value is
      the same #77859A the solid shells use, which lifts all glass surfaces to 3.75:1 at once. */
   --nav-glass-edge: #77859A;
-  --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.95), inset 0 -1px 1px rgba(89,108,139,.2), 0 5px 12px rgba(31,49,79,.22), 0 1px 3px rgba(31,49,79,.15);
+  --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.95), inset 0 -1px 1px rgba(89,108,139,.32), 0 8px 20px rgba(31,49,79,.26), 0 2px 6px rgba(31,49,79,.18);
   --nav-hover: rgba(119,133,154,.2);
+  /* Page cards, panels and tables keep the gentle material: the bar above them is the one that
+     has to stand away from the page, and lifting both at once smeared a blue diagonal over every
+     product card. */
+  --card-glass: linear-gradient(135deg, rgba(255,255,255,.88), rgba(218,228,243,.66));
 }
 :root[data-theme="dark"], .navbar--showcase {
-  --nav-glass: linear-gradient(135deg, rgba(179,194,219,.42), rgba(101,117,145,.27) 55%, rgba(66,78,101,.38));
-  --nav-glass-edge: rgba(216,229,250,.46);
-  --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.45), inset 0 -1px 1px rgba(9,14,24,.4), 0 7px 16px rgba(0,0,0,.4), 0 2px 4px rgba(0,0,0,.28);
+  --nav-glass: linear-gradient(135deg, rgba(206,220,240,.52) 0%, rgba(150,167,198,.46) 46%, rgba(120,135,166,.55) 100%);
+  --nav-glass-base: rgba(21,19,21,.72);
+  --nav-glass-base-scroll: rgba(21,19,21,.86);
+  --nav-glass-edge: rgba(226,237,251,.72);
+  --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.45), inset 0 -1px 1px rgba(9,14,24,.55), 0 7px 18px rgba(0,0,0,.48), 0 2px 4px rgba(0,0,0,.3);
   --nav-hover: rgba(224,233,249,.16);
+  --card-glass: linear-gradient(135deg, rgba(179,194,219,.42), rgba(101,117,145,.27) 55%, rgba(66,78,101,.38));
 }
 
 /* Readable initials and translucent customer surfaces. */
@@ -310,9 +324,11 @@
   --navbar-glass: linear-gradient(125deg, rgba(87,94,113,.62), rgba(46,49,63,.78));
 }
 
-/* Navbar shells and page cards share the same glass material. */
+/* The navigation bar and the controls inside it share one material; the page's cards, panels and
+   tables share another - one that stays close to the surface colour so content, not the container,
+   is what the eye follows. */
 :root, :root[data-theme='light'], :root[data-theme='dark'] {
-  --product-card-glass: var(--nav-glass);
+  --product-card-glass: var(--card-glass);
   --navbar-glass: var(--nav-glass);
 }
 

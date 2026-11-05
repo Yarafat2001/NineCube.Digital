@@ -17,8 +17,9 @@ describe('Showcase route', () => {
 
     expect(await screen.findByTestId('showcase-fallback-reason')).toHaveTextContent(/webgl/i);
 
-    // Same nine cards, in filename order, with real alt text.
-    const grid = screen.getByRole('list');
+    // Same nine cards, in filename order, with real alt text. The home page has other lists now,
+    // so the gallery is found by its own id rather than by being the first list on the page.
+    const grid = screen.getByTestId('showcase-grid');
     const cards = within(grid).getAllByRole('listitem');
     expect(cards).toHaveLength(CARD_COUNT);
 
@@ -60,7 +61,7 @@ describe('Showcase route', () => {
     renderApp('/');
 
     expect(await screen.findByTestId('showcase-fallback-reason')).toHaveTextContent(/reduced motion/i);
-    expect(screen.getByRole('list')).toBeInTheDocument();
+    expect(screen.getByTestId('showcase-grid')).toBeInTheDocument();
   });
 
   it('drops the tall scroll track from the document when the showcase unmounts', async () => {

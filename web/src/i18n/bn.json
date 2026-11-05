@@ -2292,5 +2292,20 @@
   "Sort: Name": "সাজান: নাম",
   "Sort: Price Low-High": "সাজান: দাম কম-বেশি",
   "Sort: Stock High-Low": "সাজান: মজুত বেশি-কম",
-  "Sort: Newest": "সাজান: নতুনতম"
+  "Sort: Newest": "সাজান: নতুনতম",
+  "Live offers": "চলমান অফার",
+  "Offers you can use right now": "এখনই ব্যবহারযোগ্য অফার",
+  "These are the campaigns the store has running today. The exact saving is calculated at checkout.": "স্টোরে আজ যেসব ক্যাম্পেইন চলছে সেগুলো এখানে। প্রকৃত ছাড়ের পরিমাণ চেকআউটে নির্ধারিত হবে।",
+  "Loading offers": "অফার আসছে",
+  "Discount on": "ছাড় প্রযোজ্য:",
+  "On orders over": "কমপক্ষে অর্ডারের পরিমাণ",
+  "Until": "মেয়াদ শেষ:",
+  "Applied automatically at checkout": "চেকআউটে স্বয়ংক্রিয়ভাবে প্রয়োগ হবে",
+  "3D Helix Experience": "থ্রিডি হেলিক্স অভিজ্ঞতা",
+  "Shop by brand": "ব্র্যান্ড অনুযায়ী",
+  "Brands in the catalogue": "ক্যাটালগের ব্র্যান্ড",
+  "Every brand listed here has products in the live catalogue, and the count comes from that same list.": "এখানে থাকা প্রতিটি ব্র্যান্ডের পণ্য ক্যাটালগে আছে, এবং সংখ্যাটি সেই ক্যাটালগ থেকেই আসে।",
+  "From the catalogue": "ক্যাটালগ থেকে",
+  "Counted from the in-stock products the catalogue returns for this page.": "এই পাতা ক্যাটালগ থেকে যতগুলো স্টকে থাকা পণ্য পায়, সেগুলোর হিসাব।",
+  "in stock now": "এখন স্টকে আছে"
 }

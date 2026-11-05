@@ -58,7 +58,9 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
     <section className="home-deals-section" aria-label={t("Featured Deals")}>
       <div className="home-section-header">
         <div>
-          <span className="home-section-kicker">⚡ {t("Curated Storefront Showcase")}</span>
+          <span className="home-section-kicker">
+            <Icon name="grid" width={13} height={13} /> {t("Curated Storefront Showcase")}
+          </span>
           <h2 className="home-section-title">{t("Available to shop")}</h2>
           <p className="home-section-desc">{t("Explore current prices and live warehouse stock. Checked again at checkout.")}</p>
         </div>
@@ -71,7 +73,7 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
             className={`home-deals-tab ${activeTab === 'trending' ? 'home-deals-tab--active' : ''}`}
             onClick={() => setActiveTab('trending')}
           >
-            🔥 {t("Trending Now")}
+            <Icon name="bolt" width={14} height={14} /> {t("Trending Now")}
           </button>
           <button
             type="button"
@@ -80,7 +82,7 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
             className={`home-deals-tab ${activeTab === 'discounts' ? 'home-deals-tab--active' : ''}`}
             onClick={() => setActiveTab('discounts')}
           >
-            ⚡ {t("Flash Discounts")}
+            <Icon name="percent" width={14} height={14} /> {t("Flash Discounts")}
           </button>
           <button
             type="button"
@@ -89,7 +91,7 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
             className={`home-deals-tab ${activeTab === 'new' ? 'home-deals-tab--active' : ''}`}
             onClick={() => setActiveTab('new')}
           >
-            ✨ {t("New Arrivals")}
+            <Icon name="spark" width={14} height={14} /> {t("New Arrivals")}
           </button>
         </div>
 
@@ -170,7 +172,7 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
                         aria-pressed={isComparing}
                         title={t(isComparing ? "Remove from comparison" : "Compare")}
                       >
-                        <span aria-hidden="true">⇄</span> {isComparing ? t("Comparing") : t("Compare")}
+                        <Icon name="shuffle" width={13} height={13} /> {isComparing ? t("Comparing") : t("Compare")}
                       </button>
                     ) : null}
                   </div>
