@@ -87,70 +87,87 @@ export function AccountDashboardPage() {
         </div>
       </section>
 
-      <nav className="account-hub-grid" aria-label={t("Account Navigation")}>
-        <Link className="account-hub-tile card-glass" to="/products">
-          <div className="account-hub-tile__icon"><Icon name="grid" /></div>
-          <div className="account-hub-tile__info">
-            <strong>{t("Browse products")}</strong>
-            <span className="muted">{t("Search the catalogue")}</span>
-          </div>
-          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
-        </Link>
-        <Link className="account-hub-tile card-glass" to="/wishlist">
-          <div className="account-hub-tile__icon"><Icon name="heart" /></div>
-          <div className="account-hub-tile__info">
-            <strong>{t("Wishlist")}</strong>
-            <span className="muted">{t("Saved products")}</span>
-          </div>
-          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
-        </Link>
-        <Link className="account-hub-tile card-glass" to="/gift-cards">
-          <div className="account-hub-tile__icon"><Icon name="wallet" /></div>
-          <div className="account-hub-tile__info">
-            <strong>{t("Gift Cards")}</strong>
-            <span className="muted">{t("Check balance & redeem")}</span>
-          </div>
-          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
-        </Link>
-        <Link className="account-hub-tile card-glass" to="/account/profile">
-          <div className="account-hub-tile__icon"><Icon name="user" /></div>
-          <div className="account-hub-tile__info">
-            <strong>{t("Profile & Addresses")}</strong>
-            <span className="muted">{t(user?.fullName ?? user?.email ?? 'Your account')}</span>
-          </div>
-          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
-        </Link>
-        <Link className="account-hub-tile card-glass" to="/account/security">
-          <div className="account-hub-tile__icon"><Icon name="shield" /></div>
-          <div className="account-hub-tile__info">
-            <strong>{t("Account security")}</strong>
-            <span className="muted">{t("Password and sign-in sessions")}</span>
-          </div>
-          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
-        </Link>
-        <Link className="account-hub-tile card-glass" to="/notifications">
-          <div className="account-hub-tile__icon"><Icon name="bell" /></div>
-          <div className="account-hub-tile__info">
-            <strong>{t("Notifications")}</strong>
-            <span className="muted">{t(data.unreadNotifications > 0 ? `${data.unreadNotifications} unread` : 'All caught up')}</span>
-          </div>
-          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
-        </Link>
-        <Link className="account-hub-tile card-glass" to="/help">
-          <div className="account-hub-tile__icon"><Icon name="phone" /></div>
-          <div className="account-hub-tile__info">
-            <strong>{t("Help & support")}</strong>
-            <span className="muted">{t("Raise a service case")}</span>
-          </div>
-          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
-        </Link>
-        <button type="button" className="account-hub-tile account-hub-tile--logout card-glass" onClick={handleLogout}>
-          <div className="account-hub-tile__icon account-hub-tile__icon--danger"><Icon name="logout" /></div>
-          <div className="account-hub-tile__info">
-            <strong className="text-danger">{t("Log out")}</strong>
-            <span className="muted">{t("Sign out of this session")}</span>
-          </div>
-          <span className="account-hub-tile__arrow text-danger" aria-hidden="true">→</span>
+      {/* The Alibaba-style account surface: an identity header, then one vertical
+          icon + label + chevron list split into a primary group and a settings
+          group, with log out last. It replaces the tile grid and the quick-actions
+          band so the account tab has exactly one navigation surface. */}
+      <section className="account-profile-card card-glass" aria-label={t("Your account")}>
+        <span className="account-profile-card__avatar" aria-hidden="true"><Icon name="user" width={22} height={22} /></span>
+        <span className="account-profile-card__identity">
+          <strong>{user?.fullName ?? user?.email ?? ''}</strong>
+          <span className="muted">{user?.email}</span>
+        </span>
+        <span className="account-profile-card__pill">{t("Customer")}</span>
+      </section>
+
+      <nav className="account-nav-list card-glass" aria-label={t("Account Navigation")}>
+        <ul className="account-nav-list__group">
+          <li>
+            <Link className="account-nav-row" to="/products">
+              <span className="account-nav-row__icon"><Icon name="grid" width={17} height={17} /></span>
+              <span className="account-nav-row__label">{t("Browse products")}</span>
+              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+            </Link>
+          </li>
+          <li>
+            <Link className="account-nav-row" to="/orders">
+              <span className="account-nav-row__icon"><Icon name="box" width={17} height={17} /></span>
+              <span className="account-nav-row__label">{t("My Orders")}</span>
+              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+            </Link>
+          </li>
+          <li>
+            <Link className="account-nav-row" to="/wishlist">
+              <span className="account-nav-row__icon"><Icon name="heart" width={17} height={17} /></span>
+              <span className="account-nav-row__label">{t("Wishlist")}</span>
+              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+            </Link>
+          </li>
+          <li>
+            <Link className="account-nav-row" to="/gift-cards">
+              <span className="account-nav-row__icon"><Icon name="wallet" width={17} height={17} /></span>
+              <span className="account-nav-row__label">{t("Gift Cards")}</span>
+              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+            </Link>
+          </li>
+          <li>
+            <Link className="account-nav-row" to="/account/profile">
+              <span className="account-nav-row__icon"><Icon name="user" width={17} height={17} /></span>
+              <span className="account-nav-row__label">{t("Profile & Addresses")}</span>
+              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+            </Link>
+          </li>
+        </ul>
+        <ul className="account-nav-list__group">
+          <li>
+            <Link className="account-nav-row" to="/account/security">
+              <span className="account-nav-row__icon"><Icon name="shield" width={17} height={17} /></span>
+              <span className="account-nav-row__label">{t("Account security")}</span>
+              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+            </Link>
+          </li>
+          <li>
+            <Link className="account-nav-row" to="/notifications">
+              <span className="account-nav-row__icon"><Icon name="bell" width={17} height={17} /></span>
+              <span className="account-nav-row__label">{t("Notifications")}</span>
+              {data.unreadNotifications > 0 ? (
+                <span className="account-nav-row__badge">{data.unreadNotifications}</span>
+              ) : null}
+              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+            </Link>
+          </li>
+          <li>
+            <Link className="account-nav-row" to="/help">
+              <span className="account-nav-row__icon"><Icon name="phone" width={17} height={17} /></span>
+              <span className="account-nav-row__label">{t("Help & support")}</span>
+              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+            </Link>
+          </li>
+        </ul>
+        <button type="button" className="account-nav-row account-nav-row--logout" onClick={handleLogout}>
+          <span className="account-nav-row__icon account-nav-row__icon--danger"><Icon name="logout" width={17} height={17} /></span>
+          <span className="account-nav-row__label">{t("Log out")}</span>
+          <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
         </button>
       </nav>
 
@@ -163,15 +180,6 @@ export function AccountDashboardPage() {
         ].map(stat => <div className="stat-tile card-glass" key={stat.label}><span className="stat-icon" data-tone={stat.tone}><Icon name={stat.icon} /></span><span className="stat-tile__label">{t(stat.label)}</span><span className="stat-tile__value">{t(stat.value)}</span><span className="muted">{t(stat.caption)}</span></div>)}
       </div>
       {data.totalOrders === 0 ? <EmptyState title={t("No orders yet")} description={t("Your first order will appear here.")} action={<Link className="btn btn--primary" to="/products">{t("Browse products")}</Link>} /> : null}
-      <nav className="quick-actions" aria-label={t("Quick actions")}>
-        <Link className="btn btn--primary" to="/products"><Icon name="grid" />{t("Browse products")}</Link>
-        <Link className="btn" to="/orders"><Icon name="box" />{t("My orders")}</Link>
-        <Link className="btn" to="/account/profile"><Icon name="user" />{t("Profile")}</Link>
-        {(!user || user.role === 'Customer') ? (
-          <Link className="btn" to="/gift-cards"><Icon name="wallet" />{t("Gift Cards")}</Link>
-        ) : null}
-        <button type="button" className="btn btn--ghost account-logout-btn" onClick={handleLogout}><Icon name="logout" />{t("Log out")}</button>
-      </nav>
 
       <section className="card-glass" aria-labelledby="dashboard-status">
         <h2 id="dashboard-status">{t("Orders by status")}</h2>

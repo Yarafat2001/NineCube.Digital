@@ -1,37 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
-  useAskAssistant,
   useChatConversations,
   useChatMessages,
   useCreateChatConversation,
   useSendChatMessage
 } from '../api/hooks';
-import type { ChatAssistantMatch, ChatMessage } from '../api/types';
 import { t, useLanguage } from '../i18n/language';
 import { formatDateTime } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 import { Icon } from './Icon';
 
-const SUGGESTED_QUESTIONS = [
-  'Show me laptops',
-  'Where is my order?',
-  'What is the return policy?'
-];
-
 /**
- * The store chat: one thread per conversation, shared by the catalogue assistant and the
- * support team. Messages are persisted server-side and polled; assistant answers asked
- * before a conversation exists stay on screen for this session only.
+ * The support chat: one thread per conversation with the store's support team. The catalogue
+ * assistant lives on the home screen as its own surface, so this panel is support only.
+ * Messages are persisted server-side and polled.
  */
 export function ChatWidget() {
   useLanguage();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<'assistant' | 'support'>('assistant');
   const [draft, setDraft] = useState('');
-  const [localReplies, setLocalReplies] = useState<ChatMessage[]>([]);
-  const [matchesByMessage, setMatchesByMessage] = useState<Record<string, ChatAssistantMatch[]>>({});
   const threadRef = useRef<HTMLOListElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -45,14 +33,10 @@ export function ChatWidget() {
   const messages = useChatMessages(active?.id ?? null, Boolean(user) && open);
   const createConversation = useCreateChatConversation();
   const sendMessage = useSendChatMessage();
-  const askAssistant = useAskAssistant();
 
   // Chat notifications link to the panel, not a route: any surface can ask for it.
   useEffect(() => {
-    const onOpenChat = () => {
-      setOpen(true);
-      setMode('support');
-    };
+    const onOpenChat = () => setOpen(true);
     window.addEventListener('ninecube:open-chat', onOpenChat);
     return () => window.removeEventListener('ninecube:open-chat', onOpenChat);
   }, []);
@@ -61,9 +45,9 @@ export function ChatWidget() {
     if (open) closeRef.current?.focus();
   }, [open]);
 
-  const busy = createConversation.isPending || sendMessage.isPending || askAssistant.isPending;
+  const busy = createConversation.isPending || sendMessage.isPending;
   const unread = (conversations.data ?? []).reduce((total, conversation) => total + conversation.unreadCount, 0);
-  const thread = useMemo(() => [...(messages.data ?? []), ...localReplies], [messages.data, localReplies]);
+  const thread = messages.data ?? [];
 
   useEffect(() => {
     const element = threadRef.current;
@@ -72,27 +56,10 @@ export function ChatWidget() {
 
   if (!user) return null;
 
-  const rememberMatches = (key: string, matches: ChatAssistantMatch[]) => {
-    if (matches.length) setMatchesByMessage((previous) => ({ ...previous, [key]: matches }));
-  };
-
   const submit = () => {
     const body = draft.trim();
     if (!body || busy) return;
     setDraft('');
-
-    if (mode === 'assistant') {
-      askAssistant.mutate(
-        active ? { question: body, conversationId: active.id } : { question: body },
-        {
-          onSuccess: (result) => {
-            if (!active) setLocalReplies((previous) => [...previous, result.reply]);
-            rememberMatches(active ? String(result.reply.id) : `local-${result.reply.id}-${thread.length}`, result.matches);
-          }
-        }
-      );
-      return;
-    }
 
     if (active) {
       sendMessage.mutate({ conversationId: active.id, body });
@@ -101,9 +68,6 @@ export function ChatWidget() {
     createConversation.mutate({ subject: body.slice(0, 60), message: body });
   };
 
-  const matchesFor = (message: ChatMessage, index: number) =>
-    matchesByMessage[String(message.id)] ?? matchesByMessage[`local-${message.id}-${index}`];
-
   return (
     <div className="chat-dock" data-testid="chat-dock">
       {open ? (
@@ -111,49 +75,25 @@ export function ChatWidget() {
           <header className="chat-panel__head">
             <div>
               <strong>{t('Chat with NineCube')}</strong>
-              <span className="muted">{active ? active.subject : t('Answers from the live catalogue')}</span>
+              <span className="muted">{active ? active.subject : t('Support team')}</span>
             </div>
             <button type="button" ref={closeRef} className="chat-panel__close" onClick={() => setOpen(false)} aria-label={t('Close chat')}>
               <Icon name="x" width={16} height={16} />
             </button>
           </header>
 
-          <div className="chat-panel__modes" role="tablist" aria-label={t('Chat mode')}>
-            <button type="button" role="tab" aria-selected={mode === 'assistant'} onClick={() => setMode('assistant')}>
-              <Icon name="spark" width={14} height={14} /> {t('Assistant')}
-            </button>
-            <button type="button" role="tab" aria-selected={mode === 'support'} onClick={() => setMode('support')}>
-              <Icon name="phone" width={14} height={14} /> {t('Support team')}
-            </button>
-          </div>
-
           <ol className="chat-thread" ref={threadRef}>
             {thread.length === 0 && !busy ? (
               <li className="chat-empty">
-                <p>{mode === 'assistant' ? t('Ask about products, your orders or store policies.') : t('Write to the support team and they will answer in this thread.')}</p>
-                {mode === 'assistant' ? (
-                  <div className="chat-suggestions">
-                    {SUGGESTED_QUESTIONS.map((question) => (
-                      <button key={question} type="button" className="chat-suggestion" onClick={() => setDraft(question)}>
-                        {t(question)}
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
+                <p>{t('Write to the support team and they will answer in this thread.')}</p>
               </li>
             ) : (
-              thread.map((message, index) => (
-                <li key={message.id ? `${message.conversationId}-${message.id}` : `local-${index}`} className={`chat-bubble chat-bubble--${message.authorKind === 'customer' ? 'self' : 'peer'}`}>
+              thread.map((message) => (
+                <li key={`${message.conversationId}-${message.id}`} className={`chat-bubble chat-bubble--${message.authorKind === 'customer' ? 'self' : 'peer'}`}>
                   <span className="chat-bubble__who">
-                    {message.authorKind === 'assistant' ? t('Assistant') : message.authorKind === 'staff' ? t('Support') : t('You')}
+                    {message.authorKind === 'staff' ? t('Support') : t('You')}
                   </span>
                   <p>{message.body}</p>
-                  {(matchesFor(message, index) ?? []).map((match) => (
-                    <Link key={`${match.kind}-${match.id ?? match.title}`} className="chat-match" to={match.link}>
-                      <strong>{match.title}</strong>
-                      <span>{match.detail}</span>
-                    </Link>
-                  ))}
                   <time>{formatDateTime(message.createdAt)}</time>
                 </li>
               ))
@@ -174,7 +114,7 @@ export function ChatWidget() {
               value={draft}
               maxLength={2000}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder={mode === 'assistant' ? t('Ask about products, orders or policies') : t('Write to the support team')}
+              placeholder={t('Write to the support team')}
             />
             <button className="btn btn--primary" disabled={!draft.trim() || busy}>{t('Send')}</button>
           </form>

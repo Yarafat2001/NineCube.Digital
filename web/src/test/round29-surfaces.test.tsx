@@ -55,7 +55,7 @@ describe('A ChatMessage notification renders instead of crashing', () => {
     expect(within(panel).getByRole('button', { name: 'Open chat' })).toBeInTheDocument();
   });
 
-  it('opens the chat panel on the support tab from the bell', async () => {
+  it('opens the support-only chat panel from the bell', async () => {
     const user = userEvent.setup();
     await signInAsCustomer();
     serveChatNotification();
@@ -67,7 +67,9 @@ describe('A ChatMessage notification renders instead of crashing', () => {
 
     const chat = await screen.findByRole('dialog', { name: 'Chat with NineCube' });
     expect(screen.queryByRole('dialog', { name: 'Notifications' })).toBeNull();
-    expect(within(chat).getByRole('tab', { name: 'Support team' })).toHaveAttribute('aria-selected', 'true');
+    // Round 30 split the chats: the dock panel is support only, with no assistant tab.
+    expect(within(chat).queryByRole('tablist')).toBeNull();
+    expect(within(chat).getByPlaceholderText('Write to the support team')).toBeInTheDocument();
   });
 
   it('renders the dashboard notification list with the chat glyph', async () => {
@@ -94,7 +96,8 @@ describe('A ChatMessage notification renders instead of crashing', () => {
     expect(await screen.findByText('New chat reply')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Open chat' }));
     const chat = await screen.findByRole('dialog', { name: 'Chat with NineCube' });
-    expect(within(chat).getByRole('tab', { name: 'Support team' })).toHaveAttribute('aria-selected', 'true');
+    expect(within(chat).queryByRole('tablist')).toBeNull();
+    expect(within(chat).getByPlaceholderText('Write to the support team')).toBeInTheDocument();
   });
 });
 

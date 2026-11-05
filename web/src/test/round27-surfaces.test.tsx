@@ -20,39 +20,54 @@ describe('Round 27: one account nav surface on a phone', () => {
     expect(header).not.toContain('handleLogout');
   });
 
-  it('lists every destination once in the hub, including the catalogue', () => {
-    const hub = dashboard.slice(dashboard.indexOf('className="account-hub-grid"'), dashboard.indexOf('dashboard-stats'));
-    // Round 28 moved the order destinations into their own card above the hub, with a real count per
-    // status, so the hub rows are the remaining features - each one a route the router declares.
-    for (const to of ['"/products"', '"/wishlist"', '"/gift-cards"', '"/account/profile"', '"/account/security"', '"/notifications"', '"/help"']) {
+  it('lists every destination once in the Alibaba-style list, including the catalogue', () => {
+    const hub = dashboard.slice(dashboard.indexOf('className="account-nav-list card-glass"'), dashboard.indexOf('dashboard-stats'));
+    for (const to of ['"/products"', '"/orders"', '"/wishlist"', '"/gift-cards"', '"/account/profile"', '"/account/security"', '"/notifications"', '"/help"']) {
       expect(hub).toContain(`to=${to}`);
     }
-    expect(hub).not.toContain('to="/orders"');
-    // Seven link rows; the log-out tile carries its own modifier class, so an eighth row here would
-    // be a duplicate again.
-    expect(hub.match(/account-hub-tile card-glass/g)).toHaveLength(7);
+    // Round 30 restyled the hub in the reference app's format: one identity header, then a
+    // single vertical list of icon + label + chevron rows split into two groups, log out last.
+    expect(hub.match(/className="account-nav-row"/g)).toHaveLength(8);
+    expect(hub).toContain('className="account-nav-row account-nav-row--logout"');
+    expect(hub.match(/className="account-nav-list__group"/g)).toHaveLength(2);
+    expect(hub).toContain('account-nav-row__badge');
+    // The tile grid and the quick-actions band that duplicated it are gone.
+    expect(dashboard).not.toContain('account-hub-tile');
+    expect(dashboard).not.toContain('className="quick-actions"');
 
-    const orders = dashboard.slice(dashboard.indexOf('account-hub-orders'), dashboard.indexOf('className="account-hub-grid"'));
-    expect(orders).toContain('to="/orders"');
-    // The four shortcuts are generated from one template, so the statuses are proved as a list.
+    const profile = dashboard.slice(dashboard.indexOf('className="account-profile-card card-glass"'), dashboard.indexOf('className="account-nav-list card-glass"'));
+    expect(profile).toContain('account-profile-card__avatar');
+    expect(profile).toContain('account-profile-card__pill');
+
+    const orders = dashboard.slice(dashboard.indexOf('account-hub-orders'), dashboard.indexOf('className="account-profile-card card-glass"'));
     expect(orders).toContain("to={`/orders?status=${shortcut.status}`}");
     for (const status of ['Pending', 'Confirmed', 'Shipped', 'Delivered']) {
       expect(orders).toContain(`{ status: '${status}'`);
     }
   });
 
-  it('yields the quick-actions band and the two-column grid to the single column', () => {
-    expect(app).toContain(':root .quick-actions { display: none !important; }');
-    expect(app).toContain(':root .account-hub-grid { grid-template-columns: minmax(0, 1fr) !important;');
-    expect(app).toContain(':root .account-hub-tile__info strong { font-size: var(--text-xs) !important; white-space: normal !important;');
-    expect(app).toContain(':root .account-hub-tile__info .muted { font-size: var(--text-label) !important; white-space: normal !important;');
+  it('styles the identity header and the icon list on the house system', () => {
+    expect(app).toContain('.account-profile-card__pill {');
+    expect(app).toContain('.account-profile-card__avatar {');
+    expect(app).toContain('.account-nav-list__group + .account-nav-list__group { border-top: 1px solid var(--border); }');
+    expect(app).toContain('.account-nav-row__chevron {');
+    expect(app).toContain('.account-nav-row--logout {');
   });
 });
 
 describe('Round 27: card affordances stop covering the photo', () => {
-  it('lays the overlay pair in one row at the photo corner on phones', () => {
-    expect(app).toContain(':root .product-card__actions-overlay { flex-direction: row; top: 8px;');
+  it('lays the overlay pair in one row at the badge-free photo corner on phones', () => {
+    expect(app).toContain(':root .product-card__actions-overlay { flex-direction: row; top: auto; bottom: 8px;');
     expect(app).toContain(':root .product-card__wishlist-btn, :root .product-card__quick-view-btn { width: 32px !important;');
+  });
+
+  it('keeps both chips solid over photos and the wishlisted tint visible', () => {
+    // The mobile sheet in responsive.css re-glasses the quick-view chip with !important on a
+    // plain class; :root outscores it, so the solid surface and edge are re-asserted here.
+    expect(app).toContain(':root .product-card__wishlist-btn, :root .product-card__quick-view-btn { width: 32px !important;');
+    expect(app).toContain('background: var(--surface) !important;');
+    expect(app).toContain('border: 1px solid var(--border-strong) !important;');
+    expect(app).toContain(':root .product-card__wishlist-btn--active {');
   });
 
   it('keeps the 44px finger target as an unpainted collar', () => {

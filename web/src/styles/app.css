@@ -6543,43 +6543,14 @@ body[data-overlay-open='true'] {
 }
 
 @media (max-width: 768px) {
-  /* One navigation surface on a phone: the hub list. The header button row is
-     gone from the markup and the quick-actions band repeats the same five
-     destinations, so it yields to the tiles instead of stacking a third copy. */
-  :root .quick-actions {
-    display: none !important;
+  /* The Alibaba-style list keeps its row rhythm on a phone: slightly tighter
+     gutters so the 48px rows still clear the touch rule without extra height. */
+  :root .account-profile-card {
+    padding: 14px 16px;
   }
 
-  /* A single column gives every label the full 366px, which is what stops the
-     ellipsis the two-column grid forced on "Profile & Addresses" and friends. */
-  :root .account-hub-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 8px !important;
-  }
-
-  :root .account-hub-tile {
-    min-height: 56px !important;
-    padding: 10px 12px !important;
-  }
-
-  :root .account-hub-tile__icon {
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px !important;
-  }
-
-  :root .account-hub-tile__info strong {
-    font-size: var(--text-xs) !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-  }
-
-  :root .account-hub-tile__info .muted {
-    font-size: var(--text-label) !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
+  :root .account-nav-row {
+    padding: 11px 14px;
   }
 }
 
@@ -6587,10 +6558,17 @@ body[data-overlay-open='true'] {
   /* Two 44px circles stacked over a 152px photo covered 62% of its height. The
      painted control returns to 32px in a horizontal pair at the photo's corner;
      a transparent 12px collar keeps the 44px finger target the touch rule asks
-     for without painting it over the image. */
+     for without painting it over the image.
+     Round 30: the pair also sat under the badge zone (discount top-start, stock
+     below it), so a long badge pill ran under both buttons (up to 464px²). The
+     bottom corner is badge-free. A mobile-only sheet in responsive.css re-glasses
+     the quick-view chip (!important on a plain class); :root outscores it, so the
+     solid surface and strong border are re-asserted here to keep both chips
+     readable over white laptop photos in either theme. */
   :root .product-card__actions-overlay {
     flex-direction: row;
-    top: 8px;
+    top: auto;
+    bottom: 8px;
     inset-inline-end: 8px;
     gap: 6px;
   }
@@ -6601,6 +6579,15 @@ body[data-overlay-open='true'] {
     height: 32px !important;
     min-width: 32px !important;
     position: relative;
+    background: var(--surface) !important;
+    border: 1px solid var(--border-strong) !important;
+  }
+
+  /* The :root re-assertion above outscores the single-class active tint, so the
+     red fill is re-asserted here to keep the wishlisted state visible. */
+  :root .product-card__wishlist-btn--active {
+    background: rgba(239, 68, 68, 0.16) !important;
+    border-color: rgba(239, 68, 68, 0.45) !important;
   }
 
   :root .product-card__wishlist-btn::after,
@@ -6773,6 +6760,176 @@ body[data-overlay-open='true'] {
 }
 
 /* ==========================================================================
+   Round 30 - Alibaba-style account hub (identity header + icon/chevron list)
+   ========================================================================== */
+.account-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 4px 0 12px;
+  padding: 16px 20px;
+  border-radius: var(--radius-lg, 14px);
+}
+
+.account-profile-card__avatar {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.account-profile-card__identity {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.account-profile-card__identity strong {
+  font-size: var(--text-base, 16px);
+  font-weight: 750;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-profile-card__identity .muted {
+  font-size: var(--text-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-profile-card__pill {
+  flex: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: var(--text-xs);
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.account-nav-list {
+  display: flex;
+  flex-direction: column;
+  margin: 4px 0 16px;
+  padding: 6px 0;
+  border-radius: var(--radius-lg, 14px);
+  overflow: hidden;
+}
+
+.account-nav-list__group {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.account-nav-list__group + .account-nav-list__group {
+  border-top: 1px solid var(--border);
+}
+
+.account-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 50px;
+  padding: 11px 18px;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  text-decoration: none;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.account-nav-row:hover {
+  background: var(--selected-bg);
+}
+
+.account-nav-row:active {
+  background: var(--surface-sunken);
+}
+
+.account-nav-row__icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md, 10px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  color: var(--brand);
+}
+
+.account-nav-row__icon--danger {
+  color: var(--danger, #ef4444);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.account-nav-row__label {
+  flex: 1;
+  min-width: 0;
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-nav-row__chevron {
+  flex: none;
+  color: var(--text-muted);
+  opacity: 0.6;
+  transform: rotate(-90deg);
+}
+
+.account-nav-row__badge {
+  flex: none;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.account-nav-row--logout {
+  border-top: 1px solid var(--border);
+  color: var(--danger, #ef4444);
+}
+
+.account-nav-row--logout .account-nav-row__chevron {
+  color: var(--danger, #ef4444);
+}
+
+.account-nav-row--logout:hover {
+  background: rgba(239, 68, 68, 0.06);
+}
+
+/* ==========================================================================
    Round 28 - store chat dock (assistant + support thread)
    ========================================================================== */
 .chat-dock {
@@ -6868,34 +7025,6 @@ body[data-overlay-open='true'] {
   cursor: pointer;
 }
 
-.chat-panel__modes {
-  display: flex;
-  gap: 6px;
-  padding: 10px 12px 0;
-}
-
-.chat-panel__modes button {
-  flex: 1;
-  min-height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border-radius: 999px;
-  border: 1px solid var(--nav-glass-edge);
-  background: transparent;
-  color: var(--text-muted);
-  font-size: var(--text-label);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.chat-panel__modes button[aria-selected='true'] {
-  background: var(--accent-gradient);
-  color: var(--on-accent);
-  border-color: var(--accent-text);
-}
-
 .chat-thread {
   flex: 1;
   list-style: none;
@@ -6944,48 +7073,10 @@ body[data-overlay-open='true'] {
   color: var(--text-muted);
 }
 
-.chat-match {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid var(--nav-glass-edge);
-  background: var(--surface);
-  text-decoration: none;
-  color: var(--text);
-}
-
-.chat-match strong {
-  font-size: var(--text-label);
-}
-
-.chat-match span {
-  font-size: var(--text-label);
-  color: var(--text-muted);
-}
-
 .chat-empty p {
   margin: 0 0 10px;
   font-size: var(--text-sm);
   color: var(--text-muted);
-}
-
-.chat-suggestions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.chat-suggestion {
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px dashed var(--nav-glass-edge);
-  background: transparent;
-  color: var(--text);
-  font-size: var(--text-label);
-  text-align: left;
-  cursor: pointer;
 }
 
 .chat-composer {

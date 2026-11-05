@@ -1,5 +1,70 @@
 # FIX_REPORT
 
+# Round 30 - an assistant with its own home on the front page, a support chat that stops sharing its panel, laptop photos with clear corners, an Alibaba-style account list, and a sign-in prompt that says what signing in actually gets you
+
+Date: 2026-11-06. Brief, in your words: "AI assistant chat and Support chat both make separate and the AI assistant
+chat make more dynamic more active elaborative add in the home screen this AI assistant chat mode. In the mobile
+screen previous quick view and wishlist button collusion some laptop product image please fix these and in the
+account tab as the image I gave its Alibaba's style and in the home page sign in alert message show in proper case
+studying as like the reference sites R&D. You take the reference from your local for mobile screen and then apply
+this system."
+
+## What the probe measured before the change
+
+The build served through the stub harness in headless Chromium at 1440x900 and 390x844, both themes; geometry,
+colours and console errors read from the DOM.
+
+| surface | before | after |
+| --- | --- | --- |
+| assistant vs support chat | one panel with Assistant / Support tabs; the assistant only lived inside the chat widget, and the tabs made the panel do two jobs | the store chat is support-only: 0 tabs, 0 tablists, composer placeholder "Write to the support team", and the "Open chat" action from a chat notification still lands on the right thread ("Delivery in Sylhet") |
+| the assistant on the home screen | nothing on the home page carried the assistant | its own section on the home page: a live-pulse "AI assistant" header, three suggested questions ("Show me laptops", "Where is my order?", "What is the return policy?"), and for signed-in customers a composer that asks the real catalogue |
+| an assistant answer at 390x844 | answers only as text inside the chat widget | "Show me iphone" comes back with "Here is what the catalogue has for..." and three match cards, each a link into a real product (`#/products/5`, `#/products/6`, `#/products/7`), under a green "Answered from the live catalogue" source line; a question nothing matches gets the honest "I could not find... write to the support team" instead of an invented row |
+| the assistant for guests | nothing | a card with the honest reason ("the assistant reads your orders and the live catalogue, so it needs your account") and one "Sign in or Register" button to `/login`; no composer until signed in |
+| wishlist / quick-view chips on a phone | the pair sat top-right in a horizontal row and overlapped the badge area by **365-464 px² per card**; the phone stylesheet re-glassed the chips with the 62%-white surface, so they dissolved into white product photos again | the pair moved to the badge-free bottom corner, measured 8 px from the photo's bottom and right edges on every card, badge-button overlap **0 px²** at 390 (light and dark) and 1440; both chips measure fully opaque - rgb(255,255,255) in light, rgb(27,24,26) in dark |
+| account hub | a tile grid plus a quick-actions band | the Alibaba list from the reference: an identity header (avatar circle, email, orange "Customer" pill), then 9 rows each with an icon, label and chevron - Browse products, My Orders, Wishlist, Gift Cards, Profile & Addresses, Account security, Notifications (with the live unread badge), Help & support - and Log out last in red; tiles and quick-actions gone at 390 and 1440 alike |
+| home sign-in alert for guests | no sign-in surface on the home page | a dismissible strip under the hero: "Sign in to track your orders, keep your wishlist and use gift cards." with a "Sign in or Register" pill to `/login`; the dismiss button removes it for the rest of the session, and signed-in customers never see it |
+
+## What changed and why
+
+The panel split had one root cause: one widget doing two jobs. `ChatWidget` was rewritten support-only - the
+Assistant/Support tabs, the suggested-question chips and the assistant lookup all left the widget, so a chat
+notification's "Open chat" action opens a panel that is unambiguously the support thread. The assistant became its
+own home-page section (`HomeAssistant`) talking to the same authed `/api/chat/assistant` endpoint: a live-pulse
+header, three suggested questions, a three-dot thinking state while the answer is in flight, and answers rendered as
+linked match cards with a source line saying exactly what the answer is grounded in. Guests get the sign-in card
+rather than the composer, because the assistant answers from the customer's own orders and the catalogue - that is
+the honest reason, and it doubles as the sign-in invitation the brief asked for.
+
+The chip collision came from the phone stylesheet re-glassing the quick-view chip with `!important` and keeping the
+pair at the top-right, exactly where the sale badge lives - so a laptop photo with a badge had buttons on top of
+paint. The fix outranks it with `:root` rules in the house stylesheet (solid surface, strong border, `!important`)
+and moves the row to the bottom corner where no badge ever sits; the active wishlist heart keeps its red tint.
+
+The account hub tiles and quick-actions band were replaced by the Alibaba reference layout: one identity header and
+one list in two groups (main destinations, then Help & support) with a divider between them, the unread badge riding
+on the Notifications row, and Log out last in red. The My Orders status card, the stats, recent orders and latest
+notifications stay - they were not part of the brief and they still do their job.
+
+The home sign-in strip (`HomeSignInPrompt`) promises only things that are true: order tracking, the wishlist and
+gift cards. Its dismissal is session-scoped (`sessionStorage`), so it comes back on the next visit instead of hiding
+forever, and it unmounts entirely once the customer is signed in.
+
+## Tests that keep it honest
+
+`web/src/test/round30-surfaces.test.tsx` (11 tests): the support-only chat contract (no tabs, no assistant lookups,
+the `ninecube:open-chat` listener and the support placeholder), the home assistant surface for guests and customers
+(the guest card and its `/login` link, the chips, the Ask flow, the grounded answer with real product links, the
+source line), the motion contracts including the reduced-motion off-switch for the pulse, dots and answer entrance,
+the sign-in prompt (guest strip, benefits text, dismissal through `sessionStorage`, absent for signed-in
+customers), the account list DOM (9 rows, 9 chevrons, the badge, Log out last, no tiles and no quick-actions) and
+its stylesheet contracts, and the mobile chip contracts (bottom corner, solid `!important` fill, active tint).
+
+The round 27, 28 and 29 suites were updated to the new surfaces (the rail test now reads the list markup; the
+assistant tests now drive the home-page composer; the chat tests now assert the panel has no tablist).
+
+The full gate suite runs 50 test files and 384 tests - all green, after the browser numbers above were collected
+from the same build.
+
 # Round 29 - a bell that survives a chat alert, a phone chat that never collides, uncovered product photos, one filter surface, a home that moves, and account pages on one Alibaba-style rail
 
 Date: 2026-11-06. Brief, in your words: "In the notification icon clicik issues create session issues for messages

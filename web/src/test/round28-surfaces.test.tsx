@@ -133,20 +133,17 @@ describe('The store chat', () => {
     expect(within(panel).getByRole('button', { name: 'Close chat' })).toHaveFocus();
   });
 
-  it('answers from the live catalogue and links the products it found', async () => {
+  it('answers from the live catalogue on the home assistant and links the products it found', async () => {
     const user = userEvent.setup();
     await signInAsCustomer();
-    renderApp('/orders');
+    renderApp('/');
 
-    await user.click(await screen.findByRole('button', { name: 'Chat with NineCube' }));
-    const panel = await screen.findByRole('dialog', { name: 'Chat with NineCube' });
-
-    await user.type(within(panel).getByLabelText('Message'), 'Show me iphone');
-    await user.click(within(panel).getByRole('button', { name: 'Send' }));
+    await user.type(await screen.findByLabelText('Message'), 'Show me iphone');
+    await user.click(screen.getByRole('button', { name: 'Ask' }));
 
     // The assistant's answer is grounded in the products fixture, with a real link per match.
-    await waitFor(() => expect(within(panel).getByText(/Here is what the catalogue has/i)).toBeInTheDocument());
-    const matches = await within(panel).findAllByRole('link');
+    await waitFor(() => expect(screen.getByText(/Here is what the catalogue has/i)).toBeInTheDocument());
+    const matches = await screen.findAllByRole('link');
     expect(matches.map(link => link.getAttribute('href'))).toEqual(
       expect.arrayContaining(['/products/5', '/products/6', '/products/7'])
     );
@@ -155,16 +152,14 @@ describe('The store chat', () => {
   it('asks for a policy instead of inventing catalogue rows when the answer is not a product', async () => {
     const user = userEvent.setup();
     await signInAsCustomer();
-    renderApp('/orders');
+    renderApp('/');
 
-    await user.click(await screen.findByRole('button', { name: 'Chat with NineCube' }));
-    const panel = await screen.findByRole('dialog', { name: 'Chat with NineCube' });
+    await user.type(await screen.findByLabelText('Message'), 'What is the return policy?');
+    await user.click(screen.getByRole('button', { name: 'Ask' }));
 
-    await user.type(within(panel).getByLabelText('Message'), 'What is the return policy?');
-    await user.click(within(panel).getByRole('button', { name: 'Send' }));
-
-    await waitFor(() => expect(within(panel).getByText(/return window/i)).toBeInTheDocument());
-    expect(within(panel).getByRole('link')).toHaveAttribute('href', '/policies/returns');
+    await waitFor(() => expect(screen.getByText(/return window/i)).toBeInTheDocument());
+    const answer = screen.getByTestId('home-assistant-answer');
+    expect(within(answer).getByRole('link', { name: /Returns/i })).toHaveAttribute('href', '/policies/returns');
   });
 });
 
