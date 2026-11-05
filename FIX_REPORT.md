@@ -1,5 +1,156 @@
 # FIX_REPORT
 
+# Round 25 - the phone surfaces, the detail page's double gaps, and one savings widget instead of none
+
+Date: 2026-11-05. Brief, in your words: the mobile filter use "double time" and needs fixing properly; the product
+details page should be "more interactive and aesthetics level", with "unnecessary gaps" and mobile sizes removed; the
+quick view page "also make proper size for the mobile screen"; the surfaces that only appear on hover should "show in
+full visualised format in the mobile screen with proper ratio"; and "where the discount prices apply auto cart prices
+not applied as widget in several position on the pages" wants a modern e-commerce answer.
+
+Four of those five are done and measured. The fifth - the double filter/sort surface - is written up at the end,
+because it is blocked on files another session still has open in this working tree.
+
+## How I measured it
+
+The same throwaway harness as the last rounds: the SPA booted against stubbed `/api/*` answers with a signed-in
+customer and an automatic promotion on the basket, and the probe asked the browser for rectangles, computed styles and
+`textContent` instead of reading my own CSS back. Widths 1440x900 and 390x844, light and dark, and for the touch
+question the contexts were rebuilt with `isMobile`/`hasTouch` so `(hover: none)` and `(pointer: coarse)` actually
+resolved. The probe scripts are deleted; what stays is `web/src/test/savings-note.test.tsx` (7 Vitest tests: the
+component, its maths and the CSS contract) and `web/e2e/savings-widget.spec.ts` (4 Playwright tests: the four surfaces
+at both widths in both themes, plus an undiscounted run that asserts the widget is nowhere in the DOM).
+
+## Ask 2 - the product detail page
+
+| | 390 phone | 1440 laptop |
+| --- | --- | --- |
+| photo frame ratio | **1.16 -> 1.00** | **1.49 -> 1.33** |
+| photo inside the frame | 296x245 -> **344x344** | 607x392 -> **655x491** |
+| price line | 67px, **3 rows** -> 62px, **2 rows** | 46px, 2 rows -> 47px, 2 rows |
+| gap above and below the trust strip | 10px + 10px -> **0** | 16px + 16px -> **0** |
+| inline `style` attributes on the rendered page | **48 -> 6** | **48 -> 6** |
+| document height | 3,316px -> **3,236px** | 2,788px -> **2,611px** |
+| sideways spill | 0px | 0px |
+
+The frame was the measurable half of "unnecessary gaps". `.product-viewer__stage` had a fixed height clamp and the
+media tile inside it kept its own 24px padding and its own `rgb(244, 245, 247)` plate, so the stage painted a plate
+and the tile painted a second plate inside it - at 390 the tile resolved 1.16, which is neither the card's 1:1 nor the
+laptop's 4:3. `:root .product-viewer__stage { min-height: 0 !important; max-height: none !important }` hands the height
+back to the frame, and one rule now gives the media its ratio (4:3, 1:1 under 640px) with no padding, no border, no
+background and no shadow of its own. `product-detail-responsive.spec.ts` reads that plate off the stage now, since the
+media is transparent inside it; I measured the three widths that spec walks (390, 768 and 1440, both themes) and the
+plate answers `rgb(244, 245, 247)` in every one of them, at 1.00 / 1.33 / 1.33.
+
+The double gap was the fulfilment strip: it is a direct child of the summary's `.stack`, whose 14px/24px gap already
+places it, while `.pdp-trust-grid` added 10px/16px vertical margins on top of that. Six of the 48 inline styles are
+left and they are the six that belong inline: the stage plate, the perspective transform on the photo, and the four
+`--swatch` colour custom properties the backdrop picker sets from data. The pictographs in the buttons and labels are
+gone (`Pearl check`, `heartWishlist`, the rocket, the card, the shield, the arrow, `check Verified Buyer` - 14 down to
+7); the seven that stay are the star character in the rating readout, which is how the app draws a rating everywhere
+else, so I left it rather than invent a new one.
+
+Interactivity got the state it was missing: the review stars now carry `aria-pressed` (measured `null` before, `"true"`
+on the picked star after), the picked star takes `--accent` instead of sitting in the same amber as the unpicked ones,
+the review textarea went onto the shared field well, and the two trust lines that responsive.css was sizing at 11px and
+9.5px now read 12px and 11px against the app's 14px small-text floor.
+
+## Ask 3 - Quick View on a phone
+
+| | 390 phone | 1440 laptop |
+| --- | --- | --- |
+| media frame | 356x160 (97px of the picture cut off) -> **356x226** | 294x294 -> 294x294 |
+| picture inside it | -> **224x224** | 294x294 |
+| sheet | 544px -> **610px** before the widget; cap is 86dvh = 726px | 472px -> 511px |
+| sheet body sideways scroll | 0px | 0px |
+| buy row bottom | 820 of 844 | 681 of 900 |
+
+`:root .quickview-modal__media { height: clamp(200px, 58vw, 260px) !important }` replaces the 160px cap in
+responsive.css. It needs `:root` and `!important` because that file answers with `!important` on a plain class and
+loads after app.css - the house mechanism, not a new one. The sheet gains 66px over its pre-widget height and still has
+96px of headroom, so nothing inside it scrolls.
+
+## Ask 4 - hover-only affordances on touch
+
+Measured in a real mobile context rather than by reading the media query back: at 390 with a coarse pointer the card's
+Quick View button was `opacity: 0` at 32x32 - invisible, and below the 44px floor, so the one surface you can only
+reach by hovering was unreachable on a phone. Under `(hover: none), (pointer: coarse)` it is now `opacity: 1` at
+**44x44**, with the compare and wishlist buttons on the same size, and the hover fade is untouched on a fine pointer
+(measured again in the same run at 1440: `opacity: 0`, 32x32).
+
+## Ask 5 - the savings widget
+
+The complaint was accurate: the server put BDT 4,500 on the basket and nothing on the screen said so. The modern
+e-commerce answer is one small pill that states the amount wherever a price is stated, so it does not compete with the
+buy button. One component (`web/src/components/SavingsNote.tsx`) now sits on four price surfaces: the detail page price
+line, the phone purchase dock, the Quick View price line and the cart total row. It takes the amount as a prop from
+numbers that already exist on server data - list price minus selling price on a product, `discountAmount` on the
+checkout quote in the cart - it renders *nothing at all* when that number is zero, and it inherits the shared `.badge`
+and `.badge--ok` so it reads as the same family as the `-% OFF` chip beside it. No new endpoint, no invented figures,
+no new i18n keys (`You save` was already in `bn.json`).
+
+| | 390 phone | 1440 laptop |
+| --- | --- | --- |
+| detail page price line | 62 -> **63px**, still 2 rows; pill 109px, words collapsed | 47 -> **80px**; the 190px pill with its words takes a second line |
+| phone purchase dock | 58px tall, pill 96x24 on the same line as the price, buy button bottom 772 of 844 | the dock is a phone surface |
+| cart dock | **109 -> 109px** (no growth), pill 150px, Place-order bottom 820 of 844 | **116 -> 116px**, pill 175px, bottom 829 of 900 |
+| Quick View | price line 26 -> **66px**, pill 170px; sheet 610 -> **650px** | price line 48 -> **87px**; sheet 472 -> **511px** |
+| sideways spill | 0px everywhere | 0px everywhere |
+| full-price product, undiscounted basket | no widget anywhere in the DOM | no widget anywhere in the DOM |
+
+Two design errors came out of measuring rather than opinion. The first version was the full "You save BDT 7,000.00"
+sentence everywhere: at 390 the detail page price line is 340px wide, the selling price takes 173px of it and the
+struck-price group 197px, so the 174px pill pushed that line from two rows to three and from 62px to 96px. The label
+now leaves the layout on the two lines that cannot fit it - a real visually-hidden rule, so the accessible name still
+reads "You save BDT 7,000" - the amount drops its decimals, and the number stays. The second was a banner under the
+cart total: the dock went from 109px to 179px and pushed the Place-order button down with it; the pill belongs
+*inside* the total row, where it costs nothing.
+
+The laptop price line does grow, by 33px: the row is 525px wide, the price and the struck price already use 470px of
+it, and a 190px pill fits on neither line, so it takes a second. That is the honest cost of stating the saving at
+laptop width, and I would rather show you the number than hide it behind a compact variant.
+
+The browser check found a bug the component test had normalised away: it asked for `textContent` and got
+`"You saveBDT 7,000"`. A bare JSX space between two elements never reaches the DOM, so the separator now lives inside
+the label. While I was in there - `en-BD` formats currency with a no-break space between the code and the figure, which
+is what stops a taka amount splitting across two lines, so the tests compare normalised text and say why.
+
+## Checks
+
+- `npx vitest run src/test/savings-note.test.tsx` - 7 tests green: `productSavings` maths including the two cases that
+  must return zero, nothing rendered at zero, the exact accessible text, the three classes it inherits, no inline
+  style, the four call sites all routing through the component, and the CSS contract (the collapse rule sits inside
+  the phone query and does not use `display: none`, the price rows are `flex-wrap: wrap`, the dock copies are sized
+  down).
+- `E2E_BASE_URL=http://127.0.0.1:5825 npx playwright test savings-widget` - 4 tests green, and they are the table
+  above: every host is measured twice, once with the widget hidden and once shown, so the cost of the widget is a
+  number rather than a claim; the undiscounted run asserts zero widgets in the DOM at both widths.
+- The four CI gates (`tsc --noEmit`, `npm run i18n:check`, `vitest run`, `npm run build`) re-ran over the whole
+  project after the last file was written, in a detached worktree so the other session's uncommitted files were not
+  part of it.
+
+## Ask 1 - the double mobile filter surface, and why it is not in this commit
+
+The catalogue at 390 shows the filter and sort controls twice: `ProductsPage.tsx` renders the desktop sidebar and
+`responsive.css` reveals a second mobile surface over it. The fix is structural - one surface that owns the state - and
+it lives in exactly those two files, which the other session has still not committed (both are dirty in this working
+tree: `ProductsPage.tsx` 35 lines, `responsive.css` 136 lines). Editing them now would either collide with their work
+or be overwritten by it, so I kept this round to files nobody else is in. The widget's fifth position - the catalogue
+card, where the saving belongs under the price - lands with that fix for the same reason.
+
+## What I did not do, and what is still owed
+
+The cart widget reports the basket's discount, not a per-line saving: `CartLine` carries no `compareAtPrice`, the
+wishlist item type carries none either, and `CheckoutQuote` returns one `discountAmount` for the whole basket with no
+breakdown by line. Showing "you save X on this item" in the cart needs a server-side change, and I was not going to
+derive it in the browser from a price the basket does not have. The wishlist position is dropped for the same reason.
+
+These runs stub `/api/*` in the browser, so they prove geometry and wiring, not that your live catalogue's shapes
+arrive unchanged - the signed-in run against the real stack is still owed by you, and
+`product-detail-responsive.spec.ts` needs the demo password to run at all. Also unchanged from earlier rounds:
+`tools/build_deck.py`, `USER_MANUAL.md` and `TESTING.md` carry stale counts, and the remaining pictograph labels in
+OrdersPages, AdminPage and CustomerCarePage are a job you have not asked for.
+
 # Round 24 — the catalogue Quick View dialog: one photo frame, one buy row, no hand-painted styles
 
 Date: 2026-11-05. Brief: a screenshot of the Quick View dialog on the deployed `#/products` page (Acer Aspire 3

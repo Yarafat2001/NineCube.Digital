@@ -5989,6 +5989,28 @@ body[data-overlay-open='true'] {
   border-color: var(--border-strong);
 }
 
+/* A finger has no hover to wait for. The reveal above is keyed to :hover, and the catalogue's
+   mobile block only forces the button visible below 640px, so a touch tablet at 768px shows a card
+   whose Quick View can never be reached - and where it does show, both buttons resolve 32x32,
+   under the 44px target the rest of the app uses. These rules answer that block with :root, which
+   outscores its !important on a plain class. */
+@media (hover: none), (pointer: coarse) {
+  :root .product-card__quick-view-btn {
+    opacity: 1;
+  }
+  :root .product-card__wishlist-btn,
+  :root .product-card__quick-view-btn {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+  }
+  :root .product-card__wishlist-btn svg,
+  :root .product-card__quick-view-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 .quickview-modal {
   width: min(720px, calc(100vw - 32px));
   max-height: calc(100vh - 64px);
@@ -6126,6 +6148,22 @@ body[data-overlay-open='true'] {
 .quickview-modal__footer .link-button {
   font-size: var(--text-sm);
   font-weight: 700;
+}
+
+/* On a phone the sheet caps the media box at 160px and the picture at 140px, so a 356px-wide plate
+   carries a 140px thumbnail - 39% of the width, which is not enough to judge a product by. The
+   sheet is sized to its content, so the photo costs the dialog 66px and still sits inside the
+   86dvh the mobile block allows. :root because the mobile block answers with !important. */
+@media (max-width: 640px) {
+  :root .quickview-modal__media {
+    height: clamp(200px, 58vw, 260px) !important;
+    max-height: none !important;
+  }
+  :root .quickview-modal__media img {
+    max-height: 100% !important;
+    max-width: 100% !important;
+    width: auto !important;
+  }
 }
 
 /* ==========================================================================
@@ -6354,3 +6392,132 @@ body[data-overlay-open='true'] {
 .gift-faq__item:last-child { padding-bottom: 0; border-bottom: 0; }
 .gift-faq__item dt { font-size: var(--text-sm); font-weight: 700; }
 .gift-faq__item dd { margin: 0; font-size: var(--text-sm); line-height: 1.5; color: var(--text-muted); }
+
+/* ==========================================================================
+   Product detail page
+   ========================================================================== */
+
+/* These rows used to carry the styling in the markup: 18 [style] attributes resolved in the live
+   DOM at both widths, hand-picked values that did not follow the theme (#f59e0b stayed amber in
+   light mode where every other accent is --accent-text, the field was a transparent 6px box
+   instead of the app's shared well). Each class below maps to a token the rest of the app uses. */
+.pdp-meta-row { align-items: center; gap: var(--space-3); }
+.pdp-meta-row__actions { display: inline-flex; align-items: center; gap: 8px; }
+.pdp-rating { display: inline-flex; align-items: baseline; gap: 6px; margin: 0; font-size: var(--text-sm); }
+.pdp-rating__score { color: var(--accent); font-weight: 700; }
+.pdp-rating--empty { font-size: var(--text-xs); }
+.pdp-chip-btn { display: inline-flex; align-items: center; gap: 6px; }
+
+/* The discount pill and the struck price travel as one group. Measured before, at 390 the price
+   line resolved 67px tall with the pill alone on the second line at the far left, because the
+   three values wrapped independently; a customer scanning the price never saw the pill next to
+   the number it qualifies. */
+.product-detail__price-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+.pdp-price-meta { display: inline-flex; align-items: baseline; gap: 8px; }
+.pdp-price-compare { color: var(--text-muted); text-decoration: line-through; font-size: var(--text-base); }
+
+/* The fulfilment strip is a direct child of the summary's .stack, so the stack gap already places
+   it - measured 24px above at 390 and 36px at 1440 against a 14px/20px gap, because the panel adds
+   a 10px/16px vertical margin on top. :root and !important because responsive.css answers with
+   !important on a plain class. */
+:root .pdp-trust-grid { margin: 0 !important; }
+:root .pdp-trust-icon { display: inline-flex; align-items: center; justify-content: center; color: var(--accent-text); }
+
+/* Same double-count one level up: .product-detail-page is a flex column with a gap, and each
+   section under it also asked for margin-top var(--space-6), which measured a 48px band at 390 and
+   a 56px band at 1440 between the summary and what follows it. */
+:root .product-detail-page > .pdp-related-section { margin-top: 0 !important; }
+
+.pdp-section-head { align-items: flex-end; gap: var(--space-4); border-bottom: 1px solid var(--border); padding-bottom: var(--space-3); }
+.pdp-section-head__title { margin: 0; font-size: var(--text-xl); }
+.pdp-section-head__sub { margin: 0; font-size: var(--text-sm); }
+
+.product-detail__out-of-stock-box { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.product-detail__out-of-stock-box > p { margin: 0; }
+
+.reviews-list { display: flex; flex-direction: column; gap: var(--space-3); }
+.pdp-review { padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.pdp-review__head { align-items: center; gap: var(--space-3); margin-bottom: 4px; }
+.pdp-review__who { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.pdp-review__author { font-weight: 600; }
+.pdp-review__date { font-size: var(--text-xs); white-space: nowrap; }
+.pdp-review__stars { color: var(--accent); font-size: var(--text-sm); margin-bottom: 4px; }
+.pdp-review__body { margin: 0; font-size: var(--text-sm); line-height: 1.5; }
+
+/* :root because modern.css loads after app.css and paints .stack { gap: 24px }, a page measure that
+   spreads a five-button rating picker and a three-line note too far apart inside one form. */
+:root .pdp-review-form { gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.pdp-review-form__title { margin: 0; font-size: var(--text-base); font-weight: 700; }
+.pdp-review-form__rating { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); }
+.pdp-review-form__label { font-size: var(--text-sm); font-weight: 600; }
+.pdp-review-form__stars { display: inline-flex; gap: 4px; }
+.pdp-star { padding: 0 2px; border: 0; background: none; cursor: pointer; color: var(--muted); font-size: var(--text-lg); line-height: 1.2; }
+.pdp-star[aria-pressed='true'] { color: var(--accent); }
+.pdp-star:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+/* Width only. The shared input/select/textarea rule already paints the padding, radius, border,
+   sunken well and focus ring; the inline style replaced all of it with a transparent 6px box. */
+.pdp-review-form__input { width: 100%; }
+.pdp-review-form__error { margin: 0; color: var(--danger); font-size: var(--text-sm); }
+.pdp-review-form__ok { margin: 0; color: var(--ok); font-size: var(--text-sm); }
+
+/* Inside the stage the photo tile still carried a fixed height (clamp(260px, 75vw, 420px) at phone
+   width) plus 24px of its own padding, on top of the stage's padding, border and 24px radius - a
+   framed photo inside a frame, where the inner box decided what shape the product was shown in. The
+   tile's background, border and radius were already given up to the stage at responsive.css:114, so
+   this removes what was left: the second inset and the height that overrode the ratio. */
+:root .product-viewer__stage { min-height: 0 !important; max-height: none !important; }
+:root .product-viewer__stage .product-detail__media { height: auto; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; aspect-ratio: 4 / 3; }
+
+/* Frame follows the card the customer clicked, which resolves 4 / 3 at laptop and 1 / 1 on a phone;
+   the detail photo was measuring 1.16 at 390 - neither of those. */
+@media (max-width: 640px) {
+  :root .product-viewer__stage .product-detail__media { aspect-ratio: 1 / 1; }
+}
+
+/* Legibility of the strip this round put real icons into. The phone block in responsive.css sizes
+   these two lines at 11px and 9.5px; the app's own small-text floor is --text-xs (14px), and nothing
+   else on the page drops below 11px. :root and !important because that block answers with
+   !important on a plain class. */
+@media (max-width: 640px) {
+  :root .pdp-trust-item strong { font-size: 12px !important; }
+  :root .pdp-trust-item p { font-size: 11px !important; }
+}
+
+/* ---------- Savings widget ----------
+   One component on four price surfaces: the detail page price line, the phone purchase dock, the
+   Quick View price line and the cart total. The amount is never invented here - the caller passes a
+   number that already exists on server data (list price minus selling price, or the discount on the
+   basket quote) - and the widget renders nothing at all when that number is zero. It inherits
+   .badge / .badge--ok, so it reads as the same family as the -% OFF chip beside it. */
+.savings-note { position: relative; font-variant-numeric: tabular-nums; }
+.savings-note__icon { display: inline-flex; align-items: center; }
+.savings-note__amount { font-weight: 750; }
+
+/* Where the widget sits beside a price, that row has to be able to reflow rather than push the
+   price out of its own surface: the Quick View price line and the phone purchase dock were both
+   written as single-line flex rows. */
+.quickview-modal__price-row { flex-wrap: wrap; }
+.pdp-sticky-bar__prices { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; min-width: 0; }
+.pdp-sticky-bar__prices .savings-note, .cart-sticky-dock__totalgroup .savings-note { font-size: var(--text-label); padding: 1px var(--space-2); }
+.cart-sticky-dock__totalgroup { display: inline-flex; align-items: baseline; gap: var(--space-2); min-width: 0; }
+
+/* The two price lines where the words do not fit: on a phone the detail page price line is 340px
+   wide, the selling price takes 173px of it and the list-price group 197px, so a 146px sentence
+   would push the line to three rows. The label leaves the layout there and the number stays, the
+   way the app hides a control's caption and keeps it in the accessible name. Quick View and the
+   cart total have the room, so they keep the words at every width. */
+@media (max-width: 640px) {
+  .product-detail__price-row .savings-note__label,
+  .pdp-sticky-bar__prices .savings-note__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}

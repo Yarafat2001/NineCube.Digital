@@ -74,7 +74,7 @@ export function ProductViewer({ product }: { product: Product }) {
     <div className="viewer-backdrops" role="group" aria-label={t("Photo backdrop colour")}>
       <span>{t("Backdrop")}</span>
       {backdrops.map(option => <button type="button" key={option.name} aria-label={t(`${option.name} backdrop`)} aria-pressed={backdrop.name === option.name}
-        style={{ '--swatch': option.color } as React.CSSProperties} onClick={() => setBackdrop(option)}><span aria-hidden="true" />{t(option.name)}{t(backdrop.name === option.name ? ' ✓' : '')}</button>)}
+        style={{ '--swatch': option.color } as React.CSSProperties} onClick={() => setBackdrop(option)}><span aria-hidden="true" />{t(option.name)}</button>)}
     </div>
     {gallery.length > 1 ? <div className="product-detail__thumbs" aria-label={t("Product images")}>
       {gallery.map((image, imageIndex) => <button type="button" key={image.id} aria-pressed={index === imageIndex}

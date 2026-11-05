@@ -17,13 +17,23 @@ test.describe('responsive product detail', () => {
       await page.goto('/products/11');
       await expect(page.getByRole('heading', {level: 1, name: 'Bamboo Spatula'})).toBeVisible();
       const media = page.locator('.product-detail__media');
-      await expect(media).toHaveCSS('background-color', 'rgb(244, 245, 247)');
+      // Round 25 put the photo frame on the viewer stage instead of painting a second plate inside
+      // it, so the sunken tile is the stage now and the media only carries the picture.
+      await expect(page.locator('.product-viewer__stage')).toHaveCSS('background-color', 'rgb(244, 245, 247)');
+      await expect(media).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
       const photo = media.locator('img');
       await expect.poll(() => photo.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
       await expect(photo).toHaveCSS('object-fit', 'contain');
       const gallery = (await media.boundingBox())!;
       const summary = (await page.locator('.product-detail__summary').boundingBox())!;
-      expect(gallery.height).toBeLessThanOrEqual(540);
+      const ratio = gallery.width / gallery.height;
+      const target = width <= 640 ? 1 : 4 / 3;
+      expect(Math.abs(ratio - target), `the frame matches the card the customer clicked (${Math.round(ratio * 100) / 100})`)
+        .toBeLessThan(0.03);
+      // The old 540px cap is answered by the ratio now; what still has to hold is that the photo
+      // does not push the buy block off the screen at any of these widths.
+      expect(gallery.height, `the frame leaves the buy block within reach (${width})`)
+        .toBeLessThanOrEqual(600);
       if (width <= 768) expect(summary.y).toBeGreaterThanOrEqual(gallery.y + gallery.height);
       else expect(summary.x).toBeGreaterThan(gallery.x + gallery.width);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBeTruthy();

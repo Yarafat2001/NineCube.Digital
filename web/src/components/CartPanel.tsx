@@ -12,6 +12,7 @@ import type { Order, Product, ShortItem, CouponValidationResult, ValidateGiftCar
 import { Link, useNavigate } from 'react-router-dom';
 import { createIdempotencyKey, formatMoney } from '../lib/helpers';
 import { Icon } from './Icon';
+import { SavingsNote } from './SavingsNote';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
 import { useToast } from './ui';
@@ -807,9 +808,12 @@ export function CartPanel({ onPlaced, onClose }: CartPanelProps) {
         <div className="cart-sticky-dock">
           <div className="cart-summary-row cart-summary-row--total">
             <span>{t("Total")}</span>
-            <strong className="cart-sticky-dock__total" data-testid="cart-total">
-              {t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}
-            </strong>
+            <span className="cart-sticky-dock__totalgroup">
+              <strong className="cart-sticky-dock__total" data-testid="cart-total">
+                {t(cart.mixedCurrencies ? 'Separate currencies' : formatMoney(finalTotal, cart.currency))}
+              </strong>
+              <SavingsNote amount={discountAmount} currency={cart.currency} />
+            </span>
           </div>
 
           <button

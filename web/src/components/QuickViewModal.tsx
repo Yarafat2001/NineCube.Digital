@@ -6,6 +6,7 @@ import type { Product } from '../api/types';
 import { formatMoney } from '../lib/helpers';
 import { ProductImage } from './ProductImage';
 import { QuantityStepper, StockBadge } from './ui';
+import { SavingsNote, productSavings } from './SavingsNote';
 import { Icon } from './Icon';
 
 export interface QuickViewModalProps {
@@ -105,6 +106,7 @@ export function QuickViewModal({
                   {formatMoney(product.compareAtPrice, product.currency)}
                 </span>
               ) : null}
+              <SavingsNote amount={productSavings(product)} currency={product.currency} />
             </div>
 
             {product.description ? (

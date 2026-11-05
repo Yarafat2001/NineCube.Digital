@@ -10,6 +10,7 @@ import { useRestockSubscriptions } from '../api/hooks';
 import { Icon } from '../components/Icon';
 import { recordRecentView } from '../lib/recentViews';
 import { ProductViewer } from '../components/ProductViewer';
+import { SavingsNote, productSavings } from '../components/SavingsNote';
 import { primaryImage, ProductImage, ProductThumbnail } from '../components/ProductImage';
 import { cardPresentation } from '../lib/catalog';
 import { formatMoney } from '../lib/helpers';
@@ -247,101 +248,100 @@ export function ProductDetailPage() {
             </button>
           </div>
 
-          <div className="row-between" style={{ alignItems: 'center' }}>
+          <div className="row-between pdp-meta-row">
             {ratingSummary && ratingSummary.totalReviews > 0 ? (
-              <div className="row" style={{ alignItems: 'center', gap: '6px', fontSize: 'var(--text-sm)' }}>
-                <span style={{ color: '#f59e0b', fontWeight: 600 }}>★ {ratingSummary.averageRating.toFixed(1)}</span>
+              <p className="pdp-rating">
+                <span className="pdp-rating__score">★ {ratingSummary.averageRating.toFixed(1)}</span>
                 <span className="muted">({ratingSummary.totalReviews} {t(ratingSummary.totalReviews === 1 ? 'review' : 'reviews')})</span>
-              </div>
+              </p>
             ) : (
-              <span className="muted" style={{ fontSize: 'var(--text-xs)' }}>{t("No reviews yet")}</span>
+              <span className="muted pdp-rating--empty">{t("No reviews yet")}</span>
             )}
 
-            {!user || hasRole('Customer') ? (
+            <div className="pdp-meta-row__actions">
+              {!user || hasRole('Customer') ? (
+                <button
+                  type="button"
+                  className={`btn btn--sm pdp-chip-btn ${isInWishlist ? 'btn--primary' : 'btn--ghost'}`}
+                  onClick={() => {
+                    if (!user) {
+                      toast.push('info', t('Please sign in to save items to your wishlist.'));
+                      navigate('/login');
+                      return;
+                    }
+                    toggleWishlist.mutate(productId, {
+                      onSuccess: (data) => {
+                        if (data.inWishlist) {
+                          toast.push('success', `${t("Added")} ${product?.name ?? ''} ${t("to your wishlist.")}`);
+                        } else {
+                          toast.push('info', `${t("Removed")} ${product?.name ?? ''} ${t("from your wishlist.")}`);
+                        }
+                      },
+                      onError: () => {
+                        toast.push('error', t('Could not update wishlist. Please try again.'));
+                      }
+                    });
+                  }}
+                  disabled={toggleWishlist.isPending}
+                  aria-label={t(isInWishlist ? 'Remove from wishlist' : 'Add to wishlist')}
+                >
+                  <Icon name="heart" width={15} height={15} fill={isInWishlist ? 'currentColor' : 'none'} />
+                  <span>{t(isInWishlist ? 'Saved' : 'Wishlist')}</span>
+                </button>
+              ) : null}
+
               <button
                 type="button"
-                className={`btn btn--sm ${isInWishlist ? 'btn--primary' : 'btn--ghost'}`}
-                onClick={() => {
-                  if (!user) {
-                    toast.push('info', t('Please sign in to save items to your wishlist.'));
-                    navigate('/login');
-                    return;
-                  }
-                  toggleWishlist.mutate(productId, {
-                    onSuccess: (data) => {
-                      if (data.inWishlist) {
-                        toast.push('success', `${t("Added")} ${product?.name ?? ''} ${t("to your wishlist.")}`);
-                      } else {
-                        toast.push('info', `${t("Removed")} ${product?.name ?? ''} ${t("from your wishlist.")}`);
-                      }
-                    },
-                    onError: () => {
-                      toast.push('error', t('Could not update wishlist. Please try again.'));
-                    }
-                  });
-                }}
-                disabled={toggleWishlist.isPending}
-                aria-label={t(isInWishlist ? 'Remove from wishlist' : 'Add to wishlist')}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                className="btn btn--sm btn--ghost pdp-chip-btn"
+                onClick={handleShare}
+                aria-label={t("Share product")}
+                title={t("Share or copy link")}
               >
-                <span>{isInWishlist ? '♥' : '♡'}</span>
-                <span>{t(isInWishlist ? 'Saved' : 'Wishlist')}</span>
+                <Icon name="share" width={15} height={15} />
+                <span>{t("Share")}</span>
               </button>
-            ) : null}
-
-            <button
-              type="button"
-              className="btn btn--sm btn--ghost"
-              onClick={handleShare}
-              aria-label={t("Share product")}
-              title={t("Share or copy link")}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-            >
-              <Icon name="share" width={14} height={14} />
-              <span>{t("Share")}</span>
-            </button>
+            </div>
           </div>
 
-          <div className="product-detail__price-row" style={{ display: 'flex', alignItems: 'baseline', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="product-detail__price-row">
             <span className="product-detail__price">{t(formatMoney(product.price, product.currency))}</span>
             {product.compareAtPrice && product.compareAtPrice > product.price ? (
-              <>
-                <span style={{ textDecoration: 'line-through', opacity: 0.6, fontSize: 'var(--text-base, 1rem)' }}>
-                  {t(formatMoney(product.compareAtPrice, product.currency))}
-                </span>
-                <span className="badge" style={{ background: 'var(--ok-bg, #dcfce7)', color: 'var(--ok-text, #14532d)', fontSize: '0.8125rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px' }}>
+              <span className="pdp-price-meta">
+                <span className="pdp-price-compare">{t(formatMoney(product.compareAtPrice, product.currency))}</span>
+                <span className="badge badge--ok">
                   -{Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}% {t("OFF")}
                 </span>
-              </>
+              </span>
             ) : null}
+            <SavingsNote amount={productSavings(product)} currency={product.currency} />
           </div>
           <StockBadge product={product} threshold={threshold} />
 
           {/* Regional Fulfillment & Trust Strip */}
           <div className="pdp-trust-grid" role="region" aria-label={t("Fulfillment & guarantees")}>
             <div className="pdp-trust-item">
-              <span className="pdp-trust-icon" aria-hidden="true">🚀</span>
+              <span className="pdp-trust-icon"><Icon name="truck" width={18} height={18} /></span>
               <div>
                 <strong>{t("Fast Regional Delivery")}</strong>
                 <p>{t("24–48h Dhaka · 3–5 days Nationwide")}</p>
               </div>
             </div>
             <div className="pdp-trust-item">
-              <span className="pdp-trust-icon" aria-hidden="true">💳</span>
+              <span className="pdp-trust-icon"><Icon name="card" width={18} height={18} /></span>
               <div>
                 <strong>{t("Cash on Delivery (COD)")}</strong>
                 <p>{t("bKash, Nagad, Visa & Mastercard")}</p>
               </div>
             </div>
             <div className="pdp-trust-item">
-              <span className="pdp-trust-icon" aria-hidden="true">🛡️</span>
+              <span className="pdp-trust-icon"><Icon name="shield" width={18} height={18} /></span>
               <div>
                 <strong>{t("100% Genuine Guaranteed")}</strong>
                 <p>{t("Direct warehouse stock verification")}</p>
               </div>
             </div>
             <div className="pdp-trust-item">
-              <span className="pdp-trust-icon" aria-hidden="true">🔄</span>
+              <span className="pdp-trust-icon"><Icon name="shuffle" width={18} height={18} /></span>
               <div>
                 <strong>{t("7-Day Easy Returns")}</strong>
                 <p>{t("Instant replacement or refund")}</p>
@@ -364,17 +364,16 @@ export function ProductDetailPage() {
           ) : null}
 
           {outOfStock ? (
-            <div className="product-detail__out-of-stock-box stack" style={{ gap: '8px' }}>
-              <p className="muted" style={{ margin: 0 }}>{t("Not currently orderable.")}</p>
+            <div className="product-detail__out-of-stock-box">
+              <p className="muted">{t("Not currently orderable.")}</p>
               <button
                 type="button"
-                className="btn btn--sm btn--outline"
+                className="btn btn--sm btn--outline pdp-chip-btn"
                 onClick={() => setShowStockAlert(true)}
                 aria-label={t("Notify me when available")}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
               >
-                <span aria-hidden="true">🔔</span>
-                <span>{isAlertSubscribed ? t("✓ Subscribed to restock alerts") : t("Notify Me When in Stock")}</span>
+                <Icon name={isAlertSubscribed ? 'check' : 'bell'} width={15} height={15} />
+                <span>{isAlertSubscribed ? t("Subscribed to restock alerts") : t("Notify Me When in Stock")}</span>
               </button>
             </div>
           ) : !user || hasRole('Customer') ? (
@@ -395,14 +394,10 @@ export function ProductDetailPage() {
       {/* Related Products Recommendation Carousel/Grid */}
       {relatedProducts.length > 0 ? (
         <section className="card-glass pdp-related-section" aria-labelledby="related-products-heading">
-          <div className="row-between" style={{ borderBottom: '1px solid var(--border)', paddingBottom: 'var(--space-3)' }}>
+          <div className="row-between pdp-section-head">
             <div>
-              <h2 id="related-products-heading" style={{ fontSize: 'var(--text-xl)', margin: 0 }}>
-                {t("You May Also Like")}
-              </h2>
-              <p className="muted" style={{ margin: 0, fontSize: 'var(--text-sm)' }}>
-                {t("More popular picks from this category")}
-              </p>
+              <h2 id="related-products-heading" className="pdp-section-head__title">{t("You May Also Like")}</h2>
+              <p className="muted pdp-section-head__sub">{t("More popular picks from this category")}</p>
             </div>
             <Link to={`/products?category=${encodeURIComponent(relatedCategorySlug)}`} className="btn btn--sm btn--ghost">
               {t("View all")} →
@@ -441,11 +436,11 @@ export function ProductDetailPage() {
       ) : null}
 
       {/* Customer Reviews & Feedback Section */}
-      <section className="card-glass stack" style={{ marginTop: 'var(--space-6)', padding: 'var(--space-5)' }} aria-labelledby="reviews-heading">
-        <div className="row-between" style={{ borderBottom: '1px solid var(--border)', paddingBottom: 'var(--space-3)' }}>
+      <section className="card-glass stack pdp-reviews" aria-labelledby="reviews-heading">
+        <div className="row-between pdp-section-head">
           <div>
-            <h2 id="reviews-heading" style={{ fontSize: 'var(--text-xl)', margin: 0 }}>{t("Customer Reviews & Ratings")}</h2>
-            <p className="muted" style={{ margin: 0, fontSize: 'var(--text-sm)' }}>
+            <h2 id="reviews-heading" className="pdp-section-head__title">{t("Customer Reviews & Ratings")}</h2>
+            <p className="muted pdp-section-head__sub">
               {ratingSummary && ratingSummary.totalReviews > 0
                 ? `${ratingSummary.averageRating.toFixed(1)} out of 5 stars based on ${ratingSummary.totalReviews} customer feedback`
                 : t("Be the first to review this product!")}
@@ -454,25 +449,25 @@ export function ProductDetailPage() {
         </div>
 
         {/* Existing reviews */}
-        <div className="reviews-list stack" style={{ gap: 'var(--space-3)', margin: 'var(--space-3) 0' }}>
+        <div className="reviews-list">
           {ratingSummary && ratingSummary.recentReviews && ratingSummary.recentReviews.length > 0 ? (
             ratingSummary.recentReviews.map(r => (
-              <div key={r.id} style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md, 8px)', background: 'var(--surface-muted, rgba(255,255,255,0.03))', border: '1px solid var(--border)' }}>
-                <div className="row-between" style={{ marginBottom: '4px' }}>
-                  <div className="row" style={{ alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontWeight: 600 }}>{r.customerName}</span>
+              <div key={r.id} className="pdp-review">
+                <div className="row-between pdp-review__head">
+                  <div className="pdp-review__who">
+                    <span className="pdp-review__author">{r.customerName}</span>
                     {r.isVerifiedBuyer ? (
-                      <span className="badge badge--neutral" style={{ fontSize: '10px', padding: '2px 6px', color: 'var(--ok, #10b981)' }}>
-                        ✓ {t("Verified Buyer")}
+                      <span className="badge badge--ok">
+                        <Icon name="check" width={12} height={12} />{t("Verified Buyer")}
                       </span>
                     ) : null}
                   </div>
-                  <span className="muted" style={{ fontSize: 'var(--text-xs)' }}>{formatDateTime(r.createdAt)}</span>
+                  <span className="muted pdp-review__date">{formatDateTime(r.createdAt)}</span>
                 </div>
-                <div style={{ color: '#f59e0b', fontSize: 'var(--text-sm)', marginBottom: '4px' }}>
+                <div className="pdp-review__stars" aria-hidden="true">
                   {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
                 </div>
-                {r.comment ? <p style={{ margin: 0, fontSize: 'var(--text-sm)' }}>{r.comment}</p> : null}
+                {r.comment ? <p className="pdp-review__body">{r.comment}</p> : null}
               </div>
             ))
           ) : (
@@ -482,17 +477,17 @@ export function ProductDetailPage() {
 
         {/* Write a review form for customers */}
         {hasRole('Customer') ? (
-          <form onSubmit={handleReviewSubmit} className="stack" style={{ marginTop: 'var(--space-4)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md, 8px)', background: 'var(--surface-muted, rgba(255,255,255,0.05))', border: '1px solid var(--border)' }}>
-            <h3 style={{ fontSize: 'var(--text-md)', margin: 0 }}>{t("Write a Review")}</h3>
-            <div className="row" style={{ alignItems: 'center', gap: 'var(--space-2)' }}>
-              <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600 }}>{t("Your Rating:")}</span>
-              <div className="row" style={{ gap: '4px' }}>
+          <form onSubmit={handleReviewSubmit} className="stack pdp-review-form">
+            <h3 className="pdp-review-form__title">{t("Write a Review")}</h3>
+            <div className="pdp-review-form__rating">
+              <span className="pdp-review-form__label">{t("Your Rating:")}</span>
+              <div className="pdp-review-form__stars" role="group" aria-label={t("Your Rating:")}>
                 {[1, 2, 3, 4, 5].map(star => (
                   <button
                     key={star}
                     type="button"
-                    className="link-button"
-                    style={{ fontSize: 'var(--text-lg)', color: star <= reviewRating ? '#f59e0b' : 'var(--muted)', cursor: 'pointer', padding: '0 2px' }}
+                    className="pdp-star"
+                    aria-pressed={star <= reviewRating}
                     onClick={() => setReviewRating(star)}
                     aria-label={`${star} stars`}
                   >
@@ -503,13 +498,13 @@ export function ProductDetailPage() {
             </div>
             <textarea
               rows={3}
+              className="pdp-review-form__input"
               placeholder={t("Share your thoughts about this product's quality, fit, and performance…")}
               value={reviewComment}
               onChange={e => setReviewComment(e.target.value)}
-              style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border)', background: 'transparent', color: 'inherit' }}
             />
-            {reviewError ? <p style={{ color: 'var(--danger)', fontSize: 'var(--text-sm)', margin: 0 }}>{reviewError}</p> : null}
-            {reviewSuccess ? <p style={{ color: 'var(--ok, #10b981)', fontSize: 'var(--text-sm)', margin: 0 }}>{t("Thank you! Your review has been submitted.")}</p> : null}
+            {reviewError ? <p className="pdp-review-form__error">{reviewError}</p> : null}
+            {reviewSuccess ? <p className="pdp-review-form__ok">{t("Thank you! Your review has been submitted.")}</p> : null}
             <div>
               <button type="submit" className="btn btn--sm btn--primary" disabled={addReview.isPending}>
                 {t(addReview.isPending ? 'Submitting…' : 'Submit Review')}
@@ -542,7 +537,10 @@ export function ProductDetailPage() {
             </div>
             <div className="pdp-sticky-bar__info">
               <strong className="pdp-sticky-bar__title">{t(product.name)}</strong>
-              <span className="pdp-sticky-bar__price">{t(formatMoney(product.price, product.currency))}</span>
+              <div className="pdp-sticky-bar__prices">
+                <span className="pdp-sticky-bar__price">{t(formatMoney(product.price, product.currency))}</span>
+                <SavingsNote amount={productSavings(product)} currency={product.currency} />
+              </div>
             </div>
             <div className="pdp-sticky-bar__action">
               <button
