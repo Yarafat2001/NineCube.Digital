@@ -6029,13 +6029,44 @@ body[data-overlay-open='true'] {
     grid-template-columns: 1fr;
   }
 }
+/* One frame, not two. The shared card media already brings the studio-white well, so the
+   modal used to paint its own 1:1 sunken box around it: 74px of empty background under the
+   photo at 1440, and 97px of the photo cut off at 390, where the sheet caps this box at 160px. */
 .quickview-modal__media {
   position: relative;
   aspect-ratio: 1 / 1;
-  border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--surface-sunken);
-  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.quickview-modal__media > .product-card__media,
+.quickview-modal__media > .product-detail__media {
+  height: 100%;
+  aspect-ratio: auto;
+}
+/* The sheet grabber is a bottom-sheet affordance; the centred laptop dialog has an edge
+   to hold, so it only belongs to the phone layout that responsive.css builds at 640. */
+@media (min-width: 641px) {
+  .quickview-modal__handle {
+    display: none;
+  }
+}
+:root .quickview-modal__info {
+  /* .stack's 24px gap is a page measure; this column is 352px wide inside a dialog. */
+  gap: var(--space-3);
+}
+.quickview-modal__brand {
+  margin: 0 0 4px;
+}
+.quickview-modal__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.quickview-modal__meta-label,
+.quickview-modal__sku {
+  font-size: var(--text-xs);
 }
 .quickview-modal__title {
   margin: 0;
@@ -6048,7 +6079,6 @@ body[data-overlay-open='true'] {
   display: flex;
   align-items: baseline;
   gap: var(--space-3);
-  margin: var(--space-2) 0;
 }
 .quickview-modal__price {
   font-size: var(--text-xl);
@@ -6064,6 +6094,38 @@ body[data-overlay-open='true'] {
   font-size: var(--text-sm);
   line-height: 1.5;
   margin: 0;
+}
+/* This row had no desktop rule at all: the stepper, the primary button and the heart sat in a
+   block div at 34/41/40px with the heart 2px above the button. Same instrument as the product
+   page's .product-detail__purchase, sized to the 44px the phone sheet already uses. */
+.quickview-modal__cta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.quickview-modal__cta-row > .btn {
+  min-height: 44px;
+}
+.quickview-modal__add {
+  flex: 1 1 150px;
+}
+.quickview-modal__wishlist-btn {
+  flex: 0 0 auto;
+  width: 44px;
+  padding-inline: 0;
+}
+.quickview-modal__locked-note {
+  margin: 0;
+  font-size: var(--text-sm);
+}
+.quickview-modal__footer {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-3);
+}
+.quickview-modal__footer .link-button {
+  font-size: var(--text-sm);
+  font-weight: 700;
 }
 
 /* ==========================================================================

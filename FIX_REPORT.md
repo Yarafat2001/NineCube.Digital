@@ -1,5 +1,119 @@
 # FIX_REPORT
 
+# Round 24 — the catalogue Quick View dialog: one photo frame, one buy row, no hand-painted styles
+
+Date: 2026-11-05. Brief: a screenshot of the Quick View dialog on the deployed `#/products` page (Acer Aspire 3
+A325-42-V2, BDT 57,000.00, dark theme, laptop) with "from the product card quick view give proper design and
+adjustment". What the screenshot showed: a black band under the white product tile, a shopping-trolley pictograph
+inside the "Add to cart" button, three controls of three different heights, and a bare amber
+"View Full Product Details →" hanging under them.
+
+## How I measured it
+
+Same harness as the last rounds: the SPA booted against stubbed `/api/*` answers, opened the dialog from the real
+card, and the probe asked the browser for rectangles and computed styles instead of reading my own CSS back. I
+measured it on `c4dd210` - the commit that is on main now - so the phone-sheet rules that landed with it were part
+of the picture rather than something I argued with afterwards. Widths: 1440x900, 1024x768, 768x1024 and 390x844,
+light and dark. The probe scripts are throwaway and were deleted; `web/e2e/quick-view-modal.spec.ts` is the
+permanent version of the same questions, and `web/src/test/quick-view-modal.test.tsx` pins the CSS contract so the
+next person who paints this by hand finds out in the test run.
+
+## What the dialog resolved to before I touched it
+
+| | 1440 laptop | 390 phone |
+| --- | --- | --- |
+| media box | 294x294, filled `rgb(19, 17, 19)` | 356x160, filled `rgb(19, 17, 19)` |
+| white tile inside it | 292x219 (the card's own 4:3) | 354x354 |
+| what that cost | **74px of empty plate under the photo** | **97px of the photo cut off** |
+| buy row | `display: block` - stepper 34px, button 41px, heart 40px, heart 3px above the button | flex, 34/44/44 |
+| inline styles in the DOM | 5 | 5 |
+| button labels | `🛒 Add to cart`, `✓ Added!` | same |
+| sheet grabber | **44x5 painted inside the centred laptop dialog** | 40x4 |
+| dialog | 720x575 | 390x608 |
+
+The cause was two frames, not one. The dialog wrapped the shared card media in its own square box
+(`.quickview-modal__media { aspect-ratio: 1/1; background: var(--surface-sunken); border: 1px solid var(--border) }`)
+while the media inside it kept the card's own 4:3 white canvas. At laptop width the square is taller than the 4:3
+tile, so the plate showed as a band; at phone width the sheet caps the box at 160px and the tile is 354px, so the
+box clipped the picture. Everything else was the same class of miss: the buy row simply had no desktop rule at all
+(the phone layout in `responsive.css` had one, the laptop dialog got a `div`), seven of the dialog's measurements
+were inline `style={{...}}` props, the primary button's icon was a pictograph in its text, and the grabber that
+`c4dd210` added for the phone sheet had nothing hiding it on a laptop.
+
+I checked how far this went before editing: `QuickViewModal` is mounted from exactly one page (`ProductsPage`),
+and `.quickview-modal__media` is styled in exactly two files, so this is one surface at two widths and two themes,
+not a rule to propagate. The product page itself was already correct - it uses the shared media directly.
+
+## What I changed
+
+`QuickViewModal.tsx` keeps nothing painted by hand: the brand line, the SKU row, the locked note, the buy row and
+the footer divider are five new class names (`quickview-modal__brand`, `__meta`, `__meta-label`, `__sku`,
+`__locked-note`, `__footer`, `__add`), and the primary button now renders the house `<Icon>` - `cart`, then
+`check` for the 1.4s confirmation - with the label in its own `<span>`. The label strings are unchanged, so the
+Bengali file needed no edit.
+
+In `app.css`:
+
+- `.quickview-modal__media` is a sizing box only: no background, no border. The rule
+  `.quickview-modal__media > .product-card__media { height: 100%; aspect-ratio: auto }` lets the shared card media
+  be the frame, so the studio-white canvas the last round approved stays exactly as it is and there is no second
+  plate behind it.
+- `.quickview-modal__cta-row` is `display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap` with
+  `> .btn { min-height: 44px }`, `.quickview-modal__add { flex: 1 1 150px }` and a 44px square heart. That is the
+  same instrument the product page's `.product-detail__purchase` row uses, sized to the 44px the phone sheet
+  already insisted on.
+- `.quickview-modal__footer` carries the `border-top` divider and the link's size, replacing the inline style whose
+  `margin-top: auto` could never fire in a non-flex column.
+- `:root .quickview-modal__info { gap: var(--space-3) }` - with `:root`, because modern.css loads after app.css and
+  its `.stack` gap of 24px is a page measure, too loose for a 352px dialog column.
+- `@media (min-width: 641px) { .quickview-modal__handle { display: none } }`. The grabber is a bottom-sheet
+  affordance; the centred dialog has an edge to hold.
+
+## What it resolves to now
+
+| | 1440 laptop | 390 phone |
+| --- | --- | --- |
+| media box / tile | 294x294 / **294x294** | 356x160 / **356x160** |
+| band under or past the photo | **0px** | **0px** (picture 140x140 sits inside) |
+| tile fill, both themes | `rgb(255, 255, 255)` | `rgb(255, 255, 255)` |
+| buy row | flex, gap 8px, **34 / 44 / 44px**, tops within 5px | flex, gap 8px, 34 / 44 / 44px |
+| inline styles | **0** | **0** |
+| pictographs in labels | **none** | none |
+| sheet grabber | **0x0** | 40x4 |
+| dialog | 720x494, `scrollHeight 492 = clientHeight 492` | 390x544, 543 = 543 |
+| sideways spill | 0px | 0px |
+
+1024x768 and 768x1024 give the same answers as 1440 (720x486, 0px band, 34/44/44, no grabber). The dialog is 81px
+shorter at laptop than it was, because the empty plate and the stacked controls are gone; it still needs no
+scrollbar inside itself at any of the six widths. A sold-out product keeps the same row shape: the note and the
+one control that is left on the line, no stepper, no buy button, 44px target.
+
+## Checks
+
+- `npx vitest run src/test/quick-view-modal.test.tsx` - 7 tests, all green: no inline style and no pictograph in
+  the component source, every `<Icon name>` it uses is in the registry, the media rule no longer paints a
+  background or a border, the fill rule exists, the row and footer rules are present, the grabber is hidden from
+  641px up; then behaviourally, opening the dialog from the real card shows SKU, price, compare price and
+  `In stock · 10` without a second API call, the stepper reaches 2 and the cart line is written with quantity 2,
+  and the footer link hands over to the product page and closes the dialog.
+- `E2E_BASE_URL=http://127.0.0.1:5824 npx playwright test quick-view-modal` - 5 tests, all green, light and dark
+  at 1440 and 390 plus a 1024 sweep, measuring the table above out of the live DOM.
+- The four CI gates (`tsc --noEmit`, `npm run i18n:check`, `vitest run`, `npm run build`) re-ran over the whole
+  project after the last file was written.
+
+## What I did not do, and what is still owed
+
+I left the phone sheet's own numbers alone: the 160px media cap, the 140px picture inside it, the clamped
+two-line description and the 15px title all come from `responsive.css`, which another session is still editing in
+this working tree, and my change reads correctly with them. The white studio canvas is untouched.
+
+The live-stack run is still owed by you: these checks stub `/api/*` in the browser, so they prove the dialog's
+geometry, not that a signed-in customer's wishlist state round-trips through it. Also still open from earlier
+rounds: `tools/build_deck.py`, `USER_MANUAL.md` and `TESTING.md` carry stale screen and product counts, and the
+remaining pictograph labels (`OrdersPages` 6, `AdminPage` 4, `ProductsPage` 2, and one each in CampaignBanner,
+CompareTray, StockAlertModal, CustomerCarePage and ProductDetailPage) are a job I have not started because you
+have not asked for it.
+
 # Round 23 — Account security spends its width: the decisions on the left, the live sign-in log on the right
 
 Date: 2026-11-04. Brief: two screenshots of `#/account/security` on the deployed site at laptop width - one of

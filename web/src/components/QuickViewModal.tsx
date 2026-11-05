@@ -84,14 +84,14 @@ export function QuickViewModal({
           <div className="quickview-modal__info stack">
             <div>
               {product.brandName ? (
-                <p className="product-card__brand" style={{ margin: '0 0 4px' }}>
+                <p className="product-card__brand quickview-modal__brand">
                   {product.brandName}
                 </p>
               ) : null}
               <h2 className="quickview-modal__title">{product.name}</h2>
-              <div className="row" style={{ alignItems: 'center', gap: '8px', marginTop: '6px' }}>
-                <span className="muted" style={{ fontSize: 'var(--text-xs)' }}>{t("SKU:")}</span>
-                <code className="mono" style={{ fontSize: 'var(--text-xs)' }}>{product.sku}</code>
+              <div className="quickview-modal__meta">
+                <span className="quickview-modal__meta-label">{t("SKU:")}</span>
+                <code className="mono quickview-modal__sku">{product.sku}</code>
                 <StockBadge product={product} threshold={threshold} />
               </div>
             </div>
@@ -115,10 +115,8 @@ export function QuickViewModal({
             ) : null}
 
             {outOfStock ? (
-              <div className="quickview-modal__cta-row" style={{ alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <p className="muted" style={{ fontSize: 'var(--text-sm)', margin: '8px 0' }}>
-                  {t("Not currently orderable.")}
-                </p>
+              <div className="quickview-modal__cta-row quickview-modal__cta-row--locked">
+                <p className="muted quickview-modal__locked-note">{t("Not currently orderable.")}</p>
                 {onToggleWishlist ? (
                   <button
                     type="button"
@@ -142,14 +140,15 @@ export function QuickViewModal({
                 />
                 <button
                   type="button"
-                  className={`btn btn--primary ${justAdded ? 'btn--success' : ''}`}
+                  className={`btn btn--primary quickview-modal__add${justAdded ? ' btn--success' : ''}`}
                   onClick={() => {
                     onAdded(product, quantity);
                     setJustAdded(true);
                     setTimeout(() => setJustAdded(false), 1400);
                   }}
                 >
-                  {justAdded ? `✓ ${t("Added!")}` : `🛒 ${t("Add to cart")}`}
+                  <Icon name={justAdded ? 'check' : 'cart'} width={16} height={16} />
+                  <span>{justAdded ? t("Added!") : t("Add to cart")}</span>
                 </button>
                 {onToggleWishlist ? (
                   <button
@@ -165,7 +164,7 @@ export function QuickViewModal({
               </div>
             )}
 
-            <div style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid var(--border)' }}>
+            <div className="quickview-modal__footer">
               <Link
                 to={`/products/${product.id}`}
                 className="link-button"
