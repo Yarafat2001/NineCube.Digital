@@ -56,6 +56,7 @@ export function QuickViewModal({
         aria-label={`${t("Quick view:")} ${product.name}`}
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="sheet__handle quickview-modal__handle" aria-hidden="true" />
         <div className="quickview-modal__header">
           <span className="quickview-modal__pill">
             <Icon name="eye" width={14} height={14} /> {t("Quick View")}

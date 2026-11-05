@@ -2,7 +2,8 @@ import { t, useLanguage } from '../i18n/language';
 import { useState } from 'react';
 import { Icon, type IconName } from '../components/Icon';
 import { AddressBook } from '../components/AddressBook';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../state/AuthContext';
 import {
   useChangePassword, useDashboard, useDeleteNotification,
   useMarkAllNotificationsRead, useMarkNotificationRead, useNotifications, useProfile,
@@ -29,6 +30,13 @@ const STATUS_GROUPS: { key: string; label: string; statuses: OrderStatus[]; icon
 export function AccountDashboardPage() {
   useLanguage();
   const dashboard = useDashboard();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   if (dashboard.isLoading) return <div className="page container"><LoadingBlock label={t("Loading your dashboard")} variant="tile" count={3} /></div>;
   if (dashboard.isError) return <div className="page container"><ErrorState error={dashboard.error} onRetry={() => void dashboard.refetch()} /></div>;
@@ -44,8 +52,63 @@ export function AccountDashboardPage() {
           <h1>{t("Dashboard")}</h1>
           <p>{t("Your orders, spending and latest account news in one place.")}</p>
         </div>
-        <Link className="btn btn--ghost" to="/account/profile">{t("Edit profile")}</Link>
+        <div className="row" style={{ gap: '8px' }}>
+          <Link className="btn btn--ghost" to="/account/profile">{t("Edit profile")}</Link>
+          <button type="button" className="btn btn--ghost btn--danger-text" onClick={handleLogout}>{t("Log out")}</button>
+        </div>
       </header>
+
+      {/* Mobile-Friendly Account Hub Shortcuts Grid */}
+      <nav className="account-hub-grid" aria-label={t("Account Navigation")}>
+        <Link className="account-hub-tile card-glass" to="/orders">
+          <div className="account-hub-tile__icon"><Icon name="box" /></div>
+          <div className="account-hub-tile__info">
+            <strong>{t("My Orders")}</strong>
+            <span className="muted">{t(`${data.totalOrders} total orders`)}</span>
+          </div>
+          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
+        </Link>
+        <Link className="account-hub-tile card-glass" to="/wishlist">
+          <div className="account-hub-tile__icon"><Icon name="heart" /></div>
+          <div className="account-hub-tile__info">
+            <strong>{t("Wishlist")}</strong>
+            <span className="muted">{t("Saved products")}</span>
+          </div>
+          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
+        </Link>
+        <Link className="account-hub-tile card-glass" to="/gift-cards">
+          <div className="account-hub-tile__icon"><Icon name="wallet" /></div>
+          <div className="account-hub-tile__info">
+            <strong>{t("Gift Cards")}</strong>
+            <span className="muted">{t("Check balance & redeem")}</span>
+          </div>
+          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
+        </Link>
+        <Link className="account-hub-tile card-glass" to="/account/profile">
+          <div className="account-hub-tile__icon"><Icon name="user" /></div>
+          <div className="account-hub-tile__info">
+            <strong>{t("Profile & Addresses")}</strong>
+            <span className="muted">{t(user?.fullName ?? user?.email ?? 'Your account')}</span>
+          </div>
+          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
+        </Link>
+        <Link className="account-hub-tile card-glass" to="/notifications">
+          <div className="account-hub-tile__icon"><Icon name="bell" /></div>
+          <div className="account-hub-tile__info">
+            <strong>{t("Notifications")}</strong>
+            <span className="muted">{t(data.unreadNotifications > 0 ? `${data.unreadNotifications} unread` : 'All caught up')}</span>
+          </div>
+          <span className="account-hub-tile__arrow" aria-hidden="true">→</span>
+        </Link>
+        <button type="button" className="account-hub-tile account-hub-tile--logout card-glass" onClick={handleLogout}>
+          <div className="account-hub-tile__icon account-hub-tile__icon--danger"><Icon name="logout" /></div>
+          <div className="account-hub-tile__info">
+            <strong className="text-danger">{t("Log out")}</strong>
+            <span className="muted">{t("Sign out of this session")}</span>
+          </div>
+          <span className="account-hub-tile__arrow text-danger" aria-hidden="true">→</span>
+        </button>
+      </nav>
 
       <div className="dashboard-stats" data-testid="dashboard-stats">
         {[
@@ -56,7 +119,15 @@ export function AccountDashboardPage() {
         ].map(stat => <div className="stat-tile card-glass" key={stat.label}><span className="stat-icon" data-tone={stat.tone}><Icon name={stat.icon} /></span><span className="stat-tile__label">{t(stat.label)}</span><span className="stat-tile__value">{t(stat.value)}</span><span className="muted">{t(stat.caption)}</span></div>)}
       </div>
       {data.totalOrders === 0 ? <EmptyState title={t("No orders yet")} description={t("Your first order will appear here.")} action={<Link className="btn btn--primary" to="/products">{t("Browse products")}</Link>} /> : null}
-      <nav className="quick-actions" aria-label={t("Quick actions")}><Link className="btn btn--primary" to="/products"><Icon name="grid" />{t("Browse products")}</Link><Link className="btn" to="/orders"><Icon name="box" />{t("My orders")}</Link><Link className="btn" to="/account/profile"><Icon name="user" />{t("Profile")}</Link></nav>
+      <nav className="quick-actions" aria-label={t("Quick actions")}>
+        <Link className="btn btn--primary" to="/products"><Icon name="grid" />{t("Browse products")}</Link>
+        <Link className="btn" to="/orders"><Icon name="box" />{t("My orders")}</Link>
+        <Link className="btn" to="/account/profile"><Icon name="user" />{t("Profile")}</Link>
+        {(!user || user.role === 'Customer') ? (
+          <Link className="btn" to="/gift-cards"><Icon name="wallet" />{t("Gift Cards")}</Link>
+        ) : null}
+        <button type="button" className="btn btn--ghost account-logout-btn" onClick={handleLogout}><Icon name="logout" />{t("Log out")}</button>
+      </nav>
 
       <section className="card-glass" aria-labelledby="dashboard-status">
         <h2 id="dashboard-status">{t("Orders by status")}</h2>

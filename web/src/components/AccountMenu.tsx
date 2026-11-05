@@ -17,36 +17,33 @@ function usePopover(menu = false) {
     position: 'fixed',
     top: 0,
     left: 0,
-    width: menu ? 248 : 340,
+    width: menu ? 260 : 340,
     maxHeight: 520,
     zIndex: 9999,
   });
   const close = () => { setOpen(false); trigger.current?.focus(); };
 
+  const place = () => {
+    if (!trigger.current) return;
+    const rect = trigger.current.getBoundingClientRect();
+    const width = menu ? 260 : Math.min(360, window.innerWidth - 24);
+    const left = Math.max(12, Math.min(Math.round(rect.right - width), window.innerWidth - width - 12));
+    const top = Math.round(rect.bottom + 6);
+    const maxHeight = Math.max(220, Math.min(540, window.innerHeight - top - 16));
+
+    setPosition({
+      position: 'fixed',
+      top: `${top}px`,
+      left: `${left}px`,
+      width: `${width}px`,
+      maxHeight: `${maxHeight}px`,
+      zIndex: 9999,
+    });
+  };
+
   useLayoutEffect(() => {
     if (!open) return;
-    const place = () => {
-      if (!trigger.current) return;
-      const rect = trigger.current.getBoundingClientRect();
-      const width = menu ? 248 : Math.min(360, window.innerWidth - 24);
-      const left = Math.max(12, Math.min(Math.round(rect.right - width), window.innerWidth - width - 12));
-      const top = Math.round(rect.bottom + 8);
-      const maxHeight = Math.max(180, Math.min(540, window.innerHeight - top - 16));
-
-      setPosition({
-        position: 'fixed',
-        top: `${top}px`,
-        left: `${left}px`,
-        width: `${width}px`,
-        maxHeight: `${maxHeight}px`,
-        zIndex: 9999,
-      });
-    };
-
     place();
-    if (menu) {
-      panel.current?.querySelector<HTMLElement>('[role=menuitem]')?.focus({ preventScroll: true });
-    }
     window.addEventListener('resize', place);
     window.addEventListener('scroll', place, true);
     return () => {
@@ -77,7 +74,7 @@ function usePopover(menu = false) {
     const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowUp' ? -1 : 1) + items.length) % items.length;
     items[next]?.focus({ preventScroll: true });
   };
-  return { open, setOpen, close, trigger, panel, position, keyboard };
+  return { open, setOpen, close, trigger, panel, position, keyboard, place };
 }
 
 export function NotificationBell() {
@@ -320,6 +317,7 @@ export function AccountMenu() {
     if (isMobile) return;
     if (hoverTimer.current) clearTimeout(hoverTimer.current);
     hoverOpenedAt.current = Date.now();
+    pop.place();
     pop.setOpen(true);
   };
 
@@ -327,15 +325,27 @@ export function AccountMenu() {
     if (isMobile) return;
     hoverTimer.current = setTimeout(() => {
       pop.setOpen(false);
-    }, 240);
+    }, 280);
   };
 
   const handleTriggerClick = () => {
-    // If just opened via hover (e.g. mouse movement right before click), don't close it immediately
-    if (pop.open && Date.now() - hoverOpenedAt.current < 500) {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    if (pop.open && Date.now() - hoverOpenedAt.current < 600) {
       return;
     }
+    pop.place();
     pop.setOpen(!pop.open);
+  };
+
+  const handleTriggerKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      pop.place();
+      pop.setOpen(true);
+      setTimeout(() => {
+        pop.panel.current?.querySelector<HTMLElement>('[role=menuitem]')?.focus({ preventScroll: true });
+      }, 0);
+    }
   };
 
   useEffect(() => {
@@ -395,7 +405,7 @@ export function AccountMenu() {
     <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}
       onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label={t("Account")} aria-expanded={pop.open} aria-haspopup="menu"
-        onClick={handleTriggerClick} onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); pop.setOpen(true); } }}>
+        onClick={handleTriggerClick} onKeyDown={handleTriggerKeyDown}>
         <span className="avatar avatar--small" aria-hidden="true">{t(user.email[0].toUpperCase())}</span>
         <span className="account-name" title={t(user.email)}>{t(user.email.split('@')[0])}</span>
         <Icon name="chevron" className="account-chevron" data-open={pop.open} />
