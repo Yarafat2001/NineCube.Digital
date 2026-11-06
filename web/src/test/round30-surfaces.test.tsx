@@ -124,8 +124,8 @@ describe('Round 30: the account hub reads as the reference list', () => {
     renderApp('/account');
 
     await screen.findByRole('heading', { level: 1, name: /Dashboard|Account/i });
+    await waitFor(() => expect(document.querySelector('.account-profile-card')).not.toBeNull());
     const profile = document.querySelector('.account-profile-card');
-    expect(profile).not.toBeNull();
     expect(profile?.querySelector('.account-profile-card__pill')).toHaveTextContent('Customer');
 
     const list = document.querySelector('.account-nav-list');

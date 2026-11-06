@@ -83,7 +83,7 @@ describe('A ChatMessage notification renders instead of crashing', () => {
     renderApp('/account');
 
     expect(await screen.findByRole('heading', { level: 1, name: /Dashboard|Account/i })).toBeInTheDocument();
-    expect(screen.getByText('New chat reply')).toBeInTheDocument();
+    expect(await screen.findByText('New chat reply')).toBeInTheDocument();
     expect(screen.getByText('✉')).toBeInTheDocument();
   });
 

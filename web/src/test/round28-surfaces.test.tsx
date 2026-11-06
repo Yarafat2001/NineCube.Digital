@@ -90,7 +90,7 @@ describe('The account hub links only to destinations that exist', () => {
       expect(routes, `${href} is not a declared route`).toContain(href.split('?')[0]);
     }
     // The four status shortcuts carry the URL filter the orders page actually reads.
-    const orders = screen.getByRole('region', { name: /My Orders/i });
+    const orders = await screen.findByRole('region', { name: /My Orders/i });
     const shortcuts = within(orders).getAllByRole('link').filter(link => link.classList.contains('account-hub-status'));
     expect(shortcuts.map(link => link.getAttribute('href'))).toEqual([
       '/orders?status=Pending', '/orders?status=Confirmed', '/orders?status=Shipped', '/orders?status=Delivered'
