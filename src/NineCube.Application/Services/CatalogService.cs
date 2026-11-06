@@ -33,21 +33,22 @@ public sealed class CatalogService : ICatalogService
         pageSize = pageSize is < 1 or > 100 ? 20 : pageSize;
 
         filters ??= new CatalogFilters();
-        var query = await ApplyAsync(search, isActive, filters, includeBrandAndLine: true, ct);
+        var filtered = await FilteredAsync(isActive, filters, includeBrandAndLine: true, ct);
+        var (query, rank) = await WithSearchAsync(filtered, search, ct);
 
         var total = await query.CountAsync(ct);
+        var window = Order(query, filters.Sort, rank).Skip((page - 1) * pageSize).Take(pageSize);
 
-        var sorted = filters.Sort switch {
-            "price" => query.OrderBy(p => p.Price).ThenBy(p => p.Id),
-            "stock" => query.OrderByDescending(p => p.StockQuantity).ThenBy(p => p.Id),
-            "newest" => query.OrderByDescending(p => p.CreatedAt).ThenByDescending(p => p.Id),
-            _ => query.OrderBy(p => p.Name).ThenBy(p => p.Id)
-        };
-        var items = await sorted
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(Projection)
-            .ToListAsync(ct);
+        if (rank is null)
+            return new PagedResult<ProductDto>(await window.Select(Projection).ToListAsync(ct), page, pageSize, total);
+
+        // Relevance first means the ordering is a CASE over the trigram columns, so the page is read as ids
+        // and only those rows carry the full projection.
+        var ids = await window.Select(p => p.Id).ToListAsync(ct);
+        var rows = await _db.Products.AsNoTracking().Where(p => ids.Contains(p.Id)).Select(Projection).ToListAsync(ct);
+        var byId = rows.ToDictionary(r => r.Id);
+        // A product deleted between the two reads simply drops out of the page.
+        var items = ids.Select(id => byId.GetValueOrDefault(id)).Where(r => r is not null).Select(r => r!).ToList();
 
         return new PagedResult<ProductDto>(items, page, pageSize, total);
     }
@@ -58,7 +59,8 @@ public sealed class CatalogService : ICatalogService
     /// </summary>
     public async Task<IReadOnlyList<BrandDto>> BrandsAsync(string? search, bool? isActive, CatalogFilters filters, CancellationToken ct = default)
     {
-        var query = await ApplyAsync(search, isActive, filters with { Brands = null, Lines = null }, includeBrandAndLine: false, ct);
+        var filtered = await FilteredAsync(isActive, filters with { Brands = null, Lines = null }, includeBrandAndLine: false, ct);
+        var query = (await WithSearchAsync(filtered, search, ct)).Query;
 
         // Grouping on the foreign key alone translates to SQL; the names come from one small follow-up read.
         var counts = await query.Where(p => p.BrandId != null)
@@ -83,8 +85,8 @@ public sealed class CatalogService : ICatalogService
             .FirstOrDefaultAsync(b => b.Slug == brandSlug.Trim().ToLowerInvariant() && b.IsActive, ct)
             ?? throw new NotFoundException("This brand is unavailable.");
 
-        var query = (await ApplyAsync(search, isActive, filters with { Brands = null, Lines = null }, includeBrandAndLine: false, ct))
-            .Where(p => p.BrandId == brand.Id);
+        var filtered = await FilteredAsync(isActive, filters with { Brands = null, Lines = null }, includeBrandAndLine: false, ct);
+        var query = (await WithSearchAsync(filtered, search, ct)).Query.Where(p => p.BrandId == brand.Id);
 
         var brandCount = await query.CountAsync(ct);
         var counts = await query.Where(p => p.ProductLineId != null)
@@ -106,20 +108,47 @@ public sealed class CatalogService : ICatalogService
         return new BrandLinesDto(brand.Id, brand.Name, brand.Slug, brandCount, lines);
     }
 
-    private async Task<IQueryable<Product>> ApplyAsync(
-        string? search, bool? isActive, CatalogFilters filters, bool includeBrandAndLine, CancellationToken ct)
+    private async Task<(IQueryable<Product> Query, List<string>? Rank)> WithSearchAsync(
+        IQueryable<Product> query, string? search, CancellationToken ct)
+        => string.IsNullOrWhiteSpace(search) ? (query, null) : await SearchedAsync(query, search, ct);
+
+    /// <summary>
+    /// One trigram predicate per word; words are AND-ed, exactly as they always were. Naming a brand or a
+    /// category resolves to ids before the product query runs, so every branch of the OR stays a column of
+    /// the Products table and the planner can combine index scans instead of reading the whole table.
+    /// </summary>
+    private async Task<(IQueryable<Product> Query, List<string> Rank)> SearchedAsync(
+        IQueryable<Product> query, string search, CancellationToken ct)
+    {
+        foreach (var alternatives in CatalogSearch.Terms(search))
+        {
+            var patterns = CatalogSearch.Patterns(alternatives);
+            if (patterns.Count == 0) continue;
+
+            var brandIds = await _db.Brands.AsNoTracking()
+                .Where(b => patterns.Any(t => EF.Functions.ILike(b.Name, t))).Select(b => b.Id).ToListAsync(ct);
+            var categoryIds = await _db.Categories.AsNoTracking()
+                .Where(c => patterns.Any(t => EF.Functions.ILike(c.Name, t))).Select(c => c.Id).ToListAsync(ct);
+            var inCategory = categoryIds.Count == 0
+                ? new List<int>()
+                : await _db.ProductCategories.AsNoTracking().Where(pc => categoryIds.Contains(pc.CategoryId))
+                    .Select(pc => pc.ProductId).Distinct().ToListAsync(ct);
+
+            query = query.Where(p => patterns.Any(t => EF.Functions.ILike(p.Name, t))
+                || patterns.Any(t => EF.Functions.ILike(p.Sku, t))
+                || (p.Description != null && patterns.Any(t => EF.Functions.ILike(p.Description, t)))
+                || (p.BrandId != null && brandIds.Contains(p.BrandId.Value))
+                || inCategory.Contains(p.Id));
+        }
+
+        return (query, CatalogSearch.Patterns(search));
+    }
+
+    private async Task<IQueryable<Product>> FilteredAsync(
+        bool? isActive, CatalogFilters filters, bool includeBrandAndLine, CancellationToken ct)
     {
         // AsNoTracking: reads never need the change tracker, and the API is read-heavy.
         var query = _db.Products.AsNoTracking();
-
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            foreach (var alternatives in CatalogSearch.Terms(search))
-                query = query.Where(p => alternatives.Any(term => p.Name.ToLower().Contains(term) || p.Sku.ToLower().Contains(term)
-                    || (p.Description != null && p.Description.ToLower().Contains(term))
-                    || (p.Brand != null && p.Brand.Name.ToLower().Contains(term))
-                    || p.Categories.Any(c => c.Category.Name.ToLower().Contains(term))));
-        }
 
         if (_currentUser is not null && !_currentUser.IsInRole(UserRole.Staff, UserRole.InventoryManager, UserRole.Administrator))
             query = query.Where(p => p.IsActive && p.ParentProductId == null);
@@ -176,6 +205,37 @@ public sealed class CatalogService : ICatalogService
         if (lineIdValues.Count > 0) query = query.Where(p => p.ProductLineId != null && lineIdValues.Contains(p.ProductLineId.Value));
 
         return query;
+    }
+
+    /// <summary>
+    /// With search text, a product whose name matches comes before one that only matches on SKU, and either
+    /// comes before a description, brand or category match. The shopper's sort then orders inside a tier.
+    /// </summary>
+    private static IOrderedQueryable<Product> Order(IQueryable<Product> query, string sort, List<string>? rank)
+    {
+        if (rank is null) return sort switch
+        {
+            "price" => query.OrderBy(p => p.Price).ThenBy(p => p.Id),
+            "stock" => query.OrderByDescending(p => p.StockQuantity).ThenBy(p => p.Id),
+            "newest" => query.OrderByDescending(p => p.CreatedAt).ThenByDescending(p => p.Id),
+            _ => query.OrderBy(p => p.Name).ThenBy(p => p.Id)
+        };
+
+        var byRelevance = query.OrderBy(p =>
+            rank.Any(t => EF.Functions.ILike(p.Name, t)) ? 0
+            : rank.Any(t => EF.Functions.ILike(p.Sku, t)) ? 1
+            : p.Description != null && rank.Any(t => EF.Functions.ILike(p.Description, t)) ? 2
+            : 3);
+
+        var bySort = sort switch
+        {
+            "price" => byRelevance.ThenBy(p => p.Price),
+            "stock" => byRelevance.ThenByDescending(p => p.StockQuantity),
+            "newest" => byRelevance.ThenByDescending(p => p.CreatedAt),
+            _ => byRelevance.ThenBy(p => p.Name)
+        };
+
+        return sort == "newest" ? bySort.ThenByDescending(p => p.Id) : bySort.ThenBy(p => p.Id);
     }
 
     private static string Slug(string? value) => value?.Trim().ToLowerInvariant() ?? string.Empty;

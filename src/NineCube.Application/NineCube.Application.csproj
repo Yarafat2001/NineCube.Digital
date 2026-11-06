@@ -13,6 +13,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.13" />
+    <!-- Only for EF.Functions.ILike: the catalogue search predicates are PostgreSQL-specific by design. -->
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageReference Include="SSH.NET" Version="2026.0.0" />
   </ItemGroup>
 

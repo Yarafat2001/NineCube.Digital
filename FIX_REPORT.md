@@ -130,6 +130,117 @@ belongs to the chat work, so say the word and I will take it as its own item.
 The migration (AddEmailDeliveryFailureColumns) applies on the next API deploy, which stays with you - the same
 deploy that carries the item 1.1 callback fix.
 
+# Phase 1, item 1.3 - catalogue search reads name and SKU first on trigram indexes, and treats description, brand and category as a second pass
+
+Date: 2026-11-06. From the master task, in your words: "Phase A (the one that matters): restructure the
+catalogue search. Match name + SKU first with proper trigram indexes, and treat description/brand/category as
+a secondary pass. One EF migration, one service rewrite, no API shape change needed for shoppers. It fits
+naturally inside Phase 2 of the master plan (storefront & discovery, fuzzy search). Nothing is slow today at
+~171 products - this is growth insurance, and it is the only query in the system that degrades."
+
+## What the probe measured before the change
+
+One predicate did all the work, for every word a shopper typed: `name OR sku OR description OR brand name OR
+category name`, with the brand and category halves written as `p.Brand.Name.ToLower().Contains(term)` and
+`p.Categories.Any(...)` - two joins inside an OR. On the real database the planner's only option for that shape
+is a read of the whole Products table with five filters per row, and it cannot use an index on any column
+because two of the branches are not columns of Products at all.
+
+I could not see this at 171 products, so I loaded a throwaway database (a temporary test, since deleted) with
+50,000 products, 20 brands and a category holding 3,077 of them, ran `ANALYZE`, and timed the exact old
+predicate against the new one - median of five warm runs, each counting matched rows and reading a 20-id page:
+
+| search | rows matched, old = new | database work, old | database work, new | full HTTP search page, ranked |
+| --- | --- | --- | --- | --- |
+| `shoe` | 17,179 | 1,054 ms | 536 ms | 1,407 ms |
+| `phone` | 10,000 | 602 ms | 620 ms | 726 ms |
+| `100%` | 0 | 1,057 ms | 15 ms | 27 ms |
+| `zzznothing` (a typo) | 0 | 1,225 ms | 23 ms | 33 ms |
+| `gaiters 12` | 398 | 2,051 ms | 361 ms | 183 ms |
+| `steel watch 4999` | 2 | 2,541 ms | 23 ms | 45 ms |
+| `velmora 7` (a brand) | 20,840 | 1,253 ms | 199 ms | 897 ms |
+
+Both columns matched the same number of rows and returned the same 20 rows for every one of those terms - the
+results are identical, only the cost changes. The two that did not get faster are single words that hit a fifth
+to a third of the table (`phone`, `shoe`); at that selectivity a full read is the correct plan and the planner
+still chooses it, so I am not claiming a win where there is none. Everything a real shopper types more of - a
+phrase, an SKU fragment, a typo, a miss on purpose - falls between 3.5x and 110x.
+
+`EXPLAIN (ANALYZE, BUFFERS)` on the query the service now sends is the clearest evidence, for `100%`:
+
+```
+Bitmap Heap Scan on "Products"  (actual time=0.808..0.811 rows=0.00)   Execution Time: 1.184 ms
+  -> BitmapOr
+       -> Bitmap Index Scan on "IX_Products_Name_Trgm"        (Index Searches: 1)
+       -> Bitmap Index Scan on "IX_Products_Sku_Trgm"         (Index Searches: 1)
+       -> Bitmap Index Scan on "IX_Products_Description_Trgm" (Index Searches: 1)
+       -> Bitmap Index Scan on "IX_Products_BrandId"          (Index Searches: 0)
+       -> Bitmap Index Scan on "PK_Products"                  (Index Searches: 0)
+```
+
+against `Seq Scan on "Products" ... Rows Removed by Filter: 49800` before, reading all 1,063 pages of the table
+to answer a question about zero rows. Even for `shoe`, where a third of the table matches, the new shape gets a
+BitmapOr over the three trigram indexes plus the primary key (71 ms of database work) instead of a filter on
+every row.
+
+## What changed and why
+
+The migration (`AddCatalogSearchTrigramIndexes`) enables `pg_trgm` and adds three GIN trigram indexes on
+`Products.Name`, `Products.Sku` and `Products.Description`. It is the only schema change; no existing index was
+touched. One thing worth recording, because it cost me a broken migration first: those indexes are deliberately
+*not* declared with `HasIndex` on the model. EF collapses two `HasIndex` declarations over the same column set
+into one when it scaffolds, and my first attempt therefore emitted a `DropIndex` for `IX_Products_Name` (the
+btree index every catalogue sort uses) and `IX_Products_Sku` (the unique constraint that stops a duplicate SKU)
+- and a GIN index cannot even be declared `unique`. The trigram indexes live in the migration's own SQL, so the
+model snapshot never sees them and a future scaffold cannot drop them; `AppDbContext` keeps a comment naming
+them so the next reader knows what the search depends on.
+
+The service rewrite is inside `CatalogService`, and the public API is untouched: same `api/products` query
+parameters (`q`, `brand`, `line`, `sort`, `page`, `pageSize`), same `PagedResult<ProductDto>` body, so nothing
+in `web/` needed a change and the staff and shopper screens keep working as they were.
+
+For each word in a search, the brand and category names are resolved to id lists in two small indexed reads
+before the product query is built. That is the actual fix: it turns the two join branches of the OR into
+`BrandId = ANY(@ids)` and `Id = ANY(@ids)` - columns of Products - so all five branches can be combined by one
+BitmapOr. The product predicate is then `ILIKE` over the trigram columns (case-insensitive by collation, so the
+old `ToLower()` calls are gone; Bengali and English text behave the same as before because
+`CatalogSearch.Terms` still expands aliases and folds Bengali digits).
+
+`CatalogSearch.Patterns` builds the LIKE patterns and escapes the wildcards a shopper types, so `100%` searches
+for the characters `100%` rather than "everything after 100". This matches what the old code did - EF escaped
+wildcards inside `Contains` for us - but now that `ILIKE` patterns are built by hand, the guarantee is explicit
+in one helper and covered by a test instead of resting on a translation detail.
+
+Search results are ranked, as you asked: a name match comes first, then an SKU match, then anything matched
+through description, brand or category, and the shopper's chosen sort orders *inside* each tier, so
+"price low to high" still gives cheap-first within the name matches. Because the relevance tier is a CASE over
+the trigram columns, the ranked page is read as ids and only those 20 rows carry the full projection. Products
+deleted between the two reads simply drop out of that page - it cannot produce a phantom row.
+
+## Tests that keep it honest
+
+`src/NineCube.Tests/CatalogSearchTests.cs` (11 new, through the real HTTP pipeline against real PostgreSQL, so
+the migration and the trigram indexes are actually present): name before SKU before description; the sort still
+ordering inside a pass; `%` and `_` searched as characters; a Bengali word finding an English-named product
+(`জুতা` → shoe); Bengali digits finding the written number (`২০০০` → 20000mAh); naming a brand finding its
+products through the second pass while `brand=` still agrees; naming a category doing the same; every word of a
+multi-word search having to match; paging walking the relevance order without repeats or gaps; and the brand
+facet counts agreeing with a search.
+
+Gate: Release build clean, full backend suite 261 passed / 263 total. The two failures are the pre-existing
+Round 31 `SupportAutoResponder` defects documented in item 1.2 (greeting cues matched as raw substrings before
+the policy cues) - reproduced at clean HEAD before this item's code existed, unrelated to search, still awaiting
+your word on whether I take them as their own item.
+
+Two commits, as agreed: the migration and its model comment first, then the service and the tests. This ships a
+schema change, so it needs the same API redeploy you already owe for items 1.1 and 1.2 - the migration runs at
+startup and the new indexes are built there; at today's catalogue size that is sub-second, and it is the one
+thing I would rather see run on staging before a 50k catalogue exists in production.
+
+What I did not touch: the Phase B tidy-ups you listed as not urgent (the per-request signed-in user lookup, the
+inventory page's per-row email subquery, the lowercase email lookups), and the catalogue, product detail, order,
+dashboard, sales-summary and notification queries you said to leave alone.
+
 # Round 31 - a public corner assistant that any visitor can talk to, a support chat that answers common questions from the store's own policy pages, and a home sign-in strip with an animated welcome
 
 Date: 2026-11-06. Brief, in your words: "In the home page I want AI assist chat as public not signin and register

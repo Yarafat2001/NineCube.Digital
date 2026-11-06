@@ -24,4 +24,23 @@ public static class CatalogSearch
         foreach (var word in normalized.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(12))
             yield return Aliases.TryGetValue(word, out var aliases) ? aliases.Append(word).ToArray() : [word];
     }
+
+    /// <summary>
+    /// LIKE patterns for one word's alternatives. The wildcards in a shopper's own text are escaped so
+    /// "100%" searches for the characters 100% instead of meaning "everything after 100".
+    /// </summary>
+    public static List<string> Patterns(IEnumerable<string> alternatives) => alternatives
+        .Select(Like)
+        .Where(pattern => pattern.Length > 0)
+        .Distinct(StringComparer.Ordinal)
+        .ToList();
+
+    /// <summary>Every pattern in a query, used to rank name and SKU hits above the secondary pass.</summary>
+    public static List<string> Patterns(string search) => Terms(search).SelectMany(Patterns).Distinct(StringComparer.Ordinal).ToList();
+
+    private static string Like(string term) => term.Trim() switch
+    {
+        { Length: 0 } => string.Empty,
+        var value => $"%{value.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_")}%"
+    };
 }
