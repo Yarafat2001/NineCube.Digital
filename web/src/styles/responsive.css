@@ -379,6 +379,14 @@ main .link-button:is(:hover, :focus-visible, :active),
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.45);
   }
 
+  .mobile-nav.orb-nav,
+  :root[data-theme='dark'] .mobile-nav.orb-nav {
+    background: none !important;
+    border-top: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
   /* Automatically hide mobile bottom bar when any overlay, sheet, or dialog is open */
   :root[data-overlay-open='true'] .mobile-nav,
   body[style*="overflow: hidden"] .mobile-nav {

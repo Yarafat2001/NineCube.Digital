@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCommerceAgent } from '../../ai/CommerceAgentContext';
+import { useAuth } from '../../state/AuthContext';
 import { AgentProductCard } from './AgentProductCard';
 import { AgentComparisonCard } from './AgentComparisonCard';
 import { AgentCartCard } from './AgentCartCard';
@@ -8,7 +9,7 @@ import { t, useLanguage } from '../../i18n/language';
 import { Icon } from '../Icon';
 import './CommerceCopilot.css';
 
-export function CommerceCopilot() {
+export function CommerceCopilot({ standalone = false }: { standalone?: boolean }) {
   const {
     messages,
     isOpen,
@@ -29,10 +30,38 @@ export function CommerceCopilot() {
   } = useCommerceAgent();
 
   useLanguage();
+  const { user } = useAuth();
   const [input, setInput] = useState('');
   const [showMemoryModal, setShowMemoryModal] = useState(false);
+  const [hasAssistantDock, setHasAssistantDock] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Detect whether AssistantDock is mounted in DOM on the showcase home page
+  useEffect(() => {
+    const checkDock = () => {
+      setHasAssistantDock(Boolean(document.querySelector('.assistant-dock')));
+    };
+    checkDock();
+    const timer = setTimeout(checkDock, 100);
+    window.addEventListener('popstate', checkDock);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('popstate', checkDock);
+    };
+  }, []);
+
+  // Set data-overlay-open on root to automatically hide mobile bottom nav and prevent background scroll
+  useEffect(() => {
+    if (isOpen) {
+      document.documentElement.setAttribute('data-overlay-open', 'true');
+    } else {
+      document.documentElement.removeAttribute('data-overlay-open');
+    }
+    return () => {
+      document.documentElement.removeAttribute('data-overlay-open');
+    };
+  }, [isOpen]);
 
   // Auto-scroll on new message
   useEffect(() => {
@@ -61,28 +90,34 @@ export function CommerceCopilot() {
     sendMessage(prompt);
   };
 
+  // On the home page where AssistantDock is rendered, hide Copilot launcher button when closed to eliminate collision
+  const shouldRenderLauncher = standalone || !hasAssistantDock || isOpen;
+  const hasChat = Boolean(user);
+
   return (
     <>
       {/* Floating Copilot Launcher Button */}
-      <button
-        type="button"
-        className={`commerce-copilot-launcher ${isOpen ? 'commerce-copilot-launcher--active' : ''}`}
-        onClick={toggleOpen}
-        aria-label={t("Open AI Shopping Copilot (Ctrl+J)")}
-        title={t("AI Shopping Copilot (Ctrl+J)")}
-      >
-        <div className="commerce-copilot-launcher__icon-wrap">
-          <span className="commerce-copilot-launcher__sparkle" aria-hidden="true">
-            ✦
-          </span>
-          <Icon name="spark" width={22} height={22} className="commerce-copilot-launcher__icon" />
-          {unreadCount > 0 && !isOpen && (
-            <span className="commerce-copilot-launcher__badge">{unreadCount}</span>
-          )}
-        </div>
-        <span className="commerce-copilot-launcher__label">{t("Copilot")}</span>
-        <span className="commerce-copilot-launcher__hotkey">{t("Ctrl+J")}</span>
-      </button>
+      {shouldRenderLauncher && (
+        <button
+          type="button"
+          className={`commerce-copilot-launcher ${hasChat ? 'commerce-copilot-launcher--stacked' : ''} ${isOpen ? 'commerce-copilot-launcher--active' : ''}`}
+          onClick={toggleOpen}
+          aria-label={t("Open AI Shopping Copilot (Ctrl+J)")}
+          title={t("AI Shopping Copilot (Ctrl+J)")}
+        >
+          <div className="commerce-copilot-launcher__icon-wrap">
+            <span className="commerce-copilot-launcher__sparkle" aria-hidden="true">
+              ✦
+            </span>
+            <Icon name="spark" width={22} height={22} className="commerce-copilot-launcher__icon" />
+            {unreadCount > 0 && !isOpen && (
+              <span className="commerce-copilot-launcher__badge">{unreadCount}</span>
+            )}
+          </div>
+          <span className="commerce-copilot-launcher__label">{t("Copilot")}</span>
+          <span className="commerce-copilot-launcher__hotkey">{t("Ctrl+J")}</span>
+        </button>
+      )}
 
       {/* Slide-out Copilot Panel / Mobile Sheet */}
       {isOpen && (

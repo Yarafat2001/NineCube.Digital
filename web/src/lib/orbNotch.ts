@@ -1,4 +1,4 @@
-import { useLayoutEffect, type DependencyList, type RefObject } from 'react';
+import { useLayoutEffect, useRef, type DependencyList, type RefObject } from 'react';
 
 /** Which side of the bar the notch is cut into. */
 export type OrbNotchEdge = 'top' | 'left';
@@ -89,14 +89,14 @@ export type OrbNotchTargets = {
  */
 export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: DependencyList) {
   const { host, glass, path: pathRef, active } = targets;
+  const positionRef = useRef<number | null>(null);
+  const frameRef = useRef<number>(0);
+  const isFirstMount = useRef(true);
 
   useLayoutEffect(() => {
     const hostEl = host.current;
     const glassEl = glass.current;
     if (!hostEl || !glassEl) return;
-
-    let position: number | null = null;
-    let frame = 0;
 
     const glideMs = () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 0;
@@ -139,11 +139,11 @@ export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: 
         return;
       }
       hostEl.dataset.orbReady = 'true';
-      cancelAnimationFrame(frame);
-      const from = snap || position === null ? to : position;
-      position = to;
+      cancelAnimationFrame(frameRef.current);
+      const from = snap || positionRef.current === null ? to : positionRef.current;
+      positionRef.current = to;
       const duration = snap ? 0 : glideMs();
-      if (!duration) {
+      if (!duration || Math.abs(to - from) < 0.5) {
         paint(to);
         return;
       }
@@ -153,17 +153,31 @@ export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: 
         const q = p - 1;
         // The reference's overshoot: the orb lands a hair past the row and settles back into it.
         const eased = 1 + 2.1 * q * q * q + 1.1 * q * q;
-        paint(from + (to - from) * eased);
-        if (p < 1) frame = requestAnimationFrame(step);
-        else paint(to);
+        const current = from + (to - from) * eased;
+        positionRef.current = current;
+        paint(current);
+        if (p < 1) frameRef.current = requestAnimationFrame(step);
+        else {
+          positionRef.current = to;
+          paint(to);
+        }
       };
-      frame = requestAnimationFrame(step);
+      frameRef.current = requestAnimationFrame(step);
     };
 
-    draw(true);
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      draw(true);
+    } else {
+      draw(false);
+    }
 
-    // Observation carries resize: the bar's own box changes, so re-snap without gliding.
+    // Observation carries resize and transition end: the bar's own box changes, so re-snap without gliding.
     const onResize = () => draw(true);
+    const onTransitionEnd = (e: TransitionEvent) => {
+      if (e.target === hostEl) draw(true);
+    };
+
     const observer = typeof ResizeObserver === 'undefined'
       ? null
       : new ResizeObserver(onResize);
@@ -171,11 +185,13 @@ export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: 
     const item = hostEl.querySelector<HTMLElement>(active);
     if (item) observer?.observe(item);
     window.addEventListener('resize', onResize);
+    hostEl.addEventListener('transitionend', onTransitionEnd);
 
     return () => {
-      cancelAnimationFrame(frame);
+      cancelAnimationFrame(frameRef.current);
       observer?.disconnect();
       window.removeEventListener('resize', onResize);
+      hostEl.removeEventListener('transitionend', onTransitionEnd);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
