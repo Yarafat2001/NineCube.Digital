@@ -69,6 +69,67 @@ switching in, a marker-less guest still bouncing to sign-in, and a marked guest 
 `#/guest/orders/500?payment=success` with the banner intact - 0 console errors across all five runs. As
 always the API redeploy stays with you - the SPA ships through the Pages workflow.
 
+# Phase 1, item 1.2 - the email queue retries on a real backoff and every dead letter keeps a readable record
+
+Date: 2026-11-06. From the master task, in your words: "Email worker retry + dead-letter (P0): MaxAttempts=5,
+exponential backoff 1m/5m/15m/1h, on final failure write FailedAt + LastError, staff endpoint to list failed
+deliveries and requeue one."
+
+## What the probe measured before the change
+
+The outbox itself was already sound: six writers enqueue EmailDelivery rows, a 30-second worker claims due rows
+with an atomic update and a lease, and it dead-letters after 5 attempts. The gaps against the spec:
+
+| surface | before | after |
+| --- | --- | --- |
+| the retry rhythm | every failed send parked the row for the same flat 5 minutes, and the cap was a hardcoded 5 | the lease written at claim time is the backoff delay itself - 1m, 5m, 15m, 1h, then the last entry repeats - and both MaxAttempts and the schedule come from the Email:Worker config section (defaults 5) |
+| the dead-letter record | a permanently failed row kept no trace of why: no error text, no failure time, so the operator list showed only "5 attempts" | LastError (truncated at 1000 characters) and FailedAt are written on the final attempt, backed by a new EF migration on EmailDeliveries |
+| the operator's view | the operations endpoint listed id/subject/createdAt/attempts, and requeue reset only attempts and the lease | the list now carries lastError, failedAt and maxAttempts, and requeue clears the failure fields too so a retried row starts truly clean |
+| the dead-letter lease | DateTime.MaxValue, whose 7 fractional digits depend on how the database rounds them on the way in | a truncated 9999-12-31 23:59:59 UTC sentinel that round-trips exactly, pinned by a test |
+| tests | the worker had no test at all - its dead-letter write had never executed in a test run | six integration tests drive real batches against the real PostgreSQL with a scripted sender |
+
+One correction to the spec's premise: the 5-attempt cap already existed in the shipped worker, so it was left
+alone instead of rebuilt - the work went into the missing pieces only.
+
+## What changed and why
+
+The worker's claim and its backoff are now the same write. Claiming a row sets its lease to now plus
+BackoffForAttempt(attempts), so a failed send parks the row exactly as long as the policy says and every API
+instance agrees on when it is due again; a lease has always meant "do not touch until", so the backoff cost
+nothing extra. The schedule lives in a new EmailWorkerOptions (MaxAttempts=5, BackoffMinutes=[1,5,15,60])
+bound from the Email:Worker section and sanitized so nonsense configuration falls back to the defaults instead
+of breaking the queue.
+
+On the final failed attempt the row is dead-lettered: the never-expiring sentinel lease, LastError from the
+exception message and FailedAt from the clock. The batch logic moved into a public ProcessBatchAsync so tests
+can drive single batches without the 30-second timer; the worker is still not hosted in the Testing environment,
+the test host registers it as a plain service with a scripted sender instead.
+
+The operations endpoint stays administrator-only and now uses the configured MaxAttempts instead of the
+hardcoded 5. The failed list surfaces the new fields, and requeue resets attempts, the lease, LastError and
+FailedAt in one atomic update, so a requeued delivery is genuinely back at the front of the queue.
+
+## Tests that keep it honest
+
+`src/NineCube.Tests/EmailWorkerTests.cs` (6 new, against real PostgreSQL in Testcontainers): a due delivery is
+sent and marked SentAt with a cleared lease; four consecutive failures grow the lease 1m/5m/15m/1h; the 5th
+failure dead-letters with LastError, FailedAt and the sentinel lease and the queue never touches the row again;
+requeue resets attempts and clears both failure fields and the row is then delivered; requeue of a row that has
+not failed is rejected 409; the failed list exposes lastError/failedAt/maxAttempts; and a customer token gets
+403 from the operations endpoint.
+
+Gate: the Release build is clean and all six new tests pass. The full backend suite is 250/252 - the two
+failures are pre-existing in the Round 31 support chat and were reproduced at clean HEAD in a detached worktree
+before any item-1.2 change was present, so they are reported rather than patched here. Both come from one
+defect in SupportAutoResponder: greeting cues are matched as raw substrings before the policy cues are checked,
+so "unrelated question about nothing" contains "hi" and earns a greeting reply (the guest-assistant test finds
+two messages in the thread), and "Hi, do you deliver to Chattogram?" is answered with only the welcome text
+instead of the delivery policy quote. The fix is a small ordering/boundary change in that one service; it
+belongs to the chat work, so say the word and I will take it as its own item.
+
+The migration (AddEmailDeliveryFailureColumns) applies on the next API deploy, which stays with you - the same
+deploy that carries the item 1.1 callback fix.
+
 # Round 31 - a public corner assistant that any visitor can talk to, a support chat that answers common questions from the store's own policy pages, and a home sign-in strip with an animated welcome
 
 Date: 2026-11-06. Brief, in your words: "In the home page I want AI assist chat as public not signin and register

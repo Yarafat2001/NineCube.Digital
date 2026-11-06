@@ -11,6 +11,8 @@ public sealed class EmailDelivery
     public DateTime? SentAt { get; set; }
     public DateTime? LeaseUntil { get; set; }
     public int Attempts { get; set; }
+    public string? LastError { get; set; }
+    public DateTime? FailedAt { get; set; }
 }
 
 public sealed class GiftCardPurchase

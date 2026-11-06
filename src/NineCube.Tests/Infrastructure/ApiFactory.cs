@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         Environment.SetEnvironmentVariable("Jwt__Issuer", Issuer);
         Environment.SetEnvironmentVariable("Jwt__Audience", Audience);
         Environment.SetEnvironmentVariable("Seed__Enabled", "false");
+        Environment.SetEnvironmentVariable("Email__Smtp__Host", "test-smtp.invalid");
     }
 
     public string DatabaseMode => Database.Mode;
@@ -59,8 +61,19 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
             ["Jwt:SigningKey"] = SigningKey,
             ["Jwt:Issuer"] = Issuer,
             ["Jwt:Audience"] = Audience,
-            ["Seed:Enabled"] = "false"
+            ["Seed:Enabled"] = "false",
+            ["Email:Smtp:Host"] = "test-smtp.invalid"
         }));
+
+        // The email worker is not hosted in the Testing environment, but the email tests drive
+        // single batches through it, so it is registered as a plain service here with a scripted
+        // sender. Nothing else in the pipeline sends SMTP directly; delivery is outbox-only.
+        builder.ConfigureTestServices(services =>
+        {
+            services.AddSingleton<FakeEmailSender>();
+            services.AddSingleton<NineCube.Application.Abstractions.IEmailSender>(sp => sp.GetRequiredService<FakeEmailSender>());
+            services.AddSingleton<NineCube.Infrastructure.Email.EmailDeliveryWorker>();
+        });
     }
 
     // ------------------------------------------------------------------ data helpers
@@ -71,6 +84,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         await db.Notifications.ExecuteDeleteAsync();
+        await db.EmailDeliveries.ExecuteDeleteAsync();
         await db.ChatMessages.ExecuteDeleteAsync();
         await db.ChatConversations.ExecuteDeleteAsync();
         await db.Addresses.ExecuteDeleteAsync();

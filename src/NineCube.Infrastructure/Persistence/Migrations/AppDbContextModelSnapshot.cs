@@ -624,10 +624,16 @@ namespace NineCube.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("FailedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("LeaseUntil")
                         .HasColumnType("timestamp with time zone");

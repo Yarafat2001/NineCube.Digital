@@ -65,6 +65,7 @@ public static class DependencyInjection
                 configuration["Products:PublicPrefix"] ?? "/uploads"));
         }
         services.AddScoped<IEmailSender, NineCube.Infrastructure.Email.SmtpEmailSender>();
+        services.Configure<NineCube.Infrastructure.Email.EmailWorkerOptions>(configuration.GetSection("Email:Worker"));
         if (!environment.IsEnvironment("Testing")) services.AddHostedService<NineCube.Infrastructure.Email.RestockWorker>();
         if (!environment.IsEnvironment("Testing")) services.AddHostedService<NineCube.Infrastructure.Email.EmailDeliveryWorker>();
         if (!environment.IsEnvironment("Testing")) services.AddHostedService<NineCube.Infrastructure.Email.ReservationWorker>();
