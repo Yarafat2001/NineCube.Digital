@@ -473,16 +473,16 @@ export function ProductsPage() {
         </nav>
       ) : null}
 
-      {/* Mobile Toolbar: Quick Filter trigger & Quick Sort */}
+      {/* Mobile Toolbar: Unified Filter trigger, Sort selector & Item count */}
       <div className="catalogue-mobile-toolbar">
         <button
           type="button"
           className="btn btn--sm catalogue-mobile-toolbar__btn"
           onClick={() => document.dispatchEvent(new CustomEvent('ninecube:open-filters'))}
-          aria-label={t("Filter products")}
+          aria-label={t(`Filters (${chips.length})`)}
         >
           <Icon name="grid" width={14} height={14} />
-          <span>{t("Filter")}</span>
+          <span>{t("Filters")}</span>
           {chips.length > 0 ? <span className="toolbar-badge">{chips.length}</span> : null}
         </button>
 
@@ -495,25 +495,26 @@ export function ProductsPage() {
             onChange={e => changeFilters({ sort: e.target.value || null })}
             aria-label={t("Sort by")}
           >
-            <option value="">{t("Sort: Name")}</option>
-            <option value="price">{t("Sort: Price Low-High")}</option>
-            <option value="stock">{t("Sort: Stock High-Low")}</option>
-            <option value="newest">{t("Sort: Newest")}</option>
+            <option value="">{t("Featured / Default")}</option>
+            <option value="price">{t("Price low to high")}</option>
+            <option value="stock">{t("Stock high to low")}</option>
+            <option value="newest">{t("Newest")}</option>
           </select>
         </div>
 
-        <span className="catalogue-mobile-toolbar__count muted">
+        <span className="catalogue-mobile-toolbar__count">
           {productsQuery.data?.totalCount ?? 0} {t("items")}
         </span>
       </div>
 
-      <div className="filter-chips filter-chips--active" aria-label={t("Active filters")} hidden={chips.length === 0}>
-        <span className="active-filters-label">{t("Active filters:")}</span>
-        {chips.map(chip => (
-          <button className="filter-chip" type="button" key={chip.key} onClick={() => changeFilters(chip.clear)}
-            aria-label={t(`Remove ${chip.label} filter`)}>{t(chip.label)} <span aria-hidden="true">{t("×")}</span></button>
-        ))}
-        {chips.length > 0 ? (
+      {/* Active Filter Chips: Only rendered when at least 1 filter is active */}
+      {chips.length > 0 ? (
+        <div className="filter-chips filter-chips--active" aria-label={t("Active filters")}>
+          <span className="active-filters-label">{t("Active filters:")}</span>
+          {chips.map(chip => (
+            <button className="filter-chip" type="button" key={chip.key} onClick={() => changeFilters(chip.clear)}
+              aria-label={t(`Remove ${chip.label} filter`)}>{t(chip.label)} <span aria-hidden="true">{t("×")}</span></button>
+          ))}
           <button
             type="button"
             className="filter-chip filter-chip--clear-all"
@@ -522,8 +523,8 @@ export function ProductsPage() {
           >
             {t("Clear all filters")} <span aria-hidden="true">↺</span>
           </button>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
 
       <div className={`catalogue-layout${canOrder ? " catalogue-layout--cart-on-demand" : ""}`}>
         <CategoryFilters tree={tree} tags={tagsQuery.data ?? []} loading={categoriesQuery.isLoading} params={params} change={changeFilters} />

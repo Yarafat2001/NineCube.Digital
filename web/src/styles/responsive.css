@@ -1512,74 +1512,111 @@ main .link-button:is(:hover, :focus-visible, :active),
   color: #111827;
 }
 
-/* Mobile Catalogue Toolbar (Filter & Sort) */
+/* ==========================================================================
+   Mobile Catalogue Unified Control Bar (Filter & Sort)
+   ========================================================================== */
 .catalogue-mobile-toolbar {
   display: none;
 }
 
 @media (max-width: 768px) {
+  /* Hide redundant desktop toolbar, separate filter trigger, and live message on mobile */
+  .catalogue-toolbar,
+  .category-filter-trigger,
+  .catalogue-live-message {
+    display: none !important;
+  }
+
   .catalogue-mobile-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 8px 12px;
-    margin-bottom: 12px;
-    border-radius: var(--radius-lg, 12px);
-    background: var(--surface-muted, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--border);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    padding: 6px 10px !important;
+    margin: 6px 0 12px !important;
+    border-radius: var(--radius-pill, 9999px) !important;
+    background: var(--surface-glass, rgba(255, 255, 255, 0.7)) !important;
+    backdrop-filter: blur(16px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    box-sizing: border-box !important;
+  }
+
+  :root[data-theme='dark'] .catalogue-mobile-toolbar {
+    background: rgba(24, 24, 27, 0.75) !important;
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
   }
 
   .catalogue-mobile-toolbar__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 36px;
-    padding: 0 14px;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: 700;
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    color: var(--text);
-    cursor: pointer;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 14px !important;
+    border-radius: var(--radius-pill, 9999px) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border-strong) !important;
+    color: var(--text) !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    transition: background var(--transition-fast), transform var(--transition-fast) !important;
+  }
+
+  .catalogue-mobile-toolbar__btn:active {
+    transform: scale(0.97) !important;
   }
 
   .toolbar-badge {
-    min-width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--accent, #d97706);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    display: inline-grid;
-    place-items: center;
-    padding: 0 4px;
+    min-width: 19px !important;
+    height: 19px !important;
+    border-radius: 999px !important;
+    background: var(--accent-gradient, linear-gradient(135deg, #FFB020, #F59E0B)) !important;
+    color: #111827 !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    padding: 0 5px !important;
+    box-shadow: 0 1px 4px rgba(245, 158, 11, 0.4) !important;
   }
 
   .catalogue-mobile-toolbar__sort {
-    flex: 1;
-    max-width: 170px;
+    flex: 1 1 auto !important;
+    max-width: 180px !important;
+    min-width: 120px !important;
   }
 
   .catalogue-mobile-toolbar__select {
-    width: 100%;
-    min-height: 36px;
-    padding: 0 10px;
-    border-radius: 9999px;
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    color: var(--text);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
+    width: 100% !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 12px !important;
+    border-radius: var(--radius-pill, 9999px) !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border-strong) !important;
+    color: var(--text) !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    outline: none !important;
   }
 
   .catalogue-mobile-toolbar__count {
-    font-size: 11px;
-    white-space: nowrap;
-    align-self: center;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    color: var(--text-muted) !important;
+    white-space: nowrap !important;
+    align-self: center !important;
+    padding: 4px 10px !important;
+    background: var(--surface-sunken) !important;
+    border-radius: var(--radius-pill, 9999px) !important;
+    border: 1px solid var(--border) !important;
   }
 }
 
@@ -1700,6 +1737,11 @@ main .link-button:is(:hover, :focus-visible, :active),
    Active Filters Single-Row Horizontal Swipe Rail (<= 768px)
    ========================================================================== */
 @media (max-width: 768px) {
+  .filter-chips--active:empty,
+  .filter-chips--active[hidden] {
+    display: none !important;
+  }
+
   .filter-chips--active {
     display: flex !important;
     flex-wrap: nowrap !important;
