@@ -1,8 +1,9 @@
 import { apiRequest } from '../api/client';
 import { OrderAftercare } from '../components/OrderAftercare';
+import { PaymentOutcomeBanner } from '../components/PaymentOutcomeBanner';
 import { t, useLanguage } from '../i18n/language';
 import { useRef, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useOrder, useOrderAction, useOrders } from '../api/hooks';
 import type { Product, Order, OrderStatus } from '../api/types';
 import {
@@ -20,6 +21,7 @@ import { useCart } from '../state/CartContext';
 import { PaymentActions } from '../components/PaymentActions';
 import { DeliveryManagement } from '../components/DeliveryManagement';
 import { AccountSection } from '../components/AccountNav';
+import { RequireRole } from '../components/guards';
 
 const STATUS_FILTERS: (OrderStatus | '')[] = ['', 'Pending', 'Confirmed', 'Shipped', 'Delivered', 'DeliveryFailed', 'Rejected', 'Cancelled'];
 
@@ -268,6 +270,7 @@ export function OrderDetailPage() {
         </div>
       </header>
 
+      <PaymentOutcomeBanner />
       <OrderTimeline order={order} />
       <DeliveryManagement order={order} />
       <OrderAftercare order={order} />
@@ -409,6 +412,25 @@ export function OrderDetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+/**
+ * Guest orders are claimed on a guest session, not a user account, so the marker check must run
+ * before the role guard: an unauthenticated guest would otherwise bounce to /login.
+ */
+export function OrderDetailRoute() {
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+
+  if (sessionStorage.getItem(`ninecube.guest.order.${id}`)) {
+    const payment = searchParams.get('payment');
+    return <Navigate replace to={`/guest/orders/${id}${payment ? `?payment=${encodeURIComponent(payment)}` : ''}`} />;
+  }
+
+  return (
+    <RequireRole roles={['Customer', 'Staff', 'Administrator']}>
+      <OrderDetailPage />
+    </RequireRole>
   );
 }
 

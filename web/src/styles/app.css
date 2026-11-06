@@ -7430,3 +7430,42 @@ body[data-overlay-open='true'] {
     border-color: transparent;
   }
 }
+
+/* ------------------------------------------------- payment outcome banner ----- */
+
+.payment-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  margin: var(--space-3) 0;
+}
+.payment-banner p { margin: 0; }
+.payment-banner__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+.payment-banner--ok {
+  background: var(--ok-bg, var(--ok-tint));
+  color: var(--ok-text, var(--ok));
+  border-color: var(--ok-border, currentColor);
+}
+.payment-banner--ok .payment-banner__mark { background: currentColor; color: var(--ok-bg, var(--ok-tint)); }
+.payment-banner--warn {
+  background: var(--warn-bg, var(--warn-tint));
+  color: var(--warn-text, var(--warn));
+  border-color: var(--warn-border, currentColor);
+}
+.payment-banner--warn .payment-banner__mark { background: currentColor; color: var(--warn-bg, var(--warn-tint)); }
+.payment-banner--neutral { background: var(--neutral-tint); }
+.payment-banner--neutral .payment-banner__mark { background: var(--text); color: var(--neutral-tint); }

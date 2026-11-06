@@ -8,6 +8,7 @@ import type { Order } from '../api/types';
 import { ErrorState, LoadingBlock, StatusBadge } from '../components/ui';
 import { formatMoney } from '../lib/helpers';
 import { PaymentActions } from '../components/PaymentActions';
+import { PaymentOutcomeBanner } from '../components/PaymentOutcomeBanner';
 import { t, useLanguage } from '../i18n/language';
 
 export function GuestOrderPage() {
@@ -24,6 +25,7 @@ export function GuestOrderPage() {
   return <div className="page container stack">
     <h1>{t('Order #')}{order.id}</h1>
     <StatusBadge status={order.status} />
+    <PaymentOutcomeBanner />
     <p>{t('Payment')}: {order.paymentStatus ?? 'Unpaid'}</p>
     <ul>{order.items.map(item => <li key={item.id}>{item.name} × {item.quantity} — {formatMoney(item.lineTotal, order.currency)}</li>)}</ul>
     <strong>{t('Total')}: {formatMoney(order.totalAmount, order.currency)}</strong>

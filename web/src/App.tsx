@@ -20,7 +20,7 @@ const ProductsPage = lazy(() => import('./pages/ProductsPage').then((module) => 
 const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage').then((module) => ({ default: module.ProductDetailPage })));
 const MyOrdersPage = lazy(() => import('./pages/OrdersPages').then((module) => ({ default: module.MyOrdersPage })));
 const WishlistPage = lazy(() => import('./pages/WishlistPage').then((module) => ({ default: module.WishlistPage })));
-const OrderDetailPage = lazy(() => import('./pages/OrdersPages').then((module) => ({ default: module.OrderDetailPage })));
+const OrderDetailRoute = lazy(() => import('./pages/OrdersPages').then((module) => ({ default: module.OrderDetailRoute })));
 const StaffPage = lazy(() => import('./pages/StaffPage').then((module) => ({ default: module.StaffPage })));
 const SalesSummaryPage = lazy(() => import('./pages/StaffPage').then((module) => ({ default: module.SalesSummaryPage })));
 const InvoicePage = lazy(() => import('./pages/StaffPage').then((module) => ({ default: module.InvoicePage })));
@@ -34,7 +34,6 @@ const GuestOrderPage = lazy(() => import('./pages/GuestOrderPage').then(module =
 const CustomerCarePage = lazy(() => import('./pages/CustomerCarePage').then(module => ({ default: module.CustomerCarePage })));
 const StorePolicyPage = lazy(() => import('./pages/CustomerCarePage').then(module => ({ default: module.StorePolicyPage })));
 
-const PaymentReturnPage = lazy(() => import('./pages/PaymentReturnPage').then(m => ({ default: m.PaymentReturnPage })));
 const GuestRecoveryPage = lazy(() => import('./pages/GuestRecoveryPage').then(m => ({ default: m.GuestRecoveryPage })));
 const OperationsPage = lazy(() => import('./pages/OperationsPage').then(m => ({ default: m.OperationsPage })));
 const SecurityPage = lazy(() => import('./pages/SecurityPage').then(m => ({ default: m.SecurityPage })));
@@ -114,11 +113,7 @@ export function App() {
 
             <Route
               path="/orders/:id"
-              element={
-                <RequireRole roles={['Customer', 'Staff', 'Administrator']}>
-                  <OrderDetailPage />
-                </RequireRole>
-              }
+              element={<OrderDetailRoute />}
             />
 
             <Route
@@ -195,7 +190,6 @@ export function App() {
 
             <Route path="/gift-cards" element={<GiftCardsPage />} />
             <Route path="/operations" element={<RequireRole roles={['Staff', 'InventoryManager', 'Administrator']}><OperationsPage /></RequireRole>} />
-            <Route path="/payment/return" element={<PaymentReturnPage />} />
             <Route path="/guest/recover" element={<GuestRecoveryPage />} />
             <Route path="/account/security" element={<RequireAuth><SecurityPage /></RequireAuth>} />
             <Route path="/guest/orders/:id" element={<GuestOrderPage />} />

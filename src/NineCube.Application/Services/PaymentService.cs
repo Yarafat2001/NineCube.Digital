@@ -11,6 +11,7 @@ public interface IPaymentService
     Task<PaymentTransactionDto> ProcessPaymentAsync(ProcessPaymentRequest request, CancellationToken ct = default);
     Task<PaymentTransactionDto> ProcessCallbackAsync(PaymentCallbackRequest request, CancellationToken ct = default);
     Task<IReadOnlyList<PaymentTransactionDto>> GetOrderTransactionsAsync(int orderId, CancellationToken ct = default);
+    Task<int?> FindOrderIdByReferenceAsync(string transactionReference, CancellationToken ct = default);
 }
 
 public sealed class PaymentService(IAppDbContext db, ICurrentUser currentUser, IClock clock,
@@ -147,6 +148,15 @@ public sealed class PaymentService(IAppDbContext db, ICurrentUser currentUser, I
         await AccessibleOrderAsync(orderId, false, ct);
         return (await db.PaymentTransactions.AsNoTracking().Where(t => t.OrderId == orderId)
             .OrderByDescending(t => t.CreatedAt).ToListAsync(ct)).Select(t => Dto(t)).ToList();
+    }
+
+    public async Task<int?> FindOrderIdByReferenceAsync(string transactionReference, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(transactionReference)) return null;
+        return await db.PaymentTransactions.AsNoTracking()
+            .Where(t => t.TransactionReference == transactionReference)
+            .Select(t => (int?)t.OrderId)
+            .FirstOrDefaultAsync(ct);
     }
 
     private static PaymentTransactionDto Dto(PaymentTransaction t, string? redirect = null) =>

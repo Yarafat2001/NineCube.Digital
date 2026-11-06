@@ -1,8 +1,10 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -223,6 +225,97 @@ public sealed class CommerceHttpTests(CommerceHttpFixture fixture) : IClassFixtu
         using var response = await fixture.Client.SendAsync(request);
         response.EnsureSuccessStatusCode();
         return (await response.Content.ReadFromJsonAsync<OrderDto>(JsonOptions))!;
+    }
+
+    // ------------------------------------------------------- payment callback (Phase 1.1)
+
+    private async Task<(int OrderId, string Reference)> SeedPayableOrderAsync()
+    {
+        using var scope = fixture.Factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var reference = $"TXN-{Guid.NewGuid():N}"[..25];
+        var now = DateTime.UtcNow;
+        var customer = new Customer { Name = "Callback buyer", Email = $"callback-{Guid.NewGuid():N}@example.test", CreatedAt = now };
+        var order = new Order { Customer = customer, Currency = "BDT", TotalAmount = 1060, SubTotal = 1000,
+            ShippingAmount = 60, CreatedAt = now, UpdatedAt = now };
+        db.PaymentTransactions.Add(new PaymentTransaction { Order = order, Amount = 1060, Currency = "BDT",
+            Provider = PaymentMethod.Card, TransactionReference = reference, Status = PaymentStatus.Pending, CreatedAt = now });
+        await db.SaveChangesAsync();
+        return (order.Id, reference);
+    }
+
+    [Fact]
+    public async Task BrowserCallbackWithVerifiedPaymentRedirects303ToTheOrderPage()
+    {
+        var (orderId, reference) = await SeedPayableOrderAsync();
+        using var host = fixture.Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+            services.AddScoped<IPaymentGateway>(_ => new CallbackGateway(new(reference, 1060, "BDT", true, false)))));
+        using var client = host.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+        using var response = await client.GetAsync("/api/payments/callback?val_id=v");
+        Assert.Equal(HttpStatusCode.SeeOther, response.StatusCode);
+        Assert.True(response.Headers.Location!.AbsoluteUri.EndsWith($"/#/orders/{orderId}?payment=success", StringComparison.Ordinal),
+            $"unexpected Location: {response.Headers.Location}");
+    }
+
+    [Fact]
+    public async Task GatewayIpnPostGetsA200WithoutRedirect()
+    {
+        var (orderId, reference) = await SeedPayableOrderAsync();
+        using var host = fixture.Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+            services.AddScoped<IPaymentGateway>(_ => new CallbackGateway(new(reference, 1060, "BDT", true, false)))));
+        using var client = host.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        using var response = await client.PostAsync("/api/payments/callback",
+            new FormUrlEncodedContent(new Dictionary<string, string> { ["val_id"] = "v", ["tran_id"] = reference, ["status"] = "VALID" }));
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Null(response.Headers.Location);
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(orderId, body.GetProperty("orderId").GetInt32());
+    }
+
+    [Fact]
+    public async Task BrowserCancelledCallbackRedirects303ToTheOrderPage()
+    {
+        var (orderId, reference) = await SeedPayableOrderAsync();
+        using var host = fixture.Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+            services.AddScoped<IPaymentGateway>(_ => new CallbackGateway(new(reference, 1060, "BDT", true, false)))));
+        using var client = host.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+        using var response = await client.GetAsync($"/api/payments/callback?tran_id={Uri.EscapeDataString(reference)}&status=CANCELLED");
+        Assert.Equal(HttpStatusCode.SeeOther, response.StatusCode);
+        Assert.True(response.Headers.Location!.AbsoluteUri.EndsWith($"/#/orders/{orderId}?payment=cancelled", StringComparison.Ordinal),
+            $"unexpected Location: {response.Headers.Location}");
+    }
+
+    [Fact]
+    public async Task BrowserFailedCallbackWithUnknownReferenceRedirectsToTheOrdersList()
+    {
+        using var host = fixture.Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+            services.AddScoped<IPaymentGateway>(_ => new CallbackGateway(new("ref", 1060, "BDT", true, false)))));
+        using var client = host.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
+        using var response = await client.GetAsync("/api/payments/callback?tran_id=does-not-exist&status=FAILED");
+        Assert.Equal(HttpStatusCode.SeeOther, response.StatusCode);
+        Assert.True(response.Headers.Location!.AbsoluteUri.EndsWith("/#/orders?payment=failed", StringComparison.Ordinal),
+            $"unexpected Location: {response.Headers.Location}");
+    }
+
+    [Fact]
+    public async Task NonBrowserCallbackWithoutValidationIdIsRejected()
+    {
+        using var host = fixture.Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
+            services.AddScoped<IPaymentGateway>(_ => new CallbackGateway(new("ref", 1060, "BDT", true, false)))));
+        using var client = host.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        using var response = await client.GetAsync("/api/payments/callback");
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    private sealed class CallbackGateway(VerifiedPayment payment) : IPaymentGateway
+    {
+        public bool IsConfigured => true;
+        public Task<GatewaySession> CreateSessionAsync(Order order, string reference, CancellationToken ct) =>
+            Task.FromResult(new GatewaySession("https://sandbox.sslcommerz.com/checkout"));
+        public Task<VerifiedPayment> VerifyAsync(string id, CancellationToken ct) => Task.FromResult(payment);
     }
 }
 

@@ -1,5 +1,74 @@
 # FIX_REPORT
 
+# Phase 1, item 1.1 - payment returns land on the real order page with a 303, the IPN gets its 200 back, and the outcome is announced in both languages
+
+Date: 2026-11-06. From the master task, in your words: "Payment callback: browser callbacks
+303-redirect to {Frontend:BaseUrl}/orders/{id}?payment=success|failed|cancelled. IPN stays server-to-server
+(200, no redirect). Confirm payment server-side via the SSLCommerz validation API, never from redirect params.
+The base URL comes from config only (no open redirect). The order page shows a localized banner."
+
+## What the probe measured before the change
+
+The callback endpoint was read against the requirement line by line, and each branch was then exercised
+through the real HTTP pipeline (a test host with the gateway replaced by a verified fake, redirects not
+followed so the status and Location could be read raw).
+
+| surface | before | after |
+| --- | --- | --- |
+| the IPN, server to server | the gateway's form POST matched the "browser" check (form content type counted as a browser) and got a 302 redirect to a dead SPA page - the one response an IPN must never receive | browser detection is Accept-only, so the IPN POST gets 200 with `{ orderId, status }` and no Location header; a new test pins that contract |
+| a verified browser return | 302 Found to `/payment/return?order=...&payment=success`, a shim page with strings missing from the Bengali catalogue | 303 See Other to `{Frontend:BaseUrl}/orders/{id}?payment=success` - the base URL comes only from the app config, the target is a relative path under it, and the order page shows a green "Payment received" banner |
+| a failed or cancelled return | 302 to `/payment/return?payment=failed` with no order id at all, so the buyer landed on a page with no order and no retry path | the transaction reference resolves the order id from the payment transaction table and the 303 goes to `/orders/{id}?payment=failed` (or `cancelled`); a reference the server does not know goes to the orders list, never to a value taken from the query string |
+| the banner itself | the dead `/payment-return` shim page and its route | a shared `PaymentOutcomeBanner` on the order page and the guest order page: success / failed / cancelled, each with a tone, a mark and text, all three sentences in EN and BN with the i18n check enforcing them |
+| a guest buyer returning | landing on `/orders/{id}` bounced to the sign-in page because the route sits behind the role guard, even though the order was placed as a guest | the guest marker is checked before the role guard and the buyer is carried to the guest order page with the `?payment` outcome intact |
+| server-side confirmation | already correct - the callback re-verifies `val_id` against the SSLCommerz validation API and never trusts the redirect params | unchanged, and now pinned by a test that observes the verified transaction |
+
+## What changed and why
+
+The requirement audit showed two of the five demands were already met - payment confirmation is
+server-side (`validationserverAPI.php?val_id=...`) and the redirect base comes only from
+`StorefrontOptions.Link` with an absolute-URL check - so those were left alone and pinned with tests
+instead of rebuilt.
+
+The real defects were the redirect itself and its target. `Results.Redirect` sends 302 and its
+permanent/preserveMethod matrix only covers 301/302/307/308, so the spec's 303 is written by hand -
+a small `SeeOtherResult` that sets `Status303SeeOther` and the `Location` header. The target moved
+from the dead `/payment/return` shim to the order page the buyer actually needs:
+`/orders/{id}?payment=...`, where a new `PaymentOutcomeBanner` reads the parameter and shows one of
+three localized states. Failed and cancelled returns resolve the order id through the payment
+transaction reference (with the orders list as the honest fallback when the reference is unknown),
+which is why `FindOrderIdByReferenceAsync` was added to the payment service.
+
+The IPN fix was one condition: form content type no longer counts as a browser, so the
+server-to-server POST gets its plain 200 JSON with no redirect. A failure during callback processing
+redirects a browser to the failed outcome instead of the old `payment=error` shim, while the IPN still
+gets the exception re-thrown so the gateway retries.
+
+The shim page (`PaymentReturnPage`) and its route were deleted. The guest path mattered because
+`/orders/:id` sits behind the role guard, which would bounce an unsigned-in guest to sign-in even though
+their order lives in the guest flow: the marker check now runs first in an `OrderDetailRoute` wrapper.
+
+## Tests that keep it honest
+
+`src/NineCube.Tests/CommerceHttpTests.cs` (5 new): the verified browser callback answers 303 with
+`Location` ending in `/orders/{id}?payment=success`; the gateway IPN POST gets 200 with no Location; the
+cancelled browser callback 303s to the order page with `payment=cancelled`; a failed callback with an
+unknown reference 303s to the orders list; and a non-browser request without a validation id is rejected
+400.
+
+`web/src/test/payment-banner.test.tsx` (9 new): the three banner states on `/orders/500` with their text,
+silence without a `payment` param and with an unknown one, the guest reroute (marker + guest-order
+fetch → guest page with the banner and the recovery link), and the contract reads of
+`PaymentEndpoints.cs` (303 helper, Accept-only detection, the two redirect targets) and the three banner
+tones in `app.css`.
+
+Full gate: 52 test files, 405 tests green; tsc clean; the i18n catalogue holds 2,354 entries with the
+three banner sentences; the Release build is clean and the two Playwright specs pass against the preview
+build. The backend suite for this item ran against a real Postgres in Testcontainers. A live browser
+probe confirmed the banner on the order page at 1440 (light) and 390 (dark) with the Bengali text
+switching in, a marker-less guest still bouncing to sign-in, and a marked guest landing on
+`#/guest/orders/500?payment=success` with the banner intact - 0 console errors across all five runs. As
+always the API redeploy stays with you - the SPA ships through the Pages workflow.
+
 # Round 31 - a public corner assistant that any visitor can talk to, a support chat that answers common questions from the store's own policy pages, and a home sign-in strip with an animated welcome
 
 Date: 2026-11-06. Brief, in your words: "In the home page I want AI assist chat as public not signin and register

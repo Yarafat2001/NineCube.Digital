@@ -81,9 +81,7 @@ public sealed class PaymentEndpoints : IEndpoint
             validationId = json?.ValidationId;
         }
 
-        var isBrowser = request.Headers.Accept.Any(a => a?.Contains("text/html") == true)
-            || request.HasFormContentType;
-
+        var isBrowser = request.Headers.Accept.Any(a => a?.Contains("text/html") == true);
 
         try
         {
@@ -92,19 +90,15 @@ public sealed class PaymentEndpoints : IEndpoint
                 var transaction = await paymentService.ProcessCallbackAsync(new PaymentCallbackRequest(validationId), ct);
                 if (isBrowser)
                 {
-                    return Results.Redirect(storefront.Value.Link($"payment/return?order={transaction.OrderId}&payment=success"));
+                    return SeeOther(storefront.Value.Link($"orders/{transaction.OrderId}?payment=success"));
                 }
                 return TypedResults.Ok(new { transaction.OrderId, transaction.Status, message = "Payment verified. You can return to your order." });
             }
 
             if (isBrowser)
             {
-                var outcome = status?.ToUpperInvariant() switch
-                {
-                    "CANCELLED" => "cancelled",
-                    _ => "failed"
-                };
-                return Results.Redirect(storefront.Value.Link($"payment/return?payment={outcome}"));
+                var outcome = status?.ToUpperInvariant() == "CANCELLED" ? "cancelled" : "failed";
+                return SeeOther(storefront.Value.Link(await BrowserTargetAsync(paymentService, tranId, outcome, ct)));
             }
 
             return TypedResults.BadRequest(new { error = "missing_val_id", message = "No validation identifier provided." });
@@ -113,10 +107,36 @@ public sealed class PaymentEndpoints : IEndpoint
         {
             if (isBrowser)
             {
-                return Results.Redirect(storefront.Value.Link("payment/return?payment=error"));
+                return SeeOther(storefront.Value.Link(await BrowserTargetAsync(paymentService, tranId, "failed", ct)));
             }
             throw;
         }
+    }
+
+    // Browsers carry text/html in Accept on every navigation, including the gateway's form POST back to
+    // the store; the gateway's own IPN POST carries no such header, so it always gets the plain 200.
+    // Results.Redirect cannot emit 303 (its matrix is 301/302/307/308), so See Other is written by hand.
+    private static IResult SeeOther(string url) => new SeeOtherResult(url);
+
+    private sealed class SeeOtherResult(string url) : IResult
+    {
+        public Task ExecuteAsync(HttpContext httpContext)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status303SeeOther;
+            httpContext.Response.Headers.Location = url;
+            return Task.CompletedTask;
+        }
+    }
+
+    private static async Task<string> BrowserTargetAsync(IPaymentService paymentService, string? tranId, string outcome, CancellationToken ct)
+    {
+        int? orderId = null;
+        if (!string.IsNullOrWhiteSpace(tranId))
+        {
+            try { orderId = await paymentService.FindOrderIdByReferenceAsync(tranId, ct); }
+            catch (Exception ex) when (ex is not OperationCanceledException) { orderId = null; }
+        }
+        return orderId is int id ? $"orders/{id}?payment={outcome}" : $"orders?payment={outcome}";
     }
 
     public static async Task<Results<Ok<IReadOnlyList<PaymentTransactionDto>>, ProblemHttpResult>> GetOrderTransactionsAsync(

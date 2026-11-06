@@ -2349,5 +2349,8 @@
   "Chat with me": "আমার সাথে চ্যাট করুন",
   "Welcome to NineCube": "NineCube-এ স্বাগতম",
   "Automated answer": "স্বয়ংক্রিয় উত্তর",
-  "The assistant is not available right now. Please try again in a moment.": "সহকারী এখন উপলব্ধ নেই। একটু পরে আবার চেষ্টা করুন।"
+  "The assistant is not available right now. Please try again in a moment.": "সহকারী এখন উপলব্ধ নেই। একটু পরে আবার চেষ্টা করুন।",
+  "Payment received — your order is being processed.": "পেমেন্ট গৃহীত হয়েছে — আপনার অর্ডার প্রক্রিয়াধীন।",
+  "Payment failed. You can retry from your order.": "পেমেন্ট ব্যর্থ হয়েছে। আপনার অর্ডার থেকে আবার চেষ্টা করতে পারবেন।",
+  "Payment was cancelled. You can retry from your order.": "পেমেন্ট বাতিল করা হয়েছে। আপনার অর্ডার থেকে আবার চেষ্টা করতে পারবেন।"
 }
