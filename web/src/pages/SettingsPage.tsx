@@ -105,14 +105,14 @@ export function SettingsPage() {
                 className={`btn ${language === 'en' ? 'btn--primary' : 'btn--ghost'}`}
                 onClick={() => setLanguage('en')}
               >
-                English (US)
+                {t("English (US)")}
               </button>
               <button
                 type="button"
                 className={`btn ${language === 'bn' ? 'btn--primary' : 'btn--ghost'}`}
                 onClick={() => setLanguage('bn')}
               >
-                বাংলা (Bengali)
+                {t("বাংলা (Bengali)")}
               </button>
             </div>
           </section>
