@@ -32,7 +32,9 @@ describe('Modern customer controls', () => {
     expect(menu.closest('nav')).toBeNull();
     expect(within(menu).getByRole('menuitem', { name: 'Dashboard' })).toHaveFocus();
     await user.keyboard('{End}'); expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toHaveFocus();
-    await user.keyboard('{Home}{ArrowDown}'); expect(within(menu).getByRole('menuitem', { name: 'Profile' })).toHaveFocus();
+    // Round 32 trimmed the panel to two rows: the arrow key must wrap, not run off the end.
+    await user.keyboard('{ArrowDown}'); expect(within(menu).getByRole('menuitem', { name: 'Dashboard' })).toHaveFocus();
+    await user.keyboard('{Home}{ArrowDown}'); expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toHaveFocus();
     await user.keyboard('{Escape}'); expect(screen.queryByRole('menu')).not.toBeInTheDocument(); expect(trigger).toHaveFocus();
     await user.click(trigger);
     // The dashboard heading appears once the account data lands; the outside-click waits for it.

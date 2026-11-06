@@ -369,15 +369,10 @@ export function AccountMenu() {
   }, [pop.open]);
 
   if (!user) return null;
+  // The account surfaces own the destination list - the rail beside every account page, the hub list on the
+  // dashboard. This panel is who I am and how I leave, so it links the account home and nothing else.
   const items: { to: string; label: string; icon: IconName }[] = [
-    { to: '/account', label: 'Dashboard', icon: 'grid' },
-    { to: '/account/profile', label: 'Profile', icon: 'user' },
-    ...(user.role === 'Customer' ? [
-      { to: '/orders', label: 'My Orders', icon: 'box' as const },
-      { to: '/wishlist', label: 'Wishlist', icon: 'heart' as const },
-      { to: '/gift-cards', label: 'Gift Cards', icon: 'wallet' as const }
-    ] : []),
-    { to: '/notifications', label: 'Notifications', icon: 'bell' }
+    { to: '/account', label: 'Dashboard', icon: 'grid' }
   ];
 
   const menuItems = (

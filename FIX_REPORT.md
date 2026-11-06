@@ -254,6 +254,91 @@ What I did not touch: the Phase B tidy-ups you listed as not urgent (the per-req
 inventory page's per-row email subquery, the lowercase email lookups), and the catalogue, product detail, order,
 dashboard, sales-summary and notification queries you said to leave alone.
 
+# Round 32 - the avatar menu stops being a third copy of the account destination list
+
+Date: 2026-11-06. Reported from three screenshots, in your words: "under the profile bar from the navbar same
+type duplication page link in the both top hover bar page; Dashboard pages and sidebar also. So here what will
+be the solution for your suggestion?" You then asked for the best option, and approved it with "Ok apply
+properly": the account surfaces own the destination list, and the hover panel keeps identity, one jump to the
+account home, and Log out.
+
+## What the browser measured before the change
+
+The app was served from a detached worktree at HEAD (the before state) and from this working tree (the after
+state) on the same throwaway stub API, opened at 1440 and 390 in both themes, and every destination link was
+read out of each account surface by class, with hidden containers and hidden rows excluded so the count is
+what a shopper actually sees. A destination counts as duplicated when two different surfaces offer it.
+
+| screen | avatar menu rows | destinations also listed by the surface behind it |
+| --- | --- | --- |
+| Dashboard, 1440 dark and light | 6 | 5 - Profile & Addresses, My Orders, Wishlist, Gift Cards, Notifications were each in the menu and in the hub list |
+| Dashboard, 390 dark (the sheet) | 6 | the same 5 |
+| Profile, 1440 dark | 6 | 6 - every menu row was also in the rail beside the page |
+| Profile, 390 light (the sheet) | 6 | the same 6 |
+| after, Dashboard (both widths, both themes) | 1 | 0 |
+| after, Profile (both widths, both themes) | 1 | 1 - the account home, which is the point of the row |
+
+The menu was also role-conditional before: a staff account saw four rows, a customer six, so the same panel
+disagreed with itself depending on who was signed in. It is one list now.
+
+## What changed and why
+
+One file. `web/src/components/AccountMenu.tsx` dropped five entries from its `items` array and the
+`user.role === 'Customer'` branch with it, leaving the Dashboard jump. The panel's header (avatar, name,
+email), the separator and the Log out row are untouched, and because the desktop portal panel and the phone
+bottom sheet render the same `menuItems` block, the trim applies to both without a second edit. The amber
+selected fill on the surviving row is the same control state as before - nothing about the styling moved.
+
+Nothing was removed from the product. Each destination still has exactly one owner: the eight-row rail
+(`AccountNav`) beside the seven inner account pages, and the hub list on the dashboard, which is the
+Alibaba-style list you asked for in Round 30.
+
+Two parts of my own earlier recommendation did not survive contact with the code, and I did not apply them:
+
+- Hiding the dashboard's tile list on desktop would have left the dashboard with no navigation at all. The
+  dashboard never renders the rail - `AccountSection` is used on the inner pages only - so that hub list is
+  the dashboard's own navigation, not a second copy of it. It stays at every width.
+- The phone sheet is now two rows tall. The alternative was to route the sheet through the hub list, which
+  would have meant rebuilding the panel around another component for no gain over the dashboard page it
+  already links to.
+
+## Tests
+
+`web/src/test/account.test.tsx`: the two tests that pinned the old list were replaced. "links only the
+account home and Log out, leaving the destination list to the account surfaces" asserts the panel is exactly
+two rows, then walks the seven destinations the panel dropped and requires each one in the hub list with its
+href - the contract is one owner per destination, not a shorter menu. "shows a staff account the same two
+rows, so no role gets its own copy of the list" replaces the old role-branch test.
+`web/src/test/modern-customer.test.tsx`: the keyboard test followed the trim - `{End}` then `{ArrowDown}` now
+has to wrap back to Dashboard, which is the check that the two-row list is complete rather than truncated.
+
+Both files pass together: 21 tests, 2 files.
+
+## Gate
+
+| check | result |
+| --- | --- |
+| `npm run test:run` (full frontend suite) | **52 files, 405 tests passed** (317 s) |
+| `npm run typecheck` (`tsc --noEmit`) | clean |
+| `npm run build` | built in 19.3 s, no errors |
+| `npm run i18n:check` | passes on the committed tree - run in the detached worktree at HEAD with only these three files copied in, exit 0 |
+
+The i18n check had to be run that way because this working tree is not clean: task #102's uncommitted
+`web/src/pages/ProductsPage.tsx` adds `t("Filters")` at line 485 with no Bengali entry, and that is the only
+line the gate reports. It is not mine to fix and I did not touch that file or `responsive.css`.
+
+## What I did not touch, and one thing for you to decide
+
+No CSS, no routes, no API calls, no auth or payment behaviour, and no other navigation surface. The three
+Playwright specs that open this panel (`modern-customer`, `catalogue-glass`, `order-flow`) only ever assert the
+Dashboard row and Log out, both of which still exist, so they were left as written; they need the live stack and
+your seed password to run, as they always have. The measured phone surfaces still overlap each other in two
+places that this round deliberately left alone: the bottom tab
+bar offers Products and Wishlist, which are also rows in the dashboard hub list, and its Dashboard tab and
+Account tab both go to `/account` for a signed-in shopper, so one tap shortens to the same page either way.
+Those are inside the phone's own navigation rather than between two owners, and changing the tab bar is your
+call - say the word and I will take it as its own round.
+
 # Round 31 - a public corner assistant that any visitor can talk to, a support chat that answers common questions from the store's own policy pages, and a home sign-in strip with an animated welcome
 
 Date: 2026-11-06. Brief, in your words: "In the home page I want AI assist chat as public not signin and register

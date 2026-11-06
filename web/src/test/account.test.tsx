@@ -41,30 +41,43 @@ describe('Header bell and account menu', () => {
     expect(screen.getByRole('button', { name: 'Notifications, 0 unread' })).toBeInTheDocument();
   });
 
-  it('offers the account pages, and My Orders only to a customer', async () => {
+  // Round 32: the avatar menu used to be a third copy of the destination list, so every page it
+  // pointed at appeared twice on screen at once. One owner per destination: the account surfaces
+  // list them, this panel is identity plus the way out.
+  it('links only the account home and Log out, leaving the destination list to the account surfaces', async () => {
     const user = userEvent.setup();
     await signIn();
-    renderApp('/');
+    renderApp('/account');
 
     await user.click(await screen.findByRole('button', { name: 'Account' }));
     const menu = await screen.findByRole('menu', { name: 'Account' });
+    expect(within(menu).getAllByRole('menuitem')).toHaveLength(2);
     expect(within(menu).getByRole('menuitem', { name: 'Dashboard' })).toHaveAttribute('href', '/account');
-    expect(within(menu).getByRole('menuitem', { name: 'Profile' })).toHaveAttribute('href', '/account/profile');
-    expect(within(menu).getByRole('menuitem', { name: 'My Orders' })).toBeInTheDocument();
+    expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
 
-    await user.click(within(menu).getByRole('menuitem', { name: 'Log out' }));
-    expect(await screen.findByRole('heading', { name: /^welcome$/i })).toBeInTheDocument();
+    await user.keyboard('{Escape}');
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+
+    // The destinations are gone from the panel, not from the product: the hub list still owns them.
+    // The hub renders with the dashboard data, so it is waited for rather than assumed.
+    const hub = await screen.findByRole('navigation', { name: 'Account Navigation' });
+    for (const [name, href] of [
+      [/my orders/i, '/orders'], [/wishlist/i, '/wishlist'], [/gift cards/i, '/gift-cards'],
+      [/profile & addresses/i, '/account/profile'], [/account security/i, '/account/security'],
+      [/notifications/i, '/notifications'], [/help & support/i, '/help']
+    ] as const) {
+      expect(within(hub).getByRole('link', { name }), `${href} left the hub`).toHaveAttribute('href', href);
+    }
   });
 
-  it('leaves My Orders out of the menu for a staff account', async () => {
+  it('shows a staff account the same two rows, so no role gets its own copy of the list', async () => {
     const user = userEvent.setup();
     await signIn('Staff');
     renderApp('/');
 
     await user.click(await screen.findByRole('button', { name: 'Account' }));
     const menu = await screen.findByRole('menu', { name: 'Account' });
-    expect(within(menu).queryByRole('menuitem', { name: 'My Orders' })).not.toBeInTheDocument();
-    expect(within(menu).getByRole('menuitem', { name: 'Notifications' })).toBeInTheDocument();
+    expect(within(menu).getAllByRole('menuitem').map(item => item.textContent)).toEqual(['Dashboard', 'Log out']);
   });
 });
 
