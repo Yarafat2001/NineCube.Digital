@@ -68,6 +68,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Fuzzy catalogue search runs over trigram indexes (see the Product index block).
+        modelBuilder.HasPostgresExtension("pg_trgm");
         modelBuilder.Entity<Product>().Property(p => p.UnitCost).HasPrecision(18, 2);
         modelBuilder.Entity<OrderItem>().Property(p => p.UnitCost).HasPrecision(18, 2);
         modelBuilder.Entity<Product>().Property(p => p.VariantLabel).HasMaxLength(100);
@@ -250,6 +252,10 @@ public sealed class AppDbContext : DbContext, IAppDbContext
             e.HasIndex(p => new { p.IsActive, p.Price, p.Id });
             e.HasIndex(p => new { p.IsActive, p.StockQuantity, p.Id });
             e.HasIndex(p => new { p.IsActive, p.CreatedAt, p.Id });
+            // The trigram indexes this search relies on (IX_Products_Name_Trgm, IX_Products_Sku_Trgm,
+            // IX_Products_Description_Trgm) are created by migration AddCatalogSearchTrigramIndexes.
+            // EF will not declare them: two indexes over one column set collapse into each other when
+            // scaffolding, which would drop the btree index the sorts and the unique SKU depend on.
             // Deleting a brand or series must never silently rewrite products.
             e.HasOne(p => p.Brand).WithMany().HasForeignKey(p => p.BrandId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(p => p.ProductLine).WithMany().HasForeignKey(p => p.ProductLineId).OnDelete(DeleteBehavior.Restrict);
