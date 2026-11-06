@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup, configure } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 import { server } from './server';
+import { setLanguage } from '../i18n/language';
 
 // The suites run in parallel with the dev servers and the API on this machine, and a code-split
 // route plus an MSW round trip can comfortably exceed the 1s default. Wait for elements rather
@@ -46,6 +47,7 @@ afterEach(() => {
   server.resetHandlers();
   sessionStorage.clear();
   localStorage.clear();
+  setLanguage('en');
 });
 
 afterAll(() => server.close());

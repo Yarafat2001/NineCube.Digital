@@ -706,6 +706,8 @@ export const handlers = [
   http.get(`${API}/api/restock-subscriptions`, () => HttpResponse.json([])),
   http.post(`${API}/api/restock-subscriptions/:id`, () => HttpResponse.json({ message: 'Saved' })),
   http.get(`${API}/api/categories`, () => HttpResponse.json([])),
+  http.get(`${API}/api/service-cases`, () => HttpResponse.json([])),
+  http.post(`${API}/api/service-cases`, () => HttpResponse.json({ id: 1, message: 'Saved' })),
   http.get(`${API}/api/tags`, () => HttpResponse.json(tags)),
   http.get(`${API}/api/auth/me`, () =>
     HttpResponse.json(problem(401, 'unauthenticated', 'Authentication required.', 'No token.'), { status: 401 })

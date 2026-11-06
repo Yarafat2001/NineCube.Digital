@@ -11,10 +11,10 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   const { user, initialising } = useAuth();
   const location = useLocation();
 
-  if (initialising) return <LoadingBlock label={t("Restoring your session")} variant="tile" count={1} />;
+  if (initialising && !user) return <LoadingBlock label={t("Restoring your session")} variant="tile" count={1} />;
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
 
-  return <>{t(children)}</>;
+  return <>{children}</>;
 }
 
 /**
@@ -27,11 +27,11 @@ export function RequireRole({ roles, children }: { roles: UserRole[]; children: 
   const { user, initialising } = useAuth();
   const location = useLocation();
 
-  if (initialising) return <LoadingBlock label={t("Checking your access")} variant="tile" count={1} />;
+  if (initialising && !user) return <LoadingBlock label={t("Checking your access")} variant="tile" count={1} />;
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   // The catalogue is the one screen every role can read, and it is where the guard's "denied"
   // notice is rendered - so a wrong role lands there rather than on the public showcase.
   if (!roles.includes(user.role)) return <Navigate to="/products" replace state={{ denied: location.pathname }} />;
 
-  return <>{t(children)}</>;
+  return <>{children}</>;
 }

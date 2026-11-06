@@ -94,6 +94,20 @@
      looks where it falls on frosted glass. Only the glow is new; blur, tint and edge are above. */
   --glass-glow: rgba(245, 158, 11, .3);
 
+  /* ---- glass: the lifted orb bar (Round 34) --------------------------------
+     The bar floats over scrolling content, so it frosts harder than a panel beside it does;
+     those two numbers are the phone dock's own, kept out of the rules. The orb is the app's
+     selected amber on its readable ink, and it glides on --orb-glide. The notch itself is not
+     a token: it is a path string assembled in src/lib/orbNotch.ts from one ORB_NOTCH constant,
+     so the clip and the stroke can never drift apart. */
+  --glass-blur-bar: 20px;
+  --glass-saturate-bar: 160%;
+  --orb-size: 36px;
+  --orb-fill: var(--selected-bar);
+  --orb-ink: var(--on-accent);
+  --orb-edge-width: 1.5px;
+  --orb-glide: 450ms;
+
   /* ---- shadows: spec elevation (aliases keep old class names working) --- */
   --neu-light: rgba(255, 255, 255, 0.8);
   --neu-dark: rgba(15, 23, 42, 0.10);
@@ -308,6 +322,9 @@
   --nav-glass-edge: #77859A;
   --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.95), inset 0 -1px 1px rgba(89,108,139,.32), 0 8px 20px rgba(31,49,79,.26), 0 2px 6px rgba(31,49,79,.18);
   --nav-hover: rgba(119,133,154,.2);
+  /* The orb bar casts its shadow through the notch, so the shadow has to be one value a
+     drop-shadow filter can take - the multi-part --nav-glass-shadow above cannot. */
+  --orb-shadow: 0 10px 20px rgba(31, 49, 79, .22);
   /* Page cards, panels and tables keep the gentle material: the bar above them is the one that
      has to stand away from the page, and lifting both at once smeared a blue diagonal over every
      product card. */
@@ -321,6 +338,7 @@
   --nav-glass-edge: rgba(226,237,251,.72);
   --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.45), inset 0 -1px 1px rgba(9,14,24,.55), 0 7px 18px rgba(0,0,0,.48), 0 2px 4px rgba(0,0,0,.3);
   --nav-hover: rgba(224,233,249,.16);
+  --orb-shadow: 0 10px 22px rgba(0, 0, 0, .45);
   --card-glass: linear-gradient(135deg, rgba(179,194,219,.42), rgba(101,117,145,.27) 55%, rgba(66,78,101,.38));
 }
 

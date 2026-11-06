@@ -37,7 +37,7 @@ describe('Round 27: one account nav surface on a phone', () => {
     expect(sidebar).toContain('SIDEBAR_GROUPS.map');
     expect(sidebar).toContain('account-nav-row__badge');
     // The dashboard renders that component and keeps no list of its own.
-    expect(dashboard).toContain('<AccountSidebar');
+    expect(dashboard).toContain('<AccountRail');
     expect(dashboard).not.toContain('account-hub-tile');
     expect(dashboard).not.toContain('className="quick-actions"');
 

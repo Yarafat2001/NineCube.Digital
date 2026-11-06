@@ -4,14 +4,18 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
 import { useWishlist } from '../api/hooks';
-import { Icon } from './Icon';
+import { useOrbNotch } from '../lib/orbNotch';
+import { Icon, type IconName } from './Icon';
+import { OrbNotchLayers } from './OrbNotch';
 
 export function MobileNav() {
-  useLanguage();
+  const language = useLanguage();
   const { user } = useAuth();
   const { itemCount } = useCart();
   const location = useLocation();
   const navRef = useRef<HTMLElement>(null);
+  const glassRef = useRef<HTMLSpanElement>(null);
+  const edgeRef = useRef<SVGPathElement>(null);
   const wishlistQuery = useWishlist();
   const wishlistCount = wishlistQuery.data?.length ?? 0;
   const [cartPulse, setCartPulse] = useState(false);
@@ -31,12 +35,15 @@ export function MobileNav() {
 
     const publish = () => {
       const isMobile = window.matchMedia('(max-width: 768px)').matches;
-      if (isMobile) {
-        const height = Math.round(nav.getBoundingClientRect().height);
-        document.documentElement.style.setProperty('--mobile-nav-h', `${height}px`);
-      } else {
+      if (!isMobile) {
         document.documentElement.style.setProperty('--mobile-nav-h', '0px');
+        return;
       }
+      const height = Math.round(nav.getBoundingClientRect().height);
+      // The orb is lifted half out of the bar's top edge, so the bar's own box is not the footprint
+      // the page has to clear: content stops short of the marker as well as the glass.
+      const lifted = parseFloat(getComputedStyle(nav).getPropertyValue('--orb-size')) / 2;
+      document.documentElement.style.setProperty('--mobile-nav-h', `${height + (Number.isFinite(lifted) ? lifted : 0)}px`);
     };
 
     publish();
@@ -60,14 +67,30 @@ export function MobileNav() {
   const isCatalogActive = location.pathname === '/products' || location.pathname.startsWith('/products/');
   const isWishlistActive = location.pathname === '/wishlist';
   const isAccountActive = location.pathname.startsWith('/account') || location.pathname === '/orders';
+  const isDashboardTabActive = !canOrder && location.pathname === '/account';
+
+  // One tab carries the orb, and it carries that tab's own icon, so the marker is read in the order
+  // the bar lists its tabs - the same order its accent class goes to them in. A staff account has
+  // Dashboard and Account both on /account, and only one of them can sit in the notch.
+  const activeIcon: IconName | null = isHomeActive ? 'home'
+    : isCatalogActive ? 'grid'
+    : isWishlistActive ? 'heart'
+    : isDashboardTabActive ? "grid"
+    : isAccountActive ? "user"
+    : null;
+
+  useOrbNotch('top', { host: navRef, glass: glassRef, path: edgeRef, active: '.mobile-nav__item--active' },
+    [location.pathname, user?.role, language]);
 
   return (
     <nav
       ref={navRef}
-      className="mobile-nav"
+      className="mobile-nav orb-nav"
       aria-label={t("Mobile Navigation")}
       data-testid="mobile-bottom-nav"
     >
+      <OrbNotchLayers glassRef={glassRef} pathRef={edgeRef} icon={activeIcon} />
+
       <NavLink
         to="/"
         className={`mobile-nav__item ${isHomeActive ? 'mobile-nav__item--active' : ''}`}
@@ -126,8 +149,8 @@ export function MobileNav() {
       ) : (
         <NavLink
           to="/account"
-          className={`mobile-nav__item ${location.pathname === '/account' ? 'mobile-nav__item--active' : ''}`}
-          aria-current={location.pathname === '/account' ? 'page' : undefined}
+          className={`mobile-nav__item ${isDashboardTabActive ? 'mobile-nav__item--active' : ''}`}
+          aria-current={isDashboardTabActive ? 'page' : undefined}
         >
           <div className="mobile-nav__icon-wrap">
             <Icon name="grid" width={22} height={22} />

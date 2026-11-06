@@ -45,10 +45,12 @@ describe('Modern customer controls', () => {
     await user.keyboard('{Tab}');
     expect(logout).toHaveFocus();
 
-    // Activating a row goes to that page, which is where the second list used to sit.
+    // Round 34: activating a row moves the page, and the rail moves with it - the same list is
+    // docked beside every destination, so the second surface Round 33 put here is gone.
     await user.click(within(sidebar).getByRole('link', { name: /my orders/i }));
-    expect(await screen.findByRole('link', { name: /back to dashboard/i })).toBeInTheDocument();
-    expect(document.querySelectorAll('.account-nav-list')).toHaveLength(0);
+    expect(await screen.findByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /back to dashboard/i })).not.toBeInTheDocument();
+    expect(document.querySelectorAll('.account-nav-list')).toHaveLength(1);
   });
 
   it('clears dependent location fields when their parent changes', async () => {

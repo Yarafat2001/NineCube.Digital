@@ -6811,36 +6811,89 @@ body[data-overlay-open='true'] {
 }
 
 /* ==========================================================================
-   The dashboard's account sidebar (Round 33). It is a navigation surface, so it wears the
-   same glass the navbar controls wear - --nav-glass sheen, --nav-glass-edge hairline,
-   --glass-blur - instead of a card material, and it is docked beside the dashboard's own
-   numbers rather than dropped in the middle of them.
+   Round 34 - the lifted orb. One engine (src/lib/orbNotch.ts) cuts a notch in the notched edge of
+   a glass bar and rides a marker orb inside it; the account rail and the phone dock under it are
+   the same silhouette seen from two sides. Everything is measured from the glass layer's own box,
+   so a rail that changes width and a dock that grows with the safe area need no special cases.
    ========================================================================== */
-.account-nav-list {
+
+/* The three layers, shared by both bars. Where the box sits is the surface's business; this is the
+   material, and it is the same material the navbar controls already use. */
+.orb-notch { position: absolute; inset: 0; z-index: 0; pointer-events: none; filter: drop-shadow(var(--orb-shadow)); }
+.orb-notch__glass {
+  position: absolute;
+  inset: 0;
+  background: var(--nav-glass-base);
+  backdrop-filter: blur(var(--glass-blur-bar)) saturate(var(--glass-saturate-bar));
+  -webkit-backdrop-filter: blur(var(--glass-blur-bar)) saturate(var(--glass-saturate-bar));
+}
+.orb-notch__edge { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.orb-notch__edge path { fill: none; stroke: var(--nav-glass-edge); stroke-width: var(--orb-edge-width); }
+.orb-notch__orb {
+  position: absolute;
+  width: var(--orb-size);
+  height: var(--orb-size);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--orb-fill);
+  color: var(--orb-ink);
+  box-shadow: 0 calc(var(--orb-size) / 6) calc(var(--orb-size) / 2.2) var(--glass-glow);
+}
+
+/* Until the engine has measured a bar and a row to mark, the orb and its edge have no position to
+   claim, so they stay invisible rather than painting at the start of the axis. */
+.orb-notch__orb, .orb-notch__edge { opacity: 0; transition: opacity var(--transition); }
+[data-orb-ready='true'] > .orb-notch .orb-notch__orb,
+[data-orb-ready='true'] > .orb-notch .orb-notch__edge { opacity: 1; }
+
+/* Engines without backdrop-filter get the same shape in a solid surface. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .orb-notch__glass { background: var(--surface); }
+}
+
+/* ==========================================================================
+   The account rail. It docks on every account page, collapsed to its icons, and the owner's
+   expand choice is remembered. The glass material moved onto the clipped layer above, which is
+   what the notch is cut into - the panel itself paints nothing, so the notch can open onto the
+   page behind it.
+   ========================================================================== */
+.account-rail {
+  --rail-collapsed: 72px;
+  --rail-expanded: 240px;
+  --rail-width: var(--rail-collapsed);
   position: sticky;
   top: var(--sticky-top, 80px);
   display: flex;
   flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.account-rail[data-expanded='true'] { --rail-width: var(--rail-expanded); }
+
+.account-nav-list {
+  --orb-pos: 0px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: var(--rail-width, 100%);
+  min-width: 0;
   margin: 0;
   padding: 8px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--nav-glass-base);
-  border: 1px solid var(--nav-glass-edge);
-  box-shadow: var(--nav-glass-shadow);
-  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
+  border: none;
+  background: none;
+  color: var(--text);
+  transition: width var(--transition-slow);
 }
 
-/* A phone has no room for a docked column: the sidebar scrolls away with the page instead of
-   pinning a nine-row list over the content it is supposed to sit beside. */
-@media (max-width: 1023px) {
-  .account-nav-list { position: static; }
-}
-
-/* The house fallback for engines without backdrop-filter: a solid surface, same shape. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .account-nav-list { background: var(--surface); }
+/* The rail's notch opens onto the page from its left edge and the orb rides that edge, half in the
+   pocket and half out. --orb-pos is the height the engine measured for the active row, in the same
+   box, so nothing here needs to know the row height or the rail width. */
+.account-rail .orb-notch__orb {
+  top: calc(var(--orb-pos) - var(--orb-size) / 2);
+  left: calc(var(--orb-size) / -2);
 }
 
 .account-nav-list__group {
@@ -6855,12 +6908,13 @@ body[data-overlay-open='true'] {
 
 .account-nav-row {
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 14px;
   width: 100%;
-  min-height: 50px;
-  padding: 11px 18px;
+  min-height: 44px;
+  padding: 6px 14px;
   box-sizing: border-box;
   border: none;
   background: transparent;
@@ -6878,9 +6932,9 @@ body[data-overlay-open='true'] {
   z-index: 1;
 }
 
-/* Spotlight: a cone of accent light falls from the active row's icon and fades out across the
-   row. It is the row's own ::before, so switching destinations animates opacity only - the
-   column never reflows and the blur behind it is not recomputed. */
+/* The cone of accent light Round 33 put under the active row stays, sized to the row instead of to
+   the wide column: a collapsed rail is 56px of content and a glow that outgrows the glass reads as
+   a smudge on the page. */
 .account-nav-row::before {
   content: "";
   position: absolute;
@@ -6888,7 +6942,7 @@ body[data-overlay-open='true'] {
   z-index: 0;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(140px 46px at 34px 50%, var(--glass-glow), transparent 72%);
+  background: radial-gradient(120% 100% at 50% 50%, var(--glass-glow), transparent 70%);
   transition: opacity var(--transition);
 }
 
@@ -6896,35 +6950,10 @@ body[data-overlay-open='true'] {
   opacity: 1;
 }
 
-/* One dot travels the column instead of every row painting its own, which is what makes the
-   change of destination read as a move. Its position is measured and handed over as custom
-   properties, so the only animated property is transform. */
-.account-nav__spot {
-  /* The component writes these two over the element inline; the declarations here are what the
-     column reads before the first measurement lands. */
-  --spot-y: 0px;
-  --spot-h: 0px;
-  position: absolute;
-  top: 0;
-  inset-inline-start: 5px;
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-pill);
-  background: var(--selected-bar);
-  box-shadow: 0 0 12px 2px var(--glass-glow);
-  opacity: 0;
-  transform: translateY(calc(var(--spot-y, 0px) + var(--spot-h, 0px) / 2 - 3.5px));
-  transition: transform var(--transition-slow), opacity var(--transition);
-  pointer-events: none;
-}
-
-.account-nav__spot[data-measured="true"] {
-  opacity: 1;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .account-nav__spot { transition: opacity var(--transition-fast); }
   .account-nav-row::before { transition: none; }
+  .account-nav-list, .account-rail__toggle { transition: none; }
+  .orb-notch__orb, .orb-notch__edge { transition: none; }
 }
 
 .account-nav-row:hover {
@@ -6935,7 +6964,7 @@ body[data-overlay-open='true'] {
   background: var(--surface-sunken);
 }
 
-/* The amber selected fill stays exactly as it was; the spotlight is painted on top of it. */
+/* The amber selected fill stays exactly as it was; the notch and the orb sit on top of it. */
 .account-nav-row--active {
   background: var(--selected-bg);
   color: var(--accent-text);
@@ -6955,8 +6984,10 @@ body[data-overlay-open='true'] {
   color: var(--brand);
 }
 
-/* The accent cap the spotlight asks for: the active row's icon tile lifts onto the same
-   gradient the navbar uses for its own selected control. */
+/* On the rail the orb marks, it does not repeat: the panel's own 8px plus the row's 14px put the
+   icon tile at 22px in, and the orb only reaches 18px, so the tile stays and nothing is shown
+   twice. The phone dock, whose notch is centred on the tab's own icon, is the surface that hides
+   the icon into the orb. */
 .account-nav-row--active .account-nav-row__icon {
   background: var(--accent-gradient);
   border-color: var(--accent-text);
@@ -7001,6 +7032,26 @@ body[data-overlay-open='true'] {
   font-weight: 800;
 }
 
+/* Collapsed: the icons are what you see. The words leave the layout but keep the row's accessible
+   name, and the unread count moves onto the corner of the tile it belongs to. */
+.account-rail:not([data-expanded='true']) .account-nav-row__label,
+.account-rail:not([data-expanded='true']) .account-nav-row__chevron {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row__badge {
+  position: absolute;
+  top: 2px;
+  inset-inline-start: 34px;
+  min-width: 18px;
+  height: 18px;
+  font-size: 10px;
+}
 
 .account-nav-row--logout {
   border-top: 1px solid var(--border);
@@ -7013,6 +7064,122 @@ body[data-overlay-open='true'] {
 
 .account-nav-row--logout:hover {
   background: rgba(239, 68, 68, 0.06);
+}
+
+.account-rail__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--rail-width);
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--nav-glass-edge);
+  border-radius: var(--radius-md);
+  background: var(--nav-glass);
+  box-shadow: var(--nav-glass-shadow);
+  color: var(--text);
+  cursor: pointer;
+  transition: width var(--transition-slow), color var(--transition-fast);
+}
+
+.account-rail__toggle:hover { color: var(--accent-text); }
+
+.account-rail__toggle:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+.account-rail__toggle-chevron { transform: rotate(-90deg); transition: transform var(--transition); }
+
+.account-rail[data-expanded='true'] .account-rail__toggle-chevron { transform: rotate(90deg); }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .account-rail__toggle { background: var(--surface); }
+}
+
+/* Below the dock width there is no column to stand beside: the rail becomes the full-width list the
+   dashboard used to show, with its words, and the glass goes back on the panel itself because a
+   notch cut into a list that spans the page would mark nothing. */
+@media (max-width: 1023px) {
+  .account-rail, .account-rail[data-expanded='true'] { position: static; --rail-width: 100%; }
+  .account-rail .orb-notch { display: none; }
+  .account-rail__toggle { display: none; }
+  .account-nav-list {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--nav-glass-base);
+    border: 1px solid var(--nav-glass-edge);
+    box-shadow: var(--nav-glass-shadow);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  }
+  .account-rail .account-nav-row { padding: 11px 18px; min-height: 50px; }
+  .account-rail .account-nav-row__label,
+  .account-rail .account-nav-row__chevron { position: static; width: auto; height: auto; clip-path: none; opacity: 1; overflow: hidden; }
+  .account-rail .account-nav-row__badge { position: static; top: auto; inset-inline-start: auto; min-width: 20px; height: 20px; font-size: 11px; }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (max-width: 1023px) {
+    .account-nav-list { background: var(--surface); }
+  }
+}
+
+/* ==========================================================================
+   The phone dock (Round 34). The same engine turned onto the bar's top edge: the bottom
+   navigation keeps its five routes, its badges, its cart button and its safe-area padding, and
+   gives up its near-opaque menu surface for the glass the notch is cut into, so the lifted orb can
+   sit over the tab you are on.
+
+   responsive.css owns .mobile-nav and loads after this file, so every rule here is written at
+   :root .app-shell scope - the house technique - rather than editing that sheet.
+   ========================================================================== */
+@media (max-width: 768px) {
+  :root .app-shell .mobile-nav.orb-nav {
+    --orb-pos: 0px;
+    background: none;
+    border-top: none;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  :root .app-shell .mobile-nav.orb-nav .orb-notch__glass {
+    background-color: var(--nav-glass-base);
+    background-image: var(--nav-bar-veil);
+  }
+
+  :root .app-shell .mobile-nav.orb-nav .mobile-nav__item {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* The orb is lifted out of the top edge and straddles it, centred on the tab the engine
+     measured. */
+  :root .app-shell .mobile-nav.orb-nav .orb-notch__orb {
+    left: calc(var(--orb-pos) - var(--orb-size) / 2);
+    top: calc(var(--orb-size) / -2);
+  }
+
+  /* The dock's notch sits on the tab's own icon, so the icon moves into the orb instead of being
+     drawn twice. Only once the orb has been measured and shown: an unmeasured bar must not lose its
+     icon for nothing. */
+  :root .app-shell .mobile-nav.orb-nav[data-orb-ready='true'] .mobile-nav__item--active .mobile-nav__icon-wrap svg {
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+
+  /* Before the first measurement there is no stroked path to stand on, so the bar keeps the line it
+     had. The theme-neutral token is deliberate: this sheet's rule outranks the dark-mode one. */
+  :root .app-shell .mobile-nav.orb-nav:not([data-orb-ready='true']) {
+    border-top: 1px solid var(--border);
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (max-width: 768px) {
+    :root .app-shell .mobile-nav.orb-nav .orb-notch__glass {
+      background-color: var(--surface-menu);
+      background-image: none;
+    }
+  }
 }
 
 /* ==========================================================================
@@ -7421,14 +7588,18 @@ body[data-overlay-open='true'] {
 }
 
 /* ==========================================================================
-   Account centre layout (Round 33). The dashboard docks the destination list as a sticky
-   glass column beside its own numbers; the inner pages are one column and carry a single
-   back link, because the sidebar is the only surface that lists the destinations.
+   Account centre layout (Round 34). Every account page is the same shell: the rail docked at the
+   side of the work, and the work taking whatever width the rail leaves. The rail's own width is
+   its business, so the column is auto - the page follows the rail as it expands, not the other
+   way round.
    ========================================================================== */
-.account-dashboard {
+.account-shell {
   display: grid;
   gap: 20px;
   align-items: start;
+}
+
+.account-dashboard {
   grid-template-areas:
     "header"
     "nav"
@@ -7436,57 +7607,27 @@ body[data-overlay-open='true'] {
 }
 
 .account-dashboard > .page-header { grid-area: header; }
-.account-dashboard > .account-nav-list { grid-area: nav; }
+.account-dashboard > .account-rail { grid-area: nav; }
 .account-dashboard__main { grid-area: main; min-width: 0; }
 
 @media (min-width: 1024px) {
+  .account-shell {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
   .account-dashboard {
-    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-    gap: 32px;
     grid-template-areas:
       "nav header"
       "nav main";
   }
 }
 
-/* Inner account pages: no destination list here, so the shell is a single column. */
-.account-section { display: block; }
-
 .account-section__main {
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-}
-
-.account-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 14px;
-  border-radius: var(--radius-pill);
-  background: var(--nav-glass-base);
-  border: 1px solid var(--nav-glass-edge);
-  box-shadow: var(--nav-glass-shadow);
-  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
-  color: var(--text);
-  font-size: var(--text-sm);
-  font-weight: 650;
-  text-decoration: none;
-  transition: color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.account-back:hover { color: var(--accent-text); }
-
-.account-back__chevron {
-  transform: rotate(90deg);
-  color: var(--text-muted);
-}
-
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .account-back { background: var(--surface); }
 }
 
 /* The avatar is a link now, so it takes the navbar's own glass pill. The amber that used to

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthedRequest } from '../api/hooks';
 import { useAuth } from '../state/AuthContext';
 import { useToast, ErrorState } from '../components/ui';
+import { AccountSection } from '../components/AccountNav';
 import { t, useLanguage } from '../i18n/language';
 
 interface ServiceCase { id: number; orderId: number; kind: string; status: string; message: string; response?: string; }
@@ -25,67 +26,71 @@ export function CustomerCarePage() {
   const cases = useQuery({ queryKey: ['service-cases', user?.id], queryFn: () => request<ServiceCase[]>('/api/service-cases'), enabled: !!user && (canManage || hasRole('Customer')) });
 
   return (
-    <div className="page container stack">
-      <h1>{t('Help, returns & warranty')}</h1>
-      <p>{t('Send a question or request help with an order. Store staff review return, exchange and warranty requests before any refund or stock change.')}</p>
+    <div className="page container">
+      <AccountSection>
+        <div className="stack">
+          <h1>{t('Help, returns & warranty')}</h1>
+          <p>{t('Send a question or request help with an order. Store staff review return, exchange and warranty requests before any refund or stock change.')}</p>
 
-      <div className="card-glass row" style={{ padding: 'var(--space-3) var(--space-4)', gap: 'var(--space-4)', flexWrap: 'wrap', alignItems: 'center' }}>
-        <span>📧 <strong>{t('Customer Support:')}</strong> <a href="mailto:support@ninecube.digital">{t('support@ninecube.digital')}</a></span>
-        <span>⚡ <strong>{t('Response time:')}</strong> {t('Within 24 business hours')}</span>
-      </div>
+          <div className="card-glass row" style={{ padding: 'var(--space-3) var(--space-4)', gap: 'var(--space-4)', flexWrap: 'wrap', alignItems: 'center' }}>
+            <span>📧 <strong>{t('Customer Support:')}</strong> <a href="mailto:support@ninecube.digital">{t('support@ninecube.digital')}</a></span>
+            <span>⚡ <strong>{t('Response time:')}</strong> {t('Within 24 business hours')}</span>
+          </div>
 
-      <nav className="row" aria-label={t('Store policies')}>
-        <Link to="/policies/delivery">{t('Delivery')}</Link>
-        <Link to="/policies/returns">{t('Returns & warranty')}</Link>
-        <Link to="/policies/privacy">{t('Privacy')}</Link>
-        <Link to="/policies/terms">{t('Terms')}</Link>
-      </nav>
+          <nav className="row" aria-label={t('Store policies')}>
+            <Link to="/policies/delivery">{t('Delivery')}</Link>
+            <Link to="/policies/returns">{t('Returns & warranty')}</Link>
+            <Link to="/policies/privacy">{t('Privacy')}</Link>
+            <Link to="/policies/terms">{t('Terms')}</Link>
+          </nav>
 
-      {!user ? <p><Link to="/login">{t('Sign in to contact support about your account order.')}</Link></p> : null}
+          {!user ? <p><Link to="/login">{t('Sign in to contact support about your account order.')}</Link></p> : null}
 
-      {hasRole('Customer') ? (
-        <form className="card-glass stack" style={{ padding: 'var(--space-4)' }} onSubmit={async event => {
-          event.preventDefault(); setBusy(true);
-          try {
-            await request('/api/service-cases', { method: 'POST', body: { orderId: Number(orderId), kind, message } });
-            setMessage(''); toast.push('success', t('Your request has been saved.'));
-            await client.invalidateQueries({ queryKey: ['service-cases'] });
-          } catch (error) { toast.pushError(error); } finally { setBusy(false); }
-        }}>
-          <label className="field">{t('Order number')}<input className="input" type="number" min="1" required value={orderId} onChange={e => setOrderId(e.target.value)} /></label>
-          <label className="field">{t('Request type')}<select value={kind} onChange={e => setKind(e.target.value)}>{['Support', 'Warranty'].map(value => <option key={value}>{value}</option>)}</select></label>
-          <label className="field">{t('How can we help?')}<textarea className="input" required maxLength={2000} rows={4} value={message} onChange={e => setMessage(e.target.value)} /></label>
-          <button className="btn btn--primary" disabled={busy}>{t(busy ? 'Saving…' : 'Send request')}</button>
-        </form>
-      ) : null}
-
-      {cases.isError ? <ErrorState error={cases.error} onRetry={() => void cases.refetch()} /> : null}
-
-      {cases.data?.map(entry => (
-        <article key={entry.id} className="card-glass stack" style={{ padding: 'var(--space-4)' }}>
-          <h2>{t('Request #')}{entry.id} · {entry.kind} · {entry.status}</h2>
-          <Link to={`/orders/${entry.orderId}`}>{t('Order #')}{entry.orderId}</Link>
-          <p style={{ whiteSpace: 'pre-wrap' }}>{entry.message}</p>
-          {entry.response ? <p style={{ whiteSpace: 'pre-wrap' }}>{t('Store response')}: {entry.response}</p> : null}
-
-          {canManage && !['Completed', 'Rejected'].includes(entry.status) ? (
-            <form className="stack" onSubmit={async event => {
+          {hasRole('Customer') ? (
+            <form className="card-glass stack" style={{ padding: 'var(--space-4)' }} onSubmit={async event => {
               event.preventDefault(); setBusy(true);
               try {
-                await request(`/api/service-cases/${entry.id}`, { method: 'PUT', body: { status: states[entry.id] ?? 'Approved', response: responses[entry.id] ?? '' } });
+                await request('/api/service-cases', { method: 'POST', body: { orderId: Number(orderId), kind, message } });
+                setMessage(''); toast.push('success', t('Your request has been saved.'));
                 await client.invalidateQueries({ queryKey: ['service-cases'] });
               } catch (error) { toast.pushError(error); } finally { setBusy(false); }
             }}>
-              <label>{t('Decision')}<select value={states[entry.id] ?? 'Approved'} onChange={e => setStates(current => ({ ...current, [entry.id]: e.target.value }))}>{['Approved', 'Rejected', 'Completed'].map(value => <option key={value}>{value}</option>)}</select></label>
-              <label>{t('Response')}<textarea className="input" required rows={3} maxLength={2000} value={responses[entry.id] ?? ''} onChange={e => setResponses(current => ({ ...current, [entry.id]: e.target.value }))} /></label>
-              <p className="muted">{t('Closing a request records the service decision. Refunds and returned-stock adjustments must be recorded separately after verification.')}</p>
-              <button className="btn" disabled={busy}>{t('Save response')}</button>
+              <label className="field">{t('Order number')}<input className="input" type="number" min="1" required value={orderId} onChange={e => setOrderId(e.target.value)} /></label>
+              <label className="field">{t('Request type')}<select value={kind} onChange={e => setKind(e.target.value)}>{['Support', 'Warranty'].map(value => <option key={value}>{value}</option>)}</select></label>
+              <label className="field">{t('How can we help?')}<textarea className="input" required maxLength={2000} rows={4} value={message} onChange={e => setMessage(e.target.value)} /></label>
+              <button className="btn btn--primary" disabled={busy}>{t(busy ? 'Saving…' : 'Send request')}</button>
             </form>
           ) : null}
-        </article>
-      ))}
 
-      {cases.data?.length === 0 ? <p>{t('No support requests yet.')}</p> : null}
+          {cases.isError ? <ErrorState error={cases.error} onRetry={() => void cases.refetch()} /> : null}
+
+          {cases.data?.map(entry => (
+            <article key={entry.id} className="card-glass stack" style={{ padding: 'var(--space-4)' }}>
+              <h2>{t('Request #')}{entry.id} · {entry.kind} · {entry.status}</h2>
+              <Link to={`/orders/${entry.orderId}`}>{t('Order #')}{entry.orderId}</Link>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{entry.message}</p>
+              {entry.response ? <p style={{ whiteSpace: 'pre-wrap' }}>{t('Store response')}: {entry.response}</p> : null}
+
+              {canManage && !['Completed', 'Rejected'].includes(entry.status) ? (
+                <form className="stack" onSubmit={async event => {
+                  event.preventDefault(); setBusy(true);
+                  try {
+                    await request(`/api/service-cases/${entry.id}`, { method: 'PUT', body: { status: states[entry.id] ?? 'Approved', response: responses[entry.id] ?? '' } });
+                    await client.invalidateQueries({ queryKey: ['service-cases'] });
+                  } catch (error) { toast.pushError(error); } finally { setBusy(false); }
+                }}>
+                  <label>{t('Decision')}<select value={states[entry.id] ?? 'Approved'} onChange={e => setStates(current => ({ ...current, [entry.id]: e.target.value }))}>{['Approved', 'Rejected', 'Completed'].map(value => <option key={value}>{value}</option>)}</select></label>
+                  <label>{t('Response')}<textarea className="input" required rows={3} maxLength={2000} value={responses[entry.id] ?? ''} onChange={e => setResponses(current => ({ ...current, [entry.id]: e.target.value }))} /></label>
+                  <p className="muted">{t('Closing a request records the service decision. Refunds and returned-stock adjustments must be recorded separately after verification.')}</p>
+                  <button className="btn" disabled={busy}>{t('Save response')}</button>
+                </form>
+              ) : null}
+            </article>
+          ))}
+
+          {cases.data?.length === 0 ? <p>{t('No support requests yet.')}</p> : null}
+        </div>
+      </AccountSection>
     </div>
   );
 }

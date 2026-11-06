@@ -12,6 +12,9 @@ import { RequireAuth, RequireRole } from './components/guards';
 import { LoadingBlock } from './components/ui';
 import { AuthPage } from './pages/AuthPages';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { AccountDashboardPage, ProfilePage, NotificationsPage } from './pages/AccountPages';
+import { CommerceAgentProvider } from './ai/CommerceAgentContext';
+import { CommerceCopilot } from './components/ai/CommerceCopilot';
 
 // Routes are code-split: the admin console is never downloaded by a customer, and the showcase -
 // the only route that pulls in Three.js - is never downloaded by anyone who does not open it.
@@ -26,9 +29,6 @@ const SalesSummaryPage = lazy(() => import('./pages/StaffPage').then((module) =>
 const InvoicePage = lazy(() => import('./pages/StaffPage').then((module) => ({ default: module.InvoicePage })));
 const InventoryPage = lazy(() => import('./pages/InventoryPage').then((module) => ({ default: module.InventoryPage })));
 const AdminPage = lazy(() => import('./pages/AdminPage').then((module) => ({ default: module.AdminPage })));
-const AccountDashboardPage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.AccountDashboardPage })));
-const ProfilePage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.ProfilePage })));
-const NotificationsPage = lazy(() => import('./pages/AccountPages').then((module) => ({ default: module.NotificationsPage })));
 const GiftCardsPage = lazy(() => import('./pages/GiftCardsPage').then((module) => ({ default: module.GiftCardsPage })));
 const GuestOrderPage = lazy(() => import('./pages/GuestOrderPage').then(module => ({ default: module.GuestOrderPage })));
 const CustomerCarePage = lazy(() => import('./pages/CustomerCarePage').then(module => ({ default: module.CustomerCarePage })));
@@ -66,9 +66,10 @@ export function App() {
   const isAuth = pathname === '/login' || pathname === '/register';
 
   return (
-    <div className="app-shell">
-      <CampaignBanner />
-      <Navbar />
+    <CommerceAgentProvider>
+      <div className="app-shell">
+        <CampaignBanner />
+        <Navbar />
 
       <main id="main">
         <Suspense fallback={<RouteFallback />}>
@@ -205,6 +206,8 @@ export function App() {
       <MobileNav />
       {isAuth ? null : <ChatWidget />}
       {isShowcase ? <AssistantDock /> : null}
+      <CommerceCopilot />
     </div>
-  );
+  </CommerceAgentProvider>
+);
 }

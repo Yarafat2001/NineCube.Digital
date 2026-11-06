@@ -45,6 +45,9 @@ web/.ui-harness/
 # except the verification evidence the reports cite by path
 !web/artifacts/*.log
 
+# API uploads
+src/NineCube.Api/uploads/
+
 # python
 __pycache__/
 *.pyc

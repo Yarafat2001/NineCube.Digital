@@ -2,8 +2,8 @@ import { t, useLanguage } from '../i18n/language';
 import { useState } from 'react';
 import { Icon, type IconName } from '../components/Icon';
 import { AddressBook } from '../components/AddressBook';
-import { AccountSection, AccountSidebar } from '../components/AccountNav';
-import { Link, useNavigate } from 'react-router-dom';
+import { AccountRail, AccountSection } from '../components/AccountNav';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
 import {
   useChangePassword, useDashboard, useDeleteNotification,
@@ -31,23 +31,14 @@ const STATUS_GROUPS: { key: string; label: string; statuses: OrderStatus[]; icon
 export function AccountDashboardPage() {
   useLanguage();
   const dashboard = useDashboard();
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login', { replace: true });
-  };
-
-  if (dashboard.isLoading) return <div className="page container"><LoadingBlock label={t("Loading your dashboard")} variant="tile" count={3} /></div>;
-  if (dashboard.isError) return <div className="page container"><ErrorState error={dashboard.error} onRetry={() => void dashboard.refetch()} /></div>;
-
-  const data = dashboard.data!;
+  const data = dashboard.data;
   const countOf = (statuses: OrderStatus[]) =>
-    statuses.reduce((total, status) => total + (data.ordersByStatus.find(entry => entry.status === status)?.count ?? 0), 0);
+    data ? statuses.reduce((total, status) => total + (data.ordersByStatus.find(entry => entry.status === status)?.count ?? 0), 0) : 0;
 
   return (
-    <div className="page container account-dashboard">
+    <div className="page container account-shell account-dashboard">
       <header className="page-header">
         <div>
           <h1>{t("Dashboard")}</h1>
@@ -55,10 +46,16 @@ export function AccountDashboardPage() {
         </div>
       </header>
 
-      {/* The dashboard's own navigation column: every account destination, once. */}
-      <AccountSidebar unread={data.unreadNotifications} onLogout={handleLogout} />
+      {/* The account rail: every destination, on every account page, marked by the orb. */}
+      <AccountRail />
 
       <div className="account-dashboard__main stack">
+        {dashboard.isLoading ? (
+          <LoadingBlock label={t("Loading your dashboard")} variant="tile" count={3} />
+        ) : dashboard.isError ? (
+          <ErrorState error={dashboard.error} onRetry={() => void dashboard.refetch()} />
+        ) : data ? (
+          <>
       {/* Orders first with their live status counts, then the account's own numbers. */}
       <section className="account-hub-orders card-glass" aria-label={t("My Orders")}>
         <div className="account-hub-orders__head">
@@ -178,6 +175,8 @@ export function AccountDashboardPage() {
           </ul>
         )}
       </section>
+        </>
+      ) : null}
       </div>
     </div>
   );
@@ -439,10 +438,10 @@ export function NotificationsPage() {
         </div>
         <div className="row">
           <div className="notification-pills" role="group" aria-label={t("Filter notifications")}>
-            {t(pill('all', 'All'))}
-            {t(pill('unread', 'Unread'))}
-            {t(pill('orders', 'Orders'))}
-            {t(pill('promotions', 'Promotions'))}
+            {pill('all', 'All')}
+            {pill('unread', 'Unread')}
+            {pill('orders', 'Orders')}
+            {pill('promotions', 'Promotions')}
           </div>
           <button type="button" className="btn" disabled={markAll.isPending} onClick={() => markAll.mutateAsync()
             .then(() => toast.push('success', 'All notifications marked as read.'))

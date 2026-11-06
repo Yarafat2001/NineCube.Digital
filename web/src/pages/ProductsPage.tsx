@@ -482,7 +482,7 @@ export function ProductsPage() {
           aria-label={t(`Filters (${chips.length})`)}
         >
           <Icon name="grid" width={14} height={14} />
-          <span>{t("Filters")}</span>
+          <span>{t("Filter")}</span>
           {chips.length > 0 ? <span className="toolbar-badge">{chips.length}</span> : null}
         </button>
 

@@ -136,7 +136,7 @@ describe('The product card chips are solid, not glass', () => {
   });
 });
 
-describe('The account destinations have one owner: the dashboard sidebar', () => {
+describe('The account destinations have one owner: the rail every account page docks', () => {
   const nav = read('src', 'components', 'AccountNav.tsx');
   const app = read('src', 'styles', 'app.css').replace(/\s+/g, ' ');
 
@@ -149,8 +149,9 @@ describe('The account destinations have one owner: the dashboard sidebar', () =>
     ['/account/security', 'Security']
   ];
 
-  // Round 33 replaced the rail this round added: the dashboard docks the destination list beside
-  // its own content, and the pages it links to carry one way back rather than a second copy.
+  // Round 33 docked the list beside the dashboard only and gave the inner pages a back link. Round 34
+  // moved the list onto every account page as a rail, so the back link went away with the reason
+  // for it: the rail already says where you are and already carries log out.
   it('lists every destination once, beside the dashboard content', async () => {
     await signInAsCustomer();
     renderApp('/account');
@@ -163,36 +164,38 @@ describe('The account destinations have one owner: the dashboard sidebar', () =>
     expect(within(sidebar).queryByRole('link', { name: /browse products/i })).not.toBeInTheDocument();
   });
 
-  it('gives the inner pages a back link and no list of their own', async () => {
+  it('docks the one rail beside every inner page, with no back link to repeat it', async () => {
     await signInAsCustomer();
     for (const [route, heading] of INNER_ROUTES) {
       const view = renderApp(route);
       await screen.findByRole('heading', { level: 1 });
-      expect(document.querySelectorAll('.account-nav-list'), `${route} grew a second list`).toHaveLength(0);
-
-      const back = screen.getByRole('link', { name: /back to dashboard/i });
-      expect(back).toHaveAttribute('href', expect.stringMatching(/#?\/account$/));
-      expect(back).toBeVisible();
+      expect(document.querySelectorAll('.account-nav-list'), `${route} grew a second list`).toHaveLength(1);
+      expect(screen.queryByRole('link', { name: /back to dashboard/i })).not.toBeInTheDocument();
       // The page itself still reads as itself.
       expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(new RegExp(heading, 'i'));
       view.unmount();
     }
   });
 
-  it('moves one measured indicator instead of scrolling a chip into view', () => {
-    // The phone rail had to scroll its active chip into view; a docked column has nothing to
-    // scroll, so the active state is one dot whose offset is read from the row.
-    expect(nav).toContain('active.offsetTop');
+  it('marks the current row with one measured notch, not a chip scrolled into view', () => {
+    // The phone rail used to scroll its active chip into view and the glass sidebar drew a dot from
+    // an offset. Both are gone: one engine measures the bar and the row and cuts the glass around
+    // the marker, so the active state cannot disagree with what is on screen.
+    expect(nav).toContain("useOrbNotch('left'");
+    expect(nav).toContain("active: '.account-nav-row--active'");
     expect(nav).not.toContain('scrollLeft');
-    expect(app).toContain('--spot-y: 0px; --spot-h: 0px; position: absolute;');
-    expect(app).toContain('transform: translateY(calc(var(--spot-y, 0px) + var(--spot-h, 0px) / 2 - 3.5px));');
-    expect(app).toContain('transition: transform var(--transition-slow), opacity var(--transition);');
+    expect(nav).not.toContain('offsetTop');
+    expect(app).toContain('.account-rail .orb-notch__orb { top: calc(var(--orb-pos) - var(--orb-size) / 2); left: calc(var(--orb-size) / -2); }');
+    // The orb and its edge only appear once something has been measured; an unmeasured bar shows
+    // neither rather than a marker at the start of the column.
+    expect(app).toContain(".orb-notch__orb, .orb-notch__edge { opacity: 0; transition: opacity var(--transition); }");
+    expect(app).toContain("[data-orb-ready='true'] > .orb-notch .orb-notch__orb");
   });
 
   it('declares the docked layout and the selected fill in the stylesheet', () => {
-    expect(app).toContain('.account-dashboard > .account-nav-list { grid-area: nav; }');
-    expect(app).toContain('grid-template-columns: var(--sidebar-width) minmax(0, 1fr)');
-    expect(app).toContain('.account-nav-list { position: sticky;');
+    expect(app).toContain('.account-dashboard > .account-rail { grid-area: nav; }');
+    expect(app).toContain('.account-shell { grid-template-columns: auto minmax(0, 1fr)');
+    expect(app.match(/\.account-rail \{[^}]*position: sticky/), 'the rail is the sticky column').not.toBeNull();
     const activeBlock = app.match(/\.account-nav-row--active\s*\{[^}]*\}/)?.[0] ?? '';
     expect(activeBlock).toContain('var(--selected-bg)');
     expect(activeBlock).toContain('var(--accent-text)');

@@ -121,7 +121,7 @@ describe('Notifications page', () => {
     await screen.findByRole('checkbox', { name: 'Select Order #500 placed' });
     await user.click(screen.getByRole('button', { name: /^unread$/i }));
     expect(screen.getByRole('button', { name: /^unread$/i })).toHaveAttribute('aria-pressed', 'true');
-    await waitFor(() => expect(screen.getAllByRole('listitem')).toHaveLength(2));
+    await waitFor(() => expect(within(document.querySelector('.notif-list') as HTMLElement).getAllByRole('listitem')).toHaveLength(2));
 
     await user.click(screen.getByRole('button', { name: /mark all as read/i }));
     expect(await screen.findByRole('heading', { name: /no unread notifications/i })).toBeInTheDocument();

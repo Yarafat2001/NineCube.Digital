@@ -118,6 +118,9 @@ describe('Round 30: the account hub reads as the reference list', () => {
       totalSpent: 0, currency: 'BDT', totalItems: 0,
       recentOrders: [], recentNotifications: [], unreadNotifications: 1
     })));
+    // Round 34: the rail is on every account page, so it reads the unread count from the same
+    // endpoint the bell uses rather than from the dashboard payload it no longer depends on.
+    server.use(http.get(`${API}/api/notifications/unread-count`, () => HttpResponse.json({ count: 1 })));
     renderApp('/account');
 
     await screen.findByRole('heading', { level: 1, name: /Dashboard|Account/i });
