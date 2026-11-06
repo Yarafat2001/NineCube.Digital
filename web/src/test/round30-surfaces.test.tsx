@@ -130,8 +130,8 @@ describe('Round 30: the account hub reads as the reference list', () => {
 
     const list = document.querySelector('.account-nav-list');
     expect(list).not.toBeNull();
-    expect(list?.querySelectorAll('.account-nav-row').length).toBe(9);
-    expect(list?.querySelectorAll('.account-nav-row__chevron').length).toBe(9);
+    expect(list?.querySelectorAll('.account-nav-row').length).toBe(10);
+    expect(list?.querySelectorAll('.account-nav-row__chevron').length).toBe(10);
     expect(list?.querySelector('.account-nav-row__badge')).toHaveTextContent('1');
     expect(list?.querySelector('.account-nav-row--logout')).toHaveTextContent('Log out');
     expect(document.querySelector('.account-hub-tile')).toBeNull();

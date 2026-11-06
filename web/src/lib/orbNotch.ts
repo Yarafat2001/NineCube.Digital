@@ -50,18 +50,28 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
   if (pill && edge === 'top') {
     const W = length;
     const H = thickness;
-    const pr = Math.min(32, H / 2);
-    const nw = 46;
-    const pdepth = 31;
-    const pc = Math.max(pr + nw, Math.min(W - pr - nw, centre));
+    const pr = Math.min(22, H / 2);
+    const nw = Math.min(30, W / 10);
+    const pdepth = 24;
+    const minC = nw + 8;
+    const maxC = W - nw - 8;
+    const pc = Math.max(minC, Math.min(maxC, centre));
+    const leftX = pc - nw;
+    const rightX = pc + nw;
+    const lead = nw * (18 / 34);
+    const wall = nw * (22 / 34);
     const d = [
       `M${n(pr)} 0`,
-      `H${n(pc - nw)}`,
-      `C${n(pc - nw + 22)} 0 ${n(pc - 28)} ${n(pdepth)} ${n(pc)} ${n(pdepth)}`,
-      `C${n(pc + 28)} ${n(pdepth)} ${n(pc + nw - 22)} 0 ${n(pc + nw)} 0`,
-      `H${n(W - pr)}`,
+      leftX > pr ? `H${n(leftX)}` : `L${n(leftX)} 0`,
+      `C${n(pc - nw + lead)} 0 ${n(pc - wall)} ${n(pdepth)} ${n(pc)} ${n(pdepth)}`,
+      `C${n(pc + wall)} ${n(pdepth)} ${n(pc + nw - lead)} 0 ${n(rightX)} 0`,
+      rightX < W - pr ? `H${n(W - pr)}` : `L${n(W - pr)} 0`,
+      `A${n(pr)} ${n(pr)} 0 0 1 ${n(W)} ${n(pr)}`,
+      `L${n(W)} ${n(H - pr)}`,
       `A${n(pr)} ${n(pr)} 0 0 1 ${n(W - pr)} ${n(H)}`,
       `H${n(pr)}`,
+      `A${n(pr)} ${n(pr)} 0 0 1 0 ${n(H - pr)}`,
+      `L0 ${n(pr)}`,
       `A${n(pr)} ${n(pr)} 0 0 1 ${n(pr)} 0`,
       'Z'
     ].join('');
@@ -71,21 +81,24 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
   if (edge === 'right') {
     const W = thickness;
     const H = length;
-    const rr = 20;
-    const rnw = 34;
-    const rdepth = 24;
-    const rlead = 18;
-    const rwall = 22;
-    const rmargin = rr + rnw;
-    const rc = Math.min(Math.max(centre, rmargin), Math.max(rmargin, H - rmargin));
+    const rr = 18;
+    const rnw = 28;
+    const rdepth = 22;
+    const rlead = 16;
+    const rwall = 20;
+    const minC = rnw + 8;
+    const maxC = H - rnw - 8;
+    const rc = Math.min(Math.max(centre, minC), maxC);
+    const topY = rc - rnw;
+    const botY = rc + rnw;
     const d = [
       `M${n(rr)} 0`,
       `L${n(W - rr)} 0`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W)} ${n(rr)}`,
-      `L${n(W)} ${n(rc - rnw)}`,
+      topY > rr ? `L${n(W)} ${n(topY)}` : `L${n(W)} ${n(rr)}`,
       `C${n(W)} ${n(rc - rnw + rlead)} ${n(W - rdepth)} ${n(rc - rwall)} ${n(W - rdepth)} ${n(rc)}`,
-      `C${n(W - rdepth)} ${n(rc + rwall)} ${n(W)} ${n(rc + rnw - rlead)} ${n(W)} ${n(rc + rnw)}`,
-      `L${n(W)} ${n(H - rr)}`,
+      `C${n(W - rdepth)} ${n(rc + rwall)} ${n(W)} ${n(rc + rnw - rlead)} ${n(W)} ${n(botY)}`,
+      botY < H - rr ? `L${n(W)} ${n(H - rr)}` : `L${n(W)} ${n(botY)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W - rr)} ${n(H)}`,
       `L${n(rr)} ${n(H)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 0 ${n(H - rr)}`,

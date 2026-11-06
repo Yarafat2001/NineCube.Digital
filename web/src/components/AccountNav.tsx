@@ -24,6 +24,7 @@ const SIDEBAR_GROUPS: SidebarRow[][] = [
   [
     { to: '/account/security', label: 'Account security', icon: 'shield' },
     { to: '/notifications', label: 'Notifications', icon: 'bell', badge: true },
+    { to: '/settings', label: 'App settings', icon: 'sliders' },
     { to: '/help', label: 'Help & support', icon: 'phone' }
   ]
 ];

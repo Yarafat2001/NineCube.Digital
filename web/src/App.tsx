@@ -37,6 +37,7 @@ const StorePolicyPage = lazy(() => import('./pages/CustomerCarePage').then(modul
 const GuestRecoveryPage = lazy(() => import('./pages/GuestRecoveryPage').then(m => ({ default: m.GuestRecoveryPage })));
 const OperationsPage = lazy(() => import('./pages/OperationsPage').then(m => ({ default: m.OperationsPage })));
 const SecurityPage = lazy(() => import('./pages/SecurityPage').then(m => ({ default: m.SecurityPage })));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
 function RouteFallback() {
   useLanguage();
@@ -193,6 +194,7 @@ export function App() {
             <Route path="/operations" element={<RequireRole roles={['Staff', 'InventoryManager', 'Administrator']}><OperationsPage /></RequireRole>} />
             <Route path="/guest/recover" element={<GuestRecoveryPage />} />
             <Route path="/account/security" element={<RequireAuth><SecurityPage /></RequireAuth>} />
+            <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
             <Route path="/guest/orders/:id" element={<GuestOrderPage />} />
             <Route path="/help" element={<CustomerCarePage />} />
             <Route path="/policies/:section" element={<StorePolicyPage />} />

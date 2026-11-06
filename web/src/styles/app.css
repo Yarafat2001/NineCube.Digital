@@ -6934,7 +6934,7 @@ body[data-overlay-open='true'] {
   width: var(--rail-width, 100%);
   min-width: 0;
   margin: 0;
-  padding: 8px;
+  padding: 14px 8px 12px 8px;
   border: none;
   background: none;
   color: var(--text);
@@ -7005,12 +7005,21 @@ body[data-overlay-open='true'] {
   border: none;
   background: transparent;
   color: var(--text);
-  text-decoration: none;
+  text-decoration: none !important;
   font-family: inherit;
   font-size: var(--text-sm);
   text-align: left;
   cursor: pointer;
   transition: background-color var(--transition-fast);
+}
+
+.account-nav-row,
+.account-nav-row:hover,
+.account-nav-row:focus,
+.account-nav-row--active,
+.account-nav-row__label,
+.account-nav-row * {
+  text-decoration: none !important;
 }
 
 .account-nav-row > * {
@@ -7107,6 +7116,19 @@ body[data-overlay-open='true'] {
   background: var(--accent-gradient);
   border-color: var(--accent-text);
   color: var(--on-accent);
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__icon {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .account-nav-row__icon--danger {

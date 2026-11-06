@@ -34,7 +34,7 @@ describe('Modern customer controls', () => {
 
     const sidebar = await screen.findByRole('navigation', { name: 'Account Navigation' });
     const rows = within(sidebar).getAllByRole('link');
-    expect(rows).toHaveLength(8);
+    expect(rows).toHaveLength(9);
 
     rows[0]!.focus();
     for (const row of rows.slice(1)) {

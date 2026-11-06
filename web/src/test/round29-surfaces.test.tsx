@@ -158,7 +158,7 @@ describe('The account destinations have one owner: the rail every account page d
 
     const sidebar = await screen.findByRole('navigation', { name: 'Account Navigation' });
     expect(document.querySelectorAll('.account-nav-list')).toHaveLength(1);
-    expect(within(sidebar).getAllByRole('link')).toHaveLength(8);
+    expect(within(sidebar).getAllByRole('link')).toHaveLength(9);
     expect(within(sidebar).getByRole('button', { name: /log out/i })).toBeInTheDocument();
     // Browse products went with the hover panel; the navbar tab owns that route.
     expect(within(sidebar).queryByRole('link', { name: /browse products/i })).not.toBeInTheDocument();

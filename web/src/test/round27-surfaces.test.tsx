@@ -30,7 +30,7 @@ describe('Round 27: one account nav surface on a phone', () => {
     expect(sidebar).not.toContain("to: '/products'");
 
     // One vertical list of icon + label + chevron rows in two groups, log out last.
-    expect(sidebar.match(/to: '/g)).toHaveLength(8);
+    expect(sidebar.match(/to: '/g)).toHaveLength(9);
     expect(sidebar).toContain('className="account-nav-row account-nav-row--logout"');
     // Two groups in the data; the component maps over them, so the markup only shows the class once.
     expect(sidebar.match(/^\s{2}\[$/gm)).toHaveLength(2);

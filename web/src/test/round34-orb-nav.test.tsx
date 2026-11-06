@@ -46,6 +46,7 @@ const ROUTES: [string, RegExp][] = [
   ['/account/profile', /profile & addresses/i],
   ['/account/security', /account security/i],
   ['/notifications', /notifications/i],
+  ['/settings', /app settings|settings/i],
   ['/help', /help & support/i]
 ];
 
@@ -76,13 +77,13 @@ describe('Round 34: the account rail docks on every account page', () => {
     }
   });
 
-  it('lists the eight destinations, then log out, and nothing else', async () => {
+  it('lists the destinations, then log out, and nothing else', async () => {
     await signInAsCustomer();
     server.use(http.get(`${API}/api/notifications/unread-count`, () => HttpResponse.json({ count: 3 })));
     renderApp('/account');
 
     const nav = await screen.findByRole('navigation', { name: 'Account Navigation' });
-    expect(within(nav).getAllByRole('link')).toHaveLength(8);
+    expect(within(nav).getAllByRole('link')).toHaveLength(9);
     expect(within(nav).queryByRole('link', { name: /browse products/i })).not.toBeInTheDocument();
 
     // The count belongs to the row it counts, and the rail reads it from the bell's own endpoint so
