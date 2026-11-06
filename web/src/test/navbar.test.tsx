@@ -112,9 +112,15 @@ describe('Navbar', () => {
 
     expect(await screen.findByText('customer@ninecube.demo')).toBeInTheDocument();
 
-    // Signing out moved into the account menu, so the control is a menu item behind a trigger.
-    await user.click(screen.getByRole('button', { name: /^account$/i }));
-    await user.click(await screen.findByRole('menuitem', { name: /^log out$/i }));
+    // Round 33: the avatar is a plain link to the account home, and log out is the last row of the
+    // sidebar that home docks. Two taps, no hover panel. Scoped to the navbar's own action group,
+    // because the phone tab bar has a second Account entry.
+    const actions = screen.getByRole('group', { name: /cart, notifications and account/i });
+    const avatar = within(actions).getByRole('link', { name: /^account$/i });
+    expect(avatar).toHaveAttribute('href', expect.stringContaining('/account'));
+    await user.click(avatar);
+
+    await user.click(await screen.findByRole('button', { name: /^log out$/i }));
 
     expect(await screen.findByRole('heading', { name: /^welcome$/i })).toBeInTheDocument();
     expect(sessionStorage.getItem('ninecube.auth.session')).toBeNull();
@@ -125,7 +131,10 @@ describe('Navbar', () => {
     renderApp('/inventory');
 
     const nav = await screen.findByRole('navigation', { name: /main/i });
-    expect(nav.querySelector('.navbar__tray')).not.toBeNull();
-    expect(within(nav).getAllByRole('link')).toHaveLength(4); // brand + 3 role links
+    // The account avatar joined the link count when it stopped being a hover trigger, so this
+    // measures the tray the keyboard roving focus walks over rather than the whole bar.
+    const tray = nav.querySelector('.navbar__tray');
+    expect(tray).not.toBeNull();
+    expect(tray!.querySelectorAll('.navbar__link')).toHaveLength(3);
   });
 });

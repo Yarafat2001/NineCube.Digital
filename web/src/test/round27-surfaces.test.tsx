@@ -20,22 +20,28 @@ describe('Round 27: one account nav surface on a phone', () => {
     expect(header).not.toContain('handleLogout');
   });
 
-  it('lists every destination once in the Alibaba-style list, including the catalogue', () => {
-    const hub = dashboard.slice(dashboard.indexOf('className="account-nav-list card-glass"'), dashboard.indexOf('dashboard-stats'));
-    for (const to of ['"/products"', '"/orders"', '"/wishlist"', '"/gift-cards"', '"/account/profile"', '"/account/security"', '"/notifications"', '"/help"']) {
-      expect(hub).toContain(`to=${to}`);
+  it('lists every destination once, in the sidebar the dashboard docks beside its content', () => {
+    const sidebar = read('src', 'components', 'AccountNav.tsx');
+    for (const to of ["'/account'", "'/orders'", "'/wishlist'", "'/gift-cards'", "'/account/profile'", "'/account/security'", "'/notifications'", "'/help'"]) {
+      expect(sidebar).toContain(`to: ${to}`);
     }
-    // Round 30 restyled the hub in the reference app's format: one identity header, then a
-    // single vertical list of icon + label + chevron rows split into two groups, log out last.
-    expect(hub.match(/className="account-nav-row"/g)).toHaveLength(8);
-    expect(hub).toContain('className="account-nav-row account-nav-row--logout"');
-    expect(hub.match(/className="account-nav-list__group"/g)).toHaveLength(2);
-    expect(hub).toContain('account-nav-row__badge');
-    // The tile grid and the quick-actions band that duplicated it are gone.
+    // Browse products left with the hover panel: the navbar's Products tab already owns that route.
+    expect(sidebar).not.toContain('t("Browse products")');
+    expect(sidebar).not.toContain("to: '/products'");
+
+    // One vertical list of icon + label + chevron rows in two groups, log out last.
+    expect(sidebar.match(/to: '/g)).toHaveLength(8);
+    expect(sidebar).toContain('className="account-nav-row account-nav-row--logout"');
+    // Two groups in the data; the component maps over them, so the markup only shows the class once.
+    expect(sidebar.match(/^\s{2}\[$/gm)).toHaveLength(2);
+    expect(sidebar).toContain('SIDEBAR_GROUPS.map');
+    expect(sidebar).toContain('account-nav-row__badge');
+    // The dashboard renders that component and keeps no list of its own.
+    expect(dashboard).toContain('<AccountSidebar');
     expect(dashboard).not.toContain('account-hub-tile');
     expect(dashboard).not.toContain('className="quick-actions"');
 
-    const profile = dashboard.slice(dashboard.indexOf('className="account-profile-card card-glass"'), dashboard.indexOf('className="account-nav-list card-glass"'));
+    const profile = dashboard.slice(dashboard.indexOf('className="account-profile-card card-glass"'), dashboard.indexOf('dashboard-stats'));
     expect(profile).toContain('account-profile-card__avatar');
     expect(profile).toContain('account-profile-card__pill');
 
@@ -96,9 +102,14 @@ describe('Round 27: hover text and footer bands on the house scale', () => {
     expect(accountMenu).toContain('<span className="account-name">');
   });
 
-  it('puts the popover email on the token ladder', () => {
-    expect(app).toContain(':root .account-menu-portal .account-menu__name { font-size: var(--text-xs) !important; }');
-    expect(app).toContain(':root .account-menu-portal .account-menu__email { font-size: var(--text-label) !important; }');
+  it('takes the avatar off the popover and onto the navbar pill', () => {
+    // Round 27 put the hover popover's name and email onto the token ladder. Round 33 removed the
+    // popover, so those two rules went with the surface they styled instead of being left behind.
+    expect(app).not.toContain('account-menu-portal');
+    expect(accountMenu).not.toContain('account-menu__email');
+    // What replaces them is the house glass pill plus the sidebar rows, both on the token scale.
+    expect(app).toContain(":root .navbar .navbar__actions .nav-account.nav-control { min-height: 44px; min-width: 44px;");
+    expect(app).toContain('.account-nav-row__label {');
   });
 
   it('centres the tagline and spans the policy row on the desktop footer', () => {

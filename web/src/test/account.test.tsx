@@ -41,43 +41,52 @@ describe('Header bell and account menu', () => {
     expect(screen.getByRole('button', { name: 'Notifications, 0 unread' })).toBeInTheDocument();
   });
 
-  // Round 32: the avatar menu used to be a third copy of the destination list, so every page it
-  // pointed at appeared twice on screen at once. One owner per destination: the account surfaces
-  // list them, this panel is identity plus the way out.
-  it('links only the account home and Log out, leaving the destination list to the account surfaces', async () => {
+  // Round 33 took the hover panel out altogether: the avatar is a link now, so there is no third
+  // surface to keep in sync. One owner per destination is the same rule, enforced by there being
+  // nothing left to duplicate.
+  it('opens the account home on tap and leaves the destination list to its sidebar', async () => {
     const user = userEvent.setup();
     await signIn();
     renderApp('/account');
 
-    await user.click(await screen.findByRole('button', { name: 'Account' }));
-    const menu = await screen.findByRole('menu', { name: 'Account' });
-    expect(within(menu).getAllByRole('menuitem')).toHaveLength(2);
-    expect(within(menu).getByRole('menuitem', { name: 'Dashboard' })).toHaveAttribute('href', '/account');
-    expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
+    const actions = await screen.findByRole('group', { name: 'Cart, notifications and account' });
+    const avatar = within(actions).getByRole('link', { name: 'Account' });
+    expect(avatar).toHaveAttribute('href', '/account');
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 
-    await user.keyboard('{Escape}');
-    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+    await user.click(avatar);
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 
-    // The destinations are gone from the panel, not from the product: the hub list still owns them.
-    // The hub renders with the dashboard data, so it is waited for rather than assumed.
-    const hub = await screen.findByRole('navigation', { name: 'Account Navigation' });
+    // The destinations live here and nowhere else on this route.
+    const sidebar = await screen.findByRole('navigation', { name: 'Account Navigation' });
+    expect(document.querySelectorAll('[role="menu"]')).toHaveLength(0);
     for (const [name, href] of [
       [/my orders/i, '/orders'], [/wishlist/i, '/wishlist'], [/gift cards/i, '/gift-cards'],
       [/profile & addresses/i, '/account/profile'], [/account security/i, '/account/security'],
       [/notifications/i, '/notifications'], [/help & support/i, '/help']
     ] as const) {
-      expect(within(hub).getByRole('link', { name }), `${href} left the hub`).toHaveAttribute('href', href);
+      expect(within(sidebar).getByRole('link', { name }), `${href} left the sidebar`).toHaveAttribute('href', href);
     }
+    expect(within(sidebar).getByRole('link', { name: /dashboard/i })).toHaveAttribute('aria-current', 'page');
+    expect(within(sidebar).getByRole('button', { name: /^log out$/i })).toBeInTheDocument();
   });
 
-  it('shows a staff account the same two rows, so no role gets its own copy of the list', async () => {
-    const user = userEvent.setup();
-    await signIn('Staff');
-    renderApp('/');
+  it('sends each role to its own workspace, so no role gets a copy of the list', async () => {
+    const homes: [UserRole, string][] = [
+      ['Customer', '/account'],
+      ['Administrator', '/admin'],
+      ['Staff', '/operations'],
+      ['InventoryManager', '/inventory']
+    ];
 
-    await user.click(await screen.findByRole('button', { name: 'Account' }));
-    const menu = await screen.findByRole('menu', { name: 'Account' });
-    expect(within(menu).getAllByRole('menuitem').map(item => item.textContent)).toEqual(['Dashboard', 'Log out']);
+    for (const [role, home] of homes) {
+      await signIn(role);
+      const view = renderApp('/');
+      const actions = await screen.findByRole('group', { name: 'Cart, notifications and account' });
+      const avatar = within(actions).getByRole('link', { name: 'Account' });
+      expect(avatar, `${role} avatar destination`).toHaveAttribute('href', home);
+      view.unmount();
+    }
   });
 });
 

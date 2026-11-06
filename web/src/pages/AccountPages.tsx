@@ -2,7 +2,7 @@ import { t, useLanguage } from '../i18n/language';
 import { useState } from 'react';
 import { Icon, type IconName } from '../components/Icon';
 import { AddressBook } from '../components/AddressBook';
-import { AccountSection } from '../components/AccountNav';
+import { AccountSection, AccountSidebar } from '../components/AccountNav';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
 import {
@@ -47,7 +47,7 @@ export function AccountDashboardPage() {
     statuses.reduce((total, status) => total + (data.ordersByStatus.find(entry => entry.status === status)?.count ?? 0), 0);
 
   return (
-    <div className="page container stack">
+    <div className="page container account-dashboard">
       <header className="page-header">
         <div>
           <h1>{t("Dashboard")}</h1>
@@ -55,8 +55,11 @@ export function AccountDashboardPage() {
         </div>
       </header>
 
-      {/* The single account navigation surface, grouped the way marketplace apps do it:
-          orders first with their live status counts, then every existing account feature. */}
+      {/* The dashboard's own navigation column: every account destination, once. */}
+      <AccountSidebar unread={data.unreadNotifications} onLogout={handleLogout} />
+
+      <div className="account-dashboard__main stack">
+      {/* Orders first with their live status counts, then the account's own numbers. */}
       <section className="account-hub-orders card-glass" aria-label={t("My Orders")}>
         <div className="account-hub-orders__head">
           <strong>{t("My Orders")}</strong>
@@ -99,77 +102,6 @@ export function AccountDashboardPage() {
         </span>
         <span className="account-profile-card__pill">{t("Customer")}</span>
       </section>
-
-      <nav className="account-nav-list card-glass" aria-label={t("Account Navigation")}>
-        <ul className="account-nav-list__group">
-          <li>
-            <Link className="account-nav-row" to="/products">
-              <span className="account-nav-row__icon"><Icon name="grid" width={17} height={17} /></span>
-              <span className="account-nav-row__label">{t("Browse products")}</span>
-              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-            </Link>
-          </li>
-          <li>
-            <Link className="account-nav-row" to="/orders">
-              <span className="account-nav-row__icon"><Icon name="box" width={17} height={17} /></span>
-              <span className="account-nav-row__label">{t("My Orders")}</span>
-              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-            </Link>
-          </li>
-          <li>
-            <Link className="account-nav-row" to="/wishlist">
-              <span className="account-nav-row__icon"><Icon name="heart" width={17} height={17} /></span>
-              <span className="account-nav-row__label">{t("Wishlist")}</span>
-              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-            </Link>
-          </li>
-          <li>
-            <Link className="account-nav-row" to="/gift-cards">
-              <span className="account-nav-row__icon"><Icon name="wallet" width={17} height={17} /></span>
-              <span className="account-nav-row__label">{t("Gift Cards")}</span>
-              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-            </Link>
-          </li>
-          <li>
-            <Link className="account-nav-row" to="/account/profile">
-              <span className="account-nav-row__icon"><Icon name="user" width={17} height={17} /></span>
-              <span className="account-nav-row__label">{t("Profile & Addresses")}</span>
-              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-            </Link>
-          </li>
-        </ul>
-        <ul className="account-nav-list__group">
-          <li>
-            <Link className="account-nav-row" to="/account/security">
-              <span className="account-nav-row__icon"><Icon name="shield" width={17} height={17} /></span>
-              <span className="account-nav-row__label">{t("Account security")}</span>
-              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-            </Link>
-          </li>
-          <li>
-            <Link className="account-nav-row" to="/notifications">
-              <span className="account-nav-row__icon"><Icon name="bell" width={17} height={17} /></span>
-              <span className="account-nav-row__label">{t("Notifications")}</span>
-              {data.unreadNotifications > 0 ? (
-                <span className="account-nav-row__badge">{data.unreadNotifications}</span>
-              ) : null}
-              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-            </Link>
-          </li>
-          <li>
-            <Link className="account-nav-row" to="/help">
-              <span className="account-nav-row__icon"><Icon name="phone" width={17} height={17} /></span>
-              <span className="account-nav-row__label">{t("Help & support")}</span>
-              <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-            </Link>
-          </li>
-        </ul>
-        <button type="button" className="account-nav-row account-nav-row--logout" onClick={handleLogout}>
-          <span className="account-nav-row__icon account-nav-row__icon--danger"><Icon name="logout" width={17} height={17} /></span>
-          <span className="account-nav-row__label">{t("Log out")}</span>
-          <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
-        </button>
-      </nav>
 
       <div className="dashboard-stats" data-testid="dashboard-stats">
         {[
@@ -246,6 +178,7 @@ export function AccountDashboardPage() {
           </ul>
         )}
       </section>
+      </div>
     </div>
   );
 }

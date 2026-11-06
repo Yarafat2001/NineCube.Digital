@@ -19,27 +19,36 @@ describe('Modern customer controls', () => {
     const bell = await screen.findByRole('button', { name: 'Notifications, 15 unread' });
     expect(bell).toHaveClass('nav-control');
     expect(within(bell).getByTestId('unread-badge')).toHaveTextContent('9+');
-    expect(screen.getByRole('button', { name: 'Account' })).toHaveClass('nav-control');
+    expect(screen.getByRole('group', { name: 'Cart, notifications and account' })).toBeInTheDocument();
+    // The avatar is a link now rather than a hover trigger, and keeps the navbar's nav-control face.
+    expect(within(screen.getByRole('group', { name: 'Cart, notifications and account' }))
+      .getByRole('link', { name: 'Account' })).toHaveClass('nav-control');
     expect(screen.getByRole('group', { name: 'Language and colour theme' })).toHaveClass('nav-control');
   });
 
-  it('portals the account menu and supports arrows, Home, End, Escape and outside close', async () => {
-    const user = userEvent.setup(); renderApp('/account');
-    const trigger = await screen.findByRole('button', { name: 'Account' });
-    trigger.focus(); await user.keyboard('{ArrowDown}');
-    const menu = await screen.findByRole('menu', { name: 'Account' });
-    expect(menu.parentElement).toBe(document.body);
-    expect(menu.closest('nav')).toBeNull();
-    expect(within(menu).getByRole('menuitem', { name: 'Dashboard' })).toHaveFocus();
-    await user.keyboard('{End}'); expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toHaveFocus();
-    // Round 32 trimmed the panel to two rows: the arrow key must wrap, not run off the end.
-    await user.keyboard('{ArrowDown}'); expect(within(menu).getByRole('menuitem', { name: 'Dashboard' })).toHaveFocus();
-    await user.keyboard('{Home}{ArrowDown}'); expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toHaveFocus();
-    await user.keyboard('{Escape}'); expect(screen.queryByRole('menu')).not.toBeInTheDocument(); expect(trigger).toHaveFocus();
-    await user.click(trigger);
-    // The dashboard heading appears once the account data lands; the outside-click waits for it.
-    await user.click(await screen.findByRole('heading', { name: 'Dashboard' }));
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+  // Round 33 deleted the popover, so the keyboard contract is a plain tab sequence over real
+  // links rather than a roving focus inside a portal. Nothing is skipped and nothing is trapped.
+  it('walks the account sidebar by keyboard and leaves it for log out last', async () => {
+    const user = userEvent.setup();
+    renderApp('/account');
+
+    const sidebar = await screen.findByRole('navigation', { name: 'Account Navigation' });
+    const rows = within(sidebar).getAllByRole('link');
+    expect(rows).toHaveLength(8);
+
+    rows[0]!.focus();
+    for (const row of rows.slice(1)) {
+      await user.keyboard('{Tab}');
+      expect(row).toHaveFocus();
+    }
+    const logout = within(sidebar).getByRole('button', { name: /^log out$/i });
+    await user.keyboard('{Tab}');
+    expect(logout).toHaveFocus();
+
+    // Activating a row goes to that page, which is where the second list used to sit.
+    await user.click(within(sidebar).getByRole('link', { name: /my orders/i }));
+    expect(await screen.findByRole('link', { name: /back to dashboard/i })).toBeInTheDocument();
+    expect(document.querySelectorAll('.account-nav-list')).toHaveLength(0);
   });
 
   it('clears dependent location fields when their parent changes', async () => {

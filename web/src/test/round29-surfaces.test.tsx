@@ -136,52 +136,64 @@ describe('The product card chips are solid, not glass', () => {
   });
 });
 
-describe('The account pages share one hyperlinked navigation rail', () => {
+describe('The account destinations have one owner: the dashboard sidebar', () => {
   const nav = read('src', 'components', 'AccountNav.tsx');
-  const app = read('src', 'styles', 'app.css');
+  const app = read('src', 'styles', 'app.css').replace(/\s+/g, ' ');
 
-  const ACCOUNT_ROUTES: [string, string][] = [
-    ['/account/profile', 'Profile & Addresses'],
-    ['/orders', 'My Orders'],
+  const INNER_ROUTES: [string, string][] = [
+    ['/account/profile', 'Profile'],
+    ['/orders', 'Orders'],
     ['/wishlist', 'Wishlist'],
     ['/gift-cards', 'Gift Cards'],
     ['/notifications', 'Notifications'],
-    ['/account/security', 'Account security']
+    ['/account/security', 'Security']
   ];
 
-  it('renders exactly one rail with the current route active on every account page', async () => {
+  // Round 33 replaced the rail this round added: the dashboard docks the destination list beside
+  // its own content, and the pages it links to carry one way back rather than a second copy.
+  it('lists every destination once, beside the dashboard content', async () => {
     await signInAsCustomer();
-    for (const [route, label] of ACCOUNT_ROUTES) {
+    renderApp('/account');
+
+    const sidebar = await screen.findByRole('navigation', { name: 'Account Navigation' });
+    expect(document.querySelectorAll('.account-nav-list')).toHaveLength(1);
+    expect(within(sidebar).getAllByRole('link')).toHaveLength(8);
+    expect(within(sidebar).getByRole('button', { name: /log out/i })).toBeInTheDocument();
+    // Browse products went with the hover panel; the navbar tab owns that route.
+    expect(within(sidebar).queryByRole('link', { name: /browse products/i })).not.toBeInTheDocument();
+  });
+
+  it('gives the inner pages a back link and no list of their own', async () => {
+    await signInAsCustomer();
+    for (const [route, heading] of INNER_ROUTES) {
       const view = renderApp(route);
-      await waitFor(() => expect(document.querySelectorAll('.account-nav')).toHaveLength(1));
-      const links = [...document.querySelectorAll('.account-nav__link')];
-      expect(links).toHaveLength(8);
-      const active = links.filter((link) => link.classList.contains('account-nav__link--active'));
-      expect(active).toHaveLength(1);
-      expect(active[0]).toHaveTextContent(label);
-      // HashRouter renders "#/route" in a browser; jsdom keeps the bare path.
-      expect(active[0]).toHaveAttribute('href', expect.stringMatching(new RegExp(`#?${route}$`)));
+      await screen.findByRole('heading', { level: 1 });
+      expect(document.querySelectorAll('.account-nav-list'), `${route} grew a second list`).toHaveLength(0);
+
+      const back = screen.getByRole('link', { name: /back to dashboard/i });
+      expect(back).toHaveAttribute('href', expect.stringMatching(/#?\/account$/));
+      expect(back).toBeVisible();
+      // The page itself still reads as itself.
+      expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(new RegExp(heading, 'i'));
       view.unmount();
     }
   });
 
-  it('leaves the dashboard hub alone, without a duplicate rail', async () => {
-    await signInAsCustomer();
-    renderApp('/account');
-    await screen.findByRole('heading', { level: 1 });
-    expect(document.querySelector('.account-nav')).toBeNull();
+  it('moves one measured indicator instead of scrolling a chip into view', () => {
+    // The phone rail had to scroll its active chip into view; a docked column has nothing to
+    // scroll, so the active state is one dot whose offset is read from the row.
+    expect(nav).toContain('active.offsetTop');
+    expect(nav).not.toContain('scrollLeft');
+    expect(app).toContain('--spot-y: 0px; --spot-h: 0px; position: absolute;');
+    expect(app).toContain('transform: translateY(calc(var(--spot-y, 0px) + var(--spot-h, 0px) / 2 - 3.5px));');
+    expect(app).toContain('transition: transform var(--transition-slow), opacity var(--transition);');
   });
 
-  it('keeps the active chip in view on the scrollable phone row', () => {
-    expect(nav).toContain('nav.scrollLeft = active.offsetLeft');
-    expect(nav).toContain('nav.scrollWidth <= nav.clientWidth');
-  });
-
-  it('declares the rail layout and the selected fill in the stylesheet', () => {
-    expect(app).toContain('.account-section');
-    expect(app).toContain('grid-template-columns: 224px minmax(0, 1fr)');
-    expect(app).toContain('position: sticky');
-    const activeBlock = app.match(/\.account-nav__link--active\s*\{[^}]*\}/)?.[0] ?? '';
+  it('declares the docked layout and the selected fill in the stylesheet', () => {
+    expect(app).toContain('.account-dashboard > .account-nav-list { grid-area: nav; }');
+    expect(app).toContain('grid-template-columns: var(--sidebar-width) minmax(0, 1fr)');
+    expect(app).toContain('.account-nav-list { position: sticky;');
+    const activeBlock = app.match(/\.account-nav-row--active\s*\{[^}]*\}/)?.[0] ?? '';
     expect(activeBlock).toContain('var(--selected-bg)');
     expect(activeBlock).toContain('var(--accent-text)');
   });

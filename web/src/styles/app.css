@@ -6530,17 +6530,8 @@ body[data-overlay-open='true'] {
    Round 27: account hub, card affordances, search sheet, popover type
    ========================================================================== */
 
-/* The hover popover already prints the signed-in email at house sizes, so the
-   native title tooltip on the trigger was a second, OS-styled surface in an
-   uncontrolled 11px face. The popover's own lines were off-scale too (13.5 /
-   11.5px hardcoded in responsive.css); both land on the token ladder here. */
-:root .account-menu-portal .account-menu__name {
-  font-size: var(--text-xs) !important;
-}
-
-:root .account-menu-portal .account-menu__email {
-  font-size: var(--text-label) !important;
-}
+/* The two rules that put the avatar popover's name and email on the token ladder went with the
+   popover itself: the avatar is one link now, and the email it prints is the navbar's own chip. */
 
 @media (max-width: 768px) {
   /* The Alibaba-style list keeps its row rhythm on a phone: slightly tighter
@@ -6819,13 +6810,37 @@ body[data-overlay-open='true'] {
   white-space: nowrap;
 }
 
+/* ==========================================================================
+   The dashboard's account sidebar (Round 33). It is a navigation surface, so it wears the
+   same glass the navbar controls wear - --nav-glass sheen, --nav-glass-edge hairline,
+   --glass-blur - instead of a card material, and it is docked beside the dashboard's own
+   numbers rather than dropped in the middle of them.
+   ========================================================================== */
 .account-nav-list {
+  position: sticky;
+  top: var(--sticky-top, 80px);
   display: flex;
   flex-direction: column;
-  margin: 4px 0 16px;
-  padding: 6px 0;
-  border-radius: var(--radius-lg, 14px);
+  margin: 0;
+  padding: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  background: var(--nav-glass-base);
+  border: 1px solid var(--nav-glass-edge);
+  box-shadow: var(--nav-glass-shadow);
+  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
+}
+
+/* A phone has no room for a docked column: the sidebar scrolls away with the page instead of
+   pinning a nine-row list over the content it is supposed to sit beside. */
+@media (max-width: 1023px) {
+  .account-nav-list { position: static; }
+}
+
+/* The house fallback for engines without backdrop-filter: a solid surface, same shape. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .account-nav-list { background: var(--surface); }
 }
 
 .account-nav-list__group {
@@ -6839,6 +6854,7 @@ body[data-overlay-open='true'] {
 }
 
 .account-nav-row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -6857,12 +6873,73 @@ body[data-overlay-open='true'] {
   transition: background-color var(--transition-fast);
 }
 
+.account-nav-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Spotlight: a cone of accent light falls from the active row's icon and fades out across the
+   row. It is the row's own ::before, so switching destinations animates opacity only - the
+   column never reflows and the blur behind it is not recomputed. */
+.account-nav-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(140px 46px at 34px 50%, var(--glass-glow), transparent 72%);
+  transition: opacity var(--transition);
+}
+
+.account-nav-row--active::before {
+  opacity: 1;
+}
+
+/* One dot travels the column instead of every row painting its own, which is what makes the
+   change of destination read as a move. Its position is measured and handed over as custom
+   properties, so the only animated property is transform. */
+.account-nav__spot {
+  /* The component writes these two over the element inline; the declarations here are what the
+     column reads before the first measurement lands. */
+  --spot-y: 0px;
+  --spot-h: 0px;
+  position: absolute;
+  top: 0;
+  inset-inline-start: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--selected-bar);
+  box-shadow: 0 0 12px 2px var(--glass-glow);
+  opacity: 0;
+  transform: translateY(calc(var(--spot-y, 0px) + var(--spot-h, 0px) / 2 - 3.5px));
+  transition: transform var(--transition-slow), opacity var(--transition);
+  pointer-events: none;
+}
+
+.account-nav__spot[data-measured="true"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-nav__spot { transition: opacity var(--transition-fast); }
+  .account-nav-row::before { transition: none; }
+}
+
 .account-nav-row:hover {
   background: var(--selected-bg);
 }
 
 .account-nav-row:active {
   background: var(--surface-sunken);
+}
+
+/* The amber selected fill stays exactly as it was; the spotlight is painted on top of it. */
+.account-nav-row--active {
+  background: var(--selected-bg);
+  color: var(--accent-text);
+  font-weight: 700;
 }
 
 .account-nav-row__icon {
@@ -6876,6 +6953,14 @@ body[data-overlay-open='true'] {
   background: var(--surface-sunken);
   border: 1px solid var(--border);
   color: var(--brand);
+}
+
+/* The accent cap the spotlight asks for: the active row's icon tile lifts onto the same
+   gradient the navbar uses for its own selected control. */
+.account-nav-row--active .account-nav-row__icon {
+  background: var(--accent-gradient);
+  border-color: var(--accent-text);
+  color: var(--on-accent);
 }
 
 .account-nav-row__icon--danger {
@@ -6915,6 +7000,7 @@ body[data-overlay-open='true'] {
   font-size: 11px;
   font-weight: 800;
 }
+
 
 .account-nav-row--logout {
   border-top: 1px solid var(--border);
@@ -7335,17 +7421,36 @@ body[data-overlay-open='true'] {
 }
 
 /* ==========================================================================
-   Account Navigation Rail - one linked surface across every account page.
-   Phones get a horizontal chip row; from 1024px it becomes a sticky rail
-   beside the page, the way marketplace account centres lay themselves out.
-   The dashboard keeps its own tile hub and does not render this rail.
+   Account centre layout (Round 33). The dashboard docks the destination list as a sticky
+   glass column beside its own numbers; the inner pages are one column and carry a single
+   back link, because the sidebar is the only surface that lists the destinations.
    ========================================================================== */
-.account-section {
+.account-dashboard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
   align-items: start;
+  grid-template-areas:
+    "header"
+    "nav"
+    "main";
 }
+
+.account-dashboard > .page-header { grid-area: header; }
+.account-dashboard > .account-nav-list { grid-area: nav; }
+.account-dashboard__main { grid-area: main; min-width: 0; }
+
+@media (min-width: 1024px) {
+  .account-dashboard {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    gap: 32px;
+    grid-template-areas:
+      "nav header"
+      "nav main";
+  }
+}
+
+/* Inner account pages: no destination list here, so the shell is a single column. */
+.account-section { display: block; }
 
 .account-section__main {
   min-width: 0;
@@ -7354,81 +7459,79 @@ body[data-overlay-open='true'] {
   gap: var(--space-4);
 }
 
-.account-nav {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 2px 2px 6px;
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
-}
-
-.account-nav__link {
+.account-back {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  flex: 0 0 auto;
-  padding: 9px 14px;
-  min-height: 40px;
+  min-height: 44px;
+  padding: 0 14px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--opt-edge, var(--border));
-  background: var(--surface-glass, var(--surface));
-  color: var(--text-muted);
+  background: var(--nav-glass-base);
+  border: 1px solid var(--nav-glass-edge);
+  box-shadow: var(--nav-glass-shadow);
+  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
+  color: var(--text);
   font-size: var(--text-sm);
   font-weight: 650;
   text-decoration: none;
-  white-space: nowrap;
-  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  transition: color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.account-nav__link:hover {
+.account-back:hover { color: var(--accent-text); }
+
+.account-back__chevron {
+  transform: rotate(90deg);
+  color: var(--text-muted);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .account-back { background: var(--surface); }
+}
+
+/* The avatar is a link now, so it takes the navbar's own glass pill. The amber that used to
+   mark an open menu marks the account home being the page you are on instead. */
+:root .navbar .navbar__actions .nav-account.nav-control {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--nav-glass);
+  border: 1px solid var(--nav-glass-edge);
+  box-shadow: var(--nav-glass-shadow);
+  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%));
   color: var(--text);
-  border-color: var(--border-strong);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.account-nav__link--active {
-  background: var(--selected-bg);
-  color: var(--accent-text);
-  border-color: var(--selected-bar);
+:root .navbar .navbar__actions .nav-account.nav-control:hover {
+  background: var(--nav-hover);
+  color: var(--text);
+  border-color: transparent;
+  box-shadow: inset 0 1px 0 var(--surface-highlight);
 }
 
-@media (min-width: 1024px) {
-  .account-section {
-    grid-template-columns: 224px minmax(0, 1fr);
-    gap: 32px;
-  }
+:root .navbar .navbar__actions .nav-account.nav-control[aria-current='page'] {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: var(--accent-text);
+  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--surface-highlight);
+}
 
-  .account-nav {
-    position: sticky;
-    top: var(--sticky-top, 80px);
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-    overflow-x: visible;
-    padding: 8px;
-    background: var(--product-card-glass, var(--surface));
-    border: 1px solid var(--nav-glass-edge, var(--border));
-    border-radius: var(--radius-lg);
-    box-shadow: inset 0 1px 0 var(--surface-highlight), var(--shadow-sm);
-  }
+:root .navbar .navbar__actions .nav-account.nav-control:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
 
-  .account-nav__link {
-    border: none;
-    background: transparent;
-    border-radius: var(--radius-md);
-    justify-content: flex-start;
-  }
-
-  .account-nav__link:hover {
-    background: var(--nav-hover, rgba(119, 133, 154, 0.2));
-    border-color: transparent;
-  }
-
-  .account-nav__link--active {
-    background: var(--selected-bg);
-    color: var(--accent-text);
-    border-color: transparent;
-  }
+/* modern.css's blanket `.nav-control` fallback cannot reach this pill because the rule above
+   deliberately outranks it, so the solid surface is restated here at the same weight. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root .navbar .navbar__actions .nav-account.nav-control,
+  :root .navbar .navbar__actions .nav-account.nav-control:hover { background: var(--surface); }
 }
 
 /* ------------------------------------------------- payment outcome banner ----- */

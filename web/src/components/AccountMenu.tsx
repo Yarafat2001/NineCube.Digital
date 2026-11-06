@@ -4,10 +4,10 @@ import { createPortal } from 'react-dom';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
 import { useMarkAllNotificationsRead, useMarkNotificationRead, useNotifications, useUnreadCount } from '../api/hooks';
-import type { Notification, NotificationType } from '../api/types';
+import type { Notification, NotificationType, UserRole } from '../api/types';
 import { useToast } from './ui';
 import { notificationMetaFor, openChatWidget, timeAgo } from '../lib/helpers';
-import { Icon, type IconName } from './Icon';
+import { Icon } from './Icon';
 
 function usePopover(menu = false) {
   const [open, setOpen] = useState(false);
@@ -309,130 +309,26 @@ function SheetPanel({ children, onClose, label }: { children: React.ReactNode; o
   );
 }
 
+/**
+ * The avatar is one button to the signed-in account's own home. It used to be a hover panel holding
+ * a copy of the destination list, which meant every page it pointed at appeared twice on screen.
+ * The dashboard sidebar owns those destinations now, and log out lives there with them.
+ */
+const ACCOUNT_HOME: Record<UserRole, string> = {
+  Customer: '/account',
+  Administrator: '/admin',
+  Staff: '/operations',
+  InventoryManager: '/inventory'
+};
+
 export function AccountMenu() {
   useLanguage();
-  const { user, logout } = useAuth();
-  const pop = usePopover(true);
-  const navigate = useNavigate();
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches);
-  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hoverOpenedAt = useRef<number>(0);
-
-  const handleMouseEnter = () => {
-    if (isMobile) return;
-    if (hoverTimer.current) clearTimeout(hoverTimer.current);
-    hoverOpenedAt.current = Date.now();
-    pop.place();
-    pop.setOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    if (isMobile) return;
-    hoverTimer.current = setTimeout(() => {
-      pop.setOpen(false);
-    }, 280);
-  };
-
-  const handleTriggerClick = () => {
-    if (hoverTimer.current) clearTimeout(hoverTimer.current);
-    if (pop.open && Date.now() - hoverOpenedAt.current < 600) {
-      return;
-    }
-    pop.place();
-    pop.setOpen(!pop.open);
-  };
-
-  const handleTriggerKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      pop.place();
-      pop.setOpen(true);
-      setTimeout(() => {
-        pop.panel.current?.querySelector<HTMLElement>('[role=menuitem]')?.focus({ preventScroll: true });
-      }, 0);
-    }
-  };
-
-  useEffect(() => {
-    const media = window.matchMedia('(max-width: 768px)');
-    const onChange = () => setIsMobile(media.matches);
-    media.addEventListener('change', onChange);
-    return () => {
-      media.removeEventListener('change', onChange);
-      if (hoverTimer.current) clearTimeout(hoverTimer.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (pop.open) document.documentElement.setAttribute('data-overlay-open', 'true');
-    else document.documentElement.removeAttribute('data-overlay-open');
-  }, [pop.open]);
-
+  const { user } = useAuth();
   if (!user) return null;
-  // The account surfaces own the destination list - the rail beside every account page, the hub list on the
-  // dashboard. This panel is who I am and how I leave, so it links the account home and nothing else.
-  const items: { to: string; label: string; icon: IconName }[] = [
-    { to: '/account', label: 'Dashboard', icon: 'grid' }
-  ];
-
-  const menuItems = (
-    <>
-      <div className="account-menu__header">
-        <span className="avatar avatar--medium" aria-hidden="true">{t(user.email[0].toUpperCase())}</span>
-        <div className="account-menu__user-info">
-          <strong className="account-menu__name">{t(user.fullName ?? user.email.split('@')[0])}</strong>
-          <span className="account-menu__email muted">{t(user.email)}</span>
-        </div>
-      </div>
-      <div role="separator" className="menu-separator" />
-      <div className="account-menu__list">
-        {items.map(item => (
-          <NavLink key={item.to} role="menuitem" className="nav-pop__item" to={item.to} end onClick={pop.close}>
-            <Icon name={item.icon} />
-            <span>{t(item.label)}</span>
-          </NavLink>
-        ))}
-        <div role="separator" className="menu-separator" />
-        <button type="button" role="menuitem" className="nav-pop__item nav-pop__item--danger" onClick={() => { pop.close(); logout(); navigate('/login', { replace: true }); }}>
-          <Icon name="logout" />
-          <span>{t("Log out")}</span>
-        </button>
-      </div>
-    </>
-  );
-
   return (
-    <div className="nav-pop" data-overlay-open={pop.open ? 'true' : undefined}
-      onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <button ref={pop.trigger} type="button" className="nav-control nav-pop__trigger" aria-label={t("Account")} aria-expanded={pop.open} aria-haspopup="menu"
-        onClick={handleTriggerClick} onKeyDown={handleTriggerKeyDown}>
-        <span className="avatar avatar--small" aria-hidden="true">{t(user.email[0].toUpperCase())}</span>
-        <span className="account-name">{t(user.email.split('@')[0])}</span>
-        <Icon name="chevron" className="account-chevron" data-open={pop.open} />
-      </button>
-
-      {pop.open ? (
-        isMobile ? (
-          createPortal(
-            <div ref={pop.panel} className="sheet-backdrop" onClick={() => pop.setOpen(false)} role="presentation">
-              <SheetPanel onClose={() => pop.setOpen(false)} label={t("Account")}>
-                <div className="account-menu__sheet">
-                  {menuItems}
-                </div>
-              </SheetPanel>
-            </div>,
-            document.body
-          )
-        ) : (
-          createPortal(
-            <div ref={pop.panel} style={pop.position} className="nav-pop__panel nav-pop__portal account-menu-portal" role="menu" aria-label={t("Account")} onKeyDown={pop.keyboard}
-              onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-              {menuItems}
-            </div>,
-            document.body
-          )
-        )
-      ) : null}
-    </div>
+    <NavLink to={ACCOUNT_HOME[user.role]} className="nav-control nav-account" aria-label={t("Account")}>
+      <span className="avatar avatar--small" aria-hidden="true">{t(user.email[0].toUpperCase())}</span>
+      <span className="account-name">{t(user.email.split('@')[0])}</span>
+    </NavLink>
   );
 }

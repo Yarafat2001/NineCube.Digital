@@ -254,6 +254,139 @@ What I did not touch: the Phase B tidy-ups you listed as not urgent (the per-req
 inventory page's per-row email subquery, the lowercase email lookups), and the catalogue, product detail, order,
 dashboard, sales-summary and notification queries you said to leave alone.
 
+# Round 33 - the dashboard gets the one navigation column, the avatar becomes a plain button, and both are glass
+
+Date: 2026-11-06. Two asks in one round. The structural one, in your words: "please in the dashboard give it
+as side bar and remove the Browse products replace with dashboard icon here by which others pages will be
+linked only in the dashboard Logout icon exist other pages sidebar's not applicable. In the account menu avatar
+hover remove make it as button and here the dash board page open with sidebar button." The design one was a
+brief: put the Glass Navigation language on that sidebar, express every colour, radius, blur, shadow and
+duration as a token, keep routes, behaviour and both languages, verify first, and pick the best of four
+candidate active-state signatures instead of inventing a fifth.
+
+Four decisions were yours and are the shape of this round: the inner pages get a "← Dashboard" link rather than
+a second list; the avatar goes to each role's own workspace; **Spotlight** is the active-state signature; the
+phone's bottom tab bar is left alone this round.
+
+## 1. What was on the screen before I touched anything
+
+- The dashboard had no sidebar. Its destinations were a tile hub, and the same eight destinations were repeated
+  as a horizontal chip rail on every *inner* account page - so My Orders, Wishlist, Gift Cards, Profile &
+  Addresses, Account security, Notifications and Help were listed again on the page you had already arrived at.
+- The avatar was a hover panel, not a control. Round 32 measured it: six rows for a customer, four for a staff
+  account, five of them destinations the page behind the panel also listed.
+- "Browse products" was one of the dashboard's own destinations even though the navbar's Products tab already
+  owns that route, which is why the first row of the new sidebar is Dashboard with the grid icon.
+- The active state did not travel. It was a colour change, and a left bar on some surfaces only.
+- Almost everything the glass brief asked for already existed as a token: `--nav-glass`, `--nav-glass-edge`,
+  `--nav-glass-shadow`, `--glass-blur` (16px), `--glass-saturate` (140%), `--selected-bg`, `--selected-bar`,
+  `--accent-text`, `--on-accent`, `--focus-ring`, `--radius-pill`, `--transition-fast/-/-slow` (150/200/300 ms).
+  Exactly one value had nowhere to read from: how bright the accent looks where it falls on frosted glass.
+
+## 2. Plan, and why Spotlight rather than the other three
+
+A raised bump needs an outer shadow that competes with the glass edge the navbar already draws, and it changes
+the row's own geometry. A lifted orb is a hover affordance - it says "press me", not "you are here" - and it
+would have to sit under approved amber styling from Round 32 that I was not going to remove. A liquid bubble
+paints a measured blob behind the label, which needs the same measurement as Spotlight but covers the Bengali
+text, whose labels are the longest in the app. Spotlight is one 7px dot that travels between rows plus a raised
+glass cone on the active row: it reuses `--selected-bar` for the dot and `--selected-bg` for the cone, leaves the
+label's approved colour and underline alone, and needs one measurement in one place.
+
+So: structure first (the sidebar owns the list, the avatar becomes a link), then the glass pass on those two
+surfaces, then reduced motion, the no-backdrop-filter fallback, and both languages.
+
+## 3. Changes
+
+- `web/src/components/AccountNav.tsx` - `AccountNav()` (the chip rail) is now `AccountSidebar({ unread, onLogout })`.
+  `SIDEBAR_GROUPS` holds the eight destinations in the order the hub showed them, split into two `<ul>` groups so
+  Log out can end the list, and Browse products is gone. The dot is a real element the component measures in
+  `useLayoutEffect` (`offsetTop`/`offsetHeight` of the active row, re-measured on resize), written to the element
+  as `--spot-y`/`--spot-h` with `data-measured` so an unmeasured dot stays invisible instead of sitting at the top.
+  `AccountSection` now renders one `<Link className="account-back">` + the page, and no list.
+- `web/src/components/AccountMenu.tsx` - the hover panel is deleted: the timer, the portal trigger, the mobile
+  sheet branch and the destination rows. `ACCOUNT_HOME` maps each role to its own workspace (Customer `/account`,
+  Administrator `/admin`, Staff `/operations`, InventoryManager `/inventory`) and the avatar is a single
+  `NavLink` in the navbar's own glass pill, which takes `aria-current="page"` when you are on that page.
+- `web/src/pages/AccountPages.tsx` - the dashboard is `.account-dashboard`, a grid that docks the sidebar beside
+  its content; the hub tiles stay, the rail is gone from the inner pages.
+- `web/src/styles/tokens.css` - one new token, `--glass-glow`, `rgba(245,158,11,.3)` and `rgba(255,171,77,.22)`
+  in dark, because smoked glass needs a lower alpha than clear. Nothing else new; blur, tint and edge are the
+  existing tokens.
+- `web/src/styles/app.css` - the sidebar column, the two row classes, the travelling dot, the back link, the grid
+  docking at ≥1024px, the avatar pill raised to `:root .navbar .navbar__actions .nav-account.nav-control` so it
+  beats modern.css, a `prefers-reduced-motion` block that drops the travel and keeps a fade, and a solid-surface
+  fallback for each of the three glass surfaces. The pill needs its own fallback statement rather than the
+  project's blanket `.nav-control` one in modern.css, because raising its specificity to win that tie also beats
+  the fallback - that is the one rule in this round whose absence would only show up in a browser that cannot
+  blur at all, so the contract test asserts it in words.
+- `web/src/i18n/bn.json` - no edit needed. Both strings the new markup asks for were already in the dictionary
+  ("Account Navigation" at line 2, "Back to dashboard" at line 447), and the sidebar labels are the keys the hub
+  already used, so Bengali came with the round for free; `npm run i18n:check` confirms nothing is missing on my side.
+
+## 4. Tests and results
+
+`web/src/test/round33-glass-nav.test.tsx` is new (11 tests): exactly one `aria-current="page"` per route and it
+names the right destination; the sidebar exists only on the dashboard; Log out is a `<button>` and every other
+row is a link; the unread badge only appears above zero; a colour/duration/blur sweep over seven selectors that
+fails on any literal value; the solid-surface fallback for all three glass surfaces; 44px touch targets and a
+focus ring on the row; the grid
+docking; the dot's measurement contract (including jsdom's unmeasured state); transform-and-opacity-only
+transitions; the reduced-motion block. Five existing files were rewritten to the new ownership instead of
+loosened - `navbar.test.tsx` now signs out through avatar → sidebar, `account.test.tsx` asserts the role sweep,
+`modern-customer.test.tsx` walks the sidebar by keyboard, `round27-surfaces.test.tsx` and
+`round29-surfaces.test.tsx` assert one list on the dashboard and a back link everywhere else.
+
+Gates after the last edit (the pill's fallback rule, added after the first browser pass): `npm run typecheck`
+clean, `npm run build` clean (11.1 s), `npm run test:run` **53 files, 416 tests passed** in 224 s - the third
+green pass of that command. The first pass of the same command earlier failed 5 tests in 4 files at 304 s (the
+machine was still draining the browser sweeps); the passes after it ran at 204-245 s and were green, and the six
+files this round touched pass 65/65 when run alone, so I am reporting it as a loaded-machine flake rather than
+hiding it. `npm run i18n:check` fails on one line, `src\pages\ProductsPage.tsx:485: Filters`, which is the other
+session's uncommitted file - HEAD still reads `t("Filter")` there, so the gate is green for this commit and red
+only for the work in progress beside it. I did not open that file.
+
+Browser pass, the real app served on its own MSW fixtures (so: layout and behaviour proof, not catalogue data),
+1440 and 390 in both themes, screenshots in `web/artifacts/round33/`:
+
+| what I read | measured |
+| --- | --- |
+| dashboard at 1440 | column at x32 w317, content at x381 w1027; `position: sticky` at ≥1024, static below; at 390 the two stack |
+| rows | 9, every one ≥54 px tall; one `[aria-current="page"]`, reading "Dashboard"; Notifications badge "2" |
+| glass | computed `backdrop-filter: blur(16px) saturate(1.4)` on the column, the back link and the avatar pill |
+| spotlight | inline `--spot-y: 8px; --spot-h: 54px` → `translateY(31.5px)`, dot 7×7, dot centre minus row centre = **0 px**, opacity 1, in all four theme × width combinations |
+| inner page | 0 destination lists, one back link 183×44 pointing at `#/account` |
+| keyboard | tabbing reaches the sidebar rows; ring is `2px solid` at `3px` offset, `rgb(154,63,0)` light / `rgb(255,195,107)` dark |
+| contrast, composited through every gradient stop under the text | active label 6.1:1 light, 7.6:1 dark; plain label 5.4:1 light, 10.22:1 dark |
+| reduced motion | the dot's transition list collapses to `opacity` only - it fades in place, it does not travel |
+| Bengali | no clipped label at either width, column right edge unchanged |
+| page errors | none, in any block |
+| roles | Customer → `#/account` (1 list, 9 rows); Administrator → `#/admin` (3 tabs, 0 lists); Staff → `#/operations`; InventoryManager → `#/inventory`; the avatar is an `<a>`, radius 999px, 46px tall, and 0 hover panels anywhere |
+
+One earlier reading of mine was wrong and is worth naming, because it nearly produced a fix to nothing: the
+first probe reported the dot as `opacity 0 / translateY null` at laptop width. It was the probe, not the CSS -
+it sampled the element mid-transition, and its matrix parser kept the closing parenthesis, so `Number(" 31.5)")`
+came back NaN. Re-measured with the same setup and a settle delay, all four combinations agree with the table.
+
+## 5. Risks and follow-ups
+
+- While the sidebar exists only on the dashboard, the dot can only ever sit on "Dashboard". The travel logic is
+  real (it measures, and re-measures on resize) and is tested, but no live route currently shows it moving
+  between two rows. If you later want the sidebar on the inner pages too, the dot needs no new code.
+- `.account-menu-portal` and the `.sheet .account-menu__*` rules in `responsive.css` are unreachable now that the
+  panel is gone. I left them: that file is dirty from the other session's mobile-catalogue work, and I did not
+  want to land in the middle of it. Worth a cleanup pass once that lands.
+- The phone bottom tab bar is untouched, as you decided. Consequence: the avatar pill is a desktop surface in
+  effect - below 768px the desktop avatar is hidden (measured 0×0 at 390) and the tab bar's own Account entry is
+  the way in.
+- The browser pass proves layout and behaviour on the project's MSW fixtures, not on the seeded catalogue; the
+  run against a real signed-in account still needs `NINECUBE_SEED_PASSWORD` from you, same as items 1.1-1.4.
+- The throwaway Vite server this harness used is still listening on 127.0.0.1:5178; I can start processes but
+  session policy stops me killing them, so that one is yours to end. Everything else from the harness is
+  deleted (`web/.ui-harness/` is gitignored, and the screenshots that matter are kept).
+- Not touched, still queued: ITEM 3 (delivery status notifications), the two Round 31 `SupportAutoResponder`
+  test failures awaiting your word, and the Phase B tidy-ups you called non-urgent.
+
 # Round 32 - the avatar menu stops being a third copy of the account destination list
 
 Date: 2026-11-06. Reported from three screenshots, in your words: "under the profile bar from the navbar same

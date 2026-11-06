@@ -90,6 +90,9 @@
   --glass-border: var(--border);
   --glass-blur: 16px;
   --glass-saturate: 140%;
+  /* The one glass value the navigation had nowhere to read from: how bright the accent light
+     looks where it falls on frosted glass. Only the glow is new; blur, tint and edge are above. */
+  --glass-glow: rgba(245, 158, 11, .3);
 
   /* ---- shadows: spec elevation (aliases keep old class names working) --- */
   --neu-light: rgba(255, 255, 255, 0.8);
@@ -226,6 +229,8 @@
       radial-gradient(1100px 620px at 8% -6%, rgba(245, 151, 38, 0.28), transparent 62%),
       radial-gradient(900px 600px at 96% 4%, rgba(120, 86, 255, 0.3), transparent 60%);
     --surface-glass: rgba(28, 25, 27, 0.62);
+    /* Smoked glass: the same cone at a lower alpha, because the panel behind it is already dark. */
+    --glass-glow: rgba(255, 171, 77, .22);
     --selected-bg: rgba(245, 151, 38, 0.16);
     --selected-wash: rgba(245, 151, 38, 0.07);
     --selected-bar: #f59726;
