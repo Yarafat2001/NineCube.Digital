@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
-import { useWishlist } from '../api/hooks';
+import { useChatConversations } from '../api/hooks';
 import { useOrbNotch } from '../lib/orbNotch';
 import { Icon, type IconName } from './Icon';
 import { OrbNotchLayers } from './OrbNotch';
@@ -16,8 +16,8 @@ export function MobileNav() {
   const navRef = useRef<HTMLElement>(null);
   const glassRef = useRef<HTMLSpanElement>(null);
   const edgeRef = useRef<SVGPathElement>(null);
-  const wishlistQuery = useWishlist();
-  const wishlistCount = wishlistQuery.data?.length ?? 0;
+  const conversationsQuery = useChatConversations(Boolean(user));
+  const unreadMessagesCount = (conversationsQuery.data ?? []).reduce((acc, c) => acc + (c.unreadCount ?? 0), 0);
   const [cartPulse, setCartPulse] = useState(false);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export function MobileNav() {
   const canOrder = !user || user.role === 'Customer';
   const isHomeActive = location.pathname === '/';
   const isCatalogActive = location.pathname === '/products' || location.pathname.startsWith('/products/');
-  const isWishlistActive = location.pathname === '/wishlist';
+  const isMessagesActive = location.pathname === '/messages' || location.pathname === '/help';
   const isAccountActive = location.pathname.startsWith('/account') || location.pathname === '/orders';
   const isDashboardTabActive = !canOrder && location.pathname === '/account';
 
@@ -74,7 +74,7 @@ export function MobileNav() {
   // Dashboard and Account both on /account, and only one of them can sit in the notch.
   const activeIcon: IconName | null = isHomeActive ? 'home'
     : isCatalogActive ? 'grid'
-    : isWishlistActive ? 'heart'
+    : isMessagesActive ? 'chat'
     : isDashboardTabActive ? "grid"
     : isAccountActive ? "user"
     : null;
@@ -114,19 +114,19 @@ export function MobileNav() {
       </NavLink>
 
       <NavLink
-        to={user ? "/wishlist" : "/login"}
-        className={`mobile-nav__item ${isWishlistActive ? 'mobile-nav__item--active' : ''}`}
-        aria-current={isWishlistActive ? 'page' : undefined}
+        to={user ? "/messages" : "/login"}
+        className={`mobile-nav__item ${isMessagesActive ? 'mobile-nav__item--active' : ''}`}
+        aria-current={isMessagesActive ? 'page' : undefined}
       >
         <div className="mobile-nav__icon-wrap">
-          <Icon name="heart" width={22} height={22} />
-          {wishlistCount > 0 ? (
-            <span className="mobile-nav__badge" aria-label={t(`${wishlistCount} saved items`)}>
-              {wishlistCount > 9 ? '9+' : wishlistCount}
+          <Icon name="chat" width={22} height={22} />
+          {unreadMessagesCount > 0 ? (
+            <span className="mobile-nav__badge" aria-label={t(`${unreadMessagesCount} unread messages`)}>
+              {unreadMessagesCount > 9 ? '9+' : unreadMessagesCount}
             </span>
           ) : null}
         </div>
-        <span className="mobile-nav__label">{t("Wishlist")}</span>
+        <span className="mobile-nav__label">{t("Messages")}</span>
       </NavLink>
 
       {canOrder ? (

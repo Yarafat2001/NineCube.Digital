@@ -39,6 +39,73 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Draggable floating position state remembered across sessions
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(() => {
+    try {
+      const saved = localStorage.getItem('ninecube:copilot-pos');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const dragRef = useRef<{
+    startX: number;
+    startY: number;
+    startLeft: number;
+    startTop: number;
+    isDragging: boolean;
+    hasMoved: boolean;
+  } | null>(null);
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0) return;
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startLeft: rect.left,
+      startTop: rect.top,
+      isDragging: true,
+      hasMoved: false,
+    };
+    btn.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag || !drag.isDragging) return;
+    const dx = e.clientX - drag.startX;
+    const dy = e.clientY - drag.startY;
+    if (!drag.hasMoved && Math.hypot(dx, dy) > 5) {
+      drag.hasMoved = true;
+    }
+    if (drag.hasMoved) {
+      const maxX = Math.max(10, window.innerWidth - 140);
+      const maxY = Math.max(10, window.innerHeight - 60);
+      const newX = Math.min(maxX, Math.max(10, drag.startLeft + dx));
+      const newY = Math.min(maxY, Math.max(10, drag.startTop + dy));
+      setPos({ x: newX, y: newY });
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+    if (!drag.hasMoved) {
+      toggleOpen();
+    } else if (pos) {
+      try {
+        localStorage.setItem('ninecube:copilot-pos', JSON.stringify(pos));
+      } catch {}
+    }
+    dragRef.current = null;
+  };
+
   // Detect whether AssistantDock is mounted in DOM on the showcase home page
   useEffect(() => {
     const checkDock = () => {
@@ -102,9 +169,12 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
         <button
           type="button"
           className={`commerce-copilot-launcher ${hasChat ? 'commerce-copilot-launcher--stacked' : ''} ${isOpen ? 'commerce-copilot-launcher--active' : ''}`}
-          onClick={toggleOpen}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          style={pos ? { left: `${pos.x}px`, top: `${pos.y}px`, bottom: 'auto', right: 'auto', touchAction: 'none' } : { touchAction: 'none' }}
           aria-label={t("Open AI Shopping Copilot (Ctrl+J)")}
-          title={t("AI Shopping Copilot (Ctrl+J)")}
+          title={t("AI Shopping Copilot (Ctrl+J) - drag to move")}
         >
           <div className="commerce-copilot-launcher__icon-wrap">
             <span className="commerce-copilot-launcher__sparkle" aria-hidden="true">

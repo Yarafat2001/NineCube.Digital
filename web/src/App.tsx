@@ -32,6 +32,7 @@ const AdminPage = lazy(() => import('./pages/AdminPage').then((module) => ({ def
 const GiftCardsPage = lazy(() => import('./pages/GiftCardsPage').then((module) => ({ default: module.GiftCardsPage })));
 const GuestOrderPage = lazy(() => import('./pages/GuestOrderPage').then(module => ({ default: module.GuestOrderPage })));
 const CustomerCarePage = lazy(() => import('./pages/CustomerCarePage').then(module => ({ default: module.CustomerCarePage })));
+const MessagesPage = lazy(() => import('./pages/MessagesPage').then(module => ({ default: module.MessagesPage })));
 const StorePolicyPage = lazy(() => import('./pages/CustomerCarePage').then(module => ({ default: module.StorePolicyPage })));
 
 const GuestRecoveryPage = lazy(() => import('./pages/GuestRecoveryPage').then(m => ({ default: m.GuestRecoveryPage })));
@@ -196,6 +197,7 @@ export function App() {
             <Route path="/account/security" element={<RequireAuth><SecurityPage /></RequireAuth>} />
             <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
             <Route path="/guest/orders/:id" element={<GuestOrderPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
             <Route path="/help" element={<CustomerCarePage />} />
             <Route path="/policies/:section" element={<StorePolicyPage />} />
 

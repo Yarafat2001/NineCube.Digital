@@ -82,18 +82,17 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
     const W = thickness;
     const H = length;
     // Canonical Glass nav 3 rotated for right-edge vertical rail:
-    // rr: pill corner radius (matches the 72px pill ends)
-    // nw: notch half-width along the vertical axis (proportional to 44px orb)
+    // rr: corner radius of the top & bottom caps
+    // nw: notch half-opening along the vertical axis (proportional to 44px orb)
     // depth: uniform socket scoop into the glass rail
-    // lead & pinch: monotonic control parameters guaranteeing zero inflection loops
-    // Sequence: (rc - nw) < (rc - nw + lead) < (rc - pinch) < rc
-    const rr = Math.min(28, W / 2);
-    const nw = 34;
+    // lead & pinch: strictly monotonic bezier parameters guaranteeing smooth socket curve
+    const rr = 18;
+    const nw = 24;
     const depth = 26;
     const lead = 14;
-    const pinch = 10;
-    const minC = rr + nw;
-    const maxC = Math.max(minC, H - rr - nw);
+    const pinch = 8;
+    const minC = nw + 6;
+    const maxC = Math.max(minC, H - nw - 6);
     const rc = Math.min(Math.max(centre, minC), maxC);
     const topY = rc - nw;
     const botY = rc + nw;
@@ -102,10 +101,10 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
       `M${n(rr)} 0`,
       `H${n(W - rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W)} ${n(rr)}`,
-      `L${n(W)} ${n(topY)}`,
+      topY > rr ? `L${n(W)} ${n(topY)}` : `L${n(W)} ${n(rr)}`,
       `C${n(W)} ${n(rc - nw + lead)} ${n(W - depth)} ${n(rc - pinch)} ${n(W - depth)} ${n(rc)}`,
       `C${n(W - depth)} ${n(rc + pinch)} ${n(W)} ${n(rc + nw - lead)} ${n(W)} ${n(botY)}`,
-      `L${n(W)} ${n(H - rr)}`,
+      botY < H - rr ? `L${n(W)} ${n(H - rr)}` : `L${n(W)} ${n(botY)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W - rr)} ${n(H)}`,
       `H${n(rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 0 ${n(H - rr)}`,
