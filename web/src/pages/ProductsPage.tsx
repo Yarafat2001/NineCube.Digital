@@ -565,6 +565,20 @@ export function ProductsPage() {
             </div>
           </div>
 
+          <div className="catalogue-highlight-strip" aria-label={t("Store highlights")}>
+            {[
+              { icon: '⚡', label: t('Fast dispatch') },
+              { icon: '✅', label: t('Verified quality') },
+              { icon: '🚚', label: t('Free delivery over BDT 999') },
+              { icon: '⭐', label: t('Top rated products') }
+            ].map((item) => (
+              <div key={item.label} className="catalogue-highlight-strip__item">
+                <span aria-hidden="true">{item.icon}</span>
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+
           <BuyingGuide category={category} />
           {gridPending ? <LoadingBlock label={t("Loading products")} variant="card" count={6} /> : null}
 

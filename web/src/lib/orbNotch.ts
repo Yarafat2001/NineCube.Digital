@@ -50,22 +50,23 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
   if (pill && edge === 'top') {
     const W = length;
     const H = thickness;
-    const pr = Math.min(22, H / 2);
-    const nw = Math.min(30, W / 10);
-    const pdepth = 24;
-    const minC = nw + 8;
-    const maxC = W - nw - 8;
+    const pr = Math.min(32, H / 2);
+    // Canonical Glass nav 3 proportions for floating bottom dock:
+    const nw = Math.min(46, Math.max(34, Math.round(W * 0.11)));
+    const pdepth = Math.min(31, Math.round(H * 0.48));
+    const lead = Math.round(nw * (22 / 46));
+    const wall = Math.round(nw * (28 / 46));
+    const minC = pr + nw;
+    const maxC = Math.max(minC, W - pr - nw);
     const pc = Math.max(minC, Math.min(maxC, centre));
     const leftX = pc - nw;
     const rightX = pc + nw;
-    const lead = nw * (18 / 34);
-    const wall = nw * (22 / 34);
     const d = [
       `M${n(pr)} 0`,
-      leftX > pr ? `H${n(leftX)}` : `L${n(leftX)} 0`,
+      leftX > pr ? `H${n(leftX)}` : '',
       `C${n(pc - nw + lead)} 0 ${n(pc - wall)} ${n(pdepth)} ${n(pc)} ${n(pdepth)}`,
       `C${n(pc + wall)} ${n(pdepth)} ${n(pc + nw - lead)} 0 ${n(rightX)} 0`,
-      rightX < W - pr ? `H${n(W - pr)}` : `L${n(W - pr)} 0`,
+      rightX < W - pr ? `H${n(W - pr)}` : '',
       `A${n(pr)} ${n(pr)} 0 0 1 ${n(W)} ${n(pr)}`,
       `L${n(W)} ${n(H - pr)}`,
       `A${n(pr)} ${n(pr)} 0 0 1 ${n(W - pr)} ${n(H)}`,
@@ -74,7 +75,7 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
       `L0 ${n(pr)}`,
       `A${n(pr)} ${n(pr)} 0 0 1 ${n(pr)} 0`,
       'Z'
-    ].join('');
+    ].filter(Boolean).join('');
     return { d, centre: pc };
   }
 
@@ -83,16 +84,16 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
     const H = length;
     // Canonical Glass nav 3 rotated for right-edge vertical rail:
     // rr: corner radius of the top & bottom caps
-    // nw: notch half-opening along the vertical axis (proportional to 44px orb)
+    // nw: notch half-opening along the vertical axis (scaled to 46px orb)
     // depth: uniform socket scoop into the glass rail
-    // lead & pinch: strictly monotonic bezier parameters guaranteeing smooth socket curve
-    const rr = 18;
-    const nw = 24;
+    // lead & wall: reference cubic bezier parameters guaranteeing smooth socket curve
+    const rr = 20;
+    const nw = 34;
     const depth = 26;
-    const lead = 14;
-    const pinch = 8;
-    const minC = nw + 6;
-    const maxC = Math.max(minC, H - nw - 6);
+    const lead = Math.round(nw * (22 / 46)); // 16
+    const wall = Math.round(nw * (28 / 46)); // 21
+    const minC = rr + nw; // 54px
+    const maxC = Math.max(minC, H - rr - nw);
     const rc = Math.min(Math.max(centre, minC), maxC);
     const topY = rc - nw;
     const botY = rc + nw;
@@ -101,17 +102,17 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
       `M${n(rr)} 0`,
       `H${n(W - rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W)} ${n(rr)}`,
-      topY > rr ? `L${n(W)} ${n(topY)}` : `L${n(W)} ${n(rr)}`,
-      `C${n(W)} ${n(rc - nw + lead)} ${n(W - depth)} ${n(rc - pinch)} ${n(W - depth)} ${n(rc)}`,
-      `C${n(W - depth)} ${n(rc + pinch)} ${n(W)} ${n(rc + nw - lead)} ${n(W)} ${n(botY)}`,
-      botY < H - rr ? `L${n(W)} ${n(H - rr)}` : `L${n(W)} ${n(botY)}`,
+      topY > rr ? `L${n(W)} ${n(topY)}` : '',
+      `C${n(W)} ${n(rc - nw + lead)} ${n(W - depth)} ${n(rc - wall)} ${n(W - depth)} ${n(rc)}`,
+      `C${n(W - depth)} ${n(rc + wall)} ${n(W)} ${n(rc + nw - lead)} ${n(W)} ${n(botY)}`,
+      botY < H - rr ? `L${n(W)} ${n(H - rr)}` : '',
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W - rr)} ${n(H)}`,
       `H${n(rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 0 ${n(H - rr)}`,
       `L0 ${n(rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(rr)} 0`,
       'Z'
-    ].join('');
+    ].filter(Boolean).join('');
     return { d, centre: rc };
   }
 
@@ -221,16 +222,22 @@ export function useOrbNotch(
     const draw = (snap: boolean) => {
       const to = target();
       if (to === null) {
-        hostEl.dataset.orbReady = 'false';
+        if (!positionRef.current && !LAST_POSITIONS.has(edge)) {
+          hostEl.dataset.orbReady = 'false';
+        }
         // In case layout or route active class renders in subsequent frames, retry checking
         if (typeof requestAnimationFrame !== 'undefined') {
           cancelAnimationFrame(frameRef.current);
-          frameRef.current = requestAnimationFrame(() => {
+          let retries = 0;
+          const retry = () => {
             const retryTo = target();
             if (retryTo !== null) {
               draw(false);
+            } else if (++retries < 10) {
+              frameRef.current = requestAnimationFrame(retry);
             }
-          });
+          };
+          frameRef.current = requestAnimationFrame(retry);
         }
         return;
       }

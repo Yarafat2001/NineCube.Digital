@@ -70,7 +70,11 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
       isDragging: true,
       hasMoved: false,
     };
-    btn.setPointerCapture(e.pointerId);
+    if (typeof btn.setPointerCapture === 'function') {
+      try {
+        btn.setPointerCapture(e.pointerId);
+      } catch {}
+    }
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
