@@ -61,7 +61,8 @@ export function AccountRail() {
   const glassRef = useRef<HTMLSpanElement>(null);
   const edgeRef = useRef<SVGPathElement>(null);
 
-  const activeRow = SIDEBAR_GROUPS.flat().find((r) => r.to === pathname);
+  const cleanPath = pathname.replace(/\/+$/, '') || '/';
+  const activeRow = SIDEBAR_GROUPS.flat().find((r) => r.to === cleanPath || (r.end ? cleanPath === r.to : cleanPath.startsWith(r.to)));
   const activeIcon = activeRow?.icon ?? null;
 
   // The sidebar lifted orb is placed in the right-side format facing the dashboard content;

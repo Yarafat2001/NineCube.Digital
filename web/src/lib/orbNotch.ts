@@ -84,12 +84,14 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
     // Canonical Glass nav 3 rotated for right-edge vertical rail:
     // rr: pill corner radius (matches the 72px pill ends)
     // nw: notch half-width along the vertical axis (proportional to 44px orb)
-    // depth: how far the cradle scoops left into the glass pill
+    // depth: uniform socket scoop into the glass rail
+    // lead & pinch: monotonic control parameters guaranteeing zero inflection loops
+    // Sequence: (rc - nw) < (rc - nw + lead) < (rc - pinch) < rc
     const rr = Math.min(28, W / 2);
     const nw = 34;
     const depth = 26;
-    const lead = 16;
-    const wall = 20;
+    const lead = 14;
+    const pinch = 10;
     const minC = rr + nw;
     const maxC = Math.max(minC, H - rr - nw);
     const rc = Math.min(Math.max(centre, minC), maxC);
@@ -101,8 +103,8 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
       `H${n(W - rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W)} ${n(rr)}`,
       `L${n(W)} ${n(topY)}`,
-      `C${n(W)} ${n(rc - nw + lead)} ${n(W - depth)} ${n(rc - wall)} ${n(W - depth)} ${n(rc)}`,
-      `C${n(W - depth)} ${n(rc + wall)} ${n(W)} ${n(rc + nw - lead)} ${n(W)} ${n(botY)}`,
+      `C${n(W)} ${n(rc - nw + lead)} ${n(W - depth)} ${n(rc - pinch)} ${n(W - depth)} ${n(rc)}`,
+      `C${n(W - depth)} ${n(rc + pinch)} ${n(W)} ${n(rc + nw - lead)} ${n(W)} ${n(botY)}`,
       `L${n(W)} ${n(H - rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W - rr)} ${n(H)}`,
       `H${n(rr)}`,
@@ -221,6 +223,16 @@ export function useOrbNotch(
       const to = target();
       if (to === null) {
         hostEl.dataset.orbReady = 'false';
+        // In case layout or route active class renders in subsequent frames, retry checking
+        if (typeof requestAnimationFrame !== 'undefined') {
+          cancelAnimationFrame(frameRef.current);
+          frameRef.current = requestAnimationFrame(() => {
+            const retryTo = target();
+            if (retryTo !== null) {
+              draw(false);
+            }
+          });
+        }
         return;
       }
       hostEl.dataset.orbReady = 'true';
@@ -256,9 +268,12 @@ export function useOrbNotch(
       frameRef.current = requestAnimationFrame(step);
     };
 
+    const hasPrevious = LAST_POSITIONS.has(edge);
     if (isFirstMount.current) {
       isFirstMount.current = false;
-      draw(true);
+      // When navigating across pages, glide smoothly from the last active position!
+      // Only snap on cold first load where no prior tab position exists.
+      draw(!hasPrevious);
     } else {
       draw(false);
     }
