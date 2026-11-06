@@ -86,7 +86,7 @@ export function AccountRail() {
   };
 
   return (
-    <div className="account-rail" data-expanded={expanded ? 'true' : 'false'}>
+    <div className="account-rail" data-expanded={expanded ? 'true' : 'false'} data-orb-ready="true">
       <nav ref={barRef} id="account-destinations" className="account-nav-list" aria-label={t("Account Navigation")}>
         <OrbNotchLayers glassRef={glassRef} pathRef={edgeRef} icon={activeIcon} />
         {SIDEBAR_GROUPS.map((group) => (

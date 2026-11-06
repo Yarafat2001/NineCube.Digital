@@ -381,12 +381,134 @@ main .link-button:is(:hover, :focus-visible, :active),
 
   .mobile-nav.orb-nav,
   :root[data-theme='dark'] .mobile-nav.orb-nav {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    position: fixed !important;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 16px !important;
+    right: 16px !important;
+    margin: 0 auto !important;
+    width: calc(100% - 32px) !important;
+    max-width: 440px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    border-radius: 32px !important;
     background: none !important;
-    border-top: none !important;
+    border: none !important;
     box-shadow: none !important;
     overflow: visible !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.35)) !important;
+    z-index: var(--z-nav, 100) !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .mobile-nav.orb-nav .orb-notch__glass {
+    position: absolute !important;
+    inset: 0 !important;
+    background: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(20px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  }
+
+  :root[data-theme='dark'] .mobile-nav.orb-nav .orb-notch__glass {
+    background: rgba(28, 36, 42, 0.65) !important;
+  }
+
+  .mobile-nav.orb-nav .orb-notch__edge {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: visible !important;
+    pointer-events: none !important;
+  }
+
+  .mobile-nav.orb-nav .orb-notch__edge path {
+    fill: none !important;
+    stroke: rgba(20, 40, 50, 0.2) !important;
+    stroke-width: 2px !important;
+  }
+
+  :root[data-theme='dark'] .mobile-nav.orb-nav .orb-notch__edge path {
+    stroke: rgba(255, 255, 255, 0.22) !important;
+  }
+
+  .mobile-nav.orb-nav .orb-notch__orb {
+    position: absolute !important;
+    top: -24px !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 50% !important;
+    display: grid !important;
+    place-items: center !important;
+    background: var(--selected-bar, #0b8a7b) !important;
+    color: var(--on-accent, #ffffff) !important;
+    z-index: 3 !important;
+    box-shadow: 0 6px 16px var(--glass-glow, rgba(11, 138, 123, 0.5)), inset 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+  }
+
+  :root[data-theme='dark'] .mobile-nav.orb-nav .orb-notch__orb {
+    background: var(--orb-fill, #1b6e65) !important;
+    box-shadow: 0 6px 20px rgba(63, 224, 200, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+  }
+
+  .mobile-nav.orb-nav .mobile-nav__item {
+    all: unset !important;
+    cursor: pointer !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    position: relative !important;
+    z-index: 2 !important;
+    color: var(--text-muted, #8c9ba4) !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: color 0.25s !important;
+  }
+
+  .mobile-nav.orb-nav .mobile-nav__item--active {
+    color: var(--text, #14232b) !important;
+  }
+
+  :root[data-theme='dark'] .mobile-nav.orb-nav .mobile-nav__item--active {
+    color: var(--text, #f3f7f9) !important;
+  }
+
+  .mobile-nav.orb-nav[data-orb-ready='true'] .mobile-nav__item--active .mobile-nav__icon-wrap svg {
+    opacity: 0 !important;
+    transition: opacity var(--transition-fast) !important;
+  }
+
+  .mobile-nav.orb-nav .mobile-nav__label {
+    display: none !important;
+  }
+
+  .mobile-nav.orb-nav .mobile-nav__icon-wrap {
+    position: relative !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 24px !important;
+    height: 24px !important;
+    margin: 0 !important;
+  }
+
+  .mobile-nav__home-indicator {
+    position: absolute !important;
+    bottom: 5px !important;
+    left: 50% !important;
+    width: 96px !important;
+    height: 3.5px !important;
+    margin-left: -48px !important;
+    border-radius: 2px !important;
+    background: var(--text-muted, currentColor) !important;
+    opacity: 0.25 !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
   }
 
   /* Automatically hide mobile bottom bar when any overlay, sheet, or dialog is open */
@@ -1678,10 +1800,11 @@ main .link-button:is(:hover, :focus-visible, :active),
 }
 
 @media (max-width: 768px) {
-  /* Hide redundant desktop toolbar, separate filter trigger, and live message on mobile */
+  /* Hide redundant desktop toolbar, separate filter trigger, legacy bottombar, and live message on mobile */
   .catalogue-toolbar,
   .category-filter-trigger,
-  .catalogue-live-message {
+  .catalogue-live-message,
+  .bottombar {
     display: none !important;
   }
 
@@ -1896,7 +2019,8 @@ main .link-button:is(:hover, :focus-visible, :active),
    ========================================================================== */
 @media (max-width: 768px) {
   .filter-chips--active:empty,
-  .filter-chips--active[hidden] {
+  .filter-chips--active[hidden],
+  .filter-chips--active:not(:has(.filter-chip)) {
     display: none !important;
   }
 
@@ -1929,6 +2053,26 @@ main .link-button:is(:hover, :focus-visible, :active),
     flex-shrink: 0 !important;
     font-size: 11px !important;
     white-space: nowrap !important;
+  }
+
+  /* Clear floating launcher action buttons safely above the mobile orb dock */
+  .chat-dock {
+    inset-inline-end: 14px !important;
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .chat-launcher {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .assistant-dock {
+    inset-inline-end: 14px !important;
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .assistant-dock--above {
+    bottom: calc(104px + 48px + 10px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 

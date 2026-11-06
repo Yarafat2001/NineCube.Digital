@@ -102,7 +102,7 @@
      so the clip and the stroke can never drift apart. */
   --glass-blur-bar: 20px;
   --glass-saturate-bar: 160%;
-  --orb-size: 36px;
+  --orb-size: 52px;
   --orb-fill: var(--selected-bar);
   --orb-ink: var(--on-accent);
   --orb-edge-width: 1.5px;
@@ -212,10 +212,10 @@
     --border: rgba(255, 255, 255, 0.16);
     --border-strong: rgba(255, 255, 255, 0.3);
 
-    --surface: #1b181a;
-    --surface-raised: #232022;
-    --surface-sunken: #131113;
-    --surface-overlay: rgba(27, 24, 26, 0.96);
+    --surface: #171416;
+    --surface-raised: #221f22;
+    --surface-sunken: #120f12;
+    --surface-overlay: rgba(23, 20, 22, 0.96);
 
     /* Dark already separates its shells with these values; the aliases keep its
        rendering byte-for-byte while the light theme gets real edges. */
@@ -242,7 +242,7 @@
     --bg-page-glow:
       radial-gradient(1100px 620px at 8% -6%, rgba(245, 151, 38, 0.28), transparent 62%),
       radial-gradient(900px 600px at 96% 4%, rgba(120, 86, 255, 0.3), transparent 60%);
-    --surface-glass: rgba(28, 25, 27, 0.62);
+    --surface-glass: rgba(29, 25, 28, 0.82);
     /* Smoked glass: the same cone at a lower alpha, because the panel behind it is already dark. */
     --glass-glow: rgba(255, 171, 77, .22);
     --selected-bg: rgba(245, 151, 38, 0.16);
@@ -350,7 +350,7 @@
   --product-card-glass: linear-gradient(145deg, rgba(255,255,255,.94), rgba(231,238,249,.82));
 }
 :root[data-theme='dark'] {
-  --product-card-glass: linear-gradient(145deg, rgba(35, 33, 36, 0.96), rgba(17, 15, 19, 0.96));
+  --product-card-glass: linear-gradient(145deg, rgba(39, 35, 38, 0.96), rgba(20, 17, 18, 0.96));
 }
 
 /* The page's cards, panels and tables share one material - one that stays close to the surface

@@ -27,6 +27,8 @@ export type OrbNotchShape = {
   thickness: number;
   /** Where the active item's centre falls along the axis, before clamping. */
   centre: number;
+  /** Use the floating glass pill dock geometry from reference HTML */
+  pill?: boolean;
 };
 
 const n = (value: number) => Number(value.toFixed(2));
@@ -38,32 +40,60 @@ const n = (value: number) => Number(value.toFixed(2));
  * 'right' places the notch on the right-hand edge facing the page content.
  */
 export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number } {
-  const { edge, length, thickness, centre } = shape;
+  const { edge, length, thickness, centre, pill } = shape;
   const { half, depth, endRadius: r } = ORB_NOTCH;
   const margin = r + half;
   const c = Math.min(Math.max(centre, margin), Math.max(margin, length - margin));
   const lead = half * CURVE_LEAD;
   const wall = half * CURVE_WALL;
 
+  if (pill && edge === 'top') {
+    const W = length;
+    const H = thickness;
+    const pr = Math.min(32, H / 2);
+    const nw = 46;
+    const pdepth = 31;
+    const pc = Math.max(pr + nw, Math.min(W - pr - nw, centre));
+    const d = [
+      `M${n(pr)} 0`,
+      `H${n(pc - nw)}`,
+      `C${n(pc - nw + 22)} 0 ${n(pc - 28)} ${n(pdepth)} ${n(pc)} ${n(pdepth)}`,
+      `C${n(pc + 28)} ${n(pdepth)} ${n(pc + nw - 22)} 0 ${n(pc + nw)} 0`,
+      `H${n(W - pr)}`,
+      `A${n(pr)} ${n(pr)} 0 0 1 ${n(W - pr)} ${n(H)}`,
+      `H${n(pr)}`,
+      `A${n(pr)} ${n(pr)} 0 0 1 ${n(pr)} 0`,
+      'Z'
+    ].join('');
+    return { d, centre: pc };
+  }
+
   if (edge === 'right') {
     const W = thickness;
     const H = length;
+    const rr = 20;
+    const rnw = 34;
+    const rdepth = 24;
+    const rlead = 18;
+    const rwall = 22;
+    const rmargin = rr + rnw;
+    const rc = Math.min(Math.max(centre, rmargin), Math.max(rmargin, H - rmargin));
     const d = [
-      `M${r} 0`,
-      `L${n(W - r)} 0`,
-      `A${n(r)} ${n(r)} 0 0 1 ${n(W)} ${n(r)}`,
-      `L${n(W)} ${n(c - half)}`,
-      `C${n(W)} ${n(c - half + lead)} ${n(W - depth)} ${n(c - wall)} ${n(W - depth)} ${n(c)}`,
-      `C${n(W - depth)} ${n(c + wall)} ${n(W)} ${n(c + half - lead)} ${n(W)} ${n(c + half)}`,
-      `L${n(W)} ${n(H - r)}`,
-      `A${n(r)} ${n(r)} 0 0 1 ${n(W - r)} ${n(H)}`,
-      `L${n(r)} ${n(H)}`,
-      `A${n(r)} ${n(r)} 0 0 1 0 ${n(H - r)}`,
-      `L0 ${n(r)}`,
-      `A${n(r)} ${n(r)} 0 0 1 ${n(r)} 0`,
+      `M${n(rr)} 0`,
+      `L${n(W - rr)} 0`,
+      `A${n(rr)} ${n(rr)} 0 0 1 ${n(W)} ${n(rr)}`,
+      `L${n(W)} ${n(rc - rnw)}`,
+      `C${n(W)} ${n(rc - rnw + rlead)} ${n(W - rdepth)} ${n(rc - rwall)} ${n(W - rdepth)} ${n(rc)}`,
+      `C${n(W - rdepth)} ${n(rc + rwall)} ${n(W)} ${n(rc + rnw - rlead)} ${n(W)} ${n(rc + rnw)}`,
+      `L${n(W)} ${n(H - rr)}`,
+      `A${n(rr)} ${n(rr)} 0 0 1 ${n(W - rr)} ${n(H)}`,
+      `L${n(rr)} ${n(H)}`,
+      `A${n(rr)} ${n(rr)} 0 0 1 0 ${n(H - rr)}`,
+      `L0 ${n(rr)}`,
+      `A${n(rr)} ${n(rr)} 0 0 1 ${n(rr)} 0`,
       'Z'
     ].join('');
-    return { d, centre: c };
+    return { d, centre: rc };
   }
 
   const point = (u: number, v: number) => (edge === 'top' ? `${n(u)} ${n(v)}` : `${n(v)} ${n(u)}`);
@@ -101,6 +131,14 @@ export type OrbNotchTargets = {
   active: string;
 };
 
+// Store last known positions per edge so that navigation across pages glides instead of jumping!
+const LAST_POSITIONS = new Map<OrbNotchEdge, number>();
+
+export type OrbNotchOptions = {
+  /** When true, formats the silhouette as a floating glass pill dock */
+  pill?: boolean;
+};
+
 /**
  * Keeps the notch over the active item. Nothing here goes through React state: the glide writes the
  * path and one custom property per frame, so moving between destinations never re-renders the bar and
@@ -109,9 +147,15 @@ export type OrbNotchTargets = {
  * `deps` is what tells the engine the marked item may have changed identity - the route, the rail's
  * expanded state, the language. Resize is picked up by observation, not by a dependency.
  */
-export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: DependencyList) {
+export function useOrbNotch(
+  edge: OrbNotchEdge,
+  targets: OrbNotchTargets,
+  deps: DependencyList,
+  options?: OrbNotchOptions
+) {
   const { host, glass, path: pathRef, active } = targets;
-  const positionRef = useRef<number | null>(null);
+  const pill = options?.pill ?? (edge === 'top');
+  const positionRef = useRef<number | null>(LAST_POSITIONS.get(edge) ?? null);
   const frameRef = useRef<number>(0);
   const isFirstMount = useRef(true);
 
@@ -135,7 +179,8 @@ export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: 
         edge,
         length: edge === 'top' ? box.width : box.height,
         thickness: edge === 'top' ? box.height : box.width,
-        centre: along
+        centre: along,
+        pill
       });
       const clip = `path("${shape.d}")`;
       hostEl.style.setProperty('--orb-pos', `${shape.centre}px`);
@@ -162,10 +207,13 @@ export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: 
       }
       hostEl.dataset.orbReady = 'true';
       cancelAnimationFrame(frameRef.current);
-      const from = snap || positionRef.current === null ? to : positionRef.current;
-      positionRef.current = to;
+      const from = snap
+        ? to
+        : positionRef.current ?? (LAST_POSITIONS.has(edge) ? LAST_POSITIONS.get(edge)! : to);
       const duration = snap ? 0 : glideMs();
       if (!duration || Math.abs(to - from) < 0.5) {
+        positionRef.current = to;
+        LAST_POSITIONS.set(edge, to);
         paint(to);
         return;
       }
@@ -178,9 +226,12 @@ export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: 
         const current = from + (to - from) * eased;
         positionRef.current = current;
         paint(current);
-        if (p < 1) frameRef.current = requestAnimationFrame(step);
-        else {
+        if (p < 1) {
+          frameRef.current = requestAnimationFrame(step);
+        } else {
+          frameRef.current = 0;
           positionRef.current = to;
+          LAST_POSITIONS.set(edge, to);
           paint(to);
         }
       };
@@ -189,13 +240,16 @@ export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: 
 
     if (isFirstMount.current) {
       isFirstMount.current = false;
-      draw(true);
+      draw(false);
     } else {
       draw(false);
     }
 
     // Observation carries resize and transition end: the bar's own box changes, so re-snap without gliding.
-    const onResize = () => draw(true);
+    const onResize = () => {
+      if (frameRef.current !== 0) return; // Do not abort in-flight fluid glide
+      draw(true);
+    };
     const onTransitionEnd = (e: TransitionEvent) => {
       if (e.target === hostEl) draw(true);
     };
@@ -204,8 +258,6 @@ export function useOrbNotch(edge: OrbNotchEdge, targets: OrbNotchTargets, deps: 
       ? null
       : new ResizeObserver(onResize);
     observer?.observe(glassEl);
-    const item = hostEl.querySelector<HTMLElement>(active);
-    if (item) observer?.observe(item);
     window.addEventListener('resize', onResize);
     hostEl.addEventListener('transitionend', onTransitionEnd);
 

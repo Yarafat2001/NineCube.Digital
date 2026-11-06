@@ -80,7 +80,7 @@ export function MobileNav() {
     : null;
 
   useOrbNotch('top', { host: navRef, glass: glassRef, path: edgeRef, active: '.mobile-nav__item--active' },
-    [location.pathname, user?.role, language]);
+    [location.pathname, user?.role, language], { pill: true });
 
   return (
     <nav
@@ -169,6 +169,8 @@ export function MobileNav() {
         </div>
         <span className="mobile-nav__label">{t(user ? "Account" : "Sign in")}</span>
       </NavLink>
+
+      <i className="mobile-nav__home-indicator" aria-hidden="true" />
     </nav>
   );
 }

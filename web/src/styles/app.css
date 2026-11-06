@@ -789,6 +789,26 @@
   box-shadow: var(--shadow-sm);
 }
 
+:root[data-theme='dark'] .btn {
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), var(--shadow-sm);
+}
+
+:root[data-theme='dark'] .btn--primary {
+  background: linear-gradient(135deg, #ffc36b, #f59e0b);
+  border-color: #f59e0b;
+  color: #1a1100;
+  box-shadow: 0 10px 22px rgba(245, 158, 11, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+}
+
+:root[data-theme='dark'] .btn--primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffd18a, #f59726);
+  border-color: #ffc36b;
+  color: #1a1100;
+}
+
 .btn--primary:hover:not(:disabled) {
   background: #D97706;
   border-color: #92400E;
@@ -842,6 +862,17 @@
   color: #dffef0;
 }
 
+:root[data-theme="dark"] .btn--outline {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--text);
+}
+
+:root[data-theme="dark"] .btn--outline:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
 .btn--outline {
   background: transparent;
   box-shadow: none;
@@ -857,6 +888,12 @@
   background: var(--danger-tint);
   border-color: var(--danger);
   color: var(--danger);
+}
+
+.btn--xs {
+  min-height: 28px;
+  padding: 4px 10px;
+  font-size: 11px;
 }
 
 .btn--sm {
@@ -5787,6 +5824,11 @@ body[data-overlay-open='true'] {
   border: 1px solid var(--border);
   background: var(--surface-glass);
 }
+
+:root[data-theme='dark'] .recently-viewed {
+  background: rgba(31, 26, 29, 0.9);
+  border-color: rgba(255, 255, 255, 0.12);
+}
 .recently-viewed__header {
   display: flex;
   align-items: center;
@@ -5836,6 +5878,11 @@ body[data-overlay-open='true'] {
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
+:root[data-theme='dark'] .recently-viewed__card {
+  background: linear-gradient(145deg, rgba(38, 34, 37, 0.96), rgba(20, 17, 19, 0.96));
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), var(--shadow-sm);
+}
 .recently-viewed__card:hover {
   transform: translateY(-2px);
   border-color: var(--border-strong);
@@ -5849,6 +5896,10 @@ body[data-overlay-open='true'] {
   overflow: hidden;
   background: var(--product-photo-surface);
   margin-bottom: var(--space-2);
+}
+:root[data-theme='dark'] .recently-viewed__thumb-link {
+  background: linear-gradient(145deg, #221f22, #111113);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .recently-viewed__img {
   width: 100%;
@@ -6862,6 +6913,7 @@ body[data-overlay-open='true'] {
   --rail-collapsed: 72px;
   --rail-expanded: 240px;
   --rail-width: var(--rail-collapsed);
+  --orb-size: 44px;
   position: sticky;
   top: var(--sticky-top, 80px);
   display: flex;
@@ -6896,11 +6948,38 @@ body[data-overlay-open='true'] {
 .account-rail .orb-notch__orb {
   inset-inline-start: auto;
   inset-inline-end: calc(var(--orb-size) / -2);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 16px var(--glass-glow, rgba(245, 158, 11, 0.4)), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row--active:not([data-expanded]),
+.account-rail:not([data-expanded='true'])[data-orb-ready='true'] .account-nav-row--active:not([data-expanded]) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row--active::before,
+.account-rail:not([data-expanded='true']) .account-nav-row--active::after {
+  display: none !important;
+  opacity: 0 !important;
 }
 
 .account-rail:not([data-expanded='true'])[data-orb-ready='true'] .account-nav-row--active .account-nav-row__icon {
   opacity: 0;
   transition: opacity var(--transition-fast);
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__icon,
+.account-rail:not([data-expanded='true']) [data-orb-ready='true'] .account-nav-row--active .account-nav-row__icon {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
 }
 
 .account-nav-list__group {

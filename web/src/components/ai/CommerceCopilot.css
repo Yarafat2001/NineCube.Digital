@@ -28,9 +28,9 @@
   user-select: none;
 }
 
-/* When customer support chat is present, stack Copilot 12px above it */
+/* When customer support chat is present, stack Copilot 14px above it */
 .commerce-copilot-launcher--stacked {
-  bottom: calc(18px + 56px + 12px);
+  bottom: calc(20px + 56px + 14px);
 }
 
 .commerce-copilot-launcher:hover {
@@ -100,14 +100,14 @@
 /* Mobile Screen Floating Launcher Docking */
 @media (max-width: 768px) {
   .commerce-copilot-launcher {
-    inset-inline-end: 12px;
-    bottom: calc(var(--mobile-nav-h, 60px) + 12px + env(safe-area-inset-bottom, 0px));
+    inset-inline-end: 14px;
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px));
     padding: 6px 12px 6px 8px;
-    font-size: 12.5px;
+    font-size: 12px;
   }
 
   .commerce-copilot-launcher--stacked {
-    bottom: calc(var(--mobile-nav-h, 60px) + 12px + 56px + 10px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(104px + 52px + 10px + env(safe-area-inset-bottom, 0px));
   }
 
   .commerce-copilot-launcher__hotkey {

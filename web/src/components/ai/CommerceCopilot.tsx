@@ -31,9 +31,11 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
 
   useLanguage();
   const { user } = useAuth();
+  const [hasAssistantDock, setHasAssistantDock] = useState(() => {
+    return typeof document !== 'undefined' && Boolean(document.querySelector('.assistant-dock'));
+  });
   const [input, setInput] = useState('');
   const [showMemoryModal, setShowMemoryModal] = useState(false);
-  const [hasAssistantDock, setHasAssistantDock] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -43,12 +45,11 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
       setHasAssistantDock(Boolean(document.querySelector('.assistant-dock')));
     };
     checkDock();
-    const timer = setTimeout(checkDock, 100);
-    window.addEventListener('popstate', checkDock);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('popstate', checkDock);
-    };
+    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(checkDock) : null;
+    if (observer && typeof document !== 'undefined' && document.body) {
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+    return () => observer?.disconnect();
   }, []);
 
   // Set data-overlay-open on root to automatically hide mobile bottom nav and prevent background scroll
