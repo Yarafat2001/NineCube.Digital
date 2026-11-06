@@ -1,5 +1,75 @@
 # FIX_REPORT
 
+# Round 31 - a public corner assistant that any visitor can talk to, a support chat that answers common questions from the store's own policy pages, and a home sign-in strip with an animated welcome
+
+Date: 2026-11-06. Brief, in your words: "In the home page I want AI assist chat as public not signin and register
+needed. It will show as message toolbar style icon in the wright side cornor as movement style and give some text
+direction as like caht with me etc as relevancy. It will be public type all necessary response giving. On the other
+hand, other message part after sign will be the same as the previous but here support staff response needed to be
+automate as like modern style for common type question answer by the system own knowledge. in the home page add
+signin alert as visusalise animate way i mean some paleces hovour or soome whre animate heading your preference"
+
+## What the probe measured before the change
+
+The build served through the stub harness in headless Chromium at 1440x900 and 390x844, both themes; geometry,
+animations, console errors and the chat flows themselves read from the DOM with real typed questions.
+
+| surface | before | after |
+| --- | --- | --- |
+| the assistant for a guest | the home page showed a sign-in card telling guests the assistant needs their account; with no account, a visitor could not ask a single question | a floating 56 px spark button in the right corner of the home page, open to everyone with no session and no sign-in card. A "Chat with me" hint pill sits beside it and hides itself after 8 seconds; the button bobs for three gentle cycles (~8 s) and then parks, and it pauses the moment a pointer or keyboard focus lands on it so the target never moves while someone is aiming at it |
+| a guest question, end to end | nothing to type into | at 390 and 1440 a guest asked "Show me iphone" and got "Here is what the catalogue has for 'Show me iphone'." with three match cards linked to real products (`#/products/5`, `#/products/6`, `#/products/7`) and the green "Answered from the live catalogue" line; 0 console errors at both widths. An anonymous request that carries a conversation id is ignored by the server - the transcript stays untouched (the conversation id stays 0) |
+| the corner button on a phone | no launcher existed | the dock clears the mobile nav (nav height + 12 px) with no overlap, and when a signed-in customer opens it the panel stacks 12 px above the support launcher (assistant bottom 703 vs support top 715 at 390; 814 vs 826 at 1440) |
+| support chat, common questions | every message waited for a human: "What is the return policy?" produced 0 replies and 0 automated captions | a new conversation now answers instantly from the store's own Settings policy pages: the returns question gets the stored returns text, and "Delivery question" gets "From our delivery & shipping policy: Standard delivery is BDT 60 below a merchandise subtotal of BDT 2,500..." - each under a small "Automated answer" caption so nobody mistakes the robot for a person |
+| the auto-reply once staff has spoken | n/a | it goes quiet: with a staff message already in the conversation, a customer question produces 0 auto bubbles and 0 captions while the message still reaches the team. Greetings get a fixed welcome that names what the bot can answer, and a question with no matching policy page gets no auto-answer at all - it waits for the human |
+| the home sign-in strip | a plain strip, no heading, and the probe's animation list came back empty | a "Welcome to NineCube" heading with a slowly moving gradient, a gently pulsing icon, a shine sweeping across the strip and the strip easing in on load; the "Sign in or Register" pill lifts on hover. Under the system reduced-motion preference all of these switch off and the hover lift settles to a plain shadow |
+
+## What changed and why
+
+The assistant became public because its old gate no longer had to exist: `POST /api/chat/assistant` is now
+anonymous, and an unsigned-in answer reads the live catalogue instead of the customer's orders, so the honest
+reason for the sign-in card disappeared with it. The home-page section was rebuilt as `AssistantStage` inside a
+new `AssistantDock` - the corner launcher with the hint pill and the panel it opens - and the launcher only exists
+on the home page, as the brief asked. Signed-in customers keep their order-aware answers on the same Ask flow.
+
+The first build made the button bob forever. The browser check caught what a visitor would feel: the driver timed
+out trying to click it (30 seconds, 60 tries, "element is not stable") because a target that never stops moving is
+hard to hit. The bob now runs three cycles and parks, and it pauses on hover and keyboard focus - movement as a
+welcome, not a chase.
+
+The support auto-reply is a new backend service (`SupportAutoResponder`) that only speaks when the store's own
+knowledge covers the question: greetings get a fixed welcome, delivery / returns / warranty / privacy / terms
+questions get the exact text of the matching Settings policy row quoted as "From our {title}:", and everything
+else returns nothing so the message stays in the human queue. `ChatEndpoints` attaches the reply when a
+conversation is created or a message arrives - but only while no staff member has written; the first staff message
+silences the robot for that conversation. The web chat marks the auto bubble with the "Automated answer" caption.
+
+The sign-in strip keeps its honest promise text and gains the animated heading, icon pulse, shine sweep and
+entrance ease; every animation has a reduced-motion off-switch, and the mobile layout was re-measured so the
+heading still wraps cleanly at 390.
+
+## Tests that keep it honest
+
+`web/src/test/round31-surfaces.test.tsx` (12 tests): the App wiring for the dock, the "Chat with me" launcher
+label and the 8-second hint contract, the panel dialog and close-button focus, the guest Ask flow with grounded
+product links, the 503 path surfacing the honest "The assistant is not available right now. Please try again in a
+moment." error, the bob pause-on-hover rule and the reduced-motion off-switch for the dock, the prompt heading and
+its keyframes, the mobile stacking rule, and the support auto-reply DOM - the welcome bubble with its caption, the
+delivery-policy quote, and the silence once a staff message exists.
+
+`src/NineCube.Tests/ChatTests.cs` (4 new): an anonymous assistant request never touches a conversation (id 0,
+transcript unchanged), the auto-reply quotes the seeded policy text with author kind Assistant under the name
+"NineCube Support", the robot goes quiet after a staff message, and an out-of-knowledge question returns no reply.
+
+The round 28 and 30 suites were updated to the new surfaces (14 and 11 tests): the assistant tests now open the
+corner launcher before typing, the mount contracts read `<AssistantDock />`, and the dismissed-prompt test waits
+for the dock instead of the old inline stage.
+
+Full gate: 51 test files, 396 tests green; tsc clean; the i18n catalogue holds 2,351 entries with the four new
+strings translated. The browser numbers above were collected from the same build.
+
+One deployment note: the web app ships with the Pages workflow, but the API changes in this round (the anonymous
+assistant route and the auto-responder) live in the backend - the API redeploy stays with you, as before.
+
 # Round 30 - an assistant with its own home on the front page, a support chat that stops sharing its panel, laptop photos with clear corners, an Alibaba-style account list, and a sign-in prompt that says what signing in actually gets you
 
 Date: 2026-11-06. Brief, in your words: "AI assistant chat and Support chat both make separate and the AI assistant

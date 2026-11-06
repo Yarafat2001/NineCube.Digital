@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IReportService, ReportService>();
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IChatAssistant, ChatAssistant>();
+        services.AddScoped<ISupportAutoResponder, SupportAutoResponder>();
 
         return services;
     }

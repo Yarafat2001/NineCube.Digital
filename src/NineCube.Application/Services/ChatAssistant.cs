@@ -122,7 +122,15 @@ public sealed partial class ChatAssistant(IAppDbContext db, ICurrentUser current
     {
         if (currentUser.CustomerId is not int customerId)
         {
-            // A staff session has no personal orders; nothing is looked up and nothing is shown.
+            // A signed-out visitor and a staff session have no personal orders; nothing is looked
+            // up and nothing is shown. The guest gets the sign-in hint, the staff agent the plain
+            // explanation.
+            if (!currentUser.IsAuthenticated)
+                return hasOrderCue
+                    ? new ChatAssistantAnswer(
+                        "I can only look up orders when you are signed in. Sign in or register and ask me again - until then I can still answer from the live catalogue and the store policies.",
+                        [])
+                    : null;
             return hasOrderCue
                 ? new ChatAssistantAnswer(
                     "I can only look up orders for the customer account you are signed in with, and this session is not linked to one. Send a message in the chat and our support team will look into any order.",

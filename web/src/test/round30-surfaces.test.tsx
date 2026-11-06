@@ -39,16 +39,18 @@ describe('Round 30: the dock chat is support only', () => {
 });
 
 describe('Round 30: the assistant lives on the home screen', () => {
-  it('mounts the assistant and the guest sign-in prompt in the storefront home', () => {
-    expect(fallback).toContain('<HomeAssistant />');
+  it('mounts the assistant dock in the storefront and keeps the guest sign-in prompt in the fallback', () => {
+    expect(read('src', 'App.tsx')).toContain('<AssistantDock />');
     expect(fallback).toContain('<HomeSignInPrompt />');
+    expect(fallback).not.toContain('<HomeAssistant />');
   });
 
-  it('shows guests a sign-in card in the assistant instead of a form that cannot work', async () => {
+  it('gives guests the public corner launcher instead of a sign-in gate', async () => {
     renderApp('/');
-    const guest = await screen.findByTestId('home-assistant-guest');
-    expect(within(guest).getByRole('link', { name: 'Sign in or Register' })).toHaveAttribute('href', expect.stringMatching(/#?\/login$/));
-    expect(document.querySelector('.home-assistant__composer')).toBeNull();
+    const dock = await screen.findByTestId('assistant-dock');
+    expect(within(dock).getByTestId('assistant-hint')).toHaveTextContent('Chat with me');
+    expect(screen.queryByTestId('home-assistant-guest')).toBeNull();
+    expect(document.querySelector('.assistant-dock--above')).toBeNull();
   });
 
   it('gives signed-in customers the live stage: chips, thinking, an answer and grounded match cards', async () => {
@@ -56,7 +58,9 @@ describe('Round 30: the assistant lives on the home screen', () => {
     await signInAsCustomer();
     renderApp('/');
 
+    await user.click(await screen.findByRole('button', { name: 'Chat with me' }));
     const stage = await screen.findByTestId('home-assistant-stage');
+    expect(document.querySelector('.assistant-dock--above')).not.toBeNull();
     expect(within(stage).getAllByRole('listitem').map((chip) => chip.textContent)).toEqual(
       expect.arrayContaining(['Show me laptops', 'Where is my order?', 'What is the return policy?'])
     );
@@ -100,7 +104,7 @@ describe('Round 30: the home sign-in prompt follows the reference sites', () => 
 
     await signInAsCustomer();
     renderApp('/');
-    await screen.findByTestId('home-assistant-stage');
+    await screen.findByTestId('assistant-dock');
     expect(screen.queryByTestId('home-signin-prompt')).toBeNull();
   });
 });

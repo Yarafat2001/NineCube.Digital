@@ -89,9 +89,15 @@ export function ChatWidget() {
               </li>
             ) : (
               thread.map((message) => (
-                <li key={`${message.conversationId}-${message.id}`} className={`chat-bubble chat-bubble--${message.authorKind === 'customer' ? 'self' : 'peer'}`}>
+                <li
+                  key={`${message.conversationId}-${message.id}`}
+                  className={`chat-bubble chat-bubble--${message.authorKind === 'customer' ? 'self' : message.authorKind === 'assistant' ? 'assistant' : 'peer'}`}
+                >
                   <span className="chat-bubble__who">
-                    {message.authorKind === 'staff' ? t('Support') : t('You')}
+                    {message.authorKind === 'customer' ? t('You') : t('Support')}
+                    {message.authorKind === 'assistant' ? (
+                      <span className="chat-bubble__auto">{t('Automated answer')}</span>
+                    ) : null}
                   </span>
                   <p>{message.body}</p>
                   <time>{formatDateTime(message.createdAt)}</time>
@@ -116,7 +122,7 @@ export function ChatWidget() {
               onChange={(event) => setDraft(event.target.value)}
               placeholder={t('Write to the support team')}
             />
-            <button className="btn btn--primary" disabled={!draft.trim() || busy}>{t('Send')}</button>
+            <button type="submit" className="btn btn--primary" disabled={!draft.trim() || busy}>{t('Send')}</button>
           </form>
         </section>
       ) : null}

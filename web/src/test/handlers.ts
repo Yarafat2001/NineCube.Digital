@@ -311,6 +311,52 @@ const chatMessageSeed: ChatMessage[] = [
 let chatConversations = chatConversationSeed.map(entry => ({ ...entry }));
 let chatMessages = chatMessageSeed.map(entry => ({ ...entry }));
 
+/**
+ * Mirrors the backend SupportAutoResponder: a greeting gets the fixed welcome, delivery / return /
+ * privacy / terms questions are answered by quoting the stored policy text, and everything else
+ * waits for a human agent (null). The wording and cue lists match the server exactly.
+ */
+const supportAutoReplyCues = {
+  greeting: ['hi', 'hello', 'hey', 'salam', 'assalamu', 'good morning', 'good afternoon', 'good evening'],
+  delivery: ['deliver', 'shipping', 'ship', 'courier', 'freight'],
+  returns: ['return', 'refund', 'warranty', 'exchange', 'replace']
+};
+
+const supportPolicyText: Record<string, { title: string; body: string }> = {
+  'Policy.Delivery': {
+    title: 'delivery & shipping policy',
+    body: 'Standard delivery is BDT 60 below a merchandise subtotal of BDT 2,500 and free at or above BDT 2,500. Your final delivery charge is shown before placing the order. Standard fulfillment typically delivers within 2-4 business days depending on location. Courier tracking references are accessible under My Orders once your package is dispatched. Reverse courier pickups for approved returns or store-error exchanges are free of charge.'
+  },
+  'Policy.Returns': {
+    title: 'returns, exchanges & warranty policy',
+    body: 'Footwear and lifestyle gear: 7-day return or exchange window from delivery, unworn with original packaging and tags, plus a 30-day warranty covering verified manufacturing defects. Electronics and laptops: 1-2 year official brand warranty; report dead-on-arrival or transit damage within 7 days for a store replacement. Grocery: report damaged or expired deliveries within 24 hours. Hygiene items: non-returnable once the factory seal is broken. Submit claims via Help with your order number.'
+  },
+  'Policy.Privacy': {
+    title: 'privacy policy',
+    body: 'The store processes your account details, contact information, addresses, orders and support messages to provide shopping and order support. Cart and appearance preferences are stored in your browser. Online payment takes place on SSLCOMMERZ; card details are not entered in NineCube checkout.'
+  },
+  'Policy.Terms': {
+    title: 'order terms',
+    body: 'Prices and availability are rechecked by the server when you place an order. Placing an order does not guarantee dispatch. Online payments count as paid after verification by the payment provider. Keep your order reference for support.'
+  }
+};
+
+function supportAutoReply(message: string): string | null {
+  const normalized = message.trim().toLowerCase();
+  if (!normalized) return null;
+  if (supportAutoReplyCues.greeting.some(cue => normalized.includes(cue))) {
+    return "Hello, and welcome to NineCube support. Ask me about delivery, returns or our policies and I answer right away from the store's own information; anything else goes straight to the support team.";
+  }
+  const keys: string[] = [];
+  if (supportAutoReplyCues.delivery.some(cue => normalized.includes(cue))) keys.push('Policy.Delivery');
+  if (supportAutoReplyCues.returns.some(cue => normalized.includes(cue))) keys.push('Policy.Returns');
+  if (normalized.includes('privacy')) keys.push('Policy.Privacy');
+  if (normalized.includes('terms')) keys.push('Policy.Terms');
+  const unique = [...new Set(keys)];
+  if (unique.length === 0) return null;
+  return unique.map(key => `From our ${supportPolicyText[key].title}:\n${supportPolicyText[key].body}`).join('\n\n');
+}
+
 const addressSeed: Address[] = [
   { id: 7, label: 'Home', division: 'Dhaka', district: 'Dhaka', upazila: 'Dhanmondi', addressLine: 'House 12, Road 5', phone: '01712345678', isDefault: true }
 ];
@@ -1544,7 +1590,15 @@ export const handlers = [
       unreadCount: 0
     });
     chatMessages.push({ id: chatMessages.length + 1, conversationId: id, authorKind: 'customer', authorName: 'Customer', body: body.message, createdAt: now });
-    return HttpResponse.json({ id });
+    const autoReply = supportAutoReply(body.message);
+    const autoMessage = autoReply
+      ? { id: chatMessages.length + 1, conversationId: id, authorKind: 'assistant' as const, authorName: 'NineCube Support', body: autoReply, createdAt: new Date().toISOString() }
+      : null;
+    if (autoMessage) {
+      chatMessages.push(autoMessage);
+      chatConversations[chatConversations.length - 1].lastMessage = { body: autoMessage.body, authorKind: 'assistant', createdAt: autoMessage.createdAt };
+    }
+    return HttpResponse.json({ id, autoReply: autoMessage });
   }),
 
   http.get(`${API}/api/chat/conversations/:id/messages`, ({ params }) => {
@@ -1567,7 +1621,14 @@ export const handlers = [
       createdAt: new Date().toISOString()
     };
     chatMessages.push(message);
-    return HttpResponse.json({ message });
+    const staffAlreadyReplied = chatMessages.some(entry => entry.conversationId === conversationId && entry.authorKind === 'staff');
+    const autoMessage = staffAlreadyReplied ? null : (() => {
+      const autoReply = supportAutoReply(body.body);
+      if (!autoReply) return null;
+      return { id: chatMessages.length + 1, conversationId, authorKind: 'assistant' as const, authorName: 'NineCube Support', body: autoReply, createdAt: new Date().toISOString() };
+    })();
+    if (autoMessage) chatMessages.push(autoMessage);
+    return HttpResponse.json({ message, autoReply: autoMessage });
   }),
 
   http.post(`${API}/api/chat/assistant`, async ({ request }) => {

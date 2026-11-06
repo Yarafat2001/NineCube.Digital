@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using NineCube.Application.Abstractions;
 using NineCube.Application.Contracts;
 using NineCube.Domain;
 using NineCube.Tests.Infrastructure;
@@ -270,5 +271,92 @@ public sealed class ChatTests : ApiTestBase
         leaked.Reply.Body.Should().NotContain($"#{order.Id}");
         leaked.Reply.Body.Should().NotContain("Pending");
         leaked.Reply.Body.Should().Contain("could not find");
+    }
+
+    // ------------------------------------------------------------------ round 31: public assistant + automated support replies
+
+    private sealed record ConversationEnvelope(int Id, Msg? AutoReply);
+    private sealed record PostEnvelope(Msg Message, Msg? AutoReply);
+
+    private async Task SeedPolicyAsync(string key, string value) =>
+        await Factory.QueryAsync(async db =>
+        {
+            db.Settings.Add(new Setting { Key = key, Value = value });
+            await db.SaveChangesAsync();
+            return true;
+        });
+
+    [Fact]
+    public async Task A_guest_gets_the_assistant_without_an_account_and_never_touches_a_conversation()
+    {
+        var product = await SeedProductAsync("CHAT-11", 120.00m, stock: 3);
+        var customer = await RegisterCustomerAsync("chat11@example.com");
+        var id = await OpenChatAsync(customer.AccessToken, "unrelated question about nothing");
+
+        var guest = await ReadAsync<AssistantResponse>(await PostAsync("api/chat/assistant",
+            new { question = "Do you have the chat-11 product?" }));
+        guest.Reply.AuthorKind.Should().Be("assistant");
+        guest.Reply.AuthorName.Should().Be("NineCube Assistant");
+        guest.Reply.ConversationId.Should().Be(0, "an anonymous caller never persists anything");
+        guest.Matches.Should().ContainSingle(m => m.Id == product.Id);
+
+        // An anonymous caller supplying a conversation id must not write into any thread.
+        var anonymous = await ReadAsync<AssistantResponse>(await PostAsync("api/chat/assistant",
+            new { question = "who are you", conversationId = id }));
+        anonymous.Reply.ConversationId.Should().Be(0);
+        (await Factory.QueryAsync(db => db.ChatMessages.CountAsync(m => m.ConversationId == id))).Should().Be(1,
+            "only the customer's own opening message exists in the thread");
+    }
+
+    [Fact]
+    public async Task A_new_support_chat_answers_common_questions_instantly_from_stored_policy_text()
+    {
+        var customer = await RegisterCustomerAsync("chat12@example.com", "Auto Customer");
+        await SeedPolicyAsync(SettingKeys.PolicyDelivery,
+            "Standard delivery is BDT 60 below a merchandise subtotal of BDT 2,500.");
+
+        var opened = await PostAsync("api/chat/conversations",
+            new { message = "Hi, do you deliver to Chattogram?" }, customer.AccessToken);
+        var envelope = await ReadAsync<ConversationEnvelope>(opened);
+        var auto = envelope.AutoReply;
+        auto.Should().NotBeNull();
+        auto!.AuthorKind.Should().Be("assistant");
+        auto.AuthorName.Should().Be("NineCube Support");
+        auto.Body.Should().Contain("From our delivery & shipping policy:");
+        auto.Body.Should().Contain("Standard delivery is BDT 60");
+
+        var transcript = await MessagesAsync(customer.AccessToken, envelope.Id);
+        transcript.Select(m => m.AuthorKind).Should().Equal("customer", "assistant");
+    }
+
+    [Fact]
+    public async Task The_automated_reply_goes_quiet_once_a_staff_member_has_written()
+    {
+        var customer = await RegisterCustomerAsync("chat13@example.com", "Auto Two");
+        var (_, staffToken) = await SeedAndLoginAsync("chat13-staff@example.com", UserRole.Staff);
+        var id = await OpenChatAsync(customer.AccessToken, "opening line about nothing");
+
+        var before = await ReadAsync<PostEnvelope>(await PostAsync($"api/chat/conversations/{id}/messages",
+            new { body = "Hello?" }, customer.AccessToken));
+        before.AutoReply.Should().NotBeNull();
+        before.AutoReply!.Body.Should().Contain("welcome to NineCube support");
+
+        await PostAsync($"api/chat/conversations/{id}/messages", new { body = "We are looking into it." }, staffToken);
+
+        var after = await ReadAsync<PostEnvelope>(await PostAsync($"api/chat/conversations/{id}/messages",
+            new { body = "Hello again" }, customer.AccessToken));
+        after.AutoReply.Should().BeNull("a human agent owns the thread now");
+    }
+
+    [Fact]
+    public async Task A_question_outside_the_stores_own_knowledge_waits_for_a_human()
+    {
+        var customer = await RegisterCustomerAsync("chat14@example.com");
+
+        var opened = await PostAsync("api/chat/conversations",
+            new { message = "Can you recertify my grandmother's radio?" }, customer.AccessToken);
+        var envelope = await ReadAsync<ConversationEnvelope>(opened);
+
+        envelope.AutoReply.Should().BeNull("the responder only quotes the stored policies and the fixed greeting");
     }
 }

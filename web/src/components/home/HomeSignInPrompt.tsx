@@ -36,7 +36,10 @@ export function HomeSignInPrompt() {
   return (
     <section className="home-signin-prompt" data-testid="home-signin-prompt" aria-label={t('Sign in prompt')}>
       <span className="home-signin-prompt__icon"><Icon name="user" width={18} height={18} /></span>
-      <p>{t('Sign in to track your orders, keep your wishlist and use gift cards.')}</p>
+      <div className="home-signin-prompt__copy">
+        <h2 className="home-signin-prompt__heading">{t('Welcome to NineCube')}</h2>
+        <p>{t('Sign in to track your orders, keep your wishlist and use gift cards.')}</p>
+      </div>
       <Link className="btn btn--primary home-signin-prompt__cta" to="/login">{t('Sign in or Register')}</Link>
       <button type="button" className="home-signin-prompt__dismiss" onClick={dismiss} aria-label={t('Dismiss')}>
         <Icon name="x" width={14} height={14} />

@@ -15,7 +15,6 @@ import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
 import { HomeBrandStrip } from '../components/home/HomeBrandStrip';
 import { HomeFeaturedDeals } from '../components/home/HomeFeaturedDeals';
 import { HomeLiveOffers } from '../components/home/HomeLiveOffers';
-import { HomeAssistant } from '../components/home/HomeAssistant';
 import { HomeSignInPrompt } from '../components/home/HomeSignInPrompt';
 import { Reveal } from '../components/home/Reveal';
 import { CompareTray } from '../components/CompareTray';
@@ -281,16 +280,15 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
       </section>
 
       <Reveal><HomeSignInPrompt /></Reveal>
-      <Reveal delay={60}><HomeAssistant /></Reveal>
-      <Reveal delay={120}><HomeTrustBar /></Reveal>
-      <Reveal delay={180}><HomeCategoryStrip /></Reveal>
-      <Reveal delay={240}><HomeStorePulse /></Reveal>
-      <Reveal delay={300}><HomeBrandStrip /></Reveal>
-      <Reveal delay={360}><HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} /></Reveal>
-      <Reveal delay={420}><HomeLiveOffers /></Reveal>
-      <Reveal delay={480}><div className="home-recent-section"><RecentlyViewed /></div></Reveal>
+      <Reveal delay={60}><HomeTrustBar /></Reveal>
+      <Reveal delay={120}><HomeCategoryStrip /></Reveal>
+      <Reveal delay={180}><HomeStorePulse /></Reveal>
+      <Reveal delay={240}><HomeBrandStrip /></Reveal>
+      <Reveal delay={300}><HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} /></Reveal>
+      <Reveal delay={360}><HomeLiveOffers /></Reveal>
+      <Reveal delay={420}><div className="home-recent-section"><RecentlyViewed /></div></Reveal>
 
-      <Reveal delay={540}>
+      <Reveal delay={480}>
         <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
           <div className="showcase__headings">
             <h2 id="showcase-cards-heading">{t(showcaseCopy.transitionTitle)}</h2>

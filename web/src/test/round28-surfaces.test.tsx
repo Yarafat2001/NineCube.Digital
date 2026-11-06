@@ -138,6 +138,10 @@ describe('The store chat', () => {
     await signInAsCustomer();
     renderApp('/');
 
+    // The assistant lives in the corner dock; the stage answers from inside its panel.
+    await user.click(await screen.findByRole('button', { name: 'Chat with me' }));
+    await screen.findByRole('dialog', { name: 'Ask the store assistant' });
+
     await user.type(await screen.findByLabelText('Message'), 'Show me iphone');
     await user.click(screen.getByRole('button', { name: 'Ask' }));
 
@@ -153,6 +157,9 @@ describe('The store chat', () => {
     const user = userEvent.setup();
     await signInAsCustomer();
     renderApp('/');
+
+    await user.click(await screen.findByRole('button', { name: 'Chat with me' }));
+    await screen.findByRole('dialog', { name: 'Ask the store assistant' });
 
     await user.type(await screen.findByLabelText('Message'), 'What is the return policy?');
     await user.click(screen.getByRole('button', { name: 'Ask' }));

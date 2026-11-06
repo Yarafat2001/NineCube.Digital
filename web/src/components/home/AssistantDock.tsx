@@ -1,0 +1,74 @@
+import { useEffect, useRef, useState } from 'react';
+import { t, useLanguage } from '../../i18n/language';
+import { useAuth } from '../../state/AuthContext';
+import { Icon } from '../Icon';
+import { AssistantStage } from './HomeAssistant';
+
+const HINT_LIFETIME_MS = 8000;
+
+/**
+ * The public assistant launcher on the home page: a floating corner button with a "Chat with me"
+ * hint, gentle motion, and a panel that opens the live assistant stage for guests and customers
+ * alike. For signed-in customers the launcher stacks above the support chat button so the two
+ * corners never collide.
+ */
+export function AssistantDock() {
+  useLanguage();
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [hintVisible, setHintVisible] = useState(true);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setHintVisible(false), HINT_LIFETIME_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (open) closeRef.current?.focus();
+  }, [open]);
+
+  return (
+    <div className={`assistant-dock${user ? ' assistant-dock--above' : ''}`} data-testid="assistant-dock">
+      {open ? (
+        <section className="assistant-panel card-glass" role="dialog" aria-label={t('Ask the store assistant')}>
+          <header className="assistant-panel__head">
+            <div>
+              <span className="assistant-panel__kicker">
+                <span className="home-assistant__live" aria-hidden="true" />
+                <Icon name="spark" width={13} height={13} /> {t('AI assistant')}
+              </span>
+              <strong>{t('Ask the store assistant')}</strong>
+            </div>
+            <button type="button" ref={closeRef} className="assistant-panel__close" onClick={() => setOpen(false)} aria-label={t('Close chat')}>
+              <Icon name="x" width={16} height={16} />
+            </button>
+          </header>
+          <div className="assistant-panel__body">
+            <AssistantStage />
+          </div>
+        </section>
+      ) : null}
+
+      {!open ? (
+        <div className="assistant-dock__entry">
+          {hintVisible ? (
+            <span className="assistant-dock__hint" data-testid="assistant-hint">{t('Chat with me')}</span>
+          ) : null}
+          <button
+            type="button"
+            className="assistant-launcher"
+            onClick={() => {
+              setOpen(true);
+              setHintVisible(false);
+            }}
+            aria-label={t('Chat with me')}
+          >
+            <Icon name="spark" width={24} height={24} />
+            <span className="assistant-launcher__ring" aria-hidden="true" />
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
