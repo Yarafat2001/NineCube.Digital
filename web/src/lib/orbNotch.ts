@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, type DependencyList, type RefObject } from 'react';
 
 /** Which side of the bar the notch is cut into. */
-export type OrbNotchEdge = 'top' | 'left';
+export type OrbNotchEdge = 'top' | 'left' | 'right';
 
 /**
  * The lifted-orb silhouette: a glass bar whose notched edge dips around a marker orb, drawn as one
@@ -35,6 +35,7 @@ const n = (value: number) => Number(value.toFixed(2));
  * Builds the bar outline in the reference's canonical space (u runs along the bar, v sinks in from
  * the notched edge) and emits it already turned for the surface asked for. A rail is that turn:
  * 'left' swaps the axes, which is a reflection, so the four corner arcs need the opposite sweep.
+ * 'right' places the notch on the right-hand edge facing the page content.
  */
 export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number } {
   const { edge, length, thickness, centre } = shape;
@@ -43,6 +44,27 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
   const c = Math.min(Math.max(centre, margin), Math.max(margin, length - margin));
   const lead = half * CURVE_LEAD;
   const wall = half * CURVE_WALL;
+
+  if (edge === 'right') {
+    const W = thickness;
+    const H = length;
+    const d = [
+      `M${r} 0`,
+      `L${n(W - r)} 0`,
+      `A${n(r)} ${n(r)} 0 0 1 ${n(W)} ${n(r)}`,
+      `L${n(W)} ${n(c - half)}`,
+      `C${n(W)} ${n(c - half + lead)} ${n(W - depth)} ${n(c - wall)} ${n(W - depth)} ${n(c)}`,
+      `C${n(W - depth)} ${n(c + wall)} ${n(W)} ${n(c + half - lead)} ${n(W)} ${n(c + half)}`,
+      `L${n(W)} ${n(H - r)}`,
+      `A${n(r)} ${n(r)} 0 0 1 ${n(W - r)} ${n(H)}`,
+      `L${n(r)} ${n(H)}`,
+      `A${n(r)} ${n(r)} 0 0 1 0 ${n(H - r)}`,
+      `L0 ${n(r)}`,
+      `A${n(r)} ${n(r)} 0 0 1 ${n(r)} 0`,
+      'Z'
+    ].join('');
+    return { d, centre: c };
+  }
 
   const point = (u: number, v: number) => (edge === 'top' ? `${n(u)} ${n(v)}` : `${n(v)} ${n(u)}`);
   const sweep = edge === 'top' ? 1 : 0;

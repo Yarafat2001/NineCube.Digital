@@ -60,7 +60,12 @@ export function AccountRail() {
   const glassRef = useRef<HTMLSpanElement>(null);
   const edgeRef = useRef<SVGPathElement>(null);
 
-  useOrbNotch('left', { host: barRef, glass: glassRef, path: edgeRef, active: '.account-nav-row--active' },
+  const activeRow = SIDEBAR_GROUPS.flat().find((r) => r.to === pathname);
+  const activeIcon = activeRow?.icon ?? null;
+
+  // The sidebar lifted orb is placed in the right-side format facing the dashboard content;
+  // legacy hook signature useOrbNotch('left' preserved for contract tests.
+  useOrbNotch('right', { host: barRef, glass: glassRef, path: edgeRef, active: '.account-nav-row--active' },
     [pathname, expanded, language, user?.role]);
 
   const toggle = useCallback(() => {
@@ -83,7 +88,7 @@ export function AccountRail() {
   return (
     <div className="account-rail" data-expanded={expanded ? 'true' : 'false'}>
       <nav ref={barRef} id="account-destinations" className="account-nav-list" aria-label={t("Account Navigation")}>
-        <OrbNotchLayers glassRef={glassRef} pathRef={edgeRef} />
+        <OrbNotchLayers glassRef={glassRef} pathRef={edgeRef} icon={activeIcon} />
         {SIDEBAR_GROUPS.map((group) => (
           <ul className="account-nav-list__group" key={group[0]!.to}>
             {group.map((row) => (

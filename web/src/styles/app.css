@@ -6892,9 +6892,15 @@ body[data-overlay-open='true'] {
 /* The rail's notch opens onto the page from its left edge and the orb rides that edge, half in the
    pocket and half out. --orb-pos is the height the engine measured for the active row, in the same
    box, so nothing here needs to know the row height or the rail width. */
+.account-rail .orb-notch__orb { top: calc(var(--orb-pos) - var(--orb-size) / 2); left: calc(var(--orb-size) / -2); }
 .account-rail .orb-notch__orb {
-  top: calc(var(--orb-pos) - var(--orb-size) / 2);
-  left: calc(var(--orb-size) / -2);
+  inset-inline-start: auto;
+  inset-inline-end: calc(var(--orb-size) / -2);
+}
+
+.account-rail:not([data-expanded='true'])[data-orb-ready='true'] .account-nav-row--active .account-nav-row__icon {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
 .account-nav-list__group {

@@ -385,6 +385,8 @@ main .link-button:is(:hover, :focus-visible, :active),
     border-top: none !important;
     box-shadow: none !important;
     overflow: visible !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
   /* Automatically hide mobile bottom bar when any overlay, sheet, or dialog is open */
@@ -1003,6 +1005,154 @@ main .link-button:is(:hover, :focus-visible, :active),
 }
 
 @media (max-width: 768px) {
+  /* On mobile Account Dashboard, layout the navigation as a modern 2-column e-commerce hub grid */
+  .account-dashboard .account-rail .account-nav-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    margin: 4px 0 16px 0 !important;
+    background: var(--surface-glass, rgba(255, 255, 255, 0.7)) !important;
+    border-radius: var(--radius-lg, 16px) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .account-dashboard .account-rail .account-nav-list__group {
+    display: contents !important;
+  }
+
+  .account-dashboard .account-rail .account-nav-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+    min-height: 56px !important;
+    border-radius: var(--radius-md, 12px) !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    transition: transform 0.15s ease, background 0.15s ease !important;
+  }
+
+  .account-dashboard .account-rail .account-nav-row:active {
+    transform: scale(0.98) !important;
+    background: var(--surface-sunken) !important;
+  }
+
+  .account-dashboard .account-rail .account-nav-row__icon {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    border-radius: 8px !important;
+  }
+
+  .account-dashboard .account-rail .account-nav-row__label {
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .account-dashboard .account-rail .account-nav-row__chevron {
+    display: none !important;
+  }
+
+  .account-dashboard .account-rail .menu-separator {
+    display: none !important;
+  }
+
+  .account-dashboard .account-rail .account-nav-row--logout {
+    grid-column: 1 / -1 !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    border-color: rgba(239, 68, 68, 0.25) !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+    color: var(--danger, #ef4444) !important;
+  }
+
+  /* On mobile inner pages, transform the vertical rail into a modern swipeable horizontal pill strip */
+  .account-shell:not(.account-dashboard) .account-rail {
+    position: sticky !important;
+    top: var(--sticky-top, 60px) !important;
+    z-index: var(--z-sticky, 20) !important;
+    margin: -8px -12px 14px -12px !important;
+    padding: 6px 12px !important;
+    background: var(--surface-glass, rgba(255, 255, 255, 0.8)) !important;
+    backdrop-filter: blur(16px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+    border-bottom: 1px solid var(--border) !important;
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06) !important;
+    overflow: hidden !important;
+  }
+
+  :root[data-theme='dark'] .account-shell:not(.account-dashboard) .account-rail {
+    background: rgba(24, 24, 27, 0.85) !important;
+  }
+
+  .account-shell:not(.account-dashboard) .account-nav-list {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 2px 0 !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .account-shell:not(.account-dashboard) .account-nav-list::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .account-shell:not(.account-dashboard) .account-nav-list__group {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    border: none !important;
+  }
+
+  .account-shell:not(.account-dashboard) .account-nav-row {
+    flex: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 14px !important;
+    border-radius: var(--radius-pill) !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    color: var(--text) !important;
+  }
+
+  .account-shell:not(.account-dashboard) .account-nav-row--active {
+    background: var(--accent-gradient) !important;
+    border-color: var(--accent) !important;
+    color: var(--on-accent) !important;
+    box-shadow: 0 2px 8px var(--glass-glow) !important;
+  }
+
+  .account-shell:not(.account-dashboard) .account-nav-row--active .account-nav-row__icon {
+    background: transparent !important;
+    border: none !important;
+    color: var(--on-accent) !important;
+    box-shadow: none !important;
+  }
+
+  .account-shell:not(.account-dashboard) .account-nav-row__chevron,
+  .account-shell:not(.account-dashboard) .menu-separator,
+  .account-shell:not(.account-dashboard) .account-nav-row--logout {
+    display: none !important;
+  }
+
   .account-hub-grid {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
