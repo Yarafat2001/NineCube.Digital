@@ -81,26 +81,31 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
   if (edge === 'right') {
     const W = thickness;
     const H = length;
-    const rr = 18;
-    const rnw = 28;
-    const rdepth = 22;
-    const rlead = 16;
-    const rwall = 20;
-    const minC = rnw + 8;
-    const maxC = H - rnw - 8;
+    // Canonical Glass nav 3 rotated for right-edge vertical rail:
+    // rr: pill corner radius (matches the 72px pill ends)
+    // nw: notch half-width along the vertical axis (proportional to 44px orb)
+    // depth: how far the cradle scoops left into the glass pill
+    const rr = Math.min(28, W / 2);
+    const nw = 34;
+    const depth = 26;
+    const lead = 16;
+    const wall = 20;
+    const minC = rr + nw;
+    const maxC = Math.max(minC, H - rr - nw);
     const rc = Math.min(Math.max(centre, minC), maxC);
-    const topY = rc - rnw;
-    const botY = rc + rnw;
+    const topY = rc - nw;
+    const botY = rc + nw;
+
     const d = [
       `M${n(rr)} 0`,
-      `L${n(W - rr)} 0`,
+      `H${n(W - rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W)} ${n(rr)}`,
-      topY > rr ? `L${n(W)} ${n(topY)}` : `L${n(W)} ${n(rr)}`,
-      `C${n(W)} ${n(rc - rnw + rlead)} ${n(W - rdepth)} ${n(rc - rwall)} ${n(W - rdepth)} ${n(rc)}`,
-      `C${n(W - rdepth)} ${n(rc + rwall)} ${n(W)} ${n(rc + rnw - rlead)} ${n(W)} ${n(botY)}`,
-      botY < H - rr ? `L${n(W)} ${n(H - rr)}` : `L${n(W)} ${n(botY)}`,
+      `L${n(W)} ${n(topY)}`,
+      `C${n(W)} ${n(rc - nw + lead)} ${n(W - depth)} ${n(rc - wall)} ${n(W - depth)} ${n(rc)}`,
+      `C${n(W - depth)} ${n(rc + wall)} ${n(W)} ${n(rc + nw - lead)} ${n(W)} ${n(botY)}`,
+      `L${n(W)} ${n(H - rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W - rr)} ${n(H)}`,
-      `L${n(rr)} ${n(H)}`,
+      `H${n(rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 0 ${n(H - rr)}`,
       `L0 ${n(rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(rr)} 0`,
@@ -253,7 +258,7 @@ export function useOrbNotch(
 
     if (isFirstMount.current) {
       isFirstMount.current = false;
-      draw(false);
+      draw(true);
     } else {
       draw(false);
     }
