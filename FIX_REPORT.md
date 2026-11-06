@@ -130,9 +130,11 @@ belongs to the chat work, so say the word and I will take it as its own item.
 The migration (AddEmailDeliveryFailureColumns) applies on the next API deploy, which stays with you - the same
 deploy that carries the item 1.1 callback fix.
 
-# Phase 1, item 1.3 - catalogue search reads name and SKU first on trigram indexes, and treats description, brand and category as a second pass
+# Phase 1, item 1.4 - catalogue search reads name and SKU first on trigram indexes, and treats description, brand and category as a second pass
 
-Date: 2026-11-06. From the master task, in your words: "Phase A (the one that matters): restructure the
+Date: 2026-11-06. Item 4 of the current prompt list - item 3 (delivery status notifications) is still queued -
+and you placed it in Phase 2 of the master plan, storefront & discovery, fuzzy search. In your words:
+"Phase A (the one that matters): restructure the
 catalogue search. Match name + SKU first with proper trigram indexes, and treat description/brand/category as
 a secondary pass. One EF migration, one service rewrite, no API shape change needed for shoppers. It fits
 naturally inside Phase 2 of the master plan (storefront & discovery, fuzzy search). Nothing is slow today at
@@ -178,10 +180,12 @@ Bitmap Heap Scan on "Products"  (actual time=0.808..0.811 rows=0.00)   Execution
        -> Bitmap Index Scan on "PK_Products"                  (Index Searches: 0)
 ```
 
-against `Seq Scan on "Products" ... Rows Removed by Filter: 49800` before, reading all 1,063 pages of the table
-to answer a question about zero rows. Even for `shoe`, where a third of the table matches, the new shape gets a
-BitmapOr over the three trigram indexes plus the primary key (71 ms of database work) instead of a filter on
-every row.
+against the before plan for the same count: one `Seq Scan on "Products"`, five filters evaluated per row, all
+1,063 pages of the table read to answer a question about zero rows. (That before-plan text comes from a
+hand-written SQL replica of the old predicate rather than the LINQ the old service built - the point I am quoting
+is the access path, not its row counts, which the table above already cover.) Even for `shoe`, where a third of
+the table matches, the new shape gets a BitmapOr over the three trigram indexes plus the primary key (71 ms of
+database work) instead of a filter on every row.
 
 ## What changed and why
 
@@ -202,9 +206,10 @@ in `web/` needed a change and the staff and shopper screens keep working as they
 For each word in a search, the brand and category names are resolved to id lists in two small indexed reads
 before the product query is built. That is the actual fix: it turns the two join branches of the OR into
 `BrandId = ANY(@ids)` and `Id = ANY(@ids)` - columns of Products - so all five branches can be combined by one
-BitmapOr. The product predicate is then `ILIKE` over the trigram columns (case-insensitive by collation, so the
-old `ToLower()` calls are gone; Bengali and English text behave the same as before because
-`CatalogSearch.Terms` still expands aliases and folds Bengali digits).
+BitmapOr. The product predicate is then `ILIKE` over the trigram columns, which matches case-insensitively on
+its own; the old `ToLower()` calls are gone because they would have made the indexed columns unusable. Bengali
+and English text behave the same as before because
+`CatalogSearch.Terms` still expands aliases and folds Bengali digits.
 
 `CatalogSearch.Patterns` builds the LIKE patterns and escapes the wildcards a shopper types, so `100%` searches
 for the characters `100%` rather than "everything after 100". This matches what the old code did - EF escaped
@@ -227,7 +232,15 @@ products through the second pass while `brand=` still agrees; naming a category 
 multi-word search having to match; paging walking the relevance order without repeats or gaps; and the brand
 facet counts agreeing with a search.
 
-Gate: Release build clean, full backend suite 261 passed / 263 total. The two failures are the pre-existing
+Gate: Release build clean, full backend suite 261 passed / 263 total locally, and the identical numbers from
+the "Full PostgreSQL backend test suite" CI step for the pushed commit (run 42204756412) - so the migration
+applies and all eleven search tests pass outside my machine too. Both that step and my local run use the
+Testcontainers `postgres:18-alpine` the test harness owns, which is the one thing the CI record does not cover:
+the deployment database's version is whatever Render gives the free-tier instance, and this is the first
+migration in the project that requires `pg_trgm`. It is a standard contributed extension, but on the redeploy
+worth one look at the startup migration log the first time.
+
+The two failures are the pre-existing
 Round 31 `SupportAutoResponder` defects documented in item 1.2 (greeting cues matched as raw substrings before
 the policy cues) - reproduced at clean HEAD before this item's code existed, unrelated to search, still awaiting
 your word on whether I take them as their own item.
