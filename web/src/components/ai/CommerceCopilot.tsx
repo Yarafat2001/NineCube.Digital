@@ -123,6 +123,13 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
     return () => observer?.disconnect();
   }, []);
 
+  // Listen for open-copilot events from anywhere in the application
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener('ninecube:open-copilot', handleOpen);
+    return () => window.removeEventListener('ninecube:open-copilot', handleOpen);
+  }, []);
+
   // Set data-overlay-open on root to automatically hide mobile bottom nav and prevent background scroll
   useEffect(() => {
     if (isOpen) {

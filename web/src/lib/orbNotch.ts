@@ -51,11 +51,11 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
     const W = length;
     const H = thickness;
     const pr = Math.min(32, H / 2);
-    // Canonical Glass nav 3 proportions for floating bottom dock:
-    const nw = Math.min(46, Math.max(34, Math.round(W * 0.11)));
-    const pdepth = Math.min(31, Math.round(H * 0.48));
-    const lead = Math.round(nw * (22 / 46));
-    const wall = Math.round(nw * (28 / 46));
+    // Canonical Glass nav 3 proportions with uniform 7.4-8.0px Image 3 gap:
+    const nw = 46;
+    const pdepth = 31;
+    const lead = 16;
+    const wall = 26;
     const minC = pr + nw;
     const maxC = Math.max(minC, W - pr - nw);
     const pc = Math.max(minC, Math.min(maxC, centre));
@@ -83,16 +83,16 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
     const W = thickness;
     const H = length;
     // Canonical Glass nav 3 rotated for right-edge vertical rail:
-    // rr: corner radius of the top & bottom caps
-    // nw: notch half-opening along the vertical axis (scaled to 46px orb)
-    // depth: uniform socket scoop into the glass rail
-    // lead & wall: reference cubic bezier parameters guaranteeing smooth socket curve
+    // rr: corner radius of the top & bottom caps (20px)
+    // nw: notch opening half-height (46px)
+    // depth: uniform 31px socket scoop ensuring standard 7.4-8.0px gap from Image 3 & Image 10
+    // lead (16) & wall (26): monotonic cubic-bezier control points eliminating pinching
     const rr = 20;
-    const nw = 34;
-    const depth = 26;
-    const lead = Math.round(nw * (22 / 46)); // 16
-    const wall = Math.round(nw * (28 / 46)); // 21
-    const minC = rr + nw; // 54px
+    const nw = 46;
+    const depth = 31;
+    const lead = 16;
+    const wall = 26;
+    const minC = rr + nw; // 66px
     const maxC = Math.max(minC, H - rr - nw);
     const rc = Math.min(Math.max(centre, minC), maxC);
     const topY = rc - nw;
@@ -153,6 +153,10 @@ export type OrbNotchTargets = {
 
 // Store last known positions per edge so that navigation across pages glides instead of jumping!
 const LAST_POSITIONS = new Map<OrbNotchEdge, number>();
+
+export function recordOrbPosition(edge: OrbNotchEdge, pos: number) {
+  LAST_POSITIONS.set(edge, pos);
+}
 
 export type OrbNotchOptions = {
   /** When true, formats the silhouette as a floating glass pill dock */

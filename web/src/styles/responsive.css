@@ -520,6 +520,7 @@ main .link-button:is(:hover, :focus-visible, :active),
   }
 
   /* When the orb is lifted, the active item's icon is presented in the orb; hide it in the tab to avoid collision */
+  .mobile-nav.orb-nav .mobile-nav__item--active .mobile-nav__icon-wrap svg,
   .mobile-nav.orb-nav[data-orb-ready='true'] .mobile-nav__item--active .mobile-nav__icon-wrap svg {
     opacity: 0 !important;
     visibility: hidden !important;
@@ -2097,28 +2098,19 @@ main .link-button:is(:hover, :focus-visible, :active),
     white-space: nowrap !important;
   }
 
-  /* Clear floating launcher action buttons safely above the mobile orb dock */
+  /* Mobile floating launchers:
+     - Messages is accessed via the dedicated bottom footer nav tab (/messages), eliminating duplicate floating buttons in the corner.
+     - The AI assistant is powered by the unified draggable CommerceCopilot. */
   .assistant-dock__hint {
     display: none !important;
   }
 
   .chat-dock {
-    inset-inline-end: 14px !important;
-    bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
-  }
-
-  .chat-launcher {
-    width: 44px !important;
-    height: 44px !important;
+    display: none !important;
   }
 
   .assistant-dock {
-    inset-inline-end: 14px !important;
-    bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
-  }
-
-  .assistant-dock--above {
-    bottom: calc(96px + 44px + 10px + env(safe-area-inset-bottom, 0px)) !important;
+    display: none !important;
   }
 }
 

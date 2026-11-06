@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { t, useLanguage } from '../i18n/language';
 import { useAuth } from '../state/AuthContext';
 import { useUnreadCount } from '../api/hooks';
-import { useOrbNotch } from '../lib/orbNotch';
+import { useOrbNotch, recordOrbPosition } from '../lib/orbNotch';
 import { Icon, type IconName } from './Icon';
 import { OrbNotchLayers } from './OrbNotch';
 
@@ -62,13 +62,25 @@ export function AccountRail() {
   const edgeRef = useRef<SVGPathElement>(null);
 
   const cleanPath = pathname.replace(/\/+$/, '') || '/';
-  const activeRow = SIDEBAR_GROUPS.flat().find((r) => r.to === cleanPath || (r.end ? cleanPath === r.to : cleanPath.startsWith(r.to)));
+  const activeRow = SIDEBAR_GROUPS.flat().find((r) => r.to === cleanPath || (r.end ? cleanPath === r.to : cleanPath.startsWith(r.to)))
+    ?? (cleanPath === '/messages' ? SIDEBAR_GROUPS[1]!.find(r => r.to === '/help') : null);
   const activeIcon = activeRow?.icon ?? null;
 
   // The sidebar lifted orb is placed in the right-side format facing the dashboard content;
   // legacy hook signature useOrbNotch('left' preserved for contract tests.
   useOrbNotch('right', { host: barRef, glass: glassRef, path: edgeRef, active: '.account-nav-row--active' },
     [pathname, expanded, language, user?.role]);
+
+  const handleRowClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const targetEl = e.currentTarget;
+    const glassEl = glassRef.current;
+    if (targetEl && glassEl) {
+      const targetRect = targetEl.getBoundingClientRect();
+      const glassRect = glassEl.getBoundingClientRect();
+      const centre = targetRect.top + targetRect.height / 2 - glassRect.top;
+      recordOrbPosition('right', centre);
+    }
+  };
 
   const toggle = useCallback(() => {
     setExpanded((next) => {
@@ -99,6 +111,7 @@ export function AccountRail() {
                   to={row.to}
                   end={row.end}
                   title={t(row.label)}
+                  onClick={handleRowClick}
                   className={({ isActive }) => `account-nav-row${isActive ? ' account-nav-row--active' : ''}`}
                 >
                   <span className="account-nav-row__icon"><Icon name={row.icon} width={17} height={17} /></span>

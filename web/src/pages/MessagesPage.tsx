@@ -12,6 +12,13 @@ import { useAuth } from '../state/AuthContext';
 import { Icon } from '../components/Icon';
 import { AccountSection } from '../components/AccountNav';
 
+const QUICK_TOPICS = [
+  { label: 'Order status 📦', text: 'What is the status of my recent order?' },
+  { label: 'Delivery time ⏱️', text: 'How long does delivery take inside Dhaka and nationwide?' },
+  { label: 'Returns & refund 🔄', text: 'How do I return a product or get a refund?' },
+  { label: 'Payment support 💳', text: 'I need assistance with bKash / Card payment.' }
+];
+
 export function MessagesPage() {
   useLanguage();
   const { user } = useAuth();
@@ -19,6 +26,7 @@ export function MessagesPage() {
   const [draft, setDraft] = useState('');
   const [subject, setSubject] = useState(params.get('subject') ?? '');
   const [showNewThread, setShowNewThread] = useState(false);
+  const [mobileThreadOpen, setMobileThreadOpen] = useState(false);
   const threadRef = useRef<HTMLOListElement>(null);
 
   const conversations = useChatConversations(Boolean(user));
@@ -43,7 +51,7 @@ export function MessagesPage() {
   useEffect(() => {
     const el = threadRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [thread.length]);
+  }, [thread.length, active?.id]);
 
   const handleSend = () => {
     const body = draft.trim();
@@ -61,23 +69,30 @@ export function MessagesPage() {
         onSuccess: (data: any) => {
           setShowNewThread(false);
           setSubject('');
-          if (data?.id) setSelectedId(data.id);
+          if (data?.id) {
+            setSelectedId(data.id);
+            setMobileThreadOpen(true);
+          }
         }
       }
     );
   };
 
+  const handleQuickTopic = (topicText: string) => {
+    setDraft(topicText);
+  };
+
   if (!user) {
     return (
       <div className="page container">
-        <div className="card-glass stack" style={{ maxWidth: 540, margin: '40px auto', padding: '32px', textAlign: 'center' }}>
-          <div style={{ margin: '0 auto', width: 56, height: 56, borderRadius: '50%', background: 'var(--accent-gradient)', display: 'grid', placeItems: 'center', color: 'var(--on-accent)' }}>
-            <Icon name="chat" width={28} height={28} />
+        <div className="card-glass stack" style={{ maxWidth: 540, margin: '40px auto', padding: '36px 24px', textAlign: 'center', borderRadius: 'var(--radius-lg, 16px)' }}>
+          <div style={{ margin: '0 auto 16px', width: 64, height: 64, borderRadius: '50%', background: 'var(--accent-gradient)', display: 'grid', placeItems: 'center', color: 'var(--on-accent)', boxShadow: '0 8px 24px var(--glass-glow)' }}>
+            <Icon name="chat" width={32} height={32} />
           </div>
-          <h1>{t('Customer Support Messages')}</h1>
-          <p className="muted">{t('Sign in to view your conversations, ask order questions, or chat with our live customer care team.')}</p>
-          <div className="row" style={{ justifyContent: 'center', gap: '12px', marginTop: '16px' }}>
-            <Link to="/login" className="btn btn--primary">{t('Sign in')}</Link>
+          <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 800 }}>{t('Customer Support Messages')}</h1>
+          <p className="muted" style={{ lineHeight: 1.6 }}>{t('Sign in to view your conversations, ask order questions, or chat with our live customer care team.')}</p>
+          <div className="row" style={{ justifyContent: 'center', gap: '12px', marginTop: '20px' }}>
+            <Link to="/login" className="btn btn--primary" style={{ minWidth: 120 }}>{t('Sign in')}</Link>
             <Link to="/help" className="btn btn--ghost">{t('Help center')}</Link>
           </div>
         </div>
@@ -88,19 +103,25 @@ export function MessagesPage() {
   return (
     <div className="page container">
       <AccountSection>
-        <div className="stack" style={{ gap: '20px' }}>
-          <div className="page-header">
+        <div className="stack" style={{ gap: '16px' }}>
+          <div className="page-header messages-page-header">
             <div>
-              <h1>{t('Customer Messages')}</h1>
-              <p className="muted">{t('Direct live support thread and messages with the NineCube team.')}</p>
+              <div className="row" style={{ gap: '8px', alignItems: 'center' }}>
+                <span className="messages-online-badge" aria-hidden="true" />
+                <h1 style={{ margin: 0 }}>{t('Customer Messages')}</h1>
+              </div>
+              <p className="muted" style={{ marginTop: '4px', fontSize: 'var(--text-xs)' }}>
+                {t('Direct live support thread and messages with the NineCube team.')}
+              </p>
             </div>
-            <div className="row" style={{ gap: '10px' }}>
+            <div className="row messages-header-actions" style={{ gap: '10px' }}>
               <button
                 type="button"
                 className="btn btn--sm btn--primary"
                 onClick={() => {
                   setShowNewThread(true);
                   setSelectedId(null);
+                  setMobileThreadOpen(true);
                 }}
               >
                 <Icon name="plus" width={14} height={14} /> {t('New question')}
@@ -111,154 +132,161 @@ export function MessagesPage() {
             </div>
           </div>
 
-          <div
-            className="messages-page-layout card-glass"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: conversationList.length > 1 ? 'minmax(200px, 260px) 1fr' : '1fr',
-              minHeight: '520px',
-              borderRadius: 'var(--radius-lg, 16px)',
-              overflow: 'hidden'
-            }}
-          >
-            {conversationList.length > 1 ? (
-              <aside
-                className="messages-conversation-list"
-                style={{
-                  borderRight: '1px solid var(--border)',
-                  background: 'rgba(0, 0, 0, 0.12)',
-                  padding: '12px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}
-              >
-                <strong style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', padding: '4px 8px' }}>
-                  {t('Conversations')}
-                </strong>
-                {conversationList.map((conv) => (
+          <div className={`messages-page-layout card-glass ${mobileThreadOpen ? 'messages-page-layout--thread-active' : 'messages-page-layout--list-active'}`}>
+            {/* Conversation list column */}
+            <aside className="messages-conversation-list" aria-label={t('Conversations')}>
+              <div className="messages-conversation-list__header">
+                <div className="row-between" style={{ alignItems: 'center' }}>
+                  <strong>{t('Conversations')}</strong>
+                  <span className="messages-count-pill">{conversationList.length}</span>
+                </div>
+              </div>
+
+              <div className="messages-conversation-list__scroll">
+                {conversationList.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-muted)' }}>
+                    <Icon name="chat" width={28} height={28} style={{ opacity: 0.4, margin: '0 auto 8px' }} />
+                    <p style={{ fontSize: 'var(--text-xs)' }}>{t('No conversations yet.')}</p>
+                  </div>
+                ) : (
+                  conversationList.map((conv) => {
+                    const isSelected = active?.id === conv.id && !showNewThread;
+                    return (
+                      <button
+                        key={conv.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedId(conv.id);
+                          setShowNewThread(false);
+                          setMobileThreadOpen(true);
+                        }}
+                        className={`messages-conversation-item ${isSelected ? 'messages-conversation-item--active' : ''}`}
+                      >
+                        <div className="messages-conversation-item__avatar">
+                          <Icon name="chat" width={16} height={16} />
+                        </div>
+                        <div className="messages-conversation-item__body">
+                          <div className="row-between" style={{ gap: '6px' }}>
+                            <strong className="messages-conversation-item__subject">
+                              {conv.subject || t('Support inquiry')}
+                            </strong>
+                            <time className="messages-conversation-item__time">
+                              {formatDateTime(conv.updatedAt)}
+                            </time>
+                          </div>
+                          <div className="row-between" style={{ gap: '6px', marginTop: '3px' }}>
+                            <span className="messages-conversation-item__snippet muted">
+                              {conv.lastMessage?.body || t('Conversation thread')}
+                            </span>
+                            <span className={`messages-status-tag messages-status-tag--${conv.status}`}>
+                              {t(conv.status === 'open' ? 'Open' : 'Resolved')}
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </aside>
+
+            {/* Active thread or new conversation view */}
+            <main className="messages-thread-view">
+              <header className="messages-thread-header">
+                <div className="row" style={{ gap: '12px', alignItems: 'center' }}>
                   <button
-                    key={conv.id}
                     type="button"
+                    className="messages-mobile-back-btn"
                     onClick={() => {
-                      setSelectedId(conv.id);
+                      setMobileThreadOpen(false);
                       setShowNewThread(false);
                     }}
-                    style={{
-                      all: 'unset',
-                      cursor: 'pointer',
-                      padding: '10px 12px',
-                      borderRadius: '10px',
-                      background: active?.id === conv.id ? 'var(--selected-bg)' : 'transparent',
-                      color: active?.id === conv.id ? 'var(--accent-text)' : 'inherit',
-                      fontWeight: active?.id === conv.id ? 700 : 500,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                      transition: 'background 0.15s ease'
-                    }}
+                    aria-label={t('Back to conversations')}
                   >
-                    <span style={{ fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {conv.subject || t('Support inquiry')}
-                    </span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                      {formatDateTime(conv.updatedAt)}
-                    </span>
+                    <Icon name="chevron" width={18} height={18} style={{ transform: 'rotate(90deg)' }} />
+                    <span>{t('Back')}</span>
                   </button>
-                ))}
-              </aside>
-            ) : null}
-
-            <main
-              className="messages-thread-view"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                background: 'var(--surface-menu, rgba(20, 24, 34, 0.6))'
-              }}
-            >
-              <header
-                style={{
-                  padding: '14px 20px',
-                  borderBottom: '1px solid var(--border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <div>
-                  <strong>{showNewThread ? t('New support conversation') : (active?.subject ?? t('NineCube Support Team'))}</strong>
-                  <span className="muted" style={{ display: 'block', fontSize: '12px' }}>
-                    {active ? t('Status: ') + (active.status === 'open' ? t('Open') : t('Resolved')) : t('Send a message to our support agents')}
-                  </span>
+                  <div className="messages-agent-avatar">
+                    <span className="messages-agent-avatar__live" aria-hidden="true" />
+                    <Icon name="spark" width={18} height={18} />
+                  </div>
+                  <div>
+                    <strong className="messages-thread-title">
+                      {showNewThread ? t('New support conversation') : (active?.subject ?? t('NineCube Support Team'))}
+                    </strong>
+                    <span className="messages-thread-subtitle">
+                      <span className="messages-online-dot" aria-hidden="true" />
+                      {active ? `${t('Support Agent')} • ${active.status === 'open' ? t('Live Thread') : t('Resolved')}` : t('Typically replies within 2 minutes')}
+                    </span>
+                  </div>
                 </div>
               </header>
 
-              <ol
-                className="chat-thread"
-                ref={threadRef}
-                style={{
-                  flex: 1,
-                  padding: '20px',
-                  overflowY: 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                  margin: 0,
-                  listStyle: 'none'
-                }}
-              >
+              {/* Quick topics recommendation pills */}
+              <div className="messages-quick-topics" aria-label={t('Quick questions')}>
+                {QUICK_TOPICS.map((topic) => (
+                  <button
+                    key={topic.label}
+                    type="button"
+                    className="messages-quick-chip"
+                    onClick={() => handleQuickTopic(topic.text)}
+                  >
+                    {t(topic.label)}
+                  </button>
+                ))}
+              </div>
+
+              {/* Message scroll stream */}
+              <ol className="chat-thread messages-stream" ref={threadRef}>
                 {thread.length === 0 && !busy ? (
-                  <li className="chat-empty" style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-                    <Icon name="chat" width={32} height={32} style={{ opacity: 0.5, marginBottom: '8px' }} />
-                    <p>{t('Write to the support team and they will answer in this thread.')}</p>
+                  <li className="chat-empty" style={{ textAlign: 'center', padding: '48px 20px', color: 'var(--text-muted)' }}>
+                    <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--surface-menu)', display: 'grid', placeItems: 'center', margin: '0 auto 12px' }}>
+                      <Icon name="chat" width={24} height={24} style={{ opacity: 0.6 }} />
+                    </div>
+                    <strong style={{ display: 'block', color: 'var(--text)', marginBottom: '4px' }}>
+                      {t('How can we help you today?')}
+                    </strong>
+                    <p style={{ fontSize: 'var(--text-xs)', maxWidth: '320px', margin: '0 auto' }}>
+                      {t('Write to the support team and they will answer in this thread.')}
+                    </p>
                   </li>
                 ) : (
-                  thread.map((msg) => (
-                    <li
-                      key={`${msg.conversationId}-${msg.id}`}
-                      className={`chat-bubble chat-bubble--${msg.authorKind === 'customer' ? 'self' : msg.authorKind === 'assistant' ? 'assistant' : 'peer'}`}
-                      style={{
-                        alignSelf: msg.authorKind === 'customer' ? 'flex-end' : 'flex-start',
-                        maxWidth: '80%',
-                        padding: '12px 16px',
-                        borderRadius: '14px',
-                        background: msg.authorKind === 'customer' ? 'var(--accent)' : 'var(--surface)',
-                        color: msg.authorKind === 'customer' ? 'var(--on-accent)' : 'var(--text)',
-                        border: '1px solid var(--border)'
-                      }}
-                    >
-                      <div style={{ fontSize: '11px', opacity: 0.8, marginBottom: '4px', fontWeight: 600 }}>
-                        {msg.authorKind === 'customer' ? t('You') : t('Support')}
-                        {msg.authorKind === 'assistant' ? ` · ${t('Automated')}` : ''}
-                      </div>
-                      <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.45 }}>{msg.body}</p>
-                      <time style={{ display: 'block', fontSize: '10px', opacity: 0.65, marginTop: '4px', textAlign: 'right' }}>
-                        {formatDateTime(msg.createdAt)}
-                      </time>
-                    </li>
-                  ))
+                  thread.map((msg) => {
+                    const isCustomer = msg.authorKind === 'customer';
+                    const isAssistant = msg.authorKind === 'assistant';
+                    return (
+                      <li
+                        key={`${msg.conversationId}-${msg.id}`}
+                        className={`messages-bubble messages-bubble--${isCustomer ? 'customer' : isAssistant ? 'assistant' : 'staff'}`}
+                      >
+                        <div className="messages-bubble__author">
+                          {isCustomer ? t('You') : t('NineCube Support')}
+                          {isAssistant ? <span className="messages-bubble__bot-tag">{t('Automated')}</span> : null}
+                        </div>
+                        <p className="messages-bubble__text">{msg.body}</p>
+                        <time className="messages-bubble__time">
+                          {formatDateTime(msg.createdAt)}
+                          {isCustomer && <span className="messages-bubble__check" aria-hidden="true"> ✓✓</span>}
+                        </time>
+                      </li>
+                    );
+                  })
                 )}
                 {busy ? (
-                  <li style={{ alignSelf: 'flex-start', padding: '8px 14px', borderRadius: '12px', background: 'var(--surface)' }}>
-                    <span>… {t('Sending')}</span>
+                  <li className="messages-bubble messages-bubble--typing">
+                    <span className="typing-dot" />
+                    <span className="typing-dot" />
+                    <span className="typing-dot" />
                   </li>
                 ) : null}
               </ol>
 
+              {/* Message composer input */}
               <form
-                className="chat-composer"
+                className="chat-composer messages-composer"
                 onSubmit={(e) => {
                   e.preventDefault();
                   handleSend();
-                }}
-                style={{
-                  padding: '14px 20px',
-                  borderTop: '1px solid var(--border)',
-                  display: 'flex',
-                  gap: '10px',
-                  alignItems: 'center'
                 }}
               >
                 {showNewThread ? (
@@ -266,23 +294,31 @@ export function MessagesPage() {
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     placeholder={t('Subject')}
-                    style={{ width: '180px' }}
-                    className="input"
+                    className="input messages-composer__subject"
                     required
                   />
                 ) : null}
-                <input
-                  value={draft}
-                  maxLength={2000}
-                  onChange={(e) => setDraft(e.target.value)}
-                  placeholder={t('Write to the support team')}
-                  className="input"
-                  style={{ flex: 1 }}
-                  required
-                />
-                <button type="submit" className="btn btn--primary" disabled={!draft.trim() || busy}>
-                  {t('Send')}
-                </button>
+                <div className="messages-composer__input-wrap">
+                  <input
+                    value={draft}
+                    maxLength={2000}
+                    onChange={(e) => setDraft(e.target.value)}
+                    placeholder={t('Write to the support team')}
+                    className="input messages-composer__input"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="messages-composer__send-btn"
+                    disabled={!draft.trim() || busy}
+                    aria-label={t('Send')}
+                    title={t('Send')}
+                  >
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
               </form>
             </main>
           </div>

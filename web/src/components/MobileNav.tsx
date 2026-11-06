@@ -4,7 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../state/AuthContext';
 import { useCart } from '../state/CartContext';
 import { useChatConversations } from '../api/hooks';
-import { useOrbNotch } from '../lib/orbNotch';
+import { useOrbNotch, recordOrbPosition } from '../lib/orbNotch';
 import { Icon, type IconName } from './Icon';
 import { OrbNotchLayers } from './OrbNotch';
 
@@ -66,8 +66,19 @@ export function MobileNav() {
   const isHomeActive = location.pathname === '/';
   const isCatalogActive = location.pathname === '/products' || location.pathname.startsWith('/products/');
   const isMessagesActive = location.pathname === '/messages' || location.pathname === '/help';
-  const isAccountActive = location.pathname.startsWith('/account') || location.pathname === '/orders';
+  const isAccountActive = location.pathname.startsWith('/account') || location.pathname === '/orders' || location.pathname === '/wishlist' || location.pathname === '/gift-cards' || location.pathname === '/settings';
   const isDashboardTabActive = !canOrder && location.pathname === '/account';
+
+  const handleTabClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const targetEl = e.currentTarget;
+    const glassEl = glassRef.current;
+    if (targetEl && glassEl) {
+      const targetRect = targetEl.getBoundingClientRect();
+      const glassRect = glassEl.getBoundingClientRect();
+      const centre = targetRect.left + targetRect.width / 2 - glassRect.left;
+      recordOrbPosition('top', centre);
+    }
+  };
 
   // One tab carries the orb, and it carries that tab's own icon, so the marker is read in the order
   // the bar lists its tabs - the same order its accent class goes to them in. A staff account has
@@ -93,6 +104,7 @@ export function MobileNav() {
 
       <NavLink
         to="/"
+        onClick={handleTabClick}
         className={`mobile-nav__item ${isHomeActive ? 'mobile-nav__item--active' : ''}`}
         aria-current={isHomeActive ? 'page' : undefined}
       >
@@ -104,6 +116,7 @@ export function MobileNav() {
 
       <NavLink
         to="/products"
+        onClick={handleTabClick}
         className={`mobile-nav__item ${isCatalogActive ? 'mobile-nav__item--active' : ''}`}
         aria-current={isCatalogActive ? 'page' : undefined}
       >
@@ -115,6 +128,7 @@ export function MobileNav() {
 
       <NavLink
         to={user ? "/messages" : "/login"}
+        onClick={handleTabClick}
         className={`mobile-nav__item ${isMessagesActive ? 'mobile-nav__item--active' : ''}`}
         aria-current={isMessagesActive ? 'page' : undefined}
       >
@@ -149,6 +163,7 @@ export function MobileNav() {
       ) : (
         <NavLink
           to="/account"
+          onClick={handleTabClick}
           className={`mobile-nav__item ${isDashboardTabActive ? 'mobile-nav__item--active' : ''}`}
           aria-current={isDashboardTabActive ? 'page' : undefined}
         >
@@ -161,6 +176,7 @@ export function MobileNav() {
 
       <NavLink
         to={user ? "/account" : "/login"}
+        onClick={handleTabClick}
         className={`mobile-nav__item ${isAccountActive ? 'mobile-nav__item--active' : ''}`}
         aria-current={isAccountActive ? 'page' : undefined}
       >
