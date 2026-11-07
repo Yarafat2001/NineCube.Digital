@@ -169,8 +169,8 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
     sendMessage(prompt);
   };
 
-  // On the home page where AssistantDock is rendered, hide Copilot launcher button when closed to eliminate collision
-  const shouldRenderLauncher = standalone || !hasAssistantDock || isOpen;
+  // The unified CommerceCopilot is always available across the showcase home and all store pages
+  const shouldRenderLauncher = true;
   const hasChat = Boolean(user);
 
   return (

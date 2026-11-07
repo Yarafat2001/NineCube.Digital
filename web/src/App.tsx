@@ -7,6 +7,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { MobileNav } from './components/MobileNav';
 import { ChatWidget } from './components/ChatWidget';
+import { AssistantDock } from './components/home/AssistantDock';
 import { RequireAuth, RequireRole } from './components/guards';
 import { LoadingBlock } from './components/ui';
 import { AuthPage } from './pages/AuthPages';
@@ -208,6 +209,7 @@ export function App() {
       {isShowcase || isAuth ? null : <Footer />}
       <MobileNav />
       {isAuth ? null : <ChatWidget />}
+      {isShowcase ? <AssistantDock /> : null}
       <CommerceCopilot />
     </div>
   </CommerceAgentProvider>
