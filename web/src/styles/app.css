@@ -7310,12 +7310,12 @@ body[data-overlay-open='true'] {
   color: var(--on-accent);
 }
 
-/* Feature name hover badge for minimised sidebar - matches reference image media_1794047437740_eb18ed13.png */
+/* Feature name hover badge for minimised sidebar - matches reference image media_1794050467635_28920441.jpg (right side footer corner) */
 .account-rail:not([data-expanded='true']) .account-nav-row__tooltip {
   position: absolute;
-  top: calc(100% - 4px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-2px);
+  top: calc(100% - 8px);
+  left: calc(50% + 4px);
+  transform: translateY(-2px);
   background: #1f1f21;
   color: var(--accent, #ffab4d);
   border: 1px solid rgba(255, 255, 255, 0.45);
@@ -7343,7 +7343,7 @@ body[data-overlay-open='true'] {
 .account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 .account-rail[data-expanded='true'] .account-nav-row__tooltip {
