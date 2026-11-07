@@ -47,14 +47,15 @@ export function SettingsPage() {
   };
 
   return (
-    <AccountSection>
-      <div className="account-settings-page stack">
-        <header className="page-header">
-          <div>
-            <h1>{t("App settings")}</h1>
-            <p className="muted">{t("Manage display theme, language, notifications, and shopping copilot preferences.")}</p>
-          </div>
-        </header>
+    <div className="page container">
+      <AccountSection>
+        <div className="account-settings-page stack">
+          <header className="page-header">
+            <div>
+              <h1>{t("App settings")}</h1>
+              <p className="muted">{t("Manage display theme, language, notifications, and shopping copilot preferences.")}</p>
+            </div>
+          </header>
 
         {savedMessage ? (
           <div className="badge badge--ok" role="status" style={{ padding: '10px 16px', fontSize: '14px' }}>
@@ -191,6 +192,7 @@ export function SettingsPage() {
         </form>
       </div>
     </AccountSection>
+    </div>
   );
 }
 export default SettingsPage;

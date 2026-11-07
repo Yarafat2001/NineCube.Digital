@@ -51,21 +51,28 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
     const W = length;
     const H = thickness;
     const pr = Math.min(32, H / 2);
-    // Canonical Glass nav 3 proportions with uniform 7.4-8.0px Image 3 gap:
-    const nw = 46;
-    const pdepth = 31;
-    const lead = 16;
-    const wall = 26;
-    const minC = pr + nw;
-    const maxC = Math.max(minC, W - pr - nw);
+    // True circular socket and C1 tangent fillets guaranteeing uniform 7.5px Image 10 gap:
+    const R_orb = 23;
+    const gap = 7.5;
+    const Rs = R_orb + gap; // 30.5
+    const rf = 16;
+    const dX = Math.sqrt((Rs + rf) ** 2 - rf ** 2); // 43.66
+    const minC = pr + dX;
+    const maxC = Math.max(minC, W - pr - dX);
     const pc = Math.max(minC, Math.min(maxC, centre));
-    const leftX = pc - nw;
-    const rightX = pc + nw;
+
+    const Ytouch = Rs * (rf / (Rs + rf)); // 10.49
+    const Xtouch1 = pc - Rs * (dX / (Rs + rf)); // pc - 28.64
+    const Xtouch2 = pc + Rs * (dX / (Rs + rf)); // pc + 28.64
+    const leftX = pc - dX;
+    const rightX = pc + dX;
+
     const d = [
       `M${n(pr)} 0`,
       leftX > pr ? `H${n(leftX)}` : '',
-      `C${n(pc - nw + lead)} 0 ${n(pc - wall)} ${n(pdepth)} ${n(pc)} ${n(pdepth)}`,
-      `C${n(pc + wall)} ${n(pdepth)} ${n(pc + nw - lead)} 0 ${n(rightX)} 0`,
+      `A${n(rf)} ${n(rf)} 0 0 1 ${n(Xtouch1)} ${n(Ytouch)}`,
+      `A${n(Rs)} ${n(Rs)} 0 0 0 ${n(Xtouch2)} ${n(Ytouch)}`,
+      `A${n(rf)} ${n(rf)} 0 0 1 ${n(rightX)} 0`,
       rightX < W - pr ? `H${n(W - pr)}` : '',
       `A${n(pr)} ${n(pr)} 0 0 1 ${n(W)} ${n(pr)}`,
       `L${n(W)} ${n(H - pr)}`,
@@ -82,29 +89,31 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
   if (edge === 'right') {
     const W = thickness;
     const H = length;
-    // Canonical Glass nav 3 rotated for right-edge vertical rail:
-    // rr: corner radius of the top & bottom caps (20px)
-    // nw: notch opening half-height (46px)
-    // depth: uniform 31px socket scoop ensuring standard 7.4-8.0px gap from Image 3 & Image 10
-    // lead (16) & wall (26): monotonic cubic-bezier control points eliminating pinching
     const rr = 20;
-    const nw = 46;
-    const depth = 31;
-    const lead = 16;
-    const wall = 26;
-    const minC = rr + nw; // 66px
-    const maxC = Math.max(minC, H - rr - nw);
+    // True circular socket and C1 tangent fillets guaranteeing uniform 7.5px Image 10 gap:
+    const R_orb = 23;
+    const gap = 7.5;
+    const Rs = R_orb + gap; // 30.5
+    const rf = 16;
+    const dY = Math.sqrt((Rs + rf) ** 2 - rf ** 2); // 43.66
+    const minC = rr + dY;
+    const maxC = Math.max(minC, H - rr - dY);
     const rc = Math.min(Math.max(centre, minC), maxC);
-    const topY = rc - nw;
-    const botY = rc + nw;
+
+    const Xtouch = W - Rs * (rf / (Rs + rf)); // W - 10.49
+    const Ytouch1 = rc - Rs * (dY / (Rs + rf)); // rc - 28.64
+    const Ytouch2 = rc + Rs * (dY / (Rs + rf)); // rc + 28.64
+    const topY = rc - dY;
+    const botY = rc + dY;
 
     const d = [
       `M${n(rr)} 0`,
       `H${n(W - rr)}`,
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W)} ${n(rr)}`,
       topY > rr ? `L${n(W)} ${n(topY)}` : '',
-      `C${n(W)} ${n(rc - nw + lead)} ${n(W - depth)} ${n(rc - wall)} ${n(W - depth)} ${n(rc)}`,
-      `C${n(W - depth)} ${n(rc + wall)} ${n(W)} ${n(rc + nw - lead)} ${n(W)} ${n(botY)}`,
+      `A${n(rf)} ${n(rf)} 0 0 1 ${n(Xtouch)} ${n(Ytouch1)}`,
+      `A${n(Rs)} ${n(Rs)} 0 0 0 ${n(Xtouch)} ${n(Ytouch2)}`,
+      `A${n(rf)} ${n(rf)} 0 0 1 ${n(W)} ${n(botY)}`,
       botY < H - rr ? `L${n(W)} ${n(H - rr)}` : '',
       `A${n(rr)} ${n(rr)} 0 0 1 ${n(W - rr)} ${n(H)}`,
       `H${n(rr)}`,

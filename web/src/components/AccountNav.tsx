@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { t, useLanguage } from '../i18n/language';
 import { useAuth } from '../state/AuthContext';
@@ -62,16 +62,24 @@ export function AccountRail() {
   const edgeRef = useRef<SVGPathElement>(null);
 
   const cleanPath = pathname.replace(/\/+$/, '') || '/';
-  const activeRow = SIDEBAR_GROUPS.flat().find((r) => r.to === cleanPath || (r.end ? cleanPath === r.to : cleanPath.startsWith(r.to)))
-    ?? (cleanPath === '/messages' ? SIDEBAR_GROUPS[1]!.find(r => r.to === '/help') : null);
+  const [optimisticTo, setOptimisticTo] = useState<string | null>(null);
+
+  useEffect(() => {
+    setOptimisticTo(null);
+  }, [pathname]);
+
+  const effectivePath = optimisticTo ?? cleanPath;
+  const activeRow = SIDEBAR_GROUPS.flat().find((r) => r.to === effectivePath || (r.end ? effectivePath === r.to : effectivePath.startsWith(r.to)))
+    ?? (effectivePath === '/messages' ? SIDEBAR_GROUPS[1]!.find(r => r.to === '/help') : null);
   const activeIcon = activeRow?.icon ?? null;
 
   // The sidebar lifted orb is placed in the right-side format facing the dashboard content;
   // legacy hook signature useOrbNotch('left' preserved for contract tests.
   useOrbNotch('right', { host: barRef, glass: glassRef, path: edgeRef, active: '.account-nav-row--active' },
-    [pathname, expanded, language, user?.role]);
+    [pathname, optimisticTo, expanded, language, user?.role]);
 
-  const handleRowClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleRowClick = (to: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    setOptimisticTo(to);
     const targetEl = e.currentTarget;
     const glassEl = glassRef.current;
     if (targetEl && glassEl) {
@@ -110,9 +118,8 @@ export function AccountRail() {
                 <NavLink
                   to={row.to}
                   end={row.end}
-                  title={t(row.label)}
-                  onClick={handleRowClick}
-                  className={({ isActive }) => `account-nav-row${isActive ? ' account-nav-row--active' : ''}`}
+                  onClick={handleRowClick(row.to)}
+                  className={({ isActive }) => `account-nav-row${(optimisticTo ? optimisticTo === row.to : isActive) ? ' account-nav-row--active' : ''}`}
                 >
                   <span className="account-nav-row__icon"><Icon name={row.icon} width={17} height={17} /></span>
                   <span className="account-nav-row__label">{t(row.label)}</span>
@@ -137,10 +144,10 @@ export function AccountRail() {
         aria-controls="account-destinations"
         aria-expanded={expanded}
         aria-label={expanded ? t("Collapse") : t("Expand")}
-        title={expanded ? t("Collapse") : t("Expand")}
         onClick={toggle}
       >
         <Icon name="chevron" width={16} height={16} className="account-rail__toggle-chevron" />
+        <span className="account-rail__toggle-label">{expanded ? t("Collapse") : t("Expand")}</span>
       </button>
     </div>
   );

@@ -33,6 +33,12 @@ export function MessagesPage() {
   const conversationList = conversations.data ?? [];
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (params.get('subject') || conversationList.length > 0) {
+      setMobileThreadOpen(true);
+    }
+  }, [conversationList.length, params]);
+
   const active = useMemo(() => {
     if (!conversationList.length) return null;
     if (selectedId) {

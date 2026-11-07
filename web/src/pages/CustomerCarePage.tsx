@@ -28,10 +28,14 @@ export function CustomerCarePage() {
   return (
     <div className="page container">
       <AccountSection>
-        <div className="stack">
-          <h1>{t('Help, returns & warranty')}</h1>
-          <p>{t('Send a question or request help with an order. Store staff review return, exchange and warranty requests before any refund or stock change.')}</p>
+        <header className="page-header">
+          <div>
+            <h1>{t('Help, returns & warranty')}</h1>
+            <p>{t('Send a question or request help with an order. Store staff review return, exchange and warranty requests before any refund or stock change.')}</p>
+          </div>
+        </header>
 
+        <div className="stack">
           <div className="card-glass row" style={{ padding: 'var(--space-3) var(--space-4)', gap: 'var(--space-4)', flexWrap: 'wrap', alignItems: 'center' }}>
             <span>📧 <strong>{t('Customer Support:')}</strong> <a href="mailto:support@ninecube.digital">{t('support@ninecube.digital')}</a></span>
             <span>⚡ <strong>{t('Response time:')}</strong> {t('Within 24 business hours')}</span>
