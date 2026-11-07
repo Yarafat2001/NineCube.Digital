@@ -8363,7 +8363,7 @@ body[data-overlay-open='true'] {
     -webkit-backdrop-filter: blur(16px);
     padding: 10px 12px;
     border-top: 1px solid var(--border);
-    z-index: 5;
+    z-index: 2;
   }
 
   .messages-page-layout--list-active .messages-thread-view {
