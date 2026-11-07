@@ -1043,6 +1043,8 @@
   padding: 12px 16px;
   border-top: 1px solid var(--border);
   background: var(--surface);
+  position: relative;
+  z-index: 5;
 }
 
 .commerce-copilot-input-wrap {
@@ -1052,14 +1054,41 @@
   align-items: center;
 }
 
+.commerce-copilot-attach-btn {
+  position: absolute;
+  left: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+  z-index: 2;
+}
+
+.commerce-copilot-attach-btn:hover {
+  color: var(--accent);
+  background: var(--surface);
+  transform: scale(1.05);
+}
+
+.commerce-copilot-attach-btn--active {
+  color: var(--accent) !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+}
+
 .commerce-copilot-input {
   width: 100%;
-  padding: 10px 42px 10px 14px;
+  padding: 10px 40px 10px 42px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--border);
   background: var(--surface-sunken);
   color: var(--text);
-  font-size: 13px;
+  font-size: 13.5px;
   outline: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -1109,4 +1138,336 @@
   place-items: center !important;
   font-size: 14px !important;
   flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Image Enhancement: Input Attachment Bar, User Bubble Cards, Lightbox Modal
+   ========================================================================== */
+
+/* Mobile Pull Handle */
+.commerce-copilot-sheet-handle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .commerce-copilot-sheet-handle {
+    display: block;
+    width: 42px;
+    height: 4px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.28);
+    margin: 8px auto 2px auto;
+    flex-shrink: 0;
+  }
+}
+
+/* Image Attachment Preview Bar (above input) */
+.commerce-copilot-selected-image-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  animation: copilot-fade-in var(--transition-fast) ease-out;
+}
+
+.commerce-copilot-selected-image-bar__thumb {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-sunken);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.commerce-copilot-selected-image-bar__thumb:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.commerce-copilot-selected-image-bar__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.commerce-copilot-selected-image-bar__zoom-icon {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.commerce-copilot-selected-image-bar__thumb:hover .commerce-copilot-selected-image-bar__zoom-icon {
+  opacity: 1;
+}
+
+.commerce-copilot-selected-image-bar__details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.commerce-copilot-selected-image-bar__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.commerce-copilot-selected-image-bar__size {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.commerce-copilot-selected-image-bar__remove {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.commerce-copilot-selected-image-bar__remove:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger, #ef4444);
+  border-color: var(--danger, #ef4444);
+}
+
+/* User Message Attached Image Display */
+.commerce-copilot-attachment-card {
+  margin-bottom: 8px;
+  max-width: 240px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.commerce-copilot-attachment-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.commerce-copilot-attachment-card__img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #111;
+}
+
+.commerce-copilot-attachment-card__img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.commerce-copilot-attachment-card__badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.commerce-copilot-attachment-card__caption {
+  display: block;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Message Bubble Footer Timestamp */
+.commerce-copilot-message__footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.commerce-copilot-message__time {
+  font-size: 10px;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+.commerce-copilot-message--user .commerce-copilot-message__time {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Fullscreen High-Resolution Lightbox Modal */
+.commerce-copilot-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal, 1000) + 100);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  animation: copilot-fade-in var(--transition-fast) ease-out;
+}
+
+.commerce-copilot-lightbox-modal {
+  position: relative;
+  max-width: min(92vw, 860px);
+  max-height: min(90vh, 760px);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+}
+
+.commerce-copilot-lightbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: var(--surface-glass);
+  border-bottom: 1px solid var(--border);
+}
+
+.commerce-copilot-lightbox-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.commerce-copilot-lightbox-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 14px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.commerce-copilot-lightbox-close:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.commerce-copilot-lightbox-body {
+  padding: 14px;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  background: #0c0d11;
+}
+
+.commerce-copilot-lightbox-body img {
+  max-width: 100%;
+  max-height: calc(80vh - 80px);
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* ==========================================================================
+   Mobile Screen UI Enhancements & Keyboard Friendly Layout
+   ========================================================================== */
+@media (max-width: 768px) {
+  .commerce-copilot-panel {
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: min(94dvh, calc(100% - 14px)) !important;
+    max-height: 94dvh !important;
+    margin-top: auto !important;
+    border-radius: 24px 24px 0 0 !important;
+    border-left: none !important;
+    border-top: 1px solid var(--border-strong) !important;
+    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .commerce-copilot-header {
+    padding: 10px 14px 12px 14px !important;
+  }
+
+  .commerce-copilot-body {
+    padding: 12px 12px 8px 12px !important;
+  }
+
+  .commerce-copilot-footer {
+    padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px)) 12px !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    background: var(--surface) !important;
+  }
+
+  .commerce-copilot-attach-btn {
+    width: 36px !important;
+    height: 36px !important;
+    left: 6px !important;
+  }
+
+  .commerce-copilot-mic-btn {
+    width: 34px !important;
+    height: 34px !important;
+    right: 6px !important;
+  }
+
+  .commerce-copilot-send-btn {
+    width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .commerce-copilot-products-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .commerce-copilot-suggestions {
+    padding: 6px 12px !important;
+  }
 }

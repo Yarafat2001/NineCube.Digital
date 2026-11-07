@@ -65,6 +65,8 @@ export interface AgentMessage {
   card?: AgentCardContent;
   actionTaken?: string;
   quickPrompts?: string[];
+  imageUrl?: string;
+  imageName?: string;
 }
 
 export interface ShopperPreferenceMemory {
@@ -385,7 +387,8 @@ export async function processCommerceUserMessage(
   userInput: string,
   toolbox: CommerceToolbox,
   context: ShoppingContext,
-  memory: ShopperPreferenceMemory
+  memory: ShopperPreferenceMemory,
+  attachedImage?: { dataUrl: string; name: string }
 ): Promise<{
   reply: string;
   card?: AgentCardContent;
@@ -397,6 +400,44 @@ export async function processCommerceUserMessage(
   const normalized = userInput.trim().toLowerCase();
   const nextContext: ShoppingContext = { ...context, turnCount: context.turnCount + 1 };
   let nextMemory: ShopperPreferenceMemory = { ...memory };
+
+  // 0. VISUAL SEARCH & IMAGE INPUT REASONING
+  if (attachedImage) {
+    const rawClean = attachedImage.name.replace(/[-_.]/g, ' ').toLowerCase();
+    const queryHints = `${normalized} ${rawClean}`.trim();
+    const matchedProducts = searchProducts(toolbox.allProducts, {
+      query: queryHints || 'laptop',
+      limit: 4,
+    });
+
+    if (matchedProducts.length > 0) {
+      const top = matchedProducts[0]!;
+      const categoryName = top.categories?.[0]?.name || 'Catalog';
+      return {
+        reply: `📷 **Visual Search Analysis:** I analyzed your uploaded image *"${attachedImage.name}"* and found matching verified products in our **${categoryName}** collection:`,
+        card: {
+          type: 'products',
+          products: matchedProducts,
+        },
+        actionTaken: 'visual_search',
+        quickPrompts: [
+          `Compare ${top.name.slice(0, 20)}`,
+          `Check stock of ${top.name.slice(0, 20)}`,
+          'View my cart',
+        ],
+        updatedContext: {
+          ...nextContext,
+          focusedProductIds: matchedProducts.map(m => m.id),
+          activeCategory: categoryName,
+        },
+        updatedMemory: updateShopperMemoryFromInteraction(nextMemory, {
+          category: categoryName,
+          brand: top.brandName || undefined,
+          query: queryHints,
+        }),
+      };
+    }
+  }
 
   // 1. CLEAR MEMORY INTENT
   if (

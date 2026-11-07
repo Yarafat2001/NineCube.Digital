@@ -45,7 +45,7 @@ export interface CommerceAgentContextValue {
   setIsOpen: (open: boolean) => void;
   toggleOpen: () => void;
   toggleMute: () => void;
-  sendMessage: (text: string) => Promise<void>;
+  sendMessage: (text: string, attachedImage?: { dataUrl: string; name: string }) => Promise<void>;
   startListening: () => void;
   stopListening: () => void;
   clearPreferences: () => void;
@@ -222,14 +222,19 @@ export function CommerceAgentProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const sendMessage = useCallback(
-    async (userInput: string) => {
-      if (!userInput.trim()) return;
+    async (userInput: string, attachedImage?: { dataUrl: string; name: string }) => {
+      const trimmed = userInput.trim();
+      if (!trimmed && !attachedImage) return;
+
+      const displayContent = trimmed || (attachedImage ? `Find products matching "${attachedImage.name}"` : '');
 
       const userMsg: AgentMessage = {
         id: `user-${Date.now()}`,
         role: 'user',
-        content: userInput.trim(),
+        content: displayContent,
         timestamp: Date.now(),
+        imageUrl: attachedImage?.dataUrl,
+        imageName: attachedImage?.name,
       };
 
       setMessages(prev => [...prev, userMsg]);
@@ -256,7 +261,7 @@ export function CommerceAgentProvider({ children }: { children: ReactNode }) {
       };
 
       try {
-        const response = await processCommerceUserMessage(userInput, toolbox, context, memory);
+        const response = await processCommerceUserMessage(displayContent, toolbox, context, memory, attachedImage);
 
         const assistantMsg: AgentMessage = {
           id: `asst-${Date.now()}`,

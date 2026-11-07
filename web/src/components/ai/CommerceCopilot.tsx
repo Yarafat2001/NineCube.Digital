@@ -33,8 +33,12 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
   useAuth();
   const [input, setInput] = useState('');
   const [showMemoryModal, setShowMemoryModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{ dataUrl: string; name: string; size: string } | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ url: string; title: string } | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Draggable floating position state remembered across sessions
   const [pos, setPos] = useState<{ x: number; y: number } | null>(() => {
@@ -107,12 +111,49 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
     dragRef.current = null;
   };
 
+  // Image upload handler
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert(t("Please select an image file (PNG, JPG, WebP)."));
+      return;
+    }
+
+    const sizeKb = (file.size / 1024).toFixed(0);
+    const sizeStr = file.size > 1024 * 1024
+      ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+      : `${sizeKb} KB`;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (dataUrl) {
+        setSelectedImage({
+          dataUrl,
+          name: file.name,
+          size: sizeStr,
+        });
+        setTimeout(() => inputRef.current?.focus(), 100);
+      }
+    };
+    reader.readAsDataURL(file);
+
+    // Reset input value so same image can be reselected
+    e.target.value = '';
+  };
+
+  const handleRemoveSelectedImage = () => {
+    setSelectedImage(null);
+  };
+
   // Listen for open-copilot events from anywhere in the application
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
     window.addEventListener('ninecube:open-copilot', handleOpen);
     return () => window.removeEventListener('ninecube:open-copilot', handleOpen);
-  }, []);
+  }, [setIsOpen]);
 
   // Set data-overlay-open on root to automatically hide mobile bottom nav and prevent background scroll
   useEffect(() => {
@@ -140,17 +181,43 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
     }
   }, [isOpen]);
 
+  // Close lightbox on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (lightboxImage) {
+          setLightboxImage(null);
+        } else if (isOpen) {
+          setIsOpen(false);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxImage, isOpen, setIsOpen]);
+
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (!input.trim() || isThinking) return;
+    if ((!input.trim() && !selectedImage) || isThinking) return;
+
     const query = input.trim();
+    const imagePayload = selectedImage
+      ? { dataUrl: selectedImage.dataUrl, name: selectedImage.name }
+      : undefined;
+
     setInput('');
-    sendMessage(query);
+    setSelectedImage(null);
+    sendMessage(query, imagePayload);
   };
 
   const handleQuickPrompt = (prompt: string) => {
     if (isThinking) return;
     sendMessage(prompt);
+  };
+
+  const formatTimestamp = (timeMs: number) => {
+    const d = new Date(timeMs);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   // The unified CommerceCopilot is always available across the showcase home and all store pages
@@ -187,7 +254,7 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
         </button>
       )}
 
-      {/* Slide-out Copilot Panel / Mobile Sheet */}
+      {/* Slide-out Copilot Panel / Mobile Responsive Bottom Sheet */}
       {isOpen && (
         <div className="commerce-copilot-overlay" onClick={() => setIsOpen(false)}>
           <div
@@ -196,6 +263,9 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
             role="dialog"
             aria-label={t("AI Shopping Copilot")}
           >
+            {/* Mobile Sheet Pull Handle */}
+            <div className="commerce-copilot-sheet-handle" aria-hidden="true" />
+
             {/* Copilot Header */}
             <div className="commerce-copilot-header">
               <div className="commerce-copilot-header__branding">
@@ -312,10 +382,29 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
                   )}
 
                   <div className="commerce-copilot-message__bubble">
+                    {/* User Attached Image Card */}
+                    {msg.imageUrl && (
+                      <div
+                        className="commerce-copilot-attachment-card"
+                        onClick={() => setLightboxImage({ url: msg.imageUrl!, title: msg.imageName || t("Uploaded Image") })}
+                        title={t("Click to enlarge photo")}
+                      >
+                        <div className="commerce-copilot-attachment-card__img-wrap">
+                          <img src={msg.imageUrl} alt={msg.imageName || t("Uploaded Image")} />
+                          <div className="commerce-copilot-attachment-card__badge">
+                            <Icon name="zoom" width={12} height={12} />
+                            <span>{t("Enlarge")}</span>
+                          </div>
+                        </div>
+                        {msg.imageName && (
+                          <span className="commerce-copilot-attachment-card__caption">{msg.imageName}</span>
+                        )}
+                      </div>
+                    )}
+
                     <div className="commerce-copilot-message__text">
                       {msg.content.split('\n\n').map((para, i) => (
                         <p key={i}>
-                          {/* Basic formatted rendering for bold markers */}
                           {para.split(/(\*\*.*?\*\*|\*.*?\*)/g).map((chunk, j) => {
                             if (chunk.startsWith('**') && chunk.endsWith('**')) {
                               return <strong key={j}>{chunk.slice(2, -2)}</strong>;
@@ -370,6 +459,12 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
                         ))}
                       </div>
                     )}
+
+                    <div className="commerce-copilot-message__footer">
+                      <time className="commerce-copilot-message__time">
+                        {formatTimestamp(msg.timestamp)}
+                      </time>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -429,14 +524,67 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
               </div>
             )}
 
-            {/* Input & Voice Controls Footer */}
+            {/* Image Attachment Preview Bar */}
+            {selectedImage && (
+              <div className="commerce-copilot-selected-image-bar">
+                <div
+                  className="commerce-copilot-selected-image-bar__thumb"
+                  onClick={() => setLightboxImage({ url: selectedImage.dataUrl, title: selectedImage.name })}
+                  title={t("Click to enlarge preview")}
+                >
+                  <img src={selectedImage.dataUrl} alt={selectedImage.name} />
+                  <div className="commerce-copilot-selected-image-bar__zoom-icon">
+                    <Icon name="zoom" width={10} height={10} />
+                  </div>
+                </div>
+                <div className="commerce-copilot-selected-image-bar__details">
+                  <span className="commerce-copilot-selected-image-bar__name">{selectedImage.name}</span>
+                  <span className="commerce-copilot-selected-image-bar__size">{selectedImage.size}</span>
+                </div>
+                <button
+                  type="button"
+                  className="commerce-copilot-selected-image-bar__remove"
+                  onClick={handleRemoveSelectedImage}
+                  title={t("Remove image")}
+                  aria-label={t("Remove image")}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {/* Input & Multi-modal Controls Footer */}
             <form className="commerce-copilot-footer" onSubmit={handleSubmit}>
               <div className="commerce-copilot-input-wrap">
+                {/* Hidden File Input for Camera/Gallery Attachment */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  style={{ display: 'none' }}
+                  id="copilot-image-file-input"
+                />
+
+                <button
+                  type="button"
+                  className={`commerce-copilot-attach-btn ${selectedImage ? 'commerce-copilot-attach-btn--active' : ''}`}
+                  onClick={() => fileInputRef.current?.click()}
+                  title={t("Attach image for visual shopping")}
+                  aria-label={t("Attach image")}
+                >
+                  <Icon name="camera" width={18} height={18} />
+                </button>
+
                 <input
                   ref={inputRef}
                   type="text"
                   className="commerce-copilot-input"
-                  placeholder={t("Ask anything, compare specs, manage cart, track order...")}
+                  placeholder={
+                    selectedImage
+                      ? t("Ask a question about this image...")
+                      : t("Ask anything, compare specs, manage cart, track order...")
+                  }
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   disabled={isThinking}
@@ -456,12 +604,34 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
               <button
                 type="submit"
                 className="btn btn--primary commerce-copilot-send-btn"
-                disabled={!input.trim() || isThinking}
+                disabled={(!input.trim() && !selectedImage) || isThinking}
                 aria-label={t("Send message")}
               >
                 <span aria-hidden="true">➤</span>
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* High-Resolution Image Lightbox Modal */}
+      {lightboxImage && (
+        <div className="commerce-copilot-lightbox-backdrop" onClick={() => setLightboxImage(null)}>
+          <div className="commerce-copilot-lightbox-modal" onClick={e => e.stopPropagation()}>
+            <div className="commerce-copilot-lightbox-header">
+              <span className="commerce-copilot-lightbox-title">{lightboxImage.title}</span>
+              <button
+                type="button"
+                className="commerce-copilot-lightbox-close"
+                onClick={() => setLightboxImage(null)}
+                aria-label={t("Close image zoom preview")}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="commerce-copilot-lightbox-body">
+              <img src={lightboxImage.url} alt={lightboxImage.title} />
+            </div>
           </div>
         </div>
       )}

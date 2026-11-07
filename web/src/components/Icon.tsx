@@ -46,6 +46,8 @@ const paths = {
   bulb: 'M12 3a7 7 0 0 0-4.1 12.6c.7.5 1.1 1.3 1.1 2.2V19h6v-1.2c0-.9.4-1.7 1.1-2.2A7 7 0 0 0 12 3ZM9.5 22h5',
   plus: 'M12 5v14M5 12h14',
   mail: 'M3 6h18v12H3zM3 7l9 6 9-6',
+  camera: 'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
+  zoom: 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7',
 };
 export type IconName = keyof typeof paths;
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {

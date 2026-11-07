@@ -20,8 +20,12 @@ export function ChatWidget() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
+  const [selectedImage, setSelectedImage] = useState<{ dataUrl: string; name: string } | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ url: string; title: string } | null>(null);
+
   const threadRef = useRef<HTMLOListElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // The unread badge has to be readable before the panel is ever opened, so the conversation list is
   // fetched for any signed-in customer; only the thread waits for the panel.
@@ -54,12 +58,37 @@ export function ChatWidget() {
     if (element) element.scrollTop = element.scrollHeight;
   }, [thread.length, open]);
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert(t("Please select an image file."));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (dataUrl) {
+        setSelectedImage({ dataUrl, name: file.name });
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
   if (!user) return null;
 
   const submit = () => {
-    const body = draft.trim();
-    if (!body || busy) return;
+    let body = draft.trim();
+    if (!body && !selectedImage) return;
+    if (busy) return;
+
+    if (selectedImage) {
+      body = body ? `${body} [Attached: ${selectedImage.name}]` : `[Attached image: ${selectedImage.name}]`;
+    }
+
     setDraft('');
+    setSelectedImage(null);
 
     if (active) {
       sendMessage.mutate({ conversationId: active.id, body });
@@ -107,6 +136,28 @@ export function ChatWidget() {
             {busy ? <li className="chat-bubble chat-bubble--peer chat-bubble--pending"><span aria-hidden="true">…</span><span className="visually-hidden">{t('Sending')}</span></li> : null}
           </ol>
 
+          {/* Image Attachment Preview */}
+          {selectedImage && (
+            <div className="chat-image-preview-bar">
+              <div
+                className="chat-image-preview-thumb"
+                onClick={() => setLightboxImage({ url: selectedImage.dataUrl, title: selectedImage.name })}
+                title={t("Click to enlarge preview")}
+              >
+                <img src={selectedImage.dataUrl} alt={selectedImage.name} />
+              </div>
+              <span className="chat-image-preview-name">{selectedImage.name}</span>
+              <button
+                type="button"
+                className="chat-image-preview-remove"
+                onClick={() => setSelectedImage(null)}
+                aria-label={t("Remove image")}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           <form
             className="chat-composer"
             onSubmit={(event) => {
@@ -114,6 +165,23 @@ export function ChatWidget() {
               submit();
             }}
           >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelect}
+              style={{ display: 'none' }}
+              id="support-chat-file-input"
+            />
+            <button
+              type="button"
+              className={`chat-attach-btn ${selectedImage ? 'chat-attach-btn--active' : ''}`}
+              onClick={() => fileInputRef.current?.click()}
+              title={t("Attach image or screenshot")}
+              aria-label={t("Attach image")}
+            >
+              <Icon name="camera" width={18} height={18} />
+            </button>
             <label className="visually-hidden" htmlFor="chat-input">{t('Message')}</label>
             <input
               id="chat-input"
@@ -122,8 +190,30 @@ export function ChatWidget() {
               onChange={(event) => setDraft(event.target.value)}
               placeholder={t('Write to the support team')}
             />
-            <button type="submit" className="btn btn--primary" disabled={!draft.trim() || busy}>{t('Send')}</button>
+            <button type="submit" className="btn btn--primary" disabled={(!draft.trim() && !selectedImage) || busy}>{t('Send')}</button>
           </form>
+
+          {/* Lightbox for support chat */}
+          {lightboxImage && (
+            <div className="commerce-copilot-lightbox-backdrop" onClick={() => setLightboxImage(null)}>
+              <div className="commerce-copilot-lightbox-modal" onClick={e => e.stopPropagation()}>
+                <div className="commerce-copilot-lightbox-header">
+                  <span className="commerce-copilot-lightbox-title">{lightboxImage.title}</span>
+                  <button
+                    type="button"
+                    className="commerce-copilot-lightbox-close"
+                    onClick={() => setLightboxImage(null)}
+                    aria-label={t("Close image preview")}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="commerce-copilot-lightbox-body">
+                  <img src={lightboxImage.url} alt={lightboxImage.title} />
+                </div>
+              </div>
+            </div>
+          )}
         </section>
       ) : null}
 

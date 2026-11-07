@@ -299,6 +299,22 @@ describe('AI Commerce Agent: Conversational Intent & Grounded Actions', () => {
     expect(res.reply).toContain('reset your shopping preferences');
     expect(res.updatedMemory.preferredCategories).toHaveLength(0);
   });
+
+  it('triggers visual search analysis when attachedImage is provided', async () => {
+    const res = await processCommerceUserMessage(
+      'Can you find something similar to this?',
+      toolbox,
+      context,
+      memory,
+      { dataUrl: 'data:image/png;base64,mock', name: 'acer-laptop-photo.png' }
+    );
+
+    expect(res.actionTaken).toBe('visual_search');
+    expect(res.reply).toContain('Visual Search Analysis');
+    expect(res.reply).toContain('acer-laptop-photo.png');
+    expect(res.card?.type).toBe('products');
+    expect(res.card?.products?.[0]?.name).toBe('Acer Aspire Lite 15');
+  });
 });
 
 describe('AI Commerce Agent: Copilot UI Component & Keyboard Shortcut', () => {
@@ -321,5 +337,9 @@ describe('AI Commerce Agent: Copilot UI Component & Keyboard Shortcut', () => {
 
     const input = screen.getByPlaceholderText(/Ask anything, compare specs/i);
     expect(input).toBeInTheDocument();
+
+    // Verify presence of camera attachment button
+    const attachBtn = screen.getByRole('button', { name: /Attach image/i });
+    expect(attachBtn).toBeInTheDocument();
   });
 });
