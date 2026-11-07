@@ -7863,9 +7863,11 @@ body[data-overlay-open='true'] {
    ========================================================================== */
 .account-shell {
   display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 20px;
   align-items: start;
 }
+.account-shell { grid-template-columns: auto minmax(0, 1fr); }
 
 .account-dashboard {
   grid-template-areas:
