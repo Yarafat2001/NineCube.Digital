@@ -7299,20 +7299,20 @@ body[data-overlay-open='true'] {
   color: var(--on-accent);
 }
 
-/* Tooltip badge for minimised sidebar (Image 9) */
-.account-nav-row__tooltip {
+/* Feature name hover badge for minimised sidebar - cleanly positioned below the icon (below feature) */
+.account-rail:not([data-expanded='true']) .account-nav-row__tooltip {
   position: absolute;
-  left: calc(100% + 14px);
-  top: 50%;
-  transform: translateY(-50%) translateX(-4px);
-  background: var(--surface-menu);
-  color: var(--on-accent);
+  top: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-2px);
+  background: var(--surface-menu, rgba(26, 30, 42, 0.95));
+  color: var(--on-accent, #ffffff);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm, 6px);
-  padding: 5px 10px;
-  font-size: 11.5px;
+  padding: 3px 8px;
+  font-size: 11px;
   font-weight: 650;
-  line-height: 1.2;
+  line-height: 1.15;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
@@ -7325,7 +7325,7 @@ body[data-overlay-open='true'] {
 .account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateY(-50%) translateX(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 .account-rail[data-expanded='true'] .account-nav-row__tooltip {
@@ -7927,8 +7927,8 @@ body[data-overlay-open='true'] {
   gap: 20px;
   align-items: start;
   width: 100%;
-  max-width: 1240px;
-  margin-inline: auto;
+  max-width: 100%;
+  margin: 0;
 }
 
 .account-dashboard {
@@ -7943,6 +7943,15 @@ body[data-overlay-open='true'] {
 .account-dashboard__main { grid-area: main; min-width: 0; width: 100%; }
 
 @media (min-width: 769px) {
+  .page:has(.account-shell),
+  .page.account-shell,
+  .page.container:has(.account-shell) {
+    width: min(1560px, 100% - 2 * var(--space-4));
+    margin-inline-start: var(--space-4);
+    margin-inline-end: auto;
+    padding-inline: 0;
+  }
+
   .account-shell {
     grid-template-columns: auto minmax(0, 1fr);
     gap: var(--space-6);
