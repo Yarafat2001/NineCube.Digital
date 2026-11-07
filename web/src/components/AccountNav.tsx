@@ -54,7 +54,9 @@ export function AccountRail() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const unread = useUnreadCount(Boolean(user)).data?.count ?? 0;
+  const unreadQuery = useUnreadCount(Boolean(user));
+  const unread = unreadQuery.data?.count ?? 0;
+  const isNavReady = !user || !unreadQuery.isLoading;
   const [expanded, setExpanded] = useState(readRailPreference);
 
   const barRef = useRef<HTMLElement>(null);
@@ -109,7 +111,7 @@ export function AccountRail() {
 
   return (
     <div className="account-rail" data-expanded={expanded ? 'true' : 'false'} data-orb-ready="true">
-      <nav ref={barRef} id="account-destinations" className="account-nav-list" aria-label={t("Account Navigation")}>
+      <nav ref={barRef} id="account-destinations" className="account-nav-list" aria-label={isNavReady ? t("Account Navigation") : undefined}>
         <OrbNotchLayers glassRef={glassRef} pathRef={edgeRef} icon={activeIcon} />
         {SIDEBAR_GROUPS.map((group) => (
           <ul className="account-nav-list__group" key={group[0]!.to}>
