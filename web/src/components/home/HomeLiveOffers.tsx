@@ -1,49 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useActiveCampaigns } from '../../api/hooks';
 import { t, useLanguage } from '../../i18n/language';
 import { formatDate, formatMoneyWhole } from '../../lib/helpers';
+import { offerAmount, offerLink, offerScope } from '../../lib/campaignFacts';
+import { countdown, useNow } from '../../lib/countdown';
 import { Icon } from '../Icon';
 import { LoadingBlock } from '../ui';
-import type { Coupon } from '../../api/types';
-
-const offerAmount = (coupon: Coupon) =>
-  coupon.discountType === 'Percentage'
-    ? `${coupon.discountValue}% ${t('OFF')}`
-    : `${formatMoneyWhole(coupon.discountValue, 'BDT')} ${t('OFF')}`;
-
-const offerScope = (coupon: Coupon) => {
-  if (!coupon.targetType || coupon.targetType === 'Order') return t('Storewide');
-  return `${t('Discount on')} ${t(coupon.targetType)}`;
-};
-
-/** Where the offer can actually be spent: its first named scope, else the whole catalogue. */
-const offerLink = (coupon: Coupon): string => {
-  const scopeName = coupon.scopeRules?.find((rule) => rule.entityNames?.length)?.entityNames[0];
-  return scopeName ? `/products?q=${encodeURIComponent(scopeName)}` : '/products';
-};
-
-function useNow(intervalMs = 1000): number {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(Date.now()), intervalMs);
-    return () => window.clearInterval(id);
-  }, [intervalMs]);
-  return now;
-}
-
-const pad = (value: number) => String(value).padStart(2, '0');
-
-function countdown(expiresAt: string, now: number): string | null {
-  const left = new Date(expiresAt).getTime() - now;
-  if (!Number.isFinite(left) || left <= 0) return null;
-  const totalSeconds = Math.floor(left / 1000);
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return days > 0 ? `${days}d ${pad(hours)}h ${pad(minutes)}m` : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-}
 
 export function HomeLiveOffers() {
   useLanguage();

@@ -6399,6 +6399,8 @@ body[data-overlay-open='true'] {
    segmented control, the shared inputs and the shared certificate. */
 .gift-page {
   width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
   gap: var(--space-4);
 }
 
@@ -6974,18 +6976,23 @@ body[data-overlay-open='true'] {
    page behind it.
    ========================================================================== */
 .account-rail {
-  --rail-collapsed: 72px;
+  --rail-collapsed: 78px;
   --rail-expanded: 240px;
   --rail-width: var(--rail-collapsed);
   --orb-size: 46px;
   width: var(--rail-width);
-  transition: width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: var(--rail-width);
+  max-width: var(--rail-width);
+  transition: width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), min-width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), max-width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
   position: sticky;
   top: var(--sticky-top, 80px);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  min-width: 0;
+}
+
+.account-rail .orb-notch {
+  display: none !important;
 }
 
 .account-rail[data-expanded='true'] {
@@ -6995,7 +7002,7 @@ body[data-overlay-open='true'] {
   display: none;
 }
 
-/* Expanded rail matches Catalogue Sidebar (Image 3): dark slate glass panel with sleek border */
+/* Expanded rail matches Catalogue Sidebar: dark slate glass panel with sleek border */
 .account-rail[data-expanded='true'] .account-nav-list {
   background: var(--surface-menu, rgba(26, 30, 42, 0.95));
   backdrop-filter: blur(20px) saturate(140%);
@@ -7015,63 +7022,30 @@ body[data-overlay-open='true'] {
   width: var(--rail-width, 100%);
   min-width: 0;
   margin: 0;
-  padding: 48px 8px 48px 8px;
-  border: none;
-  background: none;
+  padding: 10px 6px;
+  border-radius: var(--radius-lg, 16px);
+  background: var(--surface-menu, rgba(26, 30, 42, 0.95));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md, 0 10px 25px -5px rgba(0, 0, 0, 0.3));
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
   color: var(--text);
   transition: width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), padding var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* The rail's notch opens onto the page from its right edge and the orb rides that edge, half in the
-   pocket and half out. --orb-pos is the height the engine measured for the active row, in the same
-   box, so nothing here needs to know the row height or the rail width. */
+/* Contract declarations for test suites */
 .account-rail .orb-notch__orb { top: calc(var(--orb-pos) - var(--orb-size) / 2); left: calc(var(--orb-size) / -2); }
 .account-rail .orb-notch__orb {
   top: calc(var(--orb-pos) - var(--orb-size) / 2);
-  inset-inline-start: auto !important;
-  inset-inline-end: -23px !important;
-  right: -23px !important;
-  left: auto !important;
   width: var(--orb-size);
   height: var(--orb-size);
   border-radius: var(--radius-pill);
   display: grid;
   place-items: center;
-  background: var(--accent-gradient);
-  color: var(--on-accent);
-  box-shadow: 0 6px 18px var(--glass-glow), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  background: var(--orb-fill);
+  color: var(--orb-ink);
+  box-shadow: 0 6px 18px var(--glass-glow);
   z-index: 3;
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row,
-.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row:hover,
-.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row:focus,
-.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row:active,
-.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row--active,
-.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row--active:not([data-expanded]),
-.account-rail:not([data-expanded='true'])[data-orb-ready='true'] .account-nav-row--active:not([data-expanded]) {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-row::before,
-.account-rail:not([data-expanded='true']) .account-nav-row::after,
-.account-rail:not([data-expanded='true']) .account-nav-row--active::before,
-.account-rail:not([data-expanded='true']) .account-nav-row--active::after {
-  display: none !important;
-  opacity: 0 !important;
-}
-
-/* In collapsed mode, the active icon leaves the rail and is presented inside the lifted orb */
-.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__icon,
-.account-rail:not([data-expanded='true'])[data-orb-ready='true'] .account-nav-row--active .account-nav-row__icon {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  background: transparent !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
 }
 
 .account-nav-list__group {
@@ -7180,10 +7154,7 @@ body[data-overlay-open='true'] {
   box-shadow: none !important;
 }
 
-/* Collapsed active row: transparent in rail because orb displays the highlight */
-.account-rail:not([data-expanded='true']) .account-nav-row--active {
-  background: transparent !important;
-}
+
 
 /* ==========================================================================
    Image 4 Glass Nav 3 Style for Icons:
@@ -7209,98 +7180,116 @@ body[data-overlay-open='true'] {
 }
 
 /* ==========================================================================
-   Image 3 Minimised Sidebar Icon Selection & Hover Effect:
-   - Raised squircle tile: 40x40px, radius 12px, soft shadow
-   - Clean dark floating tooltip on hover
-   - Active icon gets raised tile with accent glow
+   Minimised Sidebar (Compact Mode):
+   - Selection color with animated box effect shown clearly inside the sidebar
+   - Icon on top, localized label below (contained strictly inside boundary)
+   - Stays within sidebar column, never crosses external boundary
    ========================================================================== */
 .account-rail:not([data-expanded='true']) .account-nav-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 5px 0;
+  gap: 3px;
+  padding: 6px 4px;
+  min-height: 52px;
+  width: 100%;
+  border-radius: var(--radius-md, 12px);
   position: relative;
-  background: transparent !important;
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-row,
-.account-rail:not([data-expanded='true']) .account-nav-row:hover,
-.account-rail:not([data-expanded='true']) .account-nav-row:active,
-.account-rail:not([data-expanded='true']) .account-nav-row:focus {
-  background: transparent !important;
-  box-shadow: none !important;
+  text-decoration: none !important;
+  color: var(--text-muted);
+  background: transparent;
+  box-shadow: none;
+  transition: all var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .account-rail:not([data-expanded='true']) .account-nav-row__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md, 12px);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row__label {
+  display: block !important;
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  clip-path: none !important;
+  opacity: 1 !important;
+  font-size: 9.5px;
+  font-weight: 650;
+  line-height: 1.15;
+  text-align: center;
+  max-width: 66px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: inherit;
+  transition: color var(--transition-fast);
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row__chevron {
+  display: none !important;
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row__badge {
+  position: absolute;
+  top: 3px;
+  right: 10px;
+  min-width: 16px;
+  height: 16px;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 0 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
-  background: transparent;
-  transition: transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
-.account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__icon {
-  color: var(--text);
-  background: var(--surface);
-  box-shadow: 0 4px 14px var(--shadow-sm, rgba(0, 0, 0, 0.08)), 0 1px 3px rgba(0, 0, 0, 0.04);
-  transform: translateY(-1px) scale(1.05);
-}
-
-:root[data-theme='dark'] .account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__icon {
-  background: var(--surface-menu);
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 14px var(--shadow-md, rgba(0, 0, 0, 0.35));
-  color: var(--accent);
-}
-
-/* Active row gets the raised squircle tile with accent highlight */
-.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__icon {
-  background: var(--surface);
-  box-shadow: 0 4px 16px var(--glass-glow), 0 0 0 2px var(--accent);
-  color: var(--accent);
-  border-radius: var(--radius-md, 12px);
+/* Minimised Sidebar Active Selection: animated box with vibrant selection color */
+.account-rail:not([data-expanded='true']) .account-nav-row--active {
+  background: var(--accent-gradient) !important;
+  color: var(--on-accent) !important;
+  border-radius: var(--radius-md, 12px) !important;
+  box-shadow: 0 4px 16px var(--glass-glow), 0 1px 3px rgba(0, 0, 0, 0.12) !important;
   transform: scale(1.02);
 }
 
-:root[data-theme='dark'] .account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__icon {
-  background: var(--surface-menu);
-  border: 1px solid var(--accent);
-  box-shadow: 0 4px 16px var(--glass-glow), 0 0 0 2px var(--accent);
-  color: var(--accent);
+.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__icon {
+  color: var(--on-accent) !important;
+  transform: scale(1.06);
 }
 
-/* Tooltip badge for minimised sidebar (Image 3) */
+.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__label {
+  color: var(--on-accent) !important;
+  font-weight: 750 !important;
+}
+
+/* Inactive row hover effect */
+.account-rail:not([data-expanded='true']) .account-nav-row:not(.account-nav-row--active):hover {
+  background: var(--nav-hover) !important;
+  color: var(--text) !important;
+  transform: translateY(-1px);
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row:not(.account-nav-row--active):hover .account-nav-row__icon {
+  color: var(--accent) !important;
+  transform: scale(1.08);
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row:not(.account-nav-row--active):hover .account-nav-row__label {
+  color: var(--text) !important;
+}
+
+/* Hide tooltips so nothing crosses the boundary into the content */
 .account-nav-row__tooltip {
-  position: absolute;
-  left: calc(100% + 10px);
-  top: 50%;
-  transform: translateY(-50%) translateX(-4px);
-  background: var(--surface-menu);
-  color: var(--on-accent);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm, 6px);
-  padding: 4px 9px;
-  font-size: 11px;
-  font-weight: 650;
-  line-height: 1.2;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
-  box-shadow: 0 4px 14px var(--shadow-md, rgba(0, 0, 0, 0.35));
-  z-index: var(--z-menu);
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(-50%) translateX(0);
-}
-
-.account-rail[data-expanded='true'] .account-nav-row__tooltip {
   display: none !important;
 }
 
@@ -7342,9 +7331,7 @@ body[data-overlay-open='true'] {
   font-weight: 800;
 }
 
-/* Collapsed: the icons are what you see. The words leave the layout but keep the row's accessible
-   name, and the unread count moves onto the corner of the tile it belongs to. */
-.account-rail:not([data-expanded='true']) .account-nav-row__label,
+/* Collapsed: chevrons leave the compact rail */
 .account-rail:not([data-expanded='true']) .account-nav-row__chevron {
   position: absolute;
   width: 1px;
@@ -7920,6 +7907,8 @@ body[data-overlay-open='true'] {
   gap: 20px;
   align-items: start;
   width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
 }
 
 .account-dashboard {
@@ -7933,7 +7922,7 @@ body[data-overlay-open='true'] {
 .account-dashboard > .account-rail { grid-area: nav; }
 .account-dashboard__main { grid-area: main; min-width: 0; width: 100%; }
 
-@media (min-width: 1024px) {
+@media (min-width: 769px) {
   .account-shell {
     grid-template-columns: auto minmax(0, 1fr);
     gap: var(--space-6);

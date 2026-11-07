@@ -1,5 +1,6 @@
 import { t, useLanguage } from '../../i18n/language';
 import { useCategories } from '../../api/hooks';
+import { useHomeMerch } from './useHomeMerch';
 import { ErrorState, LoadingBlock } from '../ui';
 import { Link } from 'react-router-dom';
 import { Icon, type IconName } from '../Icon';
@@ -8,9 +9,9 @@ export function HomeCategoryStrip() {
   useLanguage();
 
   const query = useCategories();
-  const categories = (query.data ?? []).filter(category => category.isActive && category.productCount > 0).slice(0, 6);
+  const { photoByCategory } = useHomeMerch();
+  const categories = (query.data ?? []).filter(category => category.isActive && category.productCount > 0).slice(0, 12);
   const categoryIcon = (slug: string): IconName => /shoe|footwear/.test(slug) ? 'shoe' : /electronic|tech|laptop|phone/.test(slug) ? 'spark' : /home|kitchen|coffee/.test(slug) ? 'coffee' : /furniture|living/.test(slug) ? 'chair' : 'box';
-
 
   return (
     <section className="home-categories-section" aria-label={t("Browse by Category")}>
@@ -30,21 +31,43 @@ export function HomeCategoryStrip() {
         <p className="home-category-empty">{t("The catalogue has no stocked categories yet.")}</p>
       )}
       <div className="home-category-strip">
-        {categories.map((cat) => (
-          <Link
-            key={cat.slug}
-            to={`/products?category=${encodeURIComponent(cat.slug)}`}
-            className="home-category-card"
-          >
-            <div className="home-category-icon">
-              <Icon name={categoryIcon(cat.slug)} width={24} height={24} />
-            </div>
-            <div className="home-category-info">
-              <strong className="home-category-name">{cat.name}</strong>
-              <span className="home-category-count">{t(cat.productCount)} {t("items")}</span>
-            </div>
-          </Link>
-        ))}
+        {categories.map((cat) => {
+          const photo = photoByCategory.get(cat.slug);
+          return (
+            <Link
+              key={cat.slug}
+              to={`/products?category=${encodeURIComponent(cat.slug)}`}
+              className={`home-category-card${photo ? ' home-category-card--photo' : ''}`}
+            >
+              {photo ? (
+                <>
+                  <img
+                    className="home-category-photo"
+                    src={photo.imageUrl!}
+                    alt=""
+                    loading="lazy"
+                    width={400}
+                    height={300}
+                  />
+                  <span className="home-category-info">
+                    <strong className="home-category-name">{t(cat.name)}</strong>
+                    <span className="home-category-count">{t(cat.productCount)} {t("items")}</span>
+                  </span>
+                </>
+              ) : (
+                <>
+                  <div className="home-category-icon">
+                    <Icon name={categoryIcon(cat.slug)} width={24} height={24} />
+                  </div>
+                  <div className="home-category-info">
+                    <strong className="home-category-name">{t(cat.name)}</strong>
+                    <span className="home-category-count">{t(cat.productCount)} {t("items")}</span>
+                  </div>
+                </>
+              )}
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

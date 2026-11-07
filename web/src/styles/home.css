@@ -194,7 +194,7 @@
 
 .home-category-strip {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -266,6 +266,35 @@
 .home-category-count {
   font-size: 11px;
   color: var(--text-muted);
+}
+
+/* Photo tiles: the reference-store category grid, using a real catalogue photo per category. */
+.home-category-card--photo {
+  padding: 0;
+  overflow: hidden;
+  align-items: stretch;
+  text-align: start;
+}
+
+.home-category-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  background: var(--placeholder-gradient);
+}
+
+.home-category-card--photo .home-category-info {
+  padding: 12px 14px;
+}
+
+.home-category-card--photo:hover .home-category-photo {
+  filter: brightness(1.04);
+}
+
+.home-category-card--photo:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 4px;
 }
 
 /* ==========================================================================
@@ -347,6 +376,22 @@
   border-radius: var(--radius-pill);
   border: 1px solid rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
+}
+
+/* The newest arrivals wear their freshness where the discount badge is not: bottom-left. */
+.home-deal-new-badge {
+  position: absolute;
+  bottom: 10px;
+  inset-inline-start: 10px;
+  z-index: 2;
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
 }
 
 .home-deal-body {
@@ -599,6 +644,88 @@
   margin: 0;
   color: var(--text-muted);
   font-size: var(--text-sm);
+}
+
+/* ==========================================================================
+   Campaign Banner Band
+   ========================================================================== */
+.home-campaign-banner {
+  width: 100%;
+  max-width: 1380px;
+  margin: 56px auto 0;
+  padding: 0 clamp(16px, 4vw, 48px);
+  box-sizing: border-box;
+}
+
+.home-campaign-banner__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 28px;
+  padding: clamp(22px, 4vw, 40px);
+  border-radius: var(--radius-lg);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-lg);
+}
+
+.home-campaign-banner__kicker {
+  flex-basis: 100%;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.home-campaign-banner__headline {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.home-campaign-banner__amount {
+  font-size: clamp(30px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.home-campaign-banner__scope {
+  font-size: 14px;
+  font-weight: 650;
+  opacity: 0.9;
+}
+
+.home-campaign-banner__countdown,
+.home-campaign-banner__always {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--on-accent) 12%, transparent);
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-campaign-banner__cta {
+  margin-inline-start: auto;
+  background: var(--surface);
+  color: var(--accent-text);
+  box-shadow: var(--shadow-md);
+}
+
+.home-campaign-banner__cta:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .home-campaign-banner__cta {
+    margin-inline-start: 0;
+  }
 }
 
 /* ==========================================================================

@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState }  from 'react';
 import { Link, useNavigate }  from 'react-router-dom';
 import { HeroPromotions } from './HeroPromotions';
 import { ShowcaseFooterContent } from './ShowcaseFooterContent';
+import { HeroDealPanel } from '../components/home/HeroDealPanel';
+import { HomeCampaignBanner } from '../components/home/HomeCampaignBanner';
 import { showcaseCopy } from './showcaseCopy';
 import { CARD_COUNT, cardCategories, describeCardArtwork } from './cardAssets';
 import type { ShowcaseFallbackReason } from './support';
@@ -228,55 +230,60 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
   return (
     <div className="showcase showcase--static" data-testid="showcase">
       <section className="showcase__hero">
-        <div className="showcase__hero-intro">
-          <p className="kicker">{t(showcaseCopy.kicker)}</p>
-          <h1>
-            {t(showcaseCopy.brand.line1)} {t(showcaseCopy.brand.line2)}
-          </h1>
-          <p className="showcase__hero-copy">{t(showcaseCopy.intro)}</p>
-          <div className="showcase__hero-actions">
-            <Link className="btn btn--primary showcase__hero-cta" to="/products">{t("Explore the collection ")}<span aria-hidden="true">{t("↗")}</span></Link>
-            {onLaunch3D ? (
-              <button type="button" className="btn btn--ghost showcase__3d-btn" onClick={onLaunch3D}>
-                <Icon name="spark" width={15} height={15} />
-                <span>{t("3D Helix Experience")}</span>
-              </button>
-            ) : null}
-          </div>
-          <form className="home-search" role="search" aria-label={t("Search the catalogue")} onSubmit={event => { event.preventDefault(); const q = search.trim(); if (q) navigate(`/products?q=${encodeURIComponent(q)}`); }}>
-            <label htmlFor="home-search">{t("Find your next favourite")}</label>
-            <div className="home-search__row">
-              <input
-                id="home-search"
-                type="search"
-                value={search}
-                maxLength={200}
-                onChange={event => setSearch(event.target.value)}
-                placeholder={t("Search products, brands or categories")}
-              />
-              <button className="btn btn--primary" disabled={!search.trim()}>{t("Search")}</button>
-            </div>
-            <div className="home-search__trending">
-              <span className="home-search__trending-label">{t("Trending:")}</span>
-              <div className="home-search__trending-tags">
-                {TRENDING_KEYWORDS.map(keyword => (
-                  <button
-                    key={keyword}
-                    type="button"
-                    className="home-search__trending-chip"
-                    onClick={() => {
-                      setSearch(keyword);
-                      navigate(`/products?q=${encodeURIComponent(keyword)}`);
-                    }}
-                  >
-                    {t(keyword)}
+        <div className="showcase__hero-layout">
+          <div className="showcase__hero-main">
+            <div className="showcase__hero-intro">
+              <p className="kicker">{t(showcaseCopy.kicker)}</p>
+              <h1>
+                {t(showcaseCopy.brand.line1)} {t(showcaseCopy.brand.line2)}
+              </h1>
+              <p className="showcase__hero-copy">{t(showcaseCopy.intro)}</p>
+              <div className="showcase__hero-actions">
+                <Link className="btn btn--primary showcase__hero-cta" to="/products">{t("Explore the collection ")}<span aria-hidden="true">{t("↗")}</span></Link>
+                {onLaunch3D ? (
+                  <button type="button" className="btn btn--ghost showcase__3d-btn" onClick={onLaunch3D}>
+                    <Icon name="spark" width={15} height={15} />
+                    <span>{t("3D Helix Experience")}</span>
                   </button>
-                ))}
+                ) : null}
               </div>
+              <form className="home-search" role="search" aria-label={t("Search the catalogue")} onSubmit={event => { event.preventDefault(); const q = search.trim(); if (q) navigate(`/products?q=${encodeURIComponent(q)}`); }}>
+                <label htmlFor="home-search">{t("Find your next favourite")}</label>
+                <div className="home-search__row">
+                  <input
+                    id="home-search"
+                    type="search"
+                    value={search}
+                    maxLength={200}
+                    onChange={event => setSearch(event.target.value)}
+                    placeholder={t("Search products, brands or categories")}
+                  />
+                  <button className="btn btn--primary" disabled={!search.trim()}>{t("Search")}</button>
+                </div>
+                <div className="home-search__trending">
+                  <span className="home-search__trending-label">{t("Trending:")}</span>
+                  <div className="home-search__trending-tags">
+                    {TRENDING_KEYWORDS.map(keyword => (
+                      <button
+                        key={keyword}
+                        type="button"
+                        className="home-search__trending-chip"
+                        onClick={() => {
+                          setSearch(keyword);
+                          navigate(`/products?q=${encodeURIComponent(keyword)}`);
+                        }}
+                      >
+                        {t(keyword)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </form>
             </div>
-          </form>
+            <HeroPromotions />
+          </div>
+          <HeroDealPanel />
         </div>
-        <HeroPromotions />
       </section>
 
       <Reveal><HomeSignInPrompt /></Reveal>
@@ -285,6 +292,7 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
       <Reveal delay={180}><HomeStorePulse /></Reveal>
       <Reveal delay={240}><HomeBrandStrip /></Reveal>
       <Reveal delay={300}><HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} /></Reveal>
+      <Reveal delay={330}><HomeCampaignBanner /></Reveal>
       <Reveal delay={360}><HomeLiveOffers /></Reveal>
       <Reveal delay={420}><div className="home-recent-section"><RecentlyViewed /></div></Reveal>
 

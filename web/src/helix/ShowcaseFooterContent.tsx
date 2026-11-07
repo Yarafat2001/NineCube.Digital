@@ -17,6 +17,29 @@ export function ShowcaseFooterContent() {
         {t(showcaseCopy.footer.cta)} <span aria-hidden="true">{t("↗")}</span>
       </Link>
     </div>
+
+    <div className="showcase-footer__grid">
+      <div className="showcase-footer__col">
+        <strong>{t("Store")}</strong>
+        <Link to="/products">{t("Collection")}</Link>
+        <Link to="/products?sort=newest">{t("New arrivals")}</Link>
+        <Link to="/gift-cards">{t("Gift cards")}</Link>
+        <Link to="/wishlist">{t("Wishlist")}</Link>
+      </div>
+      <div className="showcase-footer__col">
+        <strong>{t("Help")}</strong>
+        <Link to="/help">{t("Help & support")}</Link>
+        <Link to="/policies/delivery">{t("Delivery")}</Link>
+        <Link to="/policies/returns">{t("Returns & warranty")}</Link>
+        <Link to="/policies/terms">{t("Order terms")}</Link>
+      </div>
+      <div className="showcase-footer__col">
+        <strong>{t("Payments")}</strong>
+        <p>{t("Available payment methods are shown at checkout.")}</p>
+        <p>{t("Online payments are verified by the payment provider before an order is counted as paid.")}</p>
+      </div>
+    </div>
+
     <div className="showcase-footer__base">
       <div className="showcase-footer__row">
         <Link to="/" className="showcase-footer__brand"><Brand /></Link>

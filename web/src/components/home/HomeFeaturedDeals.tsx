@@ -4,6 +4,7 @@ import { t, useLanguage } from '../../i18n/language';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../api/hooks';
 import { useCart } from '../../state/CartContext';
+import { useHomeMerch } from './useHomeMerch';
 import { ProductImage } from '../ProductImage';
 import { Icon } from '../Icon';
 import { formatMoney } from '../../lib/helpers';
@@ -20,8 +21,11 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
   useLanguage();
   const [activeTab, setActiveTab] = useState<MerchandisingTab>('trending');
   const { data, isLoading, isError, error, refetch } = useProducts({ q: '', page: 1, pageSize: 24, inStock: true });
+  const { newest } = useHomeMerch();
   const cart = useCart();
   const [justAddedId, setJustAddedId] = useState<number | null>(null);
+
+  const newestIds = useMemo(() => new Set(newest.map((product) => product.id)), [newest]);
 
   const allActiveProducts: Product[] = useMemo(
     () => (data?.items ?? []).filter((p: Product) => p.isActive && p.stockQuantity > 0),
@@ -118,6 +122,9 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
                   <ProductImage product={product} />
                   {discount > 0 && (
                     <span className="home-deal-discount-badge">-{discount}%</span>
+                  )}
+                  {newestIds.has(product.id) && (
+                    <span className="home-deal-new-badge">{t("NEW")}</span>
                   )}
                   <span className="home-deal-stock-badge">
                     • {t("In stock")} · {product.stockQuantity}

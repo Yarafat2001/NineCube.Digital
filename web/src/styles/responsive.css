@@ -26,15 +26,15 @@ main a[href]:not(.btn):not(.filter-chip):not(.product-card__media-link):not(.sea
   border-bottom: none !important;
 }
 
-:root .account-rail .account-nav-row:not(.account-nav-row--active) {
+:root .account-rail .account-nav-row:not(.account-nav-row--active):not(:hover) {
   color: var(--text, #f1f5f9) !important;
 }
 
-:root .account-rail .account-nav-row:not(.account-nav-row--active) .account-nav-row__label {
+:root .account-rail .account-nav-row:not(.account-nav-row--active):not(:hover) .account-nav-row__label {
   color: var(--text, #f1f5f9) !important;
 }
 
-:root .account-rail .account-nav-row:not(.account-nav-row--active) .account-nav-row__icon {
+:root .account-rail .account-nav-row:not(.account-nav-row--active):not(:hover) .account-nav-row__icon {
   color: var(--text-muted, #94a3b8) !important;
   background: transparent !important;
   border: none !important;
