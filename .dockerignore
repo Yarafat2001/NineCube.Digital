@@ -6,6 +6,7 @@ web/public/*
 !web/public/products/
 tools/
 seed/
+data/
 .env
 .env.*
 **/__pycache__
