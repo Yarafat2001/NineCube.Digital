@@ -70,6 +70,13 @@ export function AccountRail() {
     setOptimisticTo(null);
   }, [pathname]);
 
+  useEffect(() => {
+    const shell = barRef.current?.closest<HTMLElement>('.account-shell');
+    if (shell) {
+      shell.dataset.expanded = expanded ? 'true' : 'false';
+    }
+  }, [expanded]);
+
   const effectivePath = optimisticTo ?? cleanPath;
   const activeRow = SIDEBAR_GROUPS.flat().find((r) => r.to === effectivePath || (r.end ? effectivePath === r.to : effectivePath.startsWith(r.to)))
     ?? (effectivePath === '/messages' ? SIDEBAR_GROUPS[1]!.find(r => r.to === '/help') : null);

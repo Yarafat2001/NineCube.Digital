@@ -6977,7 +6977,7 @@ body[data-overlay-open='true'] {
    ========================================================================== */
 .account-rail {
   --rail-collapsed: 78px;
-  --rail-expanded: 240px;
+  --rail-expanded: 272px;
   --rail-width: var(--rail-collapsed);
   --orb-size: 46px;
   width: var(--rail-width);
@@ -7167,6 +7167,16 @@ body[data-overlay-open='true'] {
   box-shadow: none !important;
 }
 
+.account-rail[data-expanded='true'] .account-nav-row {
+  padding: 8px 12px;
+  gap: 10px;
+}
+
+.account-rail[data-expanded='true'] .account-nav-row__label {
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+}
+
 /* Clean stroke icons */
 .account-nav-row__icon {
   flex: none;
@@ -7304,8 +7314,8 @@ body[data-overlay-open='true'] {
 .account-rail:not([data-expanded='true']) .account-nav-row__tooltip {
   position: absolute;
   top: calc(100% - 4px);
-  left: calc(50% - 4px);
-  transform: translateY(-2px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-2px);
   background: #1f1f21;
   color: var(--accent, #ffab4d);
   border: 1px solid rgba(255, 255, 255, 0.45);
@@ -7333,7 +7343,7 @@ body[data-overlay-open='true'] {
 .account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 .account-rail[data-expanded='true'] .account-nav-row__tooltip {
@@ -7946,7 +7956,7 @@ body[data-overlay-open='true'] {
     "main";
 }
 
-.account-dashboard > .page-header { grid-area: header; }
+.account-dashboard > .page-header { grid-area: header; min-width: 0; width: 100%; }
 .account-dashboard > .account-rail { grid-area: nav; }
 .account-dashboard__main { grid-area: main; min-width: 0; width: 100%; }
 
@@ -7966,8 +7976,14 @@ body[data-overlay-open='true'] {
     transition: grid-template-columns var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .account-shell:has(.account-rail[data-expanded='true']) {
-    grid-template-columns: 240px minmax(0, 1fr);
+  .account-shell:has(.account-rail[data-expanded='true']),
+  .account-shell[data-expanded='true'] {
+    grid-template-columns: 272px minmax(0, 1fr);
+  }
+
+  .account-shell:has(.account-rail:not([data-expanded='true'])),
+  .account-shell[data-expanded='false'] {
+    grid-template-columns: 78px minmax(0, 1fr);
   }
 
   .account-dashboard {
