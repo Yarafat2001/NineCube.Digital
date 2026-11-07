@@ -240,7 +240,15 @@ export function CommerceAgentProvider({ children }: { children: ReactNode }) {
       setMessages(prev => [...prev, userMsg]);
       setIsThinking(true);
 
-      const allProducts = productsQuery.data?.items ?? [];
+      let allProducts = productsQuery.data?.items ?? [];
+      if (allProducts.length === 0) {
+        try {
+          const res = await productsQuery.refetch();
+          allProducts = res.data?.items ?? [];
+        } catch {
+          // If offline or network error, fallback to current items
+        }
+      }
       const orders = ordersQuery.data?.items ?? [];
 
       const toolbox: CommerceToolbox = {

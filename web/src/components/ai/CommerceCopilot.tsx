@@ -55,19 +55,25 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
     startY: number;
     startLeft: number;
     startTop: number;
+    currentX?: number;
+    currentY?: number;
     isDragging: boolean;
     hasMoved: boolean;
   } | null>(null);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
-    if (e.button !== 0) return;
+    if (e.button !== undefined && e.button !== 0) return;
     const btn = e.currentTarget;
     const rect = btn.getBoundingClientRect();
+    const startX = typeof e.clientX === 'number' ? e.clientX : 0;
+    const startY = typeof e.clientY === 'number' ? e.clientY : 0;
     dragRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      startLeft: rect.left,
-      startTop: rect.top,
+      startX,
+      startY,
+      startLeft: rect.left || 0,
+      startTop: rect.top || 0,
+      currentX: rect.left || 0,
+      currentY: rect.top || 0,
       isDragging: true,
       hasMoved: false,
     };
@@ -81,8 +87,10 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
   const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
     const drag = dragRef.current;
     if (!drag || !drag.isDragging) return;
-    const dx = e.clientX - drag.startX;
-    const dy = e.clientY - drag.startY;
+    const clientX = typeof e.clientX === 'number' ? e.clientX : 0;
+    const clientY = typeof e.clientY === 'number' ? e.clientY : 0;
+    const dx = clientX - drag.startX;
+    const dy = clientY - drag.startY;
     if (!drag.hasMoved && Math.hypot(dx, dy) > 5) {
       drag.hasMoved = true;
     }
@@ -91,6 +99,8 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
       const maxY = Math.max(10, window.innerHeight - 60);
       const newX = Math.min(maxX, Math.max(10, drag.startLeft + dx));
       const newY = Math.min(maxY, Math.max(10, drag.startTop + dy));
+      drag.currentX = newX;
+      drag.currentY = newY;
       setPos({ x: newX, y: newY });
     }
   };
@@ -98,14 +108,18 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
   const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
     const drag = dragRef.current;
     if (!drag) return;
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {}
+    if (typeof e.currentTarget?.releasePointerCapture === 'function') {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {}
+    }
     if (!drag.hasMoved) {
       toggleOpen();
-    } else if (pos) {
+    } else {
+      const finalX = drag.currentX ?? pos?.x ?? 10;
+      const finalY = drag.currentY ?? pos?.y ?? 10;
       try {
-        localStorage.setItem('ninecube:copilot-pos', JSON.stringify(pos));
+        localStorage.setItem('ninecube:copilot-pos', JSON.stringify({ x: finalX, y: finalY }));
       } catch {}
     }
     dragRef.current = null;
@@ -198,14 +212,15 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    if ((!input.trim() && !selectedImage) || isThinking) return;
+    const query = (inputRef.current?.value ?? input).trim();
+    if ((!query && !selectedImage) || isThinking) return;
 
-    const query = input.trim();
     const imagePayload = selectedImage
       ? { dataUrl: selectedImage.dataUrl, name: selectedImage.name }
       : undefined;
 
     setInput('');
+    if (inputRef.current) inputRef.current.value = '';
     setSelectedImage(null);
     sendMessage(query, imagePayload);
   };
