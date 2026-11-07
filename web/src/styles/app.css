@@ -7291,7 +7291,7 @@ body[data-overlay-open='true'] {
   visibility: hidden;
   transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
   box-shadow: 0 4px 14px var(--shadow-md, rgba(0, 0, 0, 0.35));
-  z-index: 100;
+  z-index: var(--z-menu);
 }
 
 .account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip {
