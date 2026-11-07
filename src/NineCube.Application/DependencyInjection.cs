@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NineCube.Application.Abstractions;
 using NineCube.Application.Services;
+using NineCube.Application.Services.Agent;
 
 namespace NineCube.Application;
 
@@ -35,6 +36,14 @@ public static class DependencyInjection
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IChatAssistant, ChatAssistant>();
         services.AddScoped<ISupportAutoResponder, SupportAutoResponder>();
+
+        // Autonomous Commerce Foundation (NineCube Architecture v3.1)
+        services.AddSingleton<IRiskClassificationService, RiskClassificationService>();
+        services.AddScoped<ICommercePolicyEngine, CommercePolicyEngine>();
+        services.AddSingleton<ISecureAuthorizationService, SecureAuthorizationService>();
+        services.AddSingleton<IIdempotencyService, IdempotencyService>();
+        services.AddScoped<ICartReconciliationService, CartReconciliationService>();
+        services.AddScoped<ITransactionOrchestrator, TransactionOrchestrator>();
 
         return services;
     }
