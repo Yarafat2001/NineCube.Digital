@@ -1236,6 +1236,10 @@ main .link-button:is(:hover, :focus-visible, :active),
     color: var(--danger, #ef4444) !important;
   }
 
+  .account-shell {
+    grid-template-columns: 1fr !important;
+  }
+
   /* On mobile inner pages, transform the vertical rail into a modern swipeable horizontal pill strip */
   .account-shell:not(.account-dashboard) .account-rail {
     position: sticky !important;

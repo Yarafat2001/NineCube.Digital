@@ -7863,11 +7863,10 @@ body[data-overlay-open='true'] {
    ========================================================================== */
 .account-shell {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 20px;
   align-items: start;
 }
-.account-shell { grid-template-columns: auto minmax(0, 1fr); }
 
 .account-dashboard {
   grid-template-areas:
@@ -7881,6 +7880,7 @@ body[data-overlay-open='true'] {
 .account-dashboard__main { grid-area: main; min-width: 0; }
 
 @media (min-width: 1024px) {
+  .account-shell { grid-template-columns: auto minmax(0, 1fr); }
   .account-shell {
     grid-template-columns: var(--rail-width, 72px) minmax(0, 1fr);
     gap: var(--space-6);
