@@ -4,6 +4,8 @@ import { useHomeMerch } from './useHomeMerch';
 import { ErrorState, LoadingBlock } from '../ui';
 import { Link } from 'react-router-dom';
 import { Icon, type IconName } from '../Icon';
+import { resolveAssetUrl } from '../../api/client';
+import type { Category, Product } from '../../api/types';
 
 export function HomeCategoryStrip() {
   useLanguage();
@@ -12,6 +14,29 @@ export function HomeCategoryStrip() {
   const { photoByCategory } = useHomeMerch();
   const categories = (query.data ?? []).filter(category => category.isActive && category.productCount > 0).slice(0, 12);
   const categoryIcon = (slug: string): IconName => /shoe|footwear/.test(slug) ? 'shoe' : /electronic|tech|laptop|phone/.test(slug) ? 'spark' : /home|kitchen|coffee/.test(slug) ? 'coffee' : /furniture|living/.test(slug) ? 'chair' : 'box';
+
+  const findCategoryPhoto = (cat: Category): Product | undefined => {
+    if (photoByCategory.has(cat.slug)) return photoByCategory.get(cat.slug);
+    if (cat.children && cat.children.length > 0) {
+      for (const child of cat.children) {
+        const prod = photoByCategory.get(child.slug);
+        if (prod) return prod;
+      }
+    }
+    for (const [slug, prod] of photoByCategory.entries()) {
+      if (
+        (slug.includes('laptop') || slug.includes('phone') || slug.includes('electronic')) && cat.slug === 'electronics' ||
+        (slug.includes('shoe') || slug.includes('footwear') || slug.includes('sneaker')) && cat.slug === 'footwear' ||
+        (slug.includes('kitchen') || slug.includes('home') || slug.includes('decor')) && cat.slug === 'home' ||
+        (slug.includes('food') || slug.includes('tea') || slug.includes('coffee') || slug.includes('grocery')) && cat.slug === 'grocery' ||
+        (slug.includes('bag') || slug.includes('fashion') || slug.includes('apparel')) && cat.slug === 'fashion' ||
+        (slug.includes('chair') || slug.includes('furniture') || slug.includes('table')) && cat.slug === 'furniture'
+      ) {
+        return prod;
+      }
+    }
+    return undefined;
+  };
 
   return (
     <section className="home-categories-section" aria-label={t("Browse by Category")}>
@@ -32,7 +57,7 @@ export function HomeCategoryStrip() {
       )}
       <div className="home-category-strip">
         {categories.map((cat) => {
-          const photo = photoByCategory.get(cat.slug);
+          const photo = findCategoryPhoto(cat);
           return (
             <Link
               key={cat.slug}
@@ -43,7 +68,7 @@ export function HomeCategoryStrip() {
                 <>
                   <img
                     className="home-category-photo"
-                    src={photo.imageUrl!}
+                    src={resolveAssetUrl(photo.imageUrl)!}
                     alt=""
                     loading="lazy"
                     width={400}

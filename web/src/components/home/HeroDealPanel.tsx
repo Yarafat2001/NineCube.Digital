@@ -4,6 +4,7 @@ import { t, useLanguage } from '../../i18n/language';
 import { useHomeMerch } from './useHomeMerch';
 import { formatMoney } from '../../lib/helpers';
 import { Icon } from '../Icon';
+import { resolveAssetUrl } from '../../api/client';
 
 /**
  * The promotional hero showcase slider: rotates through the top live deals and arrivals
@@ -48,7 +49,7 @@ export function HeroDealPanel() {
           <img
             key={current.id}
             className="hero-deal__photo"
-            src={current.imageUrl}
+            src={resolveAssetUrl(current.imageUrl)}
             alt=""
             width={640}
             height={480}
