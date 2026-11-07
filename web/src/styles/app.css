@@ -6986,6 +6986,7 @@ body[data-overlay-open='true'] {
   transition: width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), min-width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), max-width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
   position: sticky;
   top: var(--sticky-top, 80px);
+  z-index: 50;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -7299,33 +7300,40 @@ body[data-overlay-open='true'] {
   color: var(--on-accent);
 }
 
-/* Feature name hover badge for minimised sidebar - cleanly positioned below the icon (below feature) */
+/* Feature name hover badge for minimised sidebar - matches reference image media_1794047437740_eb18ed13.png */
 .account-rail:not([data-expanded='true']) .account-nav-row__tooltip {
   position: absolute;
-  top: calc(100% + 3px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-2px);
-  background: var(--surface-menu, rgba(26, 30, 42, 0.95));
-  color: var(--on-accent, #ffffff);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm, 6px);
-  padding: 3px 8px;
-  font-size: 11px;
-  font-weight: 650;
-  line-height: 1.15;
+  top: calc(100% - 4px);
+  left: calc(50% - 4px);
+  transform: translateY(-2px);
+  background: #1f1f21;
+  color: var(--accent, #ffab4d);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 2px;
+  padding: 4px 9px;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
-  box-shadow: 0 4px 14px var(--shadow-md, rgba(0, 0, 0, 0.35));
-  z-index: var(--z-menu);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  z-index: 100;
+}
+
+:root[data-theme='light'] .account-rail:not([data-expanded='true']) .account-nav-row__tooltip {
+  background: #202226;
+  color: #ffab4d;
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 .account-rail[data-expanded='true'] .account-nav-row__tooltip {
