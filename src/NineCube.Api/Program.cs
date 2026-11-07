@@ -180,13 +180,34 @@ var app = builder.Build();
     try
     {
         await DatabaseSeeder.MigrateAndSeedAsync(
-            db, app.Configuration, app.Environment.IsDevelopment(), hasher, logger);
+            db, app.Configuration, app.Environment.IsDevelopment(), hasher, logger,
+            runBrandBackfill: false);
     }
     catch (Exception ex)
     {
         logger.LogCritical(ex, "Database migration/seeding failed. Startup aborted; check PostgreSQL configuration and migration errors above.");
         throw;
     }
+
+    // Brand/series backfill runs in its own scope in the background so the API binds its
+    // port immediately: a bulk catalogue import (thousands of seeded products) can exceed
+    // Render's deploy port-scan window if awaited here. It is idempotent and retried on the
+    // next start-up if it fails.
+    var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+    _ = Task.Run(async () =>
+    {
+        using var bgScope = scopeFactory.CreateScope();
+        var bgDb = bgScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var bgLogger = bgScope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("BrandBackfill");
+        try
+        {
+            await BrandCatalogImporter.ImportAsync(bgDb, bgLogger, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            bgLogger.LogError(ex, "Background brand/series backfill failed; it will run again on the next start-up.");
+        }
+    }, CancellationToken.None);
 }
 
 // ---------------------------------------------------------------- pipeline

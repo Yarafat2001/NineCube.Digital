@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NineCube.Application.Abstractions;
@@ -106,13 +107,21 @@ public static class ProductionCatalogImporter
                 product.Categories.Add(new ProductCategory { CategoryId = categories[item.Category].Id, IsPrimary = true });
             if (product.Images.Count == 0)
             {
-                // A merchant's existing image takes precedence over bundled media.
+                // A merchant's existing image takes precedence over bundled media, but stale generated
+                // placeholders (for example "/products/48.webp" or "/products/nc-1001.jpg") are not
+                // reliable catalogue assets once the reviewed feed has real source images.
+                var preserveCustomImage = !string.IsNullOrWhiteSpace(product.ImageUrl)
+                    && !LooksLikeGeneratedPlaceholder(product.ImageUrl)
+                    && !item.Images.Any(i => i.Url == product.ImageUrl);
                 var photos = string.IsNullOrWhiteSpace(product.ImageUrl) || item.Images.Any(i => i.Url == product.ImageUrl)
-                    ? item.Images : [new Photo(product.ImageUrl, product.Name)];
+                    ? item.Images
+                    : preserveCustomImage ? [new Photo(product.ImageUrl, product.Name)] : item.Images;
                 foreach (var photo in photos.Select((image, index) => (image, index)))
                     product.Images.Add(new ProductImage { Url = photo.image.Url, AltText = photo.image.AltText,
                         IsPrimary = photo.index == 0, SortOrder = photo.index, CreatedAt = now });
-                if (string.IsNullOrWhiteSpace(product.ImageUrl)) product.ImageUrl = photos.FirstOrDefault()?.Url;
+                // Prefer the reviewed source media when the existing value is a stale generated file name.
+                if (string.IsNullOrWhiteSpace(product.ImageUrl) || (!preserveCustomImage && item.Images.Count > 0))
+                    product.ImageUrl = photos.FirstOrDefault()?.Url ?? product.ImageUrl;
             }
             if (isNew || product.Tags.Count == 0)
                 foreach (var name in item.Tags.Distinct(StringComparer.OrdinalIgnoreCase))
@@ -130,6 +139,19 @@ public static class ProductionCatalogImporter
         await InitializeLaptopStockAsync(db, feed, logger, ct);
         await transaction.CommitAsync(ct);
         logger.LogInformation("Production catalogue imported: {Categories} categories and {Products} products added; {Restored} uninitialized stock quantities restored; merchant stock changes preserved.", createdCategories, createdProducts, restoredProducts);
+    }
+
+    private static bool LooksLikeGeneratedPlaceholder(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return false;
+        var normalized = url.Trim();
+        if (!normalized.StartsWith("/products/", StringComparison.OrdinalIgnoreCase)) return false;
+        var file = Path.GetFileName(normalized);
+        if (string.IsNullOrWhiteSpace(file)) return false;
+
+        return Regex.IsMatch(file, @"^(?:placeholder|no-image|missing-image|default(?:-image)?|demo(?:-product)?)(?:[-_.].+)?\.(?:jpe?g|png|webp|svg)$",
+                RegexOptions.IgnoreCase)
+            || Regex.IsMatch(file, @"^(?:nc-\d{4}|\d{2,3})\.(?:jpe?g|png|webp)$", RegexOptions.IgnoreCase);
     }
 
     private static async Task InitializeLaptopStockAsync(AppDbContext db, Feed feed, ILogger logger, CancellationToken ct)

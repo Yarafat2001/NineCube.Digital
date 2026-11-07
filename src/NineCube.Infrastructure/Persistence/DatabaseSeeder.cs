@@ -20,6 +20,7 @@ public static class DatabaseSeeder
         bool isDevelopment,
         IPasswordHasherService hasher,
         ILogger logger,
+        bool runBrandBackfill = true,
         CancellationToken ct = default)
     {
         logger.LogInformation("Applying EF Core migrations...");
@@ -44,14 +45,19 @@ public static class DatabaseSeeder
         // The brand/series facet is derived from rows that already exist (see BrandCatalogImporter), so it
         // runs everywhere and is idempotent; reruns only fill in products added since the last start-up.
         // It is reference data, not a reason to keep the API from starting, so a failure is logged.
-        try
+        // Startup callers can defer it to a background scope (runBrandBackfill: false) so a bulk
+        // catalogue import never starves the deploy's port-binding window.
+        if (runBrandBackfill)
         {
-            await BrandCatalogImporter.ImportAsync(db, logger, ct);
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            db.ChangeTracker.Clear();
-            logger.LogWarning(ex, "Brand and series backfill did not complete; it will run again at the next start-up.");
+            try
+            {
+                await BrandCatalogImporter.ImportAsync(db, logger, ct);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                db.ChangeTracker.Clear();
+                logger.LogWarning(ex, "Brand and series backfill did not complete; it will run again at the next start-up.");
+            }
         }
 
         if (isDevelopment)

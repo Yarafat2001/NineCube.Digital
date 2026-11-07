@@ -1,5 +1,6 @@
 using System.Net;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NineCube.Application.Contracts;
 using NineCube.Domain;
 using NineCube.Tests.Infrastructure;
@@ -37,6 +38,35 @@ public sealed class ProductMediaTests(ApiFactory factory) : ApiTestBase(factory)
         grinder.UpdatedAt.Should().Be(updated);
         grinder.StockQuantity.Should().Be(7);
         mug.ImageUrl.Should().Be("/products/custom.jpg");
+    }
+
+    [Fact]
+    public async Task Production_catalogue_replaces_stale_generated_image_urls_with_verified_source_images()
+    {
+        using var scope = Factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var product = new Product
+        {
+            Sku = "BD-HATI-CEZA-112-71B9B8",
+            Name = "Hatil Cezanne-112 GL",
+            Price = 11000m,
+            StockQuantity = 49,
+            IsActive = true,
+            ImageUrl = "/products/placeholder.jpg"
+        };
+        db.Products.Add(product);
+        await db.SaveChangesAsync();
+
+        var config = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["Seed:Enabled"] = "true" }).Build();
+        var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasherService>();
+        await DatabaseSeeder.MigrateAndSeedAsync(db, config, true, hasher, NullLogger.Instance, runBrandBackfill: false);
+
+        var reloaded = await db.Products
+            .AsNoTracking()
+            .Include(p => p.Images)
+            .SingleAsync(p => p.Sku == product.Sku);
+        reloaded.ImageUrl.Should().Be("/products/sourced/122-c0e48b5b1971.jpg");
+        reloaded.Images.Should().Contain(i => i.Url == "/products/sourced/122-c0e48b5b1971.jpg");
     }
 
     [Fact]
