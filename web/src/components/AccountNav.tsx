@@ -123,10 +123,11 @@ export function AccountRail() {
                   onClick={handleRowClick(row.to)}
                   className={({ isActive }) => `account-nav-row${(optimisticTo ? optimisticTo === row.to : isActive) ? ' account-nav-row--active' : ''}`}
                 >
-                  <span className="account-nav-row__icon"><Icon name={row.icon} width={17} height={17} /></span>
+                  <span className="account-nav-row__icon"><Icon name={row.icon} width={18} height={18} /></span>
                   <span className="account-nav-row__label">{t(row.label)}</span>
                   {row.badge && unread > 0 ? <span className="account-nav-row__badge">{unread}</span> : null}
                   <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+                  <span className="account-nav-row__tooltip" aria-hidden="true">{t(row.label)}</span>
                 </NavLink>
               </li>
             ))}
@@ -134,9 +135,10 @@ export function AccountRail() {
         ))}
         <div role="separator" className="menu-separator" />
         <button type="button" className="account-nav-row account-nav-row--logout" onClick={handleLogout}>
-          <span className="account-nav-row__icon account-nav-row__icon--danger"><Icon name="logout" width={17} height={17} /></span>
+          <span className="account-nav-row__icon account-nav-row__icon--danger"><Icon name="logout" width={18} height={18} /></span>
           <span className="account-nav-row__label">{t("Log out")}</span>
           <Icon name="chevron" width={15} height={15} className="account-nav-row__chevron" />
+          <span className="account-nav-row__tooltip" aria-hidden="true">{t("Log out")}</span>
         </button>
       </nav>
 
