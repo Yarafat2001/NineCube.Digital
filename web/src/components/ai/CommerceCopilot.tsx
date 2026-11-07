@@ -9,7 +9,7 @@ import { t, useLanguage } from '../../i18n/language';
 import { Icon } from '../Icon';
 import './CommerceCopilot.css';
 
-export function CommerceCopilot({ standalone = false }: { standalone?: boolean }) {
+export function CommerceCopilot({ standalone: _standalone = false }: { standalone?: boolean } = {}) {
   const {
     messages,
     isOpen,
@@ -31,9 +31,6 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
 
   useLanguage();
   const { user } = useAuth();
-  const [hasAssistantDock, setHasAssistantDock] = useState(() => {
-    return typeof document !== 'undefined' && Boolean(document.querySelector('.assistant-dock'));
-  });
   const [input, setInput] = useState('');
   const [showMemoryModal, setShowMemoryModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -109,19 +106,6 @@ export function CommerceCopilot({ standalone = false }: { standalone?: boolean }
     }
     dragRef.current = null;
   };
-
-  // Detect whether AssistantDock is mounted in DOM on the showcase home page
-  useEffect(() => {
-    const checkDock = () => {
-      setHasAssistantDock(Boolean(document.querySelector('.assistant-dock')));
-    };
-    checkDock();
-    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(checkDock) : null;
-    if (observer && typeof document !== 'undefined' && document.body) {
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
-    return () => observer?.disconnect();
-  }, []);
 
   // Listen for open-copilot events from anywhere in the application
   useEffect(() => {
