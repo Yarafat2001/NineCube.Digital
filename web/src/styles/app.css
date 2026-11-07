@@ -6986,7 +6986,7 @@ body[data-overlay-open='true'] {
   transition: width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), min-width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), max-width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
   position: sticky;
   top: var(--sticky-top, 80px);
-  z-index: 120;
+  z-index: var(--z-menu);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -7339,7 +7339,7 @@ body[data-overlay-open='true'] {
   visibility: hidden;
   transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65);
-  z-index: 99999 !important;
+  z-index: var(--z-menu);
 }
 
 :root[data-theme='light'] .account-rail:not([data-expanded='true']) .account-nav-row__tooltip {
