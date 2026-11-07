@@ -13,6 +13,8 @@ export interface HomeMerch {
   newest: Product[];
   /** First product with a photo per category slug, for the category photo grid. */
   photoByCategory: Map<string, Product>;
+  /** Top promotional deals with real discounts or newest arrivals, for the hero slider. */
+  heroDeals: Product[];
 }
 
 /**
@@ -52,6 +54,18 @@ export function useHomeMerch(): HomeMerch {
       deal = newest[0]!;
     }
 
-    return { products, deal, dealPercent, newest, photoByCategory };
+    const discountedProducts = products
+      .filter((p) => p.compareAtPrice && p.compareAtPrice > p.price)
+      .sort((a, b) => {
+        const percentA = ((a.compareAtPrice! - a.price) / a.compareAtPrice!) * 100;
+        const percentB = ((b.compareAtPrice! - b.price) / b.compareAtPrice!) * 100;
+        return percentB - percentA;
+      });
+
+    const heroDeals = discountedProducts.length > 0
+      ? discountedProducts.slice(0, 4)
+      : newest.slice(0, 4);
+
+    return { products, deal, dealPercent, newest, photoByCategory, heroDeals };
   }, [products]);
 }

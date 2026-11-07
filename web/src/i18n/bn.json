@@ -2469,5 +2469,11 @@
   "New arrivals": "নতুন আগমন",
   "Gift cards": "উপহার কার্ড",
   "Online payments are verified by the payment provider before an order is counted as paid.": "অর্ডার পরিশোধিত হিসেবে গণ্য করার আগে পেমেন্ট সরবরাহকারী দ্বারা অনলাইন পেমেন্ট যাচাই করা হয়।",
-  "Up to": "সর্বোচ্চ"
+  "Up to": "সর্বোচ্চ",
+  "Featured Super Deal": "বিশেষ সুপার ডিল",
+  "Featured deal navigation": "সেরা ডিল নেভিগেশন",
+  "Go to slide": "স্লাইডে যান",
+  "Previous deal": "পূর্ববর্তী ডিল",
+  "Next deal": "পরবর্তী ডিল",
+  "Flash deals countdown": "ফ্ল্যাশ ডিল কাউন্টডাউন"
 }

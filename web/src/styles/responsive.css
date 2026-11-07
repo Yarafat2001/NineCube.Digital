@@ -42,9 +42,12 @@ main a[href]:not(.btn):not(.filter-chip):not(.product-card__media-link):not(.sea
 }
 
 :root[data-theme='dark'] .account-rail[data-expanded='true'] .account-nav-list {
-  background: rgba(24, 28, 38, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
+  background-color: var(--nav-glass-base) !important;
+  background-image: var(--nav-glass) !important;
+  border: 1px solid var(--nav-glass-edge) !important;
+  box-shadow: var(--nav-glass-shadow) !important;
+  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%)) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-saturate, 140%)) !important;
 }
 main a.btn--ghost:is(:hover, :focus-visible, :active),
 main .link-button:is(:hover, :focus-visible, :active),

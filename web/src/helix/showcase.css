@@ -469,6 +469,78 @@ body.showcase-active {
   color: var(--accent-text);
 }
 
+/* Slider controls & pagination */
+.hero-deal--slider {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hero-deal__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.hero-deal__dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-deal__dot {
+  width: 24px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--transition-fast), width var(--transition-fast);
+}
+
+:root[data-theme='light'] .hero-deal__dot {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.hero-deal__dot--active {
+  width: 38px;
+  background: var(--accent, #ffab4d) !important;
+}
+
+.hero-deal__nav-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-deal__nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface-glass, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--nav-glass-edge, var(--border-strong));
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.hero-deal__nav-btn:hover {
+  background: var(--selected-bg);
+  border-color: var(--selected-bar);
+  color: var(--accent-text);
+}
+
+.hero-deal__nav-chevron--prev {
+  transform: rotate(180deg);
+}
+
 .showcase__hero h1 {
   font-size: clamp(48px, 10vw, 132px);
   letter-spacing: -0.07em;

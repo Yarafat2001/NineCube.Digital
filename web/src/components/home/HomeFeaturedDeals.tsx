@@ -1,5 +1,5 @@
 import { ErrorState, LoadingBlock } from '../ui';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { t, useLanguage } from '../../i18n/language';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../api/hooks';
@@ -15,6 +15,37 @@ export type MerchandisingTab = 'trending' | 'discounts' | 'new';
 export interface HomeFeaturedDealsProps {
   onToggleCompare?: (product: Product) => void;
   compareItems?: Product[];
+}
+
+function FlashCountdown() {
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const now = new Date();
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
+    return Math.max(0, Math.floor((endOfDay.getTime() - now.getTime()) / 1000));
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const hours = Math.floor(timeLeft / 3600);
+  const minutes = Math.floor((timeLeft % 3600) / 60);
+  const seconds = timeLeft % 60;
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  return (
+    <div className="home-flash-timer" aria-label={t("Flash deals countdown")}>
+      <Icon name="bolt" width={13} height={13} />
+      <span className="home-flash-timer__label">{t("Ends in")}:</span>
+      <span className="home-flash-timer__digits" aria-live="polite">
+        {pad(hours)}:{pad(minutes)}:{pad(seconds)}
+      </span>
+    </div>
+  );
 }
 
 export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFeaturedDealsProps) {
@@ -69,34 +100,37 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
           <p className="home-section-desc">{t("Explore current prices and live warehouse stock. Checked again at checkout.")}</p>
         </div>
 
-        <div className="home-deals-tabs" role="tablist" aria-label={t("Product showcase categories")}>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'trending'}
-            className={`home-deals-tab ${activeTab === 'trending' ? 'home-deals-tab--active' : ''}`}
-            onClick={() => setActiveTab('trending')}
-          >
-            <Icon name="bolt" width={14} height={14} /> {t("Trending Now")}
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'discounts'}
-            className={`home-deals-tab ${activeTab === 'discounts' ? 'home-deals-tab--active' : ''}`}
-            onClick={() => setActiveTab('discounts')}
-          >
-            <Icon name="percent" width={14} height={14} /> {t("Flash Discounts")}
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeTab === 'new'}
-            className={`home-deals-tab ${activeTab === 'new' ? 'home-deals-tab--active' : ''}`}
-            onClick={() => setActiveTab('new')}
-          >
-            <Icon name="spark" width={14} height={14} /> {t("New Arrivals")}
-          </button>
+        <div className="home-deals-controls">
+          {activeTab === 'discounts' && <FlashCountdown />}
+          <div className="home-deals-tabs" role="tablist" aria-label={t("Product showcase categories")}>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'trending'}
+              className={`home-deals-tab ${activeTab === 'trending' ? 'home-deals-tab--active' : ''}`}
+              onClick={() => setActiveTab('trending')}
+            >
+              <Icon name="bolt" width={14} height={14} /> {t("Trending Now")}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'discounts'}
+              className={`home-deals-tab ${activeTab === 'discounts' ? 'home-deals-tab--active' : ''}`}
+              onClick={() => setActiveTab('discounts')}
+            >
+              <Icon name="percent" width={14} height={14} /> {t("Flash Discounts")}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'new'}
+              className={`home-deals-tab ${activeTab === 'new' ? 'home-deals-tab--active' : ''}`}
+              onClick={() => setActiveTab('new')}
+            >
+              <Icon name="spark" width={14} height={14} /> {t("New Arrivals")}
+            </button>
+          </div>
         </div>
 
         <Link to="/products" className="home-section-link">
@@ -148,6 +182,13 @@ export function HomeFeaturedDeals({ onToggleCompare, compareItems = [] }: HomeFe
                         {t(formatMoney(product.compareAtPrice, product.currency))}
                       </span>
                     )}
+                  </div>
+
+                  <div className="home-deal-stock-progress" aria-hidden="true" title={`${t("In stock")}: ${product.stockQuantity}`}>
+                    <div
+                      className="home-deal-stock-progress__bar"
+                      style={{ width: `${Math.min(100, Math.max(14, Math.round((product.stockQuantity / 25) * 100)))}%` }}
+                    />
                   </div>
 
                   <div className="home-deal-btn-group">

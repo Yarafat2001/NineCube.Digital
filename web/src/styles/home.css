@@ -282,6 +282,7 @@
   aspect-ratio: 3 / 2;
   object-fit: cover;
   background: var(--placeholder-gradient);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter var(--transition-fast);
 }
 
 .home-category-card--photo .home-category-info {
@@ -289,7 +290,8 @@
 }
 
 .home-category-card--photo:hover .home-category-photo {
-  filter: brightness(1.04);
+  transform: scale(1.06);
+  filter: brightness(1.05);
 }
 
 .home-category-card--photo:focus-visible {
@@ -463,6 +465,23 @@
   font-size: var(--text-xs);
   font-weight: 650;
   border-radius: var(--radius-pill);
+}
+
+/* Stock urgency progress bar */
+.home-deal-stock-progress {
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--surface-sunken, rgba(255, 255, 255, 0.08));
+  overflow: hidden;
+  margin: 6px 0;
+}
+
+.home-deal-stock-progress__bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent, #f59726), #ef4444);
+  transition: width 0.4s ease-out;
 }
 
 /* ==========================================================================
@@ -869,6 +888,48 @@
 /* ==========================================================================
    Home Deals Tabs
    ========================================================================== */
+.home-deals-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.home-flash-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.home-flash-timer__label {
+  color: var(--text-muted);
+}
+
+.home-flash-timer__digits {
+  font-variant-numeric: tabular-nums;
+  font-family: monospace;
+  font-weight: 800;
+  color: #ef4444;
+}
+
+:root[data-theme='light'] .home-flash-timer {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.28);
+  color: #dc2626;
+}
+
+:root[data-theme='light'] .home-flash-timer__digits {
+  color: #dc2626;
+}
+
 .home-deals-tabs {
   display: flex;
   align-items: center;
