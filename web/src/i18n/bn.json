@@ -2475,5 +2475,18 @@
   "Go to slide": "স্লাইডে যান",
   "Previous deal": "পূর্ববর্তী ডিল",
   "Next deal": "পরবর্তী ডিল",
-  "Flash deals countdown": "ফ্ল্যাশ ডিল কাউন্টডাউন"
+  "Flash deals countdown": "ফ্ল্যাশ ডিল কাউন্টডাউন",
+  "Please select an image file.": "অনুগ্রহ করে একটি ছবি ফাইল নির্বাচন করুন।",
+  "Click to enlarge preview": "প্রিভিউ বড় করতে ক্লিক করুন",
+  "Remove image": "ছবি সরান",
+  "Attach image or screenshot": "ছবি বা স্ক্রিনশট সংযুক্ত করুন",
+  "Attach image": "ছবি সংযুক্ত করুন",
+  "Close image preview": "ছবির প্রিভিউ বন্ধ করুন",
+  "Please select an image file (PNG, JPG, WebP).": "অনুগ্রহ করে একটি ছবির ফাইল নির্বাচন করুন (PNG, JPG, WebP)।",
+  "Uploaded Image": "আপলোড করা ছবি",
+  "Click to enlarge photo": "ছবি বড় করতে ক্লিক করুন",
+  "Enlarge": "বড় করুন",
+  "Attach image for visual shopping": "ভিজ্যুয়াল শপিংয়ের জন্য ছবি যুক্ত করুন",
+  "Ask a question about this image...": "এই ছবিটি সম্পর্কে প্রশ্ন করুন...",
+  "Close image zoom preview": "ছবির জুম প্রিভিউ বন্ধ করুন"
 }
