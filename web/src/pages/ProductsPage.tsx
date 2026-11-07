@@ -81,8 +81,8 @@ function ProductCard({
     : 0;
 
   return (
-    <article {...tilt} className="product-card" data-inactive={!product.isActive} data-testid={`product-${product.id}`}>
-      <div className="product-card__media-wrap">
+    <article {...tilt} className={`product-card ${justAdded ? 'product-card--just-added' : ''}`} data-inactive={!product.isActive} data-testid={`product-${product.id}`}>
+      <div className="product-card__media-wrap" data-added-label={t("Added!")}>
         <Link className="product-card__media-link" to={detail} aria-label={t(`Open ${fullName}`)}>
           <ProductImage product={product} />
         </Link>

@@ -2488,5 +2488,9 @@
   "Enlarge": "বড় করুন",
   "Attach image for visual shopping": "ভিজ্যুয়াল শপিংয়ের জন্য ছবি যুক্ত করুন",
   "Ask a question about this image...": "এই ছবিটি সম্পর্কে প্রশ্ন করুন...",
-  "Close image zoom preview": "ছবির জুম প্রিভিউ বন্ধ করুন"
+  "Close image zoom preview": "ছবির জুম প্রিভিউ বন্ধ করুন",
+  "Packet": "প্যাকেট",
+  "Inside": "ভেতরে",
+  "Switch to Inside view": "ভেতরের দৃশ্য দেখুন",
+  "Switch to Packet view": "প্যাকেটের দৃশ্য দেখুন"
 }

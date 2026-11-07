@@ -31,23 +31,32 @@ export function ProductImage({
   product,
   images,
   frame = 'card',
-  alt
+  alt,
+  interactiveToggle = true
 }: {
   product: Product;
   images?: ProductImageType[] | null;
   frame?: 'card' | 'detail';
   alt?: string;
+  interactiveToggle?: boolean;
 }) {
   useLanguage();
-  const stored = primaryImage(product, images);
   const gallery = images ?? product.images ?? [];
   const primary = gallery.find(image => image.isPrimary) ?? gallery[0];
+  const secondary = gallery.find(image => !image.isPrimary) ?? (gallery.length > 1 ? gallery[1] : null);
+
+  const stored = primaryImage(product, images);
   const imageDescription = primary?.altText ?? product.name;
   const representative = imageDescription.startsWith('Representative image:');
   const src = resolveAssetUrl(stored);
+  const secondarySrc = secondary ? resolveAssetUrl(secondary.url) : null;
+
   const [broken, setBroken] = useState(false);
+  const [secondaryBroken, setSecondaryBroken] = useState(false);
+  const [activeView, setActiveView] = useState<'packet' | 'open'>('packet');
 
   useEffect(() => { setBroken(false); }, [src]);
+  useEffect(() => { setSecondaryBroken(false); }, [secondarySrc]);
 
   // The seeded coffee shots are full scenes; they read better cropped than letterboxed.
   const isPhoto = /^\/products\/nc-10\d{2}\.jpg$/.test(stored ?? '');
@@ -57,14 +66,44 @@ export function ProductImage({
       {!src || broken ? (
         <Placeholder name={product.name} tall={frame === 'detail'} category={product.categories?.find(c => c.isPrimary)?.slug ?? ''} />
       ) : (
-        <img
-          className={`product-card__image${isPhoto ? ' product-card__image--photo' : ''}`}
-          src={src}
-          alt={t(alt ?? imageDescription)}
-          loading="lazy"
-          decoding="async"
-          onError={() => setBroken(true)}
-        />
+        <>
+          <img
+            className={`product-card__image${isPhoto ? ' product-card__image--photo' : ''}${secondarySrc && frame === 'card' ? ' product-card__image--primary' : ''}${activeView === 'open' ? ' product-card__image--hidden' : ''}`}
+            src={src}
+            alt={t(alt ?? imageDescription)}
+            loading="lazy"
+            decoding="async"
+            onError={() => setBroken(true)}
+          />
+          {secondarySrc && frame === 'card' && !secondaryBroken ? (
+            <img
+              className={`product-card__image product-card__image--secondary${activeView === 'open' ? ' product-card__image--visible' : ''}`}
+              src={secondarySrc}
+              alt={t(secondary?.altText ?? `${product.name} (${t("Inside")})`)}
+              loading="lazy"
+              decoding="async"
+              onError={() => setSecondaryBroken(true)}
+              aria-hidden={activeView !== 'open'}
+            />
+          ) : null}
+          {secondarySrc && frame === 'card' && !secondaryBroken && interactiveToggle ? (
+            <button
+              type="button"
+              className="product-card__view-toggle"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setActiveView(v => (v === 'packet' ? 'open' : 'packet'));
+              }}
+              title={activeView === 'packet' ? t("Switch to Inside view") : t("Switch to Packet view")}
+              aria-label={activeView === 'packet' ? t("Switch to Inside view") : t("Switch to Packet view")}
+            >
+              <span className="view-toggle__pill">
+                {activeView === 'packet' ? `📦 ${t("Packet")}` : `✨ ${t("Inside")}`}
+              </span>
+            </button>
+          ) : null}
+        </>
       )}
       {src && !broken && representative ? <span className="product-image-caption">{t("Representative image")}</span> : null}
     </span>
