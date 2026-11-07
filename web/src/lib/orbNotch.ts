@@ -89,20 +89,20 @@ export function orbNotchPath(shape: OrbNotchShape): { d: string; centre: number 
   if (edge === 'right') {
     const W = thickness;
     const H = length;
-    const rr = 20;
-    // True circular socket and C1 tangent fillets guaranteeing uniform 7.5px Image 10 gap:
+    const rr = 18;
+    // True circular socket and C1 tangent fillets guaranteeing uniform 8.0px concentric gap:
     const R_orb = 23;
-    const gap = 7.5;
-    const Rs = R_orb + gap; // 30.5
-    const rf = 16;
-    const dY = Math.sqrt((Rs + rf) ** 2 - rf ** 2); // 43.66
-    const minC = rr + dY;
-    const maxC = Math.max(minC, H - rr - dY);
+    const gap = 8;
+    const Rs = R_orb + gap; // 31
+    const rf = 14;
+    const dY = Math.sqrt((Rs + rf) ** 2 - rf ** 2); // 42.7668
+    const minC = rr + dY + 1;
+    const maxC = Math.max(minC, H - rr - dY - 1);
     const rc = Math.min(Math.max(centre, minC), maxC);
 
-    const Xtouch = W - Rs * (rf / (Rs + rf)); // W - 10.49
-    const Ytouch1 = rc - Rs * (dY / (Rs + rf)); // rc - 28.64
-    const Ytouch2 = rc + Rs * (dY / (Rs + rf)); // rc + 28.64
+    const Xtouch = W - Rs * (rf / (Rs + rf)); // W - 9.644
+    const Ytouch1 = rc - Rs * (dY / (Rs + rf)); // rc - 29.462
+    const Ytouch2 = rc + Rs * (dY / (Rs + rf)); // rc + 29.462
     const topY = rc - dY;
     const botY = rc + dY;
 

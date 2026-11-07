@@ -6992,17 +6992,20 @@ body[data-overlay-open='true'] {
 }
 
 .account-rail .orb-notch {
-  display: none !important;
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 .account-rail[data-expanded='true'] {
   --rail-width: var(--rail-expanded);
 }
 .account-rail[data-expanded='true'] .orb-notch {
-  display: none;
+  display: none !important;
 }
 
-/* Expanded rail matches Catalogue Sidebar: dark slate glass panel with sleek border */
+/* Expanded rail: dark slate glass panel with sleek border */
 .account-rail[data-expanded='true'] .account-nav-list {
   background: var(--surface-menu, rgba(26, 30, 42, 0.95));
   backdrop-filter: blur(20px) saturate(140%);
@@ -7010,7 +7013,7 @@ body[data-overlay-open='true'] {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg, 16px);
   box-shadow: var(--shadow-md, 0 10px 25px -5px rgba(0, 0, 0, 0.3));
-  padding: 10px 8px;
+  padding: 12px 10px;
 }
 
 .account-nav-list {
@@ -7022,13 +7025,11 @@ body[data-overlay-open='true'] {
   width: var(--rail-width, 100%);
   min-width: 0;
   margin: 0;
-  padding: 10px 6px;
-  border-radius: var(--radius-lg, 16px);
-  background: var(--surface-menu, rgba(26, 30, 42, 0.95));
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-md, 0 10px 25px -5px rgba(0, 0, 0, 0.3));
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  padding: 38px 8px 38px 8px;
+  border-radius: var(--radius-lg, 18px);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   color: var(--text);
   transition: width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), padding var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -7044,8 +7045,19 @@ body[data-overlay-open='true'] {
   place-items: center;
   background: var(--orb-fill);
   color: var(--orb-ink);
-  box-shadow: 0 6px 18px var(--glass-glow);
+  box-shadow: 0 4px 18px var(--glass-glow);
   z-index: 3;
+}
+
+/* Collapsed rail: right-edge lifted orb sitting directly in the concentric notch socket */
+.account-rail:not([data-expanded='true']) .orb-notch__orb {
+  inset-inline-start: auto !important;
+  inset-inline-end: -23px !important;
+  right: -23px !important;
+  left: auto !important;
+  background: var(--accent-gradient) !important;
+  color: var(--on-accent) !important;
+  box-shadow: 0 4px 18px var(--glass-glow) !important;
 }
 
 .account-nav-list__group {
@@ -7063,7 +7075,7 @@ body[data-overlay-open='true'] {
   align-items: center;
   gap: 12px;
   width: 100%;
-  min-height: 44px;
+  min-height: 48px;
   padding: 7px 12px;
   box-sizing: border-box;
   border: none;
@@ -7124,12 +7136,12 @@ body[data-overlay-open='true'] {
 }
 
 /* ==========================================================================
-   Image 3 Catalogue Filter Style:
-   - Active row: SOLID AMBER pill, bold dark on-accent text, matching "All products"
-   - Inactive row: clean white/neutral text, subtle muted icons, NO yellow underlines
+   Expanded Rail Mode:
+   - Active row: solid amber pill with clear white text and glowing shadow
+   - Inactive row: clean text with smooth hover feedback
    ========================================================================== */
 .account-rail[data-expanded='true'] .account-nav-row--active {
-  background: var(--accent) !important;
+  background: var(--accent-gradient) !important;
   color: var(--on-accent) !important;
   border-radius: var(--radius-md, 10px);
   border: none !important;
@@ -7144,22 +7156,17 @@ body[data-overlay-open='true'] {
 
 .account-rail[data-expanded='true'] .account-nav-row--active .account-nav-row__chevron {
   color: var(--on-accent) !important;
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .account-rail[data-expanded='true'] .account-nav-row--active .account-nav-row__icon {
-  background: var(--selected-bg) !important;
+  background: transparent !important;
   border: none !important;
   color: var(--on-accent) !important;
   box-shadow: none !important;
 }
 
-
-
-/* ==========================================================================
-   Image 4 Glass Nav 3 Style for Icons:
-   Clean, muted stroke icons without circular borders; only the orb is highlighted
-   ========================================================================== */
+/* Clean stroke icons */
 .account-nav-row__icon {
   flex: none;
   width: 32px;
@@ -7168,68 +7175,107 @@ body[data-overlay-open='true'] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: var(--text-muted) !important;
-  transition: color var(--transition-fast);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--text-muted);
+  transition: color var(--transition-fast), transform var(--transition-fast);
 }
 
 .account-nav-row:hover .account-nav-row__icon {
-  color: var(--text) !important;
+  color: var(--text);
 }
 
 /* ==========================================================================
-   Minimised Sidebar (Compact Mode):
-   - Selection color with animated box effect shown clearly inside the sidebar
-   - Icon on top, localized label below (contained strictly inside boundary)
-   - Stays within sidebar column, never crosses external boundary
+   Collapsed Minimised Rail Mode (Exact Reference Image 8 & 9):
+   - Pure icons only; text labels leave the compact visual layout
+   - Lifted 3D orb floats in the smooth inward notch with concentric 8px gap
+   - Active row's icon leaves the rail and sits inside the lifted orb
+   - Inactive row hover shows soft squircle tile + dark floating tooltip
    ========================================================================== */
+.account-rail:not([data-expanded='true']) .account-nav-list {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 38px 8px 38px 8px;
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row,
+.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row:hover,
+.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row:focus,
+.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row:active,
+.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row--active,
+.account-rail:not([data-expanded='true']) .account-nav-list .account-nav-row--active:not([data-expanded]),
+.account-rail:not([data-expanded='true'])[data-orb-ready='true'] .account-nav-row--active:not([data-expanded]) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row::before,
+.account-rail:not([data-expanded='true']) .account-nav-row::after,
+.account-rail:not([data-expanded='true']) .account-nav-row--active::before,
+.account-rail:not([data-expanded='true']) .account-nav-row--active::after {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+/* In collapsed mode, the active icon leaves the rail and is presented inside the lifted orb */
+.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__icon,
+.account-rail:not([data-expanded='true'])[data-orb-ready='true'] .account-nav-row--active .account-nav-row__icon {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 .account-rail:not([data-expanded='true']) .account-nav-row {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  padding: 6px 4px;
-  min-height: 52px;
-  width: 100%;
-  border-radius: var(--radius-md, 12px);
+  min-height: 48px;
+  padding: 0;
   position: relative;
   text-decoration: none !important;
   color: var(--text-muted);
-  background: transparent;
-  box-shadow: none;
-  transition: all var(--transition-fast) cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .account-rail:not([data-expanded='true']) .account-nav-row__icon {
-  width: 24px;
-  height: 24px;
-  display: flex;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md, 12px);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: inherit;
-  transition: transform var(--transition-fast), color var(--transition-fast);
+  color: var(--text-muted);
+  background: transparent;
+  transition: transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
+.account-rail:not([data-expanded='true']) .account-nav-row:not(.account-nav-row--active):hover .account-nav-row__icon {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 4px 14px var(--shadow-sm, rgba(0, 0, 0, 0.08)), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px) scale(1.05);
+}
+
+:root[data-theme='dark'] .account-rail:not([data-expanded='true']) .account-nav-row:not(.account-nav-row--active):hover .account-nav-row__icon {
+  background: var(--surface-menu);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 14px var(--shadow-md, rgba(0, 0, 0, 0.35));
+  color: var(--accent);
+}
+
+/* Collapsed labels stay accessible for screen readers but leave the compact rail layout */
 .account-rail:not([data-expanded='true']) .account-nav-row__label {
-  display: block !important;
-  position: static !important;
-  width: auto !important;
-  height: auto !important;
-  clip-path: none !important;
-  opacity: 1 !important;
-  font-size: 9.5px;
-  font-weight: 650;
-  line-height: 1.15;
-  text-align: center;
-  max-width: 66px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: inherit;
-  transition: color var(--transition-fast);
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0 !important;
 }
 
 .account-rail:not([data-expanded='true']) .account-nav-row__chevron {
@@ -7238,11 +7284,11 @@ body[data-overlay-open='true'] {
 
 .account-rail:not([data-expanded='true']) .account-nav-row__badge {
   position: absolute;
-  top: 3px;
-  right: 10px;
-  min-width: 16px;
-  height: 16px;
-  font-size: 9.5px;
+  top: 4px;
+  inset-inline-start: 36px;
+  min-width: 18px;
+  height: 18px;
+  font-size: 10px;
   font-weight: 800;
   padding: 0 4px;
   display: inline-flex;
@@ -7253,43 +7299,36 @@ body[data-overlay-open='true'] {
   color: var(--on-accent);
 }
 
-/* Minimised Sidebar Active Selection: animated box with vibrant selection color */
-.account-rail:not([data-expanded='true']) .account-nav-row--active {
-  background: var(--accent-gradient) !important;
-  color: var(--on-accent) !important;
-  border-radius: var(--radius-md, 12px) !important;
-  box-shadow: 0 4px 16px var(--glass-glow), 0 1px 3px rgba(0, 0, 0, 0.12) !important;
-  transform: scale(1.02);
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__icon {
-  color: var(--on-accent) !important;
-  transform: scale(1.06);
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-row--active .account-nav-row__label {
-  color: var(--on-accent) !important;
-  font-weight: 750 !important;
-}
-
-/* Inactive row hover effect */
-.account-rail:not([data-expanded='true']) .account-nav-row:not(.account-nav-row--active):hover {
-  background: var(--nav-hover) !important;
-  color: var(--text) !important;
-  transform: translateY(-1px);
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-row:not(.account-nav-row--active):hover .account-nav-row__icon {
-  color: var(--accent) !important;
-  transform: scale(1.08);
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-row:not(.account-nav-row--active):hover .account-nav-row__label {
-  color: var(--text) !important;
-}
-
-/* Hide tooltips so nothing crosses the boundary into the content */
+/* Tooltip badge for minimised sidebar (Image 9) */
 .account-nav-row__tooltip {
+  position: absolute;
+  left: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  background: var(--surface-menu);
+  color: var(--on-accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 6px);
+  padding: 5px 10px;
+  font-size: 11.5px;
+  font-weight: 650;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
+  box-shadow: 0 4px 14px var(--shadow-md, rgba(0, 0, 0, 0.35));
+  z-index: var(--z-menu);
+}
+
+.account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+.account-rail[data-expanded='true'] .account-nav-row__tooltip {
   display: none !important;
 }
 
@@ -7329,25 +7368,6 @@ body[data-overlay-open='true'] {
   color: var(--on-accent);
   font-size: 11px;
   font-weight: 800;
-}
-
-/* Collapsed: chevrons leave the compact rail */
-.account-rail:not([data-expanded='true']) .account-nav-row__chevron {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  opacity: 0;
-}
-
-.account-rail:not([data-expanded='true']) .account-nav-row__badge {
-  position: absolute;
-  top: 2px;
-  inset-inline-start: 34px;
-  min-width: 18px;
-  height: 18px;
-  font-size: 10px;
 }
 
 .account-nav-row--logout {
@@ -7927,6 +7947,10 @@ body[data-overlay-open='true'] {
     grid-template-columns: auto minmax(0, 1fr);
     gap: var(--space-6);
     transition: grid-template-columns var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .account-shell:has(.account-rail[data-expanded='true']) {
+    grid-template-columns: 240px minmax(0, 1fr);
   }
 
   .account-dashboard {

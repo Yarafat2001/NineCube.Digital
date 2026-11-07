@@ -30,7 +30,7 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
   } = useCommerceAgent();
 
   useLanguage();
-  const { user } = useAuth();
+  useAuth();
   const [input, setInput] = useState('');
   const [showMemoryModal, setShowMemoryModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -155,7 +155,9 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
 
   // The unified CommerceCopilot is always available across the showcase home and all store pages
   const shouldRenderLauncher = true;
-  const hasChat = Boolean(user);
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  const isAuthRoute = pathname === '/login' || pathname === '/register';
+  const hasChat = !isAuthRoute;
 
   return (
     <>

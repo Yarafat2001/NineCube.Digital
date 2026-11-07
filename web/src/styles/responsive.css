@@ -1170,6 +1170,11 @@ main .link-button:is(:hover, :focus-visible, :active),
 }
 
 @media (max-width: 768px) {
+  /* Hide floating customer support chat launcher on mobile to prevent duplicate icons and UI obstruction */
+  .chat-launcher {
+    display: none !important;
+  }
+
   /* On mobile Account Dashboard, layout the navigation as a modern 2-column e-commerce hub grid */
   .account-dashboard .account-rail .account-nav-list {
     display: grid !important;
