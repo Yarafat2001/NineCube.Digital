@@ -6986,10 +6986,17 @@ body[data-overlay-open='true'] {
   transition: width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), min-width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1), max-width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
   position: sticky;
   top: var(--sticky-top, 80px);
-  z-index: var(--z-nav);
+  z-index: 120;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  overflow: visible;
+}
+
+.account-nav-list,
+.account-nav-list__group,
+.account-nav-row {
+  overflow: visible;
 }
 
 .account-rail .orb-notch {
@@ -7311,37 +7318,39 @@ body[data-overlay-open='true'] {
   color: var(--on-accent);
 }
 
-/* Feature name hover badge for minimised sidebar - matches reference image media_1794050467635_28920441.jpg (right side footer corner) */
+/* Feature name hover badge for minimised sidebar - matches reference sample (Image 4 'Bookings' & Image 5 'My profile': right side footer corner of the icon) */
 .account-rail:not([data-expanded='true']) .account-nav-row__tooltip {
   position: absolute;
-  top: calc(100% - 8px);
-  left: calc(50% + 4px);
+  top: calc(50% + 14px);
+  left: calc(50% + 12px);
   transform: translateY(-2px);
-  background: #1f1f21;
+  background: #141416;
   color: var(--accent, #ffab4d);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 2px;
-  padding: 4px 9px;
-  font-size: 11.5px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-size: 11px;
   font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
+  line-height: 1.25;
+  letter-spacing: 0.015em;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-  z-index: var(--z-menu);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65);
+  z-index: 99999 !important;
 }
 
 :root[data-theme='light'] .account-rail:not([data-expanded='true']) .account-nav-row__tooltip {
-  background: #202226;
+  background: #1a1a1e;
   color: #ffab4d;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
-.account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip {
+.account-rail:not([data-expanded='true']) .account-nav-row:hover .account-nav-row__tooltip,
+.account-rail:not([data-expanded='true']) .account-nav-row:focus-visible .account-nav-row__tooltip {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -7962,18 +7971,31 @@ body[data-overlay-open='true'] {
 .account-dashboard__main { grid-area: main; min-width: 0; width: 100%; }
 
 @media (min-width: 769px) {
+  .page:has(.account-rail),
   .page:has(.account-shell),
   .page.account-shell,
-  .page.container:has(.account-shell) {
-    width: min(1560px, 100% - 2 * var(--space-4));
-    margin-inline-start: var(--space-4);
-    margin-inline-end: auto;
-    padding-inline: 0;
+  .page.account-dashboard,
+  .page.container:has(.account-shell),
+  .page.container:has(.account-rail),
+  .page.container.account-dashboard {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline-start: 0 !important;
+    margin-inline-end: 0 !important;
+    padding-inline: 16px 24px !important;
+    box-sizing: border-box !important;
+  }
+
+  .account-shell,
+  .account-dashboard {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline-start: 0 !important;
   }
 
   .account-shell {
     grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-6);
+    gap: var(--space-5);
     transition: grid-template-columns var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -7991,6 +8013,7 @@ body[data-overlay-open='true'] {
     grid-template-areas:
       "nav header"
       "nav main";
+    gap: var(--space-5);
   }
 }
 
@@ -8000,6 +8023,8 @@ body[data-overlay-open='true'] {
   flex-direction: column;
   gap: var(--space-4);
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 /* The avatar is a link now, so it takes the navbar's own glass pill. The amber that used to
