@@ -11,6 +11,7 @@ namespace NineCube.Infrastructure.Persistence;
 public static class ProductionCatalogImporter
 {
     private const string StockRepairKey = "ProductionCatalogue.StockInitialization.v1";
+    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v2";
 
     public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default)
     {
@@ -25,6 +26,7 @@ public static class ProductionCatalogImporter
         // Serialize rolling-deployment importers against the same PostgreSQL database.
         await db.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(846239105)", ct);
         var repairStock = !await db.Settings.AnyAsync(s => s.Key == StockRepairKey, ct);
+        var refreshImages = !await db.Settings.AnyAsync(s => s.Key == ImageRefreshKey, ct);
         var categories = (await db.Categories.ToListAsync(ct)).ToDictionary(c => c.Slug);
         var createdCategories = 0;
         foreach (var item in feed.Categories.OrderBy(c => c.Depth))
@@ -105,7 +107,7 @@ public static class ProductionCatalogImporter
             if (string.IsNullOrWhiteSpace(product.PriceBasis)) product.PriceBasis = item.PriceBasis;
             if (product.Categories.Count == 0)
                 product.Categories.Add(new ProductCategory { CategoryId = categories[item.Category].Id, IsPrimary = true });
-            if (product.Images.Count == 0)
+            if (product.Images.Count == 0 || (refreshImages && item.Images.Count > 0 && !product.Images.Any(img => img.Url.Contains("canonical_"))))
             {
                 // A merchant's existing image takes precedence over bundled media, but stale generated
                 // placeholders (for example "/products/48.webp" or "/products/nc-1001.jpg") are not
@@ -116,6 +118,7 @@ public static class ProductionCatalogImporter
                 var photos = string.IsNullOrWhiteSpace(product.ImageUrl) || item.Images.Any(i => i.Url == product.ImageUrl)
                     ? item.Images
                     : preserveCustomImage ? [new Photo(product.ImageUrl, product.Name)] : item.Images;
+                if (product.Images.Count > 0) product.Images.Clear();
                 foreach (var photo in photos.Select((image, index) => (image, index)))
                     product.Images.Add(new ProductImage { Url = photo.image.Url, AltText = photo.image.AltText,
                         IsPrimary = photo.index == 0, SortOrder = photo.index, CreatedAt = now });
@@ -135,6 +138,8 @@ public static class ProductionCatalogImporter
         }
         if (repairStock)
             db.Settings.Add(new Setting { Key = StockRepairKey, Value = DateTime.UtcNow.ToString("O") });
+        if (refreshImages)
+            db.Settings.Add(new Setting { Key = ImageRefreshKey, Value = DateTime.UtcNow.ToString("O") });
         await db.SaveChangesAsync(ct);
         await InitializeLaptopStockAsync(db, feed, logger, ct);
         await transaction.CommitAsync(ct);

@@ -2,6 +2,7 @@ import { t, useLanguage } from '../i18n/language';
 import { useEffect, useState } from 'react';
 import { resolveAssetUrl } from '../api/client';
 import type { Product, ProductImage as ProductImageType } from '../api/types';
+import { resolveDualProductImages } from '../lib/catalogImages';
 import { Icon } from './Icon';
 
 /** The primary image first, then the rest - the same order the API returns. */
@@ -46,10 +47,22 @@ export function ProductImage({
   const secondary = gallery.find(image => !image.isPrimary) ?? (gallery.length > 1 ? gallery[1] : null);
 
   const stored = primaryImage(product, images);
-  const imageDescription = primary?.altText ?? product.name;
+  const dual = resolveDualProductImages(product, images);
+
+  const isMerchantUpload = stored && stored.startsWith('/uploads/');
+  const effectivePrimary = isMerchantUpload ? stored : (dual.primaryUrl ?? stored);
+  const effectiveSecondary = isMerchantUpload
+    ? (secondary ? secondary.url : null)
+    : (secondary ? secondary.url : dual.secondaryUrl);
+
+  const imageDescription = isMerchantUpload ? (primary?.altText ?? product.name) : (dual.primaryAlt ?? primary?.altText ?? product.name);
+  const secondaryDescription = isMerchantUpload
+    ? (secondary?.altText ?? `${product.name} (${t("Inside")})`)
+    : (dual.secondaryAlt ?? secondary?.altText ?? `${product.name} (${t("Inside")})`);
+
   const representative = imageDescription.startsWith('Representative image:');
-  const src = resolveAssetUrl(stored);
-  const secondarySrc = secondary ? resolveAssetUrl(secondary.url) : null;
+  const src = resolveAssetUrl(effectivePrimary);
+  const secondarySrc = resolveAssetUrl(effectiveSecondary);
 
   const [broken, setBroken] = useState(false);
   const [secondaryBroken, setSecondaryBroken] = useState(false);
@@ -79,7 +92,7 @@ export function ProductImage({
             <img
               className={`product-card__image product-card__image--secondary${activeView === 'open' ? ' product-card__image--visible' : ''}`}
               src={secondarySrc}
-              alt={t(secondary?.altText ?? `${product.name} (${t("Inside")})`)}
+              alt={t(secondaryDescription)}
               loading="lazy"
               decoding="async"
               onError={() => setSecondaryBroken(true)}
@@ -128,7 +141,9 @@ export function ProductThumbnail({
 }) {
   const explicitUrl = url && typeof url === 'string' && url.trim().length > 0 ? url.trim() : null;
   const productUrl = product ? primaryImage(product as Product) : null;
-  const rawUrl = explicitUrl ?? productUrl;
+  const dual = product ? resolveDualProductImages(product as Product) : null;
+  const isMerchant = (explicitUrl && explicitUrl.startsWith('/uploads/')) || (productUrl && productUrl.startsWith('/uploads/'));
+  const rawUrl = isMerchant ? (explicitUrl ?? productUrl) : (dual?.primaryUrl ?? explicitUrl ?? productUrl);
   const src = resolveAssetUrl(rawUrl);
   const [broken, setBroken] = useState(false);
 
