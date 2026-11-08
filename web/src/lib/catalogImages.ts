@@ -21,15 +21,7 @@ export function resolveDualProductImages(
   const secondaryFromGallery =
     gallery.find((img) => !img.isPrimary) ?? (gallery.length > 1 ? gallery[1] : null);
 
-  // If product explicitly has no images in gallery and no imageUrl, preserve empty state for placeholder
-  if (gallery.length === 0 && !product.imageUrl) {
-    return {
-      primaryUrl: null,
-      primaryAlt: product.name,
-      secondaryUrl: null,
-      secondaryAlt: null,
-    };
-  }
+  const hasDbMedia = gallery.length > 0 || !!product.imageUrl;
 
   let primaryUrl: string | null = primaryFromGallery?.url ?? product.imageUrl ?? null;
   let secondaryUrl: string | null = secondaryFromGallery?.url ?? null;
@@ -260,12 +252,20 @@ export function resolveDualProductImages(
   }
   // 16. Fallback if primaryUrl is not set: use slug image
   if (!primaryUrl) {
+    if (!hasDbMedia && !slug) {
+      return {
+        primaryUrl: null,
+        primaryAlt: product.name,
+        secondaryUrl: null,
+        secondaryAlt: null,
+      };
+    }
     if (slug) {
       primaryUrl = `/products/bd/${slug}.jpg`;
       secondaryUrl = `/products/bd/${slug}-open.jpg`;
     } else {
-      primaryUrl = '/products/bd/canonical_atta_packet.jpg';
-      secondaryUrl = primaryUrl;
+      primaryUrl = null;
+      secondaryUrl = null;
     }
   }
 

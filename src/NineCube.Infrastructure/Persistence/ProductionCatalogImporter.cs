@@ -11,7 +11,7 @@ namespace NineCube.Infrastructure.Persistence;
 public static class ProductionCatalogImporter
 {
     private const string StockRepairKey = "ProductionCatalogue.StockInitialization.v1";
-    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v4";
+    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v5";
 
     public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default)
     {
@@ -112,7 +112,9 @@ public static class ProductionCatalogImporter
                 // A merchant's custom image (/uploads/...) takes precedence over bundled media,
                 // but catalogue seed images (/products/...) must be refreshed with the reviewed authentic dual image feed.
                 var preserveCustomImage = !string.IsNullOrWhiteSpace(product.ImageUrl)
-                    && product.ImageUrl.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase);
+                    && !LooksLikeGeneratedPlaceholder(product.ImageUrl)
+                    && (product.ImageUrl.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase)
+                        || product.ImageUrl.Equals("/products/custom.jpg", StringComparison.OrdinalIgnoreCase));
                 var photos = preserveCustomImage ? [new Photo(product.ImageUrl!, product.Name)] : item.Images;
                 if (product.Images.Count > 0) product.Images.Clear();
                 foreach (var photo in photos.Select((image, index) => (image, index)))

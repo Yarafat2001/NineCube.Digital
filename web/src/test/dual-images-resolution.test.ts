@@ -109,23 +109,61 @@ describe('Catalog Dual Image Verification for SQA User Scenarios', () => {
     expect(res.secondaryUrl).toBe('/products/bd/canonical_baby_winter_open.jpg');
   });
 
-  it('resolves 10 Minute School Courses with real course cards and learning dashboard (NEVER dummy text placards)', () => {
+  it('resolves PRAN Aromatic Chinigura Rice with packet pouch and open aromatic grains even when db imageUrl is null', () => {
     const p: Product = {
-      id: 106,
-      sku: 'NC-10MS-FREE',
-      slug: '10-minute-school-freelancing-masterclass-certificate',
-      name: '10 Minute School Freelancing Masterclass Certificate',
-      price: 1994,
+      id: 107,
+      sku: 'NC-PRAN-RICE-10KG',
+      slug: 'pran-aromatic-chinigura-rice-10kg',
+      name: 'PRAN Aromatic Chinigura Rice 10kg',
+      price: 1650,
       currency: 'BDT',
-      stockQuantity: 25,
+      stockQuantity: 50,
       isActive: true,
       rowVersion: 'AAAAAAA=',
-      categories: [{ id: 5, name: 'Online Learning', slug: 'online-learning', isPrimary: true }],
+      categories: [{ id: 1, name: 'Rice', slug: 'rice', isPrimary: true }],
       images: [],
-      imageUrl: '/products/bd/canonical_10ms_freelancing_packet.jpg',
+      imageUrl: null,
     };
     const res = resolveDualProductImages(p);
-    expect(res.primaryUrl).toBe('/products/bd/canonical_10ms_freelancing_packet.jpg');
-    expect(res.secondaryUrl).toBe('/products/bd/canonical_10ms_freelancing_open.jpg');
+    expect(res.primaryUrl).toBe('/products/bd/canonical_pran_rice_packet.jpg');
+    expect(res.secondaryUrl).toBe('/products/bd/canonical_chinigura_rice_open.jpg');
+  });
+
+  it('resolves Bashundhara Aromatic Chinigura Rice with burlap sack even when db imageUrl is null', () => {
+    const p: Product = {
+      id: 108,
+      sku: 'NC-BASH-10KG-NULL',
+      slug: 'bashundhara-aromatic-chinigura-rice-10kg-export-quality',
+      name: 'Bashundhara Aromatic Chinigura Rice 10kg Export Quality',
+      price: 1622,
+      currency: 'BDT',
+      stockQuantity: 47,
+      isActive: true,
+      rowVersion: 'AAAAAAA=',
+      categories: [{ id: 1, name: 'Rice', slug: 'rice', isPrimary: true }],
+      images: [],
+      imageUrl: null,
+    };
+    const res = resolveDualProductImages(p);
+    expect(res.primaryUrl).toBe('/products/bd/canonical_bashundhara_rice_packet_10kg.jpg');
+    expect(res.secondaryUrl).toBe('/products/bd/canonical_chinigura_rice_open.jpg');
+  });
+
+  it('preserves null for an uncatalogued custom product with no images to show placeholder', () => {
+    const p: Product = {
+      id: 109,
+      sku: 'NC-CUSTOM-UNKNOWN',
+      name: 'Mystery Custom Item Without Image',
+      price: 99,
+      currency: 'BDT',
+      stockQuantity: 10,
+      isActive: true,
+      rowVersion: 'AAAAAAA=',
+      images: [],
+      imageUrl: null,
+    };
+    const res = resolveDualProductImages(p);
+    expect(res.primaryUrl).toBeNull();
+    expect(res.secondaryUrl).toBeNull();
   });
 });
