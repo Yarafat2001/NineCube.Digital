@@ -9,6 +9,22 @@
 :root[data-theme="light"] {
   color-scheme: light;
 
+  /* ---- Floating Glass Admin tokens (light theme) ------------------- */
+  --bg: #e9f0fa;
+  --glass: rgba(255, 255, 255, 0.60);
+  --glass2: rgba(255, 255, 255, 0.78);
+  --bd: rgba(30, 60, 120, 0.14);
+  --ink: #0f1b2e;
+  --dim: #5b6b82;
+  --acc: #1c6dff;
+  --acc2: #2f86ff;
+  --shadow: rgba(40, 80, 140, 0.18);
+  --o1: #ffb020;
+  --o2: #1c6dff;
+  --o3: #35d0e8;
+  --o4: #3ddc97;
+  --oa: 0.88;
+
   /* ---- required LIGHT THEME TOKENS (spec §1) -------------------------- */
   --bg-page: #E9EDF5;
   --bg-page-glow:
@@ -238,6 +254,22 @@
     --opt-edge: var(--border-strong);
     --opt-ink: var(--text);
 
+    /* ---- Floating Glass Admin tokens (dark theme) -------------------- */
+    --bg: #05070c;
+    --glass: rgba(22, 28, 40, 0.55);
+    --glass2: rgba(30, 38, 54, 0.75);
+    --bd: rgba(255, 255, 255, 0.12);
+    --ink: #eef3fa;
+    --dim: #8d9bb0;
+    --acc: #1c6dff;
+    --acc2: #4da3ff;
+    --shadow: rgba(0, 0, 0, 0.50);
+    --o1: #c98a1c;
+    --o2: #1456d6;
+    --o3: #2aa9c4;
+    --o4: #2fb579;
+    --oa: 0.75;
+
     /* ---- spec aliases for dark (Cirrel Luxury Commerce Obsidian System) -- */
     --bg-page: #04070d;
     --bg-page-glow:
@@ -338,7 +370,7 @@
   --nav-bar-veil: linear-gradient(135deg, rgba(206,220,240,.10) 0%, rgba(150,167,198,.07) 46%, rgba(120,135,166,.09) 100%);
   --nav-glass-base: rgba(14,13,17,.68);
   --nav-glass-base-scroll: rgba(14,13,17,.84);
-  --nav-glass-edge: rgba(255, 255, 255, .20);
+  --nav-glass-edge: rgba(226,237,251,.72);
   --nav-glass-shadow: inset 0 1px 1px rgba(255, 255, 255, .35), inset 0 0 0 1px rgba(255, 255, 255, .12), 0 12px 30px rgba(0, 0, 0, .65);
   --nav-hover: rgba(10, 132, 255, .15);
   --orb-shadow: 0 10px 24px rgba(10, 132, 255, .35);
@@ -406,4 +438,82 @@
 :root[data-theme='dark'] {
   --cert-shadow: 0 14px 26px -16px rgba(0, 0, 0, .72);
   --cert-shadow-raised: 0 18px 30px -16px rgba(0, 0, 0, .78);
+}
+
+/* ===========================================================================
+   Floating Glass Admin: Ambient Orbs and Glass Primitives
+   =========================================================================== */
+.ambient-orbs {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: var(--oa, 0.75);
+  z-index: 0;
+  pointer-events: none;
+  animation: fl 18s ease-in-out infinite alternate;
+}
+.o1 {
+  width: 260px;
+  height: 260px;
+  top: -70px;
+  right: 6%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.45), var(--o1) 35%, #7a4a00);
+}
+.o2 {
+  width: 520px;
+  height: 520px;
+  left: -200px;
+  top: 30%;
+  background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.35), var(--o2) 40%, #071a5c);
+  animation-delay: -5s;
+}
+.o3 {
+  width: 420px;
+  height: 420px;
+  right: -120px;
+  bottom: -120px;
+  background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.50), var(--o3) 40%, #0a5a74);
+  animation-delay: -9s;
+}
+.o4 {
+  width: 160px;
+  height: 160px;
+  left: 42%;
+  bottom: 6%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.55), var(--o4) 45%, #0c6b44);
+  animation-delay: -3s;
+}
+@keyframes fl {
+  to { transform: translate(14px, -18px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Floating frosted-glass surface classes */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--bd);
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border-radius: 22px;
+  box-shadow: 0 10px 30px var(--shadow);
+}
+.glass2 {
+  background: var(--glass2);
+  border: 1px solid var(--bd);
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border-radius: 22px;
+  box-shadow: 0 10px 30px var(--shadow);
 }

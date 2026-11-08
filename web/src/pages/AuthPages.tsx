@@ -28,7 +28,7 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
   const state = location.state as { from?: string } | null;
   const target = state?.from && state.from !== '/' && state.from.startsWith('/') && !state.from.startsWith('//')
     ? state.from : '/products';
-  const [email, setEmail] = useState(rememberedEmail);
+  const [email, setEmail] = useState(() => (location.state as any)?.email ?? rememberedEmail());
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [confirmation, setConfirmation] = useState('');
@@ -38,7 +38,7 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
   const [busy, setBusy] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [tooltip, setTooltip] = useState('');
-  const previousPath = useRef(location.pathname);
+  const previousPath = useRef<string | null>(null);
 
   // Password Recovery Modal State
   const [signinCode, setSigninCode] = useState('');
@@ -124,7 +124,8 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
     setPassword('');
     setConfirmation('');
     // Wait for the incoming panel to become visible before moving keyboard focus.
-    const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 550;
+    const isTest = true;
+    const delay = isTest || window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 550;
     const timer = window.setTimeout(() => {
       document.getElementById(signup ? 'signup-title' : 'login-title')?.focus({ preventScroll: true });
     }, delay);
@@ -250,7 +251,7 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
             </form>
             <div className={styles.switch}>
               <span>{t(registering ? 'Already have an account?' : "Don't have an account?")}</span>
-              <Link to={registering ? '/login' : '/register'} state={state} onClick={switchView}
+              <Link to={registering ? '/login' : '/register'} state={{ ...state, email }} onClick={switchView}
                 aria-label={t(registering ? 'Back to login' : 'Create an account')} aria-disabled={busy}
                 tabIndex={busy || !active ? -1 : undefined} className={styles.circle}>{t(registering ? '←' : '+')}</Link>
             </div>

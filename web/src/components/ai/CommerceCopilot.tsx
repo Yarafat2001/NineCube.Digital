@@ -245,8 +245,15 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
   // The unified CommerceCopilot is always available across the showcase home and all store pages
   const shouldRenderLauncher = true;
   // HashRouter keeps the route in the hash, so the pathname never changes: ask the router.
-  const location = useLocation();
-  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register';
+  let locationPathname = '';
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const loc = useLocation();
+    locationPathname = loc.pathname;
+  } catch {
+    locationPathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  }
+  const isAuthRoute = locationPathname === '/login' || locationPathname === '/register';
   const hasChat = !isAuthRoute;
 
   return (

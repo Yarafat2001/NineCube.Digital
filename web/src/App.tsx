@@ -71,6 +71,13 @@ export function App() {
   return (
     <CommerceAgentProvider>
       <div className="app-shell">
+        {/* Floating Glass Admin: Ambient Background Orbs */}
+        <div className="ambient-orbs" aria-hidden="true">
+          <div className="orb o1" />
+          <div className="orb o2" />
+          <div className="orb o3" />
+          <div className="orb o4" />
+        </div>
         <CampaignBanner />
         <Navbar />
 
