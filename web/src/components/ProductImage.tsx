@@ -50,7 +50,8 @@ export function ProductImage({
   const dual = resolveDualProductImages(product, images);
 
   const isMerchantUpload = stored && stored.startsWith('/uploads/');
-  const effectivePrimary = isMerchantUpload ? stored : (dual.primaryUrl ?? stored);
+  const hasSpecificStored = stored && !stored.includes('canonical_') && !stored.includes('placeholder') && !stored.includes('demo');
+  const effectivePrimary = isMerchantUpload ? stored : (hasSpecificStored ? stored : (dual.primaryUrl ?? stored));
   const rawSecondary = isMerchantUpload
     ? (secondary ? secondary.url : null)
     : (dual.secondaryUrl ?? (secondary ? secondary.url : null));

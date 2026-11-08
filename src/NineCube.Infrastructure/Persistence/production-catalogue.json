@@ -4570,17 +4570,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Generic Soybean Cooking Oil 5 L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Generic Soybean Cooking Oil 5 L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/generic-soybean-cooking-oil-5-l.jpg",
+          "altText": "Generic Soybean Cooking Oil 5 L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/generic-soybean-cooking-oil-5-l.jpg"
     },
     {
       "sku": "BD-COCO-OIL-1-L-6B3E27",
@@ -8967,17 +8961,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Rupchanda Extra Virgin Olive Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Rupchanda Extra Virgin Olive Oil 500ml (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-extra-virgin-olive-oil-500ml.jpg",
+          "altText": "Rupchanda Extra Virgin Olive Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-extra-virgin-olive-oil-500ml.jpg"
     },
     {
       "sku": "BD-TEER-COOK-001-FB72E5",
@@ -9002,17 +8990,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Palm Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Palm Oil 5L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/teer-palm-oil-5l.jpg",
+          "altText": "Teer Palm Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/teer-palm-oil-5l.jpg"
     },
     {
       "sku": "BD-FRES-COOK-002-B10724",
@@ -9037,17 +9019,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Soybean Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Soybean Oil 1L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-soybean-oil-1l.jpg",
+          "altText": "Fresh Soybean Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-soybean-oil-1l.jpg"
     },
     {
       "sku": "BD-RADH-COOK-003-62B379",
@@ -9072,17 +9048,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Radhuni Mustard Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Radhuni Mustard Oil 500ml (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-mustard-oil-500ml.jpg",
+          "altText": "Radhuni Mustard Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-mustard-oil-500ml.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-004-75D1B4",
@@ -9107,17 +9077,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Palm Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Palm Oil 1L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-palm-oil-1l.jpg",
+          "altText": "White Sister Palm Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-palm-oil-1l.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-005-1FF30E",
@@ -9142,17 +9106,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Rupchanda Mustard Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Rupchanda Mustard Oil 5L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-mustard-oil-5l.jpg",
+          "altText": "Rupchanda Mustard Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-mustard-oil-5l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-006-3971B2",
@@ -9177,17 +9135,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Teer Mustard Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Teer Mustard Oil 2L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/teer-mustard-oil-2l.jpg",
+          "altText": "Teer Mustard Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/teer-mustard-oil-2l.jpg"
     },
     {
       "sku": "BD-FRES-COOK-007-886B20",
@@ -9212,17 +9164,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Fresh Extra Virgin Olive Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Fresh Extra Virgin Olive Oil 1L (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-extra-virgin-olive-oil-1l.jpg",
+          "altText": "Fresh Extra Virgin Olive Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/fresh-extra-virgin-olive-oil-1l.jpg"
     },
     {
       "sku": "BD-RADH-COOK-008-EC72FF",
@@ -9247,17 +9193,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Radhuni Extra Virgin Olive Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Radhuni Extra Virgin Olive Oil 1L (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-extra-virgin-olive-oil-1l.jpg",
+          "altText": "Radhuni Extra Virgin Olive Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-extra-virgin-olive-oil-1l.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-009-F6A899",
@@ -9282,17 +9222,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 5L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-soybean-oil-5l.jpg",
+          "altText": "White Sister Soybean Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-soybean-oil-5l.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-010-29638C",
@@ -9317,17 +9251,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 2L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-palm-oil-2l.jpg",
+          "altText": "Rupchanda Palm Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_rupchanda_soybean_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-palm-oil-2l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-011-7151CA",
@@ -9352,17 +9280,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 1L (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/teer-extra-virgin-olive-oil-1l.jpg",
+          "altText": "Teer Extra Virgin Olive Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/teer-extra-virgin-olive-oil-1l.jpg"
     },
     {
       "sku": "BD-FRES-COOK-012-96ED29",
@@ -9387,17 +9309,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 5L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-palm-oil-5l.jpg",
+          "altText": "Fresh Palm Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-palm-oil-5l.jpg"
     },
     {
       "sku": "BD-RADH-COOK-013-456C20",
@@ -9422,17 +9338,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Radhuni Palm Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Radhuni Palm Oil 500ml (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-palm-oil-500ml.jpg",
+          "altText": "Radhuni Palm Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-palm-oil-500ml.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-014-E420D4",
@@ -9457,17 +9367,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "White Sister Extra Virgin Olive Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "White Sister Extra Virgin Olive Oil 1L (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-extra-virgin-olive-oil-1l.jpg",
+          "altText": "White Sister Extra Virgin Olive Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-extra-virgin-olive-oil-1l.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-015-CD990A",
@@ -9492,17 +9396,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Rupchanda Extra Virgin Olive Oil 500ml Family Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Rupchanda Extra Virgin Olive Oil 500ml Family Pack (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-extra-virgin-olive-oil-500ml-family-pack.jpg",
+          "altText": "Rupchanda Extra Virgin Olive Oil 500ml Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-extra-virgin-olive-oil-500ml-family-pack.jpg"
     },
     {
       "sku": "BD-TEER-COOK-016-E717BB",
@@ -9527,17 +9425,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Teer Mustard Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Teer Mustard Oil 5L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/teer-mustard-oil-5l.jpg",
+          "altText": "Teer Mustard Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/teer-mustard-oil-5l.jpg"
     },
     {
       "sku": "BD-FRES-COOK-017-60819D",
@@ -9562,17 +9454,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Soybean Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Soybean Oil 500ml (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-soybean-oil-500ml.jpg",
+          "altText": "Fresh Soybean Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-soybean-oil-500ml.jpg"
     },
     {
       "sku": "BD-RADH-COOK-018-40E522",
@@ -9597,17 +9483,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Radhuni Mustard Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Radhuni Mustard Oil 1L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-mustard-oil-1l.jpg",
+          "altText": "Radhuni Mustard Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-mustard-oil-1l.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-019-9FB349",
@@ -9632,17 +9512,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "White Sister Mustard Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "White Sister Mustard Oil 2L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-mustard-oil-2l.jpg",
+          "altText": "White Sister Mustard Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-mustard-oil-2l.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-020-522211",
@@ -9667,17 +9541,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Rupchanda Mustard Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Rupchanda Mustard Oil 2L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-mustard-oil-2l.jpg",
+          "altText": "Rupchanda Mustard Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-mustard-oil-2l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-021-722AA1",
@@ -9702,17 +9570,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_5l_packet.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 5L (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/teer-extra-virgin-olive-oil-5l.jpg",
+          "altText": "Teer Extra Virgin Olive Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_5l_packet.jpg"
+      "imageUrl": "/products/bd/teer-extra-virgin-olive-oil-5l.jpg"
     },
     {
       "sku": "BD-FRES-COOK-022-43B3A3",
@@ -9738,17 +9600,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 5L Family Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 5L Family Pack (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-palm-oil-5l-family-pack.jpg",
+          "altText": "Fresh Palm Oil 5L Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-palm-oil-5l-family-pack.jpg"
     },
     {
       "sku": "BD-RADH-COOK-023-04E5B5",
@@ -9774,17 +9630,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Radhuni Mustard Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Radhuni Mustard Oil 5L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-mustard-oil-5l.jpg",
+          "altText": "Radhuni Mustard Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-mustard-oil-5l.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-024-797E3D",
@@ -9809,17 +9659,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "White Sister Mustard Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "White Sister Mustard Oil 500ml (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-mustard-oil-500ml.jpg",
+          "altText": "White Sister Mustard Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-mustard-oil-500ml.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-025-3B8E46",
@@ -9844,17 +9688,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Soybean Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Soybean Oil 5L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-soybean-oil-5l.jpg",
+          "altText": "Rupchanda Soybean Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_rupchanda_soybean_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-soybean-oil-5l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-026-AE38C9",
@@ -9879,17 +9717,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 1L Export Quality (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 1L Export Quality (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/teer-extra-virgin-olive-oil-1l-export-quality.jpg",
+          "altText": "Teer Extra Virgin Olive Oil 1L Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/teer-extra-virgin-olive-oil-1l-export-quality.jpg"
     },
     {
       "sku": "BD-FRES-COOK-027-B9C80E",
@@ -9915,17 +9747,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 500ml (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-palm-oil-500ml.jpg",
+          "altText": "Fresh Palm Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-palm-oil-500ml.jpg"
     },
     {
       "sku": "BD-RADH-COOK-028-512F73",
@@ -9950,17 +9776,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Radhuni Palm Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Radhuni Palm Oil 2L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-palm-oil-2l.jpg",
+          "altText": "Radhuni Palm Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-palm-oil-2l.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-029-ACEA58",
@@ -9985,17 +9805,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 500ml (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-soybean-oil-500ml.jpg",
+          "altText": "White Sister Soybean Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-soybean-oil-500ml.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-030-DD7BDA",
@@ -10020,17 +9834,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 5L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-palm-oil-5l.jpg",
+          "altText": "Rupchanda Palm Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_rupchanda_soybean_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-palm-oil-5l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-031-F8869D",
@@ -10056,17 +9864,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Palm Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Palm Oil 1L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/teer-palm-oil-1l.jpg",
+          "altText": "Teer Palm Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/teer-palm-oil-1l.jpg"
     },
     {
       "sku": "BD-FRES-COOK-032-5BD876",
@@ -10091,17 +9893,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 5L Value Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 5L Value Pack (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-palm-oil-5l-value-pack.jpg",
+          "altText": "Fresh Palm Oil 5L Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-palm-oil-5l-value-pack.jpg"
     },
     {
       "sku": "BD-RADH-COOK-033-AC9724",
@@ -10126,17 +9922,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Radhuni Mustard Oil 1L Family Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Radhuni Mustard Oil 1L Family Pack (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-mustard-oil-1l-family-pack.jpg",
+          "altText": "Radhuni Mustard Oil 1L Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-mustard-oil-1l-family-pack.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-034-BA06BA",
@@ -10161,17 +9951,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "White Sister Extra Virgin Olive Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "White Sister Extra Virgin Olive Oil 500ml (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-extra-virgin-olive-oil-500ml.jpg",
+          "altText": "White Sister Extra Virgin Olive Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-extra-virgin-olive-oil-500ml.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-035-2B386C",
@@ -10196,17 +9980,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 1L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-palm-oil-1l.jpg",
+          "altText": "Rupchanda Palm Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_rupchanda_soybean_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-palm-oil-1l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-036-FF9EC8",
@@ -10231,17 +10009,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Palm Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Palm Oil 2L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/teer-palm-oil-2l.jpg",
+          "altText": "Teer Palm Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/teer-palm-oil-2l.jpg"
     },
     {
       "sku": "BD-FRES-COOK-037-5970CC",
@@ -10266,17 +10038,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_mustard_packet.jpg",
-          "altText": "Fresh Mustard Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Fresh Mustard Oil 1L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-mustard-oil-1l.jpg",
+          "altText": "Fresh Mustard Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_mustard_packet.jpg"
+      "imageUrl": "/products/bd/fresh-mustard-oil-1l.jpg"
     },
     {
       "sku": "BD-RADH-COOK-038-402FB3",
@@ -10301,17 +10067,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Radhuni Mustard Oil 500ml Combo Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Radhuni Mustard Oil 500ml Combo Pack (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-mustard-oil-500ml-combo-pack.jpg",
+          "altText": "Radhuni Mustard Oil 500ml Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-mustard-oil-500ml-combo-pack.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-039-4A2B29",
@@ -10336,17 +10096,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 500ml Export Quality (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 500ml Export Quality (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-soybean-oil-500ml-export-quality.jpg",
+          "altText": "White Sister Soybean Oil 500ml Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-soybean-oil-500ml-export-quality.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-040-71C89E",
@@ -10371,17 +10125,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Rupchanda Extra Virgin Olive Oil 500ml Value Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Rupchanda Extra Virgin Olive Oil 500ml Value Pack (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-extra-virgin-olive-oil-500ml-value-pack.jpg",
+          "altText": "Rupchanda Extra Virgin Olive Oil 500ml Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-extra-virgin-olive-oil-500ml-value-pack.jpg"
     },
     {
       "sku": "BD-TEER-COOK-041-8DB3CD",
@@ -10406,17 +10154,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Palm Oil 1L Value Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Palm Oil 1L Value Pack (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/teer-palm-oil-1l-value-pack.jpg",
+          "altText": "Teer Palm Oil 1L Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/teer-palm-oil-1l-value-pack.jpg"
     },
     {
       "sku": "BD-FRES-COOK-042-E26AB3",
@@ -10441,17 +10183,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_5l_packet.jpg",
-          "altText": "Fresh Extra Virgin Olive Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Fresh Extra Virgin Olive Oil 5L (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-extra-virgin-olive-oil-5l.jpg",
+          "altText": "Fresh Extra Virgin Olive Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_5l_packet.jpg"
+      "imageUrl": "/products/bd/fresh-extra-virgin-olive-oil-5l.jpg"
     },
     {
       "sku": "BD-RADH-COOK-043-9590D1",
@@ -10476,17 +10212,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Radhuni Mustard Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Radhuni Mustard Oil 2L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-mustard-oil-2l.jpg",
+          "altText": "Radhuni Mustard Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-mustard-oil-2l.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-044-53B9C6",
@@ -10511,17 +10241,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 500ml Combo Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 500ml Combo Pack (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-soybean-oil-500ml-combo-pack.jpg",
+          "altText": "White Sister Soybean Oil 500ml Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-soybean-oil-500ml-combo-pack.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-045-DFE398",
@@ -10546,17 +10270,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Rupchanda Mustard Oil 2L Combo Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Rupchanda Mustard Oil 2L Combo Pack (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-mustard-oil-2l-combo-pack.jpg",
+          "altText": "Rupchanda Mustard Oil 2L Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-mustard-oil-2l-combo-pack.jpg"
     },
     {
       "sku": "BD-TEER-COOK-046-7B70DB",
@@ -10581,17 +10299,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Soybean Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Soybean Oil 500ml (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/teer-soybean-oil-500ml.jpg",
+          "altText": "Teer Soybean Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/teer-soybean-oil-500ml.jpg"
     },
     {
       "sku": "BD-FRES-COOK-047-A5DFB1",
@@ -10616,17 +10328,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_5l_packet.jpg",
-          "altText": "Fresh Extra Virgin Olive Oil 5L Export Quality (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Fresh Extra Virgin Olive Oil 5L Export Quality (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-extra-virgin-olive-oil-5l-export-quality.jpg",
+          "altText": "Fresh Extra Virgin Olive Oil 5L Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_5l_packet.jpg"
+      "imageUrl": "/products/bd/fresh-extra-virgin-olive-oil-5l-export-quality.jpg"
     },
     {
       "sku": "BD-RADH-COOK-048-B2B42F",
@@ -10651,17 +10357,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Radhuni Extra Virgin Olive Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Radhuni Extra Virgin Olive Oil 2L (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-extra-virgin-olive-oil-2l.jpg",
+          "altText": "Radhuni Extra Virgin Olive Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-extra-virgin-olive-oil-2l.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-049-F68FEA",
@@ -10686,17 +10386,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "White Sister Mustard Oil 2L Export Quality (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "White Sister Mustard Oil 2L Export Quality (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-mustard-oil-2l-export-quality.jpg",
+          "altText": "White Sister Mustard Oil 2L Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-mustard-oil-2l-export-quality.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-050-DE136A",
@@ -10721,17 +10415,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 500ml (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-palm-oil-500ml.jpg",
+          "altText": "Rupchanda Palm Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_rupchanda_soybean_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-palm-oil-500ml.jpg"
     },
     {
       "sku": "BD-TEER-COOK-051-E1B70A",
@@ -10756,17 +10444,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Teer Mustard Oil 2L Combo Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Teer Mustard Oil 2L Combo Pack (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/teer-mustard-oil-2l-combo-pack.jpg",
+          "altText": "Teer Mustard Oil 2L Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/teer-mustard-oil-2l-combo-pack.jpg"
     },
     {
       "sku": "BD-FRES-COOK-052-14B6CF",
@@ -10791,17 +10473,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 500ml Value Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 500ml Value Pack (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-palm-oil-500ml-value-pack.jpg",
+          "altText": "Fresh Palm Oil 500ml Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-palm-oil-500ml-value-pack.jpg"
     },
     {
       "sku": "BD-RADH-COOK-053-0307A6",
@@ -10826,17 +10502,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Radhuni Soybean Oil 5L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Radhuni Soybean Oil 5L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-soybean-oil-5l.jpg",
+          "altText": "Radhuni Soybean Oil 5L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-soybean-oil-5l.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-054-57454D",
@@ -10861,17 +10531,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "White Sister Extra Virgin Olive Oil 1L Combo Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "White Sister Extra Virgin Olive Oil 1L Combo Pack (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-extra-virgin-olive-oil-1l-combo-pack.jpg",
+          "altText": "White Sister Extra Virgin Olive Oil 1L Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-extra-virgin-olive-oil-1l-combo-pack.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-055-E56C52",
@@ -10896,17 +10560,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Rupchanda Mustard Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Rupchanda Mustard Oil 1L (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-mustard-oil-1l.jpg",
+          "altText": "Rupchanda Mustard Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-mustard-oil-1l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-056-97C19A",
@@ -10931,17 +10589,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 1L Family Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 1L Family Pack (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/teer-extra-virgin-olive-oil-1l-family-pack.jpg",
+          "altText": "Teer Extra Virgin Olive Oil 1L Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/teer-extra-virgin-olive-oil-1l-family-pack.jpg"
     },
     {
       "sku": "BD-FRES-COOK-057-F0A2DE",
@@ -10966,17 +10618,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_mustard_packet.jpg",
-          "altText": "Fresh Mustard Oil 1L Twin Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Fresh Mustard Oil 1L Twin Pack (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-mustard-oil-1l-twin-pack.jpg",
+          "altText": "Fresh Mustard Oil 1L Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_mustard_packet.jpg"
+      "imageUrl": "/products/bd/fresh-mustard-oil-1l-twin-pack.jpg"
     },
     {
       "sku": "BD-RADH-COOK-058-82DC78",
@@ -11001,17 +10647,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Radhuni Mustard Oil 5L Twin Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Radhuni Mustard Oil 5L Twin Pack (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-mustard-oil-5l-twin-pack.jpg",
+          "altText": "Radhuni Mustard Oil 5L Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-mustard-oil-5l-twin-pack.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-059-6FEDF5",
@@ -11036,17 +10676,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 5L Export Quality (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 5L Export Quality (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-soybean-oil-5l-export-quality.jpg",
+          "altText": "White Sister Soybean Oil 5L Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-soybean-oil-5l-export-quality.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-060-68565F",
@@ -11071,17 +10705,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 2L Export Quality (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Palm Oil 2L Export Quality (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-palm-oil-2l-export-quality.jpg",
+          "altText": "Rupchanda Palm Oil 2L Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_rupchanda_soybean_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-palm-oil-2l-export-quality.jpg"
     },
     {
       "sku": "BD-TEER-COOK-061-449E0E",
@@ -11106,17 +10734,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 1L Combo Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Teer Extra Virgin Olive Oil 1L Combo Pack (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/teer-extra-virgin-olive-oil-1l-combo-pack.jpg",
+          "altText": "Teer Extra Virgin Olive Oil 1L Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/teer-extra-virgin-olive-oil-1l-combo-pack.jpg"
     },
     {
       "sku": "BD-FRES-COOK-062-25865E",
@@ -11141,17 +10763,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Soybean Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Soybean Oil 2L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-soybean-oil-2l.jpg",
+          "altText": "Fresh Soybean Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-soybean-oil-2l.jpg"
     },
     {
       "sku": "BD-RADH-COOK-063-0A79E3",
@@ -11176,17 +10792,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Radhuni Extra Virgin Olive Oil 1L Family Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Radhuni Extra Virgin Olive Oil 1L Family Pack (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-extra-virgin-olive-oil-1l-family-pack.jpg",
+          "altText": "Radhuni Extra Virgin Olive Oil 1L Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-extra-virgin-olive-oil-1l-family-pack.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-064-38B952",
@@ -11211,17 +10821,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 1L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-soybean-oil-1l.jpg",
+          "altText": "White Sister Soybean Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-soybean-oil-1l.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-065-EB3509",
@@ -11246,17 +10850,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Soybean Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_rupchanda_soybean_packet.jpg",
-          "altText": "Rupchanda Soybean Oil 1L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-soybean-oil-1l.jpg",
+          "altText": "Rupchanda Soybean Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_rupchanda_soybean_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-soybean-oil-1l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-066-08C84F",
@@ -11281,17 +10879,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_radhuni_mustard_packet.jpg",
-          "altText": "Teer Mustard Oil 2L Family Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_mustard_oil_open.jpg",
-          "altText": "Teer Mustard Oil 2L Family Pack (Pure Golden Mustard Seeds)",
-          "isPrimary": false
+          "url": "/products/bd/teer-mustard-oil-2l-family-pack.jpg",
+          "altText": "Teer Mustard Oil 2L Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_radhuni_mustard_packet.jpg"
+      "imageUrl": "/products/bd/teer-mustard-oil-2l-family-pack.jpg"
     },
     {
       "sku": "BD-FRES-COOK-067-FDD77E",
@@ -11316,17 +10908,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 5L Twin Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 5L Twin Pack (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-palm-oil-5l-twin-pack.jpg",
+          "altText": "Fresh Palm Oil 5L Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-palm-oil-5l-twin-pack.jpg"
     },
     {
       "sku": "BD-RADH-COOK-068-6C3158",
@@ -11351,17 +10937,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Radhuni Palm Oil 500ml Family Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Radhuni Palm Oil 500ml Family Pack (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-palm-oil-500ml-family-pack.jpg",
+          "altText": "Radhuni Palm Oil 500ml Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-palm-oil-500ml-family-pack.jpg"
     },
     {
       "sku": "BD-WHIT-COOK-069-02C3CC",
@@ -11386,17 +10966,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 500ml Twin Pack (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "White Sister Soybean Oil 500ml Twin Pack (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/white-sister-soybean-oil-500ml-twin-pack.jpg",
+          "altText": "White Sister Soybean Oil 500ml Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/white-sister-soybean-oil-500ml-twin-pack.jpg"
     },
     {
       "sku": "BD-RUPC-COOK-070-3947F5",
@@ -11422,17 +10996,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Rupchanda Extra Virgin Olive Oil 2L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Rupchanda Extra Virgin Olive Oil 2L (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/rupchanda-extra-virgin-olive-oil-2l.jpg",
+          "altText": "Rupchanda Extra Virgin Olive Oil 2L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/rupchanda-extra-virgin-olive-oil-2l.jpg"
     },
     {
       "sku": "BD-TEER-COOK-071-B1AE4B",
@@ -11457,17 +11025,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Soybean Oil 500ml Export Quality (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_teer_soybean_packet.jpg",
-          "altText": "Teer Soybean Oil 500ml Export Quality (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/teer-soybean-oil-500ml-export-quality.jpg",
+          "altText": "Teer Soybean Oil 500ml Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_teer_soybean_packet.jpg"
+      "imageUrl": "/products/bd/teer-soybean-oil-500ml-export-quality.jpg"
     },
     {
       "sku": "BD-FRES-COOK-072-DE5BCC",
@@ -11492,17 +11054,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 1L (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_fresh_soybean_packet.jpg",
-          "altText": "Fresh Palm Oil 1L (Detail View)",
-          "isPrimary": false
+          "url": "/products/bd/fresh-palm-oil-1l.jpg",
+          "altText": "Fresh Palm Oil 1L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_fresh_soybean_packet.jpg"
+      "imageUrl": "/products/bd/fresh-palm-oil-1l.jpg"
     },
     {
       "sku": "BD-RADH-COOK-073-4789DC",
@@ -11527,17 +11083,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_olive_oil_packet.jpg",
-          "altText": "Radhuni Extra Virgin Olive Oil 500ml (Bottle View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_olive_oil_open.jpg",
-          "altText": "Radhuni Extra Virgin Olive Oil 500ml (Pure Extra Virgin Olive Oil & Whole Olives)",
-          "isPrimary": false
+          "url": "/products/bd/radhuni-extra-virgin-olive-oil-500ml.jpg",
+          "altText": "Radhuni Extra Virgin Olive Oil 500ml"
         }
       ],
-      "imageUrl": "/products/bd/canonical_olive_oil_packet.jpg"
+      "imageUrl": "/products/bd/radhuni-extra-virgin-olive-oil-500ml.jpg"
     },
     {
       "sku": "BD-PRAN-DAIR-000-0503BF",
@@ -22599,17 +22149,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_najirshail_packet_2kg.jpg",
-          "altText": "Bashundhara Najirshail Rice 2kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Bashundhara Najirshail Rice 2kg (Pointed Translucent Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-najirshail-rice-2kg.jpg",
+          "altText": "Bashundhara Najirshail Rice 2kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_najirshail_packet_2kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-najirshail-rice-2kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-001-53EA01",
@@ -22634,17 +22178,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_1kg.jpg",
-          "altText": "Pran Kalijeera Rice 1kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 1kg (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-1kg.jpg",
+          "altText": "Pran Kalijeera Rice 1kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_1kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-1kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-002-0A9F09",
@@ -22669,17 +22207,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_najirshail_packet_5kg.jpg",
-          "altText": "Bashundhara Najirshail Rice 5kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Bashundhara Najirshail Rice 5kg (Pointed Translucent Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-najirshail-rice-5kg.jpg",
+          "altText": "Bashundhara Najirshail Rice 5kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_najirshail_packet_5kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-najirshail-rice-5kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-003-CE27DC",
@@ -22704,17 +22236,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_1kg.jpg",
-          "altText": "Pran Kalijeera Rice 1kg Export Quality (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 1kg Export Quality (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-1kg-export-quality.jpg",
+          "altText": "Pran Kalijeera Rice 1kg Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_1kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-1kg-export-quality.jpg"
     },
     {
       "sku": "BD-BASH-RICE-004-BFCFE9",
@@ -22739,17 +22265,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_atap_packet_1kg.jpg",
-          "altText": "Bashundhara Atap Rice 1kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Bashundhara Atap Rice 1kg (Sun-Dried Pure White Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-atap-rice-1kg.jpg",
+          "altText": "Bashundhara Atap Rice 1kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_atap_packet_1kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-atap-rice-1kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-005-A6D527",
@@ -22809,17 +22329,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_miniket_packet_5kg.jpg",
-          "altText": "Bashundhara Miniket Rice 5kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Bashundhara Miniket Rice 5kg (Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-miniket-rice-5kg.jpg",
+          "altText": "Bashundhara Miniket Rice 5kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_miniket_packet_5kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-miniket-rice-5kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-007-233DC7",
@@ -22844,17 +22358,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_2kg.jpg",
-          "altText": "Pran Kalijeera Rice 2kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 2kg (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-2kg.jpg",
+          "altText": "Pran Kalijeera Rice 2kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_2kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-2kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-008-22F312",
@@ -22949,17 +22457,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_miniket_packet_5kg.jpg",
-          "altText": "Bashundhara Miniket Rice 5kg Combo Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Bashundhara Miniket Rice 5kg Combo Pack (Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-miniket-rice-5kg-combo-pack.jpg",
+          "altText": "Bashundhara Miniket Rice 5kg Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_miniket_packet_5kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-miniket-rice-5kg-combo-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-011-A2A6FD",
@@ -22984,17 +22486,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_10kg.jpg",
-          "altText": "Pran Kalijeera Rice 10kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 10kg (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-10kg.jpg",
+          "altText": "Pran Kalijeera Rice 10kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_10kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-10kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-012-DE7718",
@@ -23019,17 +22515,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_5kg.jpg",
-          "altText": "Bashundhara Kalijeera Rice 5kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 5kg (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-5kg.jpg",
+          "altText": "Bashundhara Kalijeera Rice 5kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_5kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-5kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-013-FCFB7F",
@@ -23089,17 +22579,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_1kg.jpg",
-          "altText": "Bashundhara Kalijeera Rice 1kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 1kg (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-1kg.jpg",
+          "altText": "Bashundhara Kalijeera Rice 1kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_1kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-1kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-015-B406B1",
@@ -23124,17 +22608,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_rice_packet.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 10kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 10kg (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-aromatic-chinigura-rice-10kg.jpg",
+          "altText": "Pran Aromatic Chinigura Rice 10kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_rice_packet.jpg"
+      "imageUrl": "/products/bd/pran-aromatic-chinigura-rice-10kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-016-D38DF9",
@@ -23159,17 +22637,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_10kg.jpg",
-          "altText": "Bashundhara Kalijeera Rice 10kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 10kg (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-10kg.jpg",
+          "altText": "Bashundhara Kalijeera Rice 10kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_10kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-10kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-017-D4DA8D",
@@ -23194,17 +22666,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_najirshail_packet_combo.jpg",
-          "altText": "Pran Najirshail Rice 10kg Combo Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Pran Najirshail Rice 10kg Combo Pack (Firm Pointed Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-najirshail-rice-10kg-combo-pack.jpg",
+          "altText": "Pran Najirshail Rice 10kg Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_najirshail_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-najirshail-rice-10kg-combo-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-018-6A7868",
@@ -23264,17 +22730,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_atap_packet_2kg.jpg",
-          "altText": "Pran Atap Rice 2kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Pran Atap Rice 2kg (Pure White Sun-Dried Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-atap-rice-2kg.jpg",
+          "altText": "Pran Atap Rice 2kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_atap_packet_2kg.jpg"
+      "imageUrl": "/products/bd/pran-atap-rice-2kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-020-177BE6",
@@ -23299,17 +22759,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_5kg.jpg",
-          "altText": "Bashundhara Kalijeera Rice 5kg Family Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 5kg Family Pack (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-5kg-family-pack.jpg",
+          "altText": "Bashundhara Kalijeera Rice 5kg Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_5kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-5kg-family-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-021-5B2B86",
@@ -23334,17 +22788,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_rice_packet.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 10kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 10kg Twin Pack (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-aromatic-chinigura-rice-10kg-twin-pack.jpg",
+          "altText": "Pran Aromatic Chinigura Rice 10kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_rice_packet.jpg"
+      "imageUrl": "/products/bd/pran-aromatic-chinigura-rice-10kg-twin-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-022-C86D2D",
@@ -23369,17 +22817,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_miniket_packet_10kg.jpg",
-          "altText": "Bashundhara Miniket Rice 10kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Bashundhara Miniket Rice 10kg (Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-miniket-rice-10kg.jpg",
+          "altText": "Bashundhara Miniket Rice 10kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_miniket_packet_10kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-miniket-rice-10kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-023-E1D9D0",
@@ -23404,17 +22846,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_rice_packet.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 1kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 1kg (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-aromatic-chinigura-rice-1kg.jpg",
+          "altText": "Pran Aromatic Chinigura Rice 1kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_rice_packet.jpg"
+      "imageUrl": "/products/bd/pran-aromatic-chinigura-rice-1kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-024-631DC6",
@@ -23439,17 +22875,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_chinigura_packet_2kg.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 2kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 2kg (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-aromatic-chinigura-rice-2kg.jpg",
+          "altText": "Bashundhara Aromatic Chinigura Rice 2kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_chinigura_packet_2kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-aromatic-chinigura-rice-2kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-025-E60739",
@@ -23544,17 +22974,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_miniket_packet_5kg.jpg",
-          "altText": "Pran Miniket Rice 5kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Pran Miniket Rice 5kg (Long Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-miniket-rice-5kg.jpg",
+          "altText": "Pran Miniket Rice 5kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_miniket_packet_5kg.jpg"
+      "imageUrl": "/products/bd/pran-miniket-rice-5kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-028-91D8E2",
@@ -23615,17 +23039,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_atap_packet_2kg.jpg",
-          "altText": "Pran Atap Rice 2kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Pran Atap Rice 2kg Value Pack (Pure White Sun-Dried Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-atap-rice-2kg-value-pack.jpg",
+          "altText": "Pran Atap Rice 2kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_atap_packet_2kg.jpg"
+      "imageUrl": "/products/bd/pran-atap-rice-2kg-value-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-030-11949B",
@@ -23650,17 +23068,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_najirshail_packet_5kg.jpg",
-          "altText": "Bashundhara Najirshail Rice 5kg Family Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Bashundhara Najirshail Rice 5kg Family Pack (Pointed Translucent Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-najirshail-rice-5kg-family-pack.jpg",
+          "altText": "Bashundhara Najirshail Rice 5kg Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_najirshail_packet_5kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-najirshail-rice-5kg-family-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-031-848953",
@@ -23685,17 +23097,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_2kg.jpg",
-          "altText": "Pran Kalijeera Rice 2kg Export Quality (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 2kg Export Quality (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-2kg-export-quality.jpg",
+          "altText": "Pran Kalijeera Rice 2kg Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_2kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-2kg-export-quality.jpg"
     },
     {
       "sku": "BD-BASH-RICE-032-ED3B9A",
@@ -23721,17 +23127,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_5kg.jpg",
-          "altText": "Bashundhara Kalijeera Rice 5kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 5kg Twin Pack (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-5kg-twin-pack.jpg",
+          "altText": "Bashundhara Kalijeera Rice 5kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_5kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-5kg-twin-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-033-66D43B",
@@ -23756,17 +23156,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg",
-          "altText": "Pran Kalijeera Rice 1kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 1kg Twin Pack (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-1kg-twin-pack.jpg",
+          "altText": "Pran Kalijeera Rice 1kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-1kg-twin-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-034-34AB7F",
@@ -23826,17 +23220,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_rice_packet.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 10kg Export Quality (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 10kg Export Quality (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-aromatic-chinigura-rice-10kg-export-quality.jpg",
+          "altText": "Pran Aromatic Chinigura Rice 10kg Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_rice_packet.jpg"
+      "imageUrl": "/products/bd/pran-aromatic-chinigura-rice-10kg-export-quality.jpg"
     },
     {
       "sku": "BD-BASH-RICE-036-40E63E",
@@ -23861,17 +23249,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_miniket_packet_value.jpg",
-          "altText": "Bashundhara Miniket Rice 10kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Bashundhara Miniket Rice 10kg Value Pack (Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-miniket-rice-10kg-value-pack.jpg",
+          "altText": "Bashundhara Miniket Rice 10kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_miniket_packet_value.jpg"
+      "imageUrl": "/products/bd/bashundhara-miniket-rice-10kg-value-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-037-B4B703",
@@ -23967,17 +23349,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_miniket_packet_5kg.jpg",
-          "altText": "Pran Miniket Rice 5kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Pran Miniket Rice 5kg Value Pack (Long Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-miniket-rice-5kg-value-pack.jpg",
+          "altText": "Pran Miniket Rice 5kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_miniket_packet_5kg.jpg"
+      "imageUrl": "/products/bd/pran-miniket-rice-5kg-value-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-040-65B600",
@@ -24002,17 +23378,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_chinigura_packet_value.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 5kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 5kg Value Pack (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-aromatic-chinigura-rice-5kg-value-pack.jpg",
+          "altText": "Bashundhara Aromatic Chinigura Rice 5kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_chinigura_packet_value.jpg"
+      "imageUrl": "/products/bd/bashundhara-aromatic-chinigura-rice-5kg-value-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-041-CFAAA4",
@@ -24037,17 +23407,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_rice_packet.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 5kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Pran Aromatic Chinigura Rice 5kg (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-aromatic-chinigura-rice-5kg.jpg",
+          "altText": "Pran Aromatic Chinigura Rice 5kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_rice_packet.jpg"
+      "imageUrl": "/products/bd/pran-aromatic-chinigura-rice-5kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-042-D33235",
@@ -24072,17 +23436,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_value.jpg",
-          "altText": "Bashundhara Kalijeera Rice 1kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 1kg Value Pack (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-1kg-value-pack.jpg",
+          "altText": "Bashundhara Kalijeera Rice 1kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_value.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-1kg-value-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-043-9E851A",
@@ -24107,17 +23465,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg",
-          "altText": "Pran Kalijeera Rice 2kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 2kg Twin Pack (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-2kg-twin-pack.jpg",
+          "altText": "Pran Kalijeera Rice 2kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-2kg-twin-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-044-45D090",
@@ -24142,17 +23494,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_najirshail_packet_value.jpg",
-          "altText": "Bashundhara Najirshail Rice 5kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Bashundhara Najirshail Rice 5kg Value Pack (Pointed Translucent Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-najirshail-rice-5kg-value-pack.jpg",
+          "altText": "Bashundhara Najirshail Rice 5kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_najirshail_packet_value.jpg"
+      "imageUrl": "/products/bd/bashundhara-najirshail-rice-5kg-value-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-045-363EFF",
@@ -24177,17 +23523,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_atap_packet_combo.jpg",
-          "altText": "Pran Atap Rice 2kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Pran Atap Rice 2kg Twin Pack (Pure White Sun-Dried Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-atap-rice-2kg-twin-pack.jpg",
+          "altText": "Pran Atap Rice 2kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_atap_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-atap-rice-2kg-twin-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-046-A46905",
@@ -24212,17 +23552,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_chinigura_packet_export.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 1kg Export Quality (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 1kg Export Quality (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-aromatic-chinigura-rice-1kg-export-quality.jpg",
+          "altText": "Bashundhara Aromatic Chinigura Rice 1kg Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_chinigura_packet_export.jpg"
+      "imageUrl": "/products/bd/bashundhara-aromatic-chinigura-rice-1kg-export-quality.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-047-7E7CBA",
@@ -24247,17 +23581,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_miniket_packet_10kg.jpg",
-          "altText": "Pran Miniket Rice 10kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Pran Miniket Rice 10kg (Long Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-miniket-rice-10kg.jpg",
+          "altText": "Pran Miniket Rice 10kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_miniket_packet_10kg.jpg"
+      "imageUrl": "/products/bd/pran-miniket-rice-10kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-048-87A4A4",
@@ -24317,17 +23645,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_5kg.jpg",
-          "altText": "Pran Kalijeera Rice 5kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 5kg (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-5kg.jpg",
+          "altText": "Pran Kalijeera Rice 5kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_5kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-5kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-050-0DB397",
@@ -24352,17 +23674,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_chinigura_packet_2kg.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 2kg Family Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 2kg Family Pack (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-aromatic-chinigura-rice-2kg-family-pack.jpg",
+          "altText": "Bashundhara Aromatic Chinigura Rice 2kg Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_chinigura_packet_2kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-aromatic-chinigura-rice-2kg-family-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-051-C8E39C",
@@ -24422,17 +23738,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_najirshail_packet_10kg.jpg",
-          "altText": "Bashundhara Najirshail Rice 10kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Bashundhara Najirshail Rice 10kg (Pointed Translucent Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-najirshail-rice-10kg.jpg",
+          "altText": "Bashundhara Najirshail Rice 10kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_najirshail_packet_10kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-najirshail-rice-10kg.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-053-516581",
@@ -24457,17 +23767,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_atap_packet_1kg.jpg",
-          "altText": "Pran Atap Rice 1kg (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Pran Atap Rice 1kg (Pure White Sun-Dried Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-atap-rice-1kg.jpg",
+          "altText": "Pran Atap Rice 1kg"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_atap_packet_1kg.jpg"
+      "imageUrl": "/products/bd/pran-atap-rice-1kg.jpg"
     },
     {
       "sku": "BD-BASH-RICE-054-A60D48",
@@ -24492,17 +23796,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_chinigura_packet_value.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 10kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 10kg Value Pack (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-aromatic-chinigura-rice-10kg-value-pack.jpg",
+          "altText": "Bashundhara Aromatic Chinigura Rice 10kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_chinigura_packet_value.jpg"
+      "imageUrl": "/products/bd/bashundhara-aromatic-chinigura-rice-10kg-value-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-055-905372",
@@ -24527,17 +23825,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_atap_packet_1kg.jpg",
-          "altText": "Pran Atap Rice 1kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Pran Atap Rice 1kg Value Pack (Pure White Sun-Dried Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-atap-rice-1kg-value-pack.jpg",
+          "altText": "Pran Atap Rice 1kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_atap_packet_1kg.jpg"
+      "imageUrl": "/products/bd/pran-atap-rice-1kg-value-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-056-DDC514",
@@ -24562,17 +23854,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_najirshail_packet_10kg.jpg",
-          "altText": "Bashundhara Najirshail Rice 10kg Combo Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Bashundhara Najirshail Rice 10kg Combo Pack (Pointed Translucent Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-najirshail-rice-10kg-combo-pack.jpg",
+          "altText": "Bashundhara Najirshail Rice 10kg Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_najirshail_packet_10kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-najirshail-rice-10kg-combo-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-057-B833C4",
@@ -24597,17 +23883,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_najirshail_packet_combo.jpg",
-          "altText": "Pran Najirshail Rice 10kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Pran Najirshail Rice 10kg Twin Pack (Firm Pointed Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-najirshail-rice-10kg-twin-pack.jpg",
+          "altText": "Pran Najirshail Rice 10kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_najirshail_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-najirshail-rice-10kg-twin-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-058-4F6FF9",
@@ -24667,17 +23947,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_miniket_packet_10kg.jpg",
-          "altText": "Pran Miniket Rice 10kg Export Quality (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Pran Miniket Rice 10kg Export Quality (Long Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-miniket-rice-10kg-export-quality.jpg",
+          "altText": "Pran Miniket Rice 10kg Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_miniket_packet_10kg.jpg"
+      "imageUrl": "/products/bd/pran-miniket-rice-10kg-export-quality.jpg"
     },
     {
       "sku": "BD-BASH-RICE-060-F2F400",
@@ -24702,17 +23976,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_value.jpg",
-          "altText": "Bashundhara Kalijeera Rice 10kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 10kg Value Pack (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-10kg-value-pack.jpg",
+          "altText": "Bashundhara Kalijeera Rice 10kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_value.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-10kg-value-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-061-87249E",
@@ -24737,17 +24005,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg",
-          "altText": "Pran Kalijeera Rice 10kg Family Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 10kg Family Pack (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-10kg-family-pack.jpg",
+          "altText": "Pran Kalijeera Rice 10kg Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-10kg-family-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-062-FD9C17",
@@ -24772,17 +24034,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_atap_packet_1kg.jpg",
-          "altText": "Bashundhara Atap Rice 1kg Family Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Bashundhara Atap Rice 1kg Family Pack (Sun-Dried Pure White Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-atap-rice-1kg-family-pack.jpg",
+          "altText": "Bashundhara Atap Rice 1kg Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_atap_packet_1kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-atap-rice-1kg-family-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-063-F5DAA4",
@@ -24842,17 +24098,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_miniket_packet_10kg.jpg",
-          "altText": "Bashundhara Miniket Rice 10kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Bashundhara Miniket Rice 10kg Twin Pack (Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-miniket-rice-10kg-twin-pack.jpg",
+          "altText": "Bashundhara Miniket Rice 10kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_miniket_packet_10kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-miniket-rice-10kg-twin-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-065-BF1D16",
@@ -24877,17 +24127,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_atap_packet_combo.jpg",
-          "altText": "Pran Atap Rice 5kg Family Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Pran Atap Rice 5kg Family Pack (Pure White Sun-Dried Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-atap-rice-5kg-family-pack.jpg",
+          "altText": "Pran Atap Rice 5kg Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_atap_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-atap-rice-5kg-family-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-066-ED2B64",
@@ -24913,17 +24157,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_najirshail_packet_2kg.jpg",
-          "altText": "Bashundhara Najirshail Rice 2kg Combo Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Bashundhara Najirshail Rice 2kg Combo Pack (Pointed Translucent Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-najirshail-rice-2kg-combo-pack.jpg",
+          "altText": "Bashundhara Najirshail Rice 2kg Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_najirshail_packet_2kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-najirshail-rice-2kg-combo-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-067-C9E440",
@@ -24948,17 +24186,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_10kg.jpg",
-          "altText": "Pran Kalijeera Rice 10kg Export Quality (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 10kg Export Quality (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-10kg-export-quality.jpg",
+          "altText": "Pran Kalijeera Rice 10kg Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_10kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-10kg-export-quality.jpg"
     },
     {
       "sku": "BD-BASH-RICE-068-453FBF",
@@ -24983,17 +24215,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_10kg.jpg",
-          "altText": "Bashundhara Kalijeera Rice 10kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 10kg Twin Pack (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-10kg-twin-pack.jpg",
+          "altText": "Bashundhara Kalijeera Rice 10kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_10kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-10kg-twin-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-069-3D67DF",
@@ -25018,17 +24244,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_atap_packet_combo.jpg",
-          "altText": "Pran Atap Rice 10kg Combo Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_atap_rice_open.jpg",
-          "altText": "Pran Atap Rice 10kg Combo Pack (Pure White Sun-Dried Atap Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-atap-rice-10kg-combo-pack.jpg",
+          "altText": "Pran Atap Rice 10kg Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_atap_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-atap-rice-10kg-combo-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-070-34D429",
@@ -25053,17 +24273,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_chinigura_packet_export.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 10kg Export Quality (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_chinigura_rice_open.jpg",
-          "altText": "Bashundhara Aromatic Chinigura Rice 10kg Export Quality (Aromatic Chinigura Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-aromatic-chinigura-rice-10kg-export-quality.jpg",
+          "altText": "Bashundhara Aromatic Chinigura Rice 10kg Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_chinigura_packet_export.jpg"
+      "imageUrl": "/products/bd/bashundhara-aromatic-chinigura-rice-10kg-export-quality.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-071-CF353E",
@@ -25089,17 +24303,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg",
-          "altText": "Pran Kalijeera Rice 10kg Twin Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 10kg Twin Pack (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-10kg-twin-pack.jpg",
+          "altText": "Pran Kalijeera Rice 10kg Twin Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-10kg-twin-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-072-CD0F7B",
@@ -25124,17 +24332,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_kalijeera_packet_1kg.jpg",
-          "altText": "Bashundhara Kalijeera Rice 1kg Family Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Bashundhara Kalijeera Rice 1kg Family Pack (Tiny Aromatic Kalijeera Polao Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-kalijeera-rice-1kg-family-pack.jpg",
+          "altText": "Bashundhara Kalijeera Rice 1kg Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_kalijeera_packet_1kg.jpg"
+      "imageUrl": "/products/bd/bashundhara-kalijeera-rice-1kg-family-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-073-469871",
@@ -25159,17 +24361,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_najirshail_packet_combo.jpg",
-          "altText": "Pran Najirshail Rice 10kg Family Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Pran Najirshail Rice 10kg Family Pack (Firm Pointed Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-najirshail-rice-10kg-family-pack.jpg",
+          "altText": "Pran Najirshail Rice 10kg Family Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_najirshail_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-najirshail-rice-10kg-family-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-074-FBF79F",
@@ -25231,17 +24427,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_5kg.jpg",
-          "altText": "Pran Kalijeera Rice 5kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 5kg Value Pack (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-5kg-value-pack.jpg",
+          "altText": "Pran Kalijeera Rice 5kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_5kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-5kg-value-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-076-F331CF",
@@ -25266,17 +24456,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_miniket_packet_value.jpg",
-          "altText": "Bashundhara Miniket Rice 5kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Bashundhara Miniket Rice 5kg Value Pack (Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-miniket-rice-5kg-value-pack.jpg",
+          "altText": "Bashundhara Miniket Rice 5kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_miniket_packet_value.jpg"
+      "imageUrl": "/products/bd/bashundhara-miniket-rice-5kg-value-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-077-6EB7BB",
@@ -25302,17 +24486,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_1kg.jpg",
-          "altText": "Pran Kalijeera Rice 1kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 1kg Value Pack (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-1kg-value-pack.jpg",
+          "altText": "Pran Kalijeera Rice 1kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_1kg.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-1kg-value-pack.jpg"
     },
     {
       "sku": "BD-BASH-RICE-078-5D0C58",
@@ -25443,17 +24621,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_miniket_packet_5kg.jpg",
-          "altText": "Pran Miniket Rice 5kg Export Quality (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_miniket_rice_open.jpg",
-          "altText": "Pran Miniket Rice 5kg Export Quality (Long Slender Polished Miniket Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-miniket-rice-5kg-export-quality.jpg",
+          "altText": "Pran Miniket Rice 5kg Export Quality"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_miniket_packet_5kg.jpg"
+      "imageUrl": "/products/bd/pran-miniket-rice-5kg-export-quality.jpg"
     },
     {
       "sku": "BD-BASH-RICE-082-85827D",
@@ -25478,17 +24650,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_bashundhara_najirshail_packet_value.jpg",
-          "altText": "Bashundhara Najirshail Rice 10kg Value Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_najirshail_rice_open.jpg",
-          "altText": "Bashundhara Najirshail Rice 10kg Value Pack (Pointed Translucent Najirshail Grains)",
-          "isPrimary": false
+          "url": "/products/bd/bashundhara-najirshail-rice-10kg-value-pack.jpg",
+          "altText": "Bashundhara Najirshail Rice 10kg Value Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_bashundhara_najirshail_packet_value.jpg"
+      "imageUrl": "/products/bd/bashundhara-najirshail-rice-10kg-value-pack.jpg"
     },
     {
       "sku": "BD-PRAN-RICE-083-7A07C5",
@@ -25513,17 +24679,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg",
-          "altText": "Pran Kalijeera Rice 2kg Combo Pack (Packet View)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_kalijeera_rice_open.jpg",
-          "altText": "Pran Kalijeera Rice 2kg Combo Pack (Tiny Aromatic Polao Rice Grains)",
-          "isPrimary": false
+          "url": "/products/bd/pran-kalijeera-rice-2kg-combo-pack.jpg",
+          "altText": "Pran Kalijeera Rice 2kg Combo Pack"
         }
       ],
-      "imageUrl": "/products/bd/canonical_pran_kalijeera_packet_combo.jpg"
+      "imageUrl": "/products/bd/pran-kalijeera-rice-2kg-combo-pack.jpg"
     },
     {
       "sku": "BD-PRAN-SNAC-000-D572AD",
@@ -36070,17 +35230,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_silver_packet.jpg",
-          "altText": "Alankar BD Anklet Oxidized Silver (Jewelry Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_silver_open.jpg",
-          "altText": "Alankar BD Anklet Oxidized Silver (Handcrafted Traditional Oxidized Silver Payel with Bells)",
-          "isPrimary": false
+          "url": "/products/bd/alankar-bd-anklet-oxidized-silver.jpg",
+          "altText": "Alankar BD Anklet Oxidized Silver"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_silver_packet.jpg"
+      "imageUrl": "/products/bd/alankar-bd-anklet-oxidized-silver.jpg"
     },
     {
       "sku": "BD-AARO-FASH-006-360A67",
@@ -36246,17 +35400,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_gold_packet.jpg",
-          "altText": "Aarong Anklet Gold Plated (Luxury Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_gold_open.jpg",
-          "altText": "Aarong Anklet Gold Plated (Traditional Gold Plated Payel on Ankle with Ghungroo)",
-          "isPrimary": false
+          "url": "/products/bd/aarong-anklet-gold-plated.jpg",
+          "altText": "Aarong Anklet Gold Plated"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_gold_packet.jpg"
+      "imageUrl": "/products/bd/aarong-anklet-gold-plated.jpg"
     },
     {
       "sku": "BD-ALAN-FASH-011-F8C80E",
@@ -36701,17 +35849,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_gold_packet.jpg",
-          "altText": "Alankar BD Anklet Gold Plated (Luxury Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_gold_open.jpg",
-          "altText": "Alankar BD Anklet Gold Plated (Traditional Gold Plated Payel on Ankle with Ghungroo)",
-          "isPrimary": false
+          "url": "/products/bd/alankar-bd-anklet-gold-plated.jpg",
+          "altText": "Alankar BD Anklet Gold Plated"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_gold_packet.jpg"
+      "imageUrl": "/products/bd/alankar-bd-anklet-gold-plated.jpg"
     },
     {
       "sku": "BD-AARO-FASH-024-06D174",
@@ -36771,17 +35913,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_gold_packet.jpg",
-          "altText": "Alankar BD Anklet Artificial (Luxury Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_gold_open.jpg",
-          "altText": "Alankar BD Anklet Artificial (Traditional Gold Plated Payel on Ankle with Ghungroo)",
-          "isPrimary": false
+          "url": "/products/bd/alankar-bd-anklet-artificial.jpg",
+          "altText": "Alankar BD Anklet Artificial"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_gold_packet.jpg"
+      "imageUrl": "/products/bd/alankar-bd-anklet-artificial.jpg"
     },
     {
       "sku": "BD-AARO-FASH-026-C0748F",
@@ -36877,17 +36013,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_silver_packet.jpg",
-          "altText": "Aarong Anklet Oxidized Silver (Jewelry Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_silver_open.jpg",
-          "altText": "Aarong Anklet Oxidized Silver (Handcrafted Traditional Oxidized Silver Payel with Bells)",
-          "isPrimary": false
+          "url": "/products/bd/aarong-anklet-oxidized-silver.jpg",
+          "altText": "Aarong Anklet Oxidized Silver"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_silver_packet.jpg"
+      "imageUrl": "/products/bd/aarong-anklet-oxidized-silver.jpg"
     },
     {
       "sku": "BD-ALAN-FASH-029-A92327",
@@ -37052,17 +36182,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_gold_packet.jpg",
-          "altText": "Alankar BD Anklet Gold Plated Festive Look (Luxury Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_gold_open.jpg",
-          "altText": "Alankar BD Anklet Gold Plated Festive Look (Traditional Gold Plated Payel on Ankle with Ghungroo)",
-          "isPrimary": false
+          "url": "/products/bd/alankar-bd-anklet-gold-plated-festive-look.jpg",
+          "altText": "Alankar BD Anklet Gold Plated Festive Look"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_gold_packet.jpg"
+      "imageUrl": "/products/bd/alankar-bd-anklet-gold-plated-festive-look.jpg"
     },
     {
       "sku": "BD-AARO-FASH-034-1410D6",
@@ -37297,17 +36421,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_gold_packet.jpg",
-          "altText": "Aarong Anklet Gold Plated Premium Line (Luxury Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_gold_open.jpg",
-          "altText": "Aarong Anklet Gold Plated Premium Line (Traditional Gold Plated Payel on Ankle with Ghungroo)",
-          "isPrimary": false
+          "url": "/products/bd/aarong-anklet-gold-plated-premium-line.jpg",
+          "altText": "Aarong Anklet Gold Plated Premium Line"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_gold_packet.jpg"
+      "imageUrl": "/products/bd/aarong-anklet-gold-plated-premium-line.jpg"
     },
     {
       "sku": "BD-ALAN-FASH-041-951D4A",
@@ -37368,17 +36486,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_gold_packet.jpg",
-          "altText": "Aarong Anklet Artificial (Luxury Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_gold_open.jpg",
-          "altText": "Aarong Anklet Artificial (Traditional Gold Plated Payel on Ankle with Ghungroo)",
-          "isPrimary": false
+          "url": "/products/bd/aarong-anklet-artificial.jpg",
+          "altText": "Aarong Anklet Artificial"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_gold_packet.jpg"
+      "imageUrl": "/products/bd/aarong-anklet-artificial.jpg"
     },
     {
       "sku": "BD-ALAN-FASH-043-4432D4",
@@ -37403,17 +36515,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_gold_packet.jpg",
-          "altText": "Alankar BD Anklet Artificial Premium Line (Luxury Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_gold_open.jpg",
-          "altText": "Alankar BD Anklet Artificial Premium Line (Traditional Gold Plated Payel on Ankle with Ghungroo)",
-          "isPrimary": false
+          "url": "/products/bd/alankar-bd-anklet-artificial-premium-line.jpg",
+          "altText": "Alankar BD Anklet Artificial Premium Line"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_gold_packet.jpg"
+      "imageUrl": "/products/bd/alankar-bd-anklet-artificial-premium-line.jpg"
     },
     {
       "sku": "BD-AARO-FASH-044-DECE68",
@@ -37543,17 +36649,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_silver_packet.jpg",
-          "altText": "Alankar BD Anklet Oxidized Silver New Edition (Jewelry Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_silver_open.jpg",
-          "altText": "Alankar BD Anklet Oxidized Silver New Edition (Handcrafted Traditional Oxidized Silver Payel with Bells)",
-          "isPrimary": false
+          "url": "/products/bd/alankar-bd-anklet-oxidized-silver-new-edition.jpg",
+          "altText": "Alankar BD Anklet Oxidized Silver New Edition"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_silver_packet.jpg"
+      "imageUrl": "/products/bd/alankar-bd-anklet-oxidized-silver-new-edition.jpg"
     },
     {
       "sku": "BD-AARO-FASH-048-87883A",
@@ -37753,17 +36853,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_silver_packet.jpg",
-          "altText": "Alankar BD Anklet Oxidized Silver Festive Look (Jewelry Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_silver_open.jpg",
-          "altText": "Alankar BD Anklet Oxidized Silver Festive Look (Handcrafted Traditional Oxidized Silver Payel with Bells)",
-          "isPrimary": false
+          "url": "/products/bd/alankar-bd-anklet-oxidized-silver-festive-look.jpg",
+          "altText": "Alankar BD Anklet Oxidized Silver Festive Look"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_silver_packet.jpg"
+      "imageUrl": "/products/bd/alankar-bd-anklet-oxidized-silver-festive-look.jpg"
     },
     {
       "sku": "BD-AARO-FASH-054-D158DC",
@@ -37893,17 +36987,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_anklet_gold_packet.jpg",
-          "altText": "Alankar BD Anklet Gold Plated New Arrival (Luxury Gift Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_anklet_gold_open.jpg",
-          "altText": "Alankar BD Anklet Gold Plated New Arrival (Traditional Gold Plated Payel on Ankle with Ghungroo)",
-          "isPrimary": false
+          "url": "/products/bd/alankar-bd-anklet-gold-plated-new-arrival.jpg",
+          "altText": "Alankar BD Anklet Gold Plated New Arrival"
         }
       ],
-      "imageUrl": "/products/bd/canonical_anklet_gold_packet.jpg"
+      "imageUrl": "/products/bd/alankar-bd-anklet-gold-plated-new-arrival.jpg"
     },
     {
       "sku": "BD-BATA-FOOT-000-A36640",
@@ -41340,17 +40428,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Aarong Baby Winter Set Size M (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Aarong Baby Winter Set Size M (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/aarong-baby-winter-set-size-m.jpg",
+          "altText": "Aarong Baby Winter Set Size M"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/aarong-baby-winter-set-size-m.jpg"
     },
     {
       "sku": "BD-SAIL-KIDS-005-8F2455",
@@ -41445,17 +40527,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Kids Kingdom Baby Winter Set Size L (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Kids Kingdom Baby Winter Set Size L (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/kids-kingdom-baby-winter-set-size-l.jpg",
+          "altText": "Kids Kingdom Baby Winter Set Size L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/kids-kingdom-baby-winter-set-size-l.jpg"
     },
     {
       "sku": "BD-AARO-KIDS-008-28F897",
@@ -42147,17 +41223,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Kids Kingdom Baby Winter Set Size M (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Kids Kingdom Baby Winter Set Size M (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/kids-kingdom-baby-winter-set-size-m.jpg",
+          "altText": "Kids Kingdom Baby Winter Set Size M"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/kids-kingdom-baby-winter-set-size-m.jpg"
     },
     {
       "sku": "BD-AARO-KIDS-028-11B5C1",
@@ -42217,17 +41287,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Sailor Baby Winter Set Age 5-6 (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Sailor Baby Winter Set Age 5-6 (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/sailor-baby-winter-set-age-5-6.jpg",
+          "altText": "Sailor Baby Winter Set Age 5-6"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/sailor-baby-winter-set-age-5-6.jpg"
     },
     {
       "sku": "BD-YELL-KIDS-030-5AB153",
@@ -42287,17 +41351,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Kids Kingdom Baby Winter Set Age 5-6 (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Kids Kingdom Baby Winter Set Age 5-6 (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/kids-kingdom-baby-winter-set-age-5-6.jpg",
+          "altText": "Kids Kingdom Baby Winter Set Age 5-6"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/kids-kingdom-baby-winter-set-age-5-6.jpg"
     },
     {
       "sku": "BD-AARO-KIDS-032-560B9D",
@@ -42392,17 +41450,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Yellow Baby Winter Set Size L (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Yellow Baby Winter Set Size L (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/yellow-baby-winter-set-size-l.jpg",
+          "altText": "Yellow Baby Winter Set Size L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/yellow-baby-winter-set-size-l.jpg"
     },
     {
       "sku": "BD-KIDS-KIDS-035-CD7DF4",
@@ -42497,17 +41549,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Sailor Baby Winter Set Age 5-6 New Edition (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_new_open.jpg",
-          "altText": "Sailor Baby Winter Set Age 5-6 New Edition (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/sailor-baby-winter-set-age-5-6-new-edition.jpg",
+          "altText": "Sailor Baby Winter Set Age 5-6 New Edition"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/sailor-baby-winter-set-age-5-6-new-edition.jpg"
     },
     {
       "sku": "BD-YELL-KIDS-038-A0376D",
@@ -42532,17 +41578,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Yellow Baby Winter Set Size L New Edition (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_new_open.jpg",
-          "altText": "Yellow Baby Winter Set Size L New Edition (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/yellow-baby-winter-set-size-l-new-edition.jpg",
+          "altText": "Yellow Baby Winter Set Size L New Edition"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/yellow-baby-winter-set-size-l-new-edition.jpg"
     },
     {
       "sku": "BD-KIDS-KIDS-039-65C34F",
@@ -42602,17 +41642,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Aarong Baby Winter Set Size M New Edition (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_new_open.jpg",
-          "altText": "Aarong Baby Winter Set Size M New Edition (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/aarong-baby-winter-set-size-m-new-edition.jpg",
+          "altText": "Aarong Baby Winter Set Size M New Edition"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/aarong-baby-winter-set-size-m-new-edition.jpg"
     },
     {
       "sku": "BD-SAIL-KIDS-041-5BD290",
@@ -42637,17 +41671,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Sailor Baby Winter Set Age 5-6 Festive Look (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Sailor Baby Winter Set Age 5-6 Festive Look (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/sailor-baby-winter-set-age-5-6-festive-look.jpg",
+          "altText": "Sailor Baby Winter Set Age 5-6 Festive Look"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/sailor-baby-winter-set-age-5-6-festive-look.jpg"
     },
     {
       "sku": "BD-YELL-KIDS-042-2C8582",
@@ -42672,17 +41700,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Yellow Baby Winter Set Size M (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Yellow Baby Winter Set Size M (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/yellow-baby-winter-set-size-m.jpg",
+          "altText": "Yellow Baby Winter Set Size M"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/yellow-baby-winter-set-size-m.jpg"
     },
     {
       "sku": "BD-KIDS-KIDS-043-C35C40",
@@ -42777,17 +41799,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Sailor Baby Winter Set Size L (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Sailor Baby Winter Set Size L (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/sailor-baby-winter-set-size-l.jpg",
+          "altText": "Sailor Baby Winter Set Size L"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/sailor-baby-winter-set-size-l.jpg"
     },
     {
       "sku": "BD-YELL-KIDS-046-FAC695",
@@ -42847,17 +41863,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Kids Kingdom Baby Winter Set Age 5-6 Premium Line (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Kids Kingdom Baby Winter Set Age 5-6 Premium Line (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/kids-kingdom-baby-winter-set-age-5-6-premium-line.jpg",
+          "altText": "Kids Kingdom Baby Winter Set Age 5-6 Premium Line"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/kids-kingdom-baby-winter-set-age-5-6-premium-line.jpg"
     },
     {
       "sku": "BD-AARO-KIDS-048-BC81DB",
@@ -43057,17 +42067,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_baby_winter_packet.jpg",
-          "altText": "Sailor Baby Winter Set Size L New Arrival (Packaging Box)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_baby_winter_open.jpg",
-          "altText": "Sailor Baby Winter Set Size L New Arrival (Hand-Knitted Woolen Baby Winter Sweater & Set)",
-          "isPrimary": false
+          "url": "/products/bd/sailor-baby-winter-set-size-l-new-arrival.jpg",
+          "altText": "Sailor Baby Winter Set Size L New Arrival"
         }
       ],
-      "imageUrl": "/products/bd/canonical_baby_winter_packet.jpg"
+      "imageUrl": "/products/bd/sailor-baby-winter-set-size-l-new-arrival.jpg"
     },
     {
       "sku": "BD-YELL-KIDS-054-886913",
@@ -182435,17 +181439,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_freelancing_packet.jpg",
-          "altText": "10 Minute School Spoken English Course Live Batch (Official Course Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_freelancing_open.jpg",
-          "altText": "10 Minute School Spoken English Course Live Batch (Interactive Learning Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/10-minute-school-spoken-english-course-live-batch.jpg",
+          "altText": "10 Minute School Spoken English Course Live Batch"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_freelancing_packet.jpg"
+      "imageUrl": "/products/bd/10-minute-school-spoken-english-course-live-batch.jpg"
     },
     {
       "sku": "BD-BOHU-ONLI-001-9A9460",
@@ -182470,17 +181468,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_ielts_packet.jpg",
-          "altText": "Bohubrihi IELTS Preparation Course Certificate (IELTS Band 8.0+ Mastery Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_ielts_open.jpg",
-          "altText": "Bohubrihi IELTS Preparation Course Certificate (Full Mock Diagnostic Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/bohubrihi-ielts-preparation-course-certificate.jpg",
+          "altText": "Bohubrihi IELTS Preparation Course Certificate"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_ielts_packet.jpg"
+      "imageUrl": "/products/bd/bohubrihi-ielts-preparation-course-certificate.jpg"
     },
     {
       "sku": "BD-INTE-ONLI-002-77B735",
@@ -182505,17 +181497,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_freelancing_packet.jpg",
-          "altText": "Interactive Cares Freelancing Masterclass Certificate (Course Certification Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_freelancing_open.jpg",
-          "altText": "Interactive Cares Freelancing Masterclass Certificate (Student Learning & Proposal Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/interactive-cares-freelancing-masterclass-certificate.jpg",
+          "altText": "Interactive Cares Freelancing Masterclass Certificate"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_freelancing_packet.jpg"
+      "imageUrl": "/products/bd/interactive-cares-freelancing-masterclass-certificate.jpg"
     },
     {
       "sku": "BD-10MI-ONLI-003-F5F838",
@@ -182540,17 +181526,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_freelancing_packet.jpg",
-          "altText": "10 Minute School Freelancing Masterclass Certificate (Course Certification Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_freelancing_open.jpg",
-          "altText": "10 Minute School Freelancing Masterclass Certificate (Student Learning & Proposal Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/10-minute-school-freelancing-masterclass-certificate.jpg",
+          "altText": "10 Minute School Freelancing Masterclass Certificate"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_freelancing_packet.jpg"
+      "imageUrl": "/products/bd/10-minute-school-freelancing-masterclass-certificate.jpg"
     },
     {
       "sku": "BD-BOHU-ONLI-004-844F00",
@@ -182575,17 +181555,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_ielts_packet.jpg",
-          "altText": "Bohubrihi IELTS Preparation Course Certificate Starter (IELTS Band 8.0+ Mastery Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_ielts_open.jpg",
-          "altText": "Bohubrihi IELTS Preparation Course Certificate Starter (Full Mock Diagnostic Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/bohubrihi-ielts-preparation-course-certificate-starter.jpg",
+          "altText": "Bohubrihi IELTS Preparation Course Certificate Starter"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_ielts_packet.jpg"
+      "imageUrl": "/products/bd/bohubrihi-ielts-preparation-course-certificate-starter.jpg"
     },
     {
       "sku": "BD-INTE-ONLI-005-68C7E5",
@@ -182610,17 +181584,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_freelancing_packet.jpg",
-          "altText": "Interactive Cares Spoken English Course Certificate (Official Course Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_freelancing_open.jpg",
-          "altText": "Interactive Cares Spoken English Course Certificate (Interactive Learning Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/interactive-cares-spoken-english-course-certificate.jpg",
+          "altText": "Interactive Cares Spoken English Course Certificate"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_freelancing_packet.jpg"
+      "imageUrl": "/products/bd/interactive-cares-spoken-english-course-certificate.jpg"
     },
     {
       "sku": "BD-10MI-ONLI-006-BADFBD",
@@ -182645,17 +181613,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_python_packet.jpg",
-          "altText": "10 Minute School Python Development Course Live Batch (Python Live Batch Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_python_open.jpg",
-          "altText": "10 Minute School Python Development Course Live Batch (Interactive Cloud IDE & Terminal)",
-          "isPrimary": false
+          "url": "/products/bd/10-minute-school-python-development-course-live-batch.jpg",
+          "altText": "10 Minute School Python Development Course Live Batch"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_python_packet.jpg"
+      "imageUrl": "/products/bd/10-minute-school-python-development-course-live-batch.jpg"
     },
     {
       "sku": "BD-BOHU-ONLI-007-BC02F2",
@@ -182680,17 +181642,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_python_packet.jpg",
-          "altText": "Bohubrihi Python Development Course Certificate (Python Live Batch Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_python_open.jpg",
-          "altText": "Bohubrihi Python Development Course Certificate (Interactive Cloud IDE & Terminal)",
-          "isPrimary": false
+          "url": "/products/bd/bohubrihi-python-development-course-certificate.jpg",
+          "altText": "Bohubrihi Python Development Course Certificate"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_python_packet.jpg"
+      "imageUrl": "/products/bd/bohubrihi-python-development-course-certificate.jpg"
     },
     {
       "sku": "BD-INTE-ONLI-008-C1D57D",
@@ -182715,17 +181671,11 @@
       "needsReview": true,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_freelancing_packet.jpg",
-          "altText": "Interactive Cares Freelancing Masterclass Certificate Pro (Course Certification Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_freelancing_open.jpg",
-          "altText": "Interactive Cares Freelancing Masterclass Certificate Pro (Student Learning & Proposal Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/interactive-cares-freelancing-masterclass-certificate-pro.jpg",
+          "altText": "Interactive Cares Freelancing Masterclass Certificate Pro"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_freelancing_packet.jpg"
+      "imageUrl": "/products/bd/interactive-cares-freelancing-masterclass-certificate-pro.jpg"
     },
     {
       "sku": "BD-10MI-ONLI-009-AF24AF",
@@ -182785,17 +181735,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_python_packet.jpg",
-          "altText": "Bohubrihi Python Development Course Live Batch (Python Live Batch Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_python_open.jpg",
-          "altText": "Bohubrihi Python Development Course Live Batch (Interactive Cloud IDE & Terminal)",
-          "isPrimary": false
+          "url": "/products/bd/bohubrihi-python-development-course-live-batch.jpg",
+          "altText": "Bohubrihi Python Development Course Live Batch"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_python_packet.jpg"
+      "imageUrl": "/products/bd/bohubrihi-python-development-course-live-batch.jpg"
     },
     {
       "sku": "BD-INTE-ONLI-011-AB6EBC",
@@ -182820,17 +181764,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_ielts_packet.jpg",
-          "altText": "Interactive Cares IELTS Preparation Course Self-Paced (IELTS Band 8.0+ Mastery Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_ielts_open.jpg",
-          "altText": "Interactive Cares IELTS Preparation Course Self-Paced (Full Mock Diagnostic Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/interactive-cares-ielts-preparation-course-self-paced.jpg",
+          "altText": "Interactive Cares IELTS Preparation Course Self-Paced"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_ielts_packet.jpg"
+      "imageUrl": "/products/bd/interactive-cares-ielts-preparation-course-self-paced.jpg"
     },
     {
       "sku": "BD-10MI-ONLI-012-FB6503",
@@ -182855,17 +181793,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_freelancing_packet.jpg",
-          "altText": "10 Minute School Spoken English Course Certificate (Official Course Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_freelancing_open.jpg",
-          "altText": "10 Minute School Spoken English Course Certificate (Interactive Learning Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/10-minute-school-spoken-english-course-certificate.jpg",
+          "altText": "10 Minute School Spoken English Course Certificate"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_freelancing_packet.jpg"
+      "imageUrl": "/products/bd/10-minute-school-spoken-english-course-certificate.jpg"
     },
     {
       "sku": "BD-BOHU-ONLI-013-4D4958",
@@ -182890,17 +181822,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_ielts_packet.jpg",
-          "altText": "Bohubrihi IELTS Preparation Course Certificate Pro (IELTS Band 8.0+ Mastery Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_ielts_open.jpg",
-          "altText": "Bohubrihi IELTS Preparation Course Certificate Pro (Full Mock Diagnostic Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/bohubrihi-ielts-preparation-course-certificate-pro.jpg",
+          "altText": "Bohubrihi IELTS Preparation Course Certificate Pro"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_ielts_packet.jpg"
+      "imageUrl": "/products/bd/bohubrihi-ielts-preparation-course-certificate-pro.jpg"
     },
     {
       "sku": "BD-INTE-ONLI-014-9F4E08",
@@ -182925,17 +181851,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_python_packet.jpg",
-          "altText": "Interactive Cares Python Development Course Self-Paced (Python Live Batch Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_python_open.jpg",
-          "altText": "Interactive Cares Python Development Course Self-Paced (Interactive Cloud IDE & Terminal)",
-          "isPrimary": false
+          "url": "/products/bd/interactive-cares-python-development-course-self-paced.jpg",
+          "altText": "Interactive Cares Python Development Course Self-Paced"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_python_packet.jpg"
+      "imageUrl": "/products/bd/interactive-cares-python-development-course-self-paced.jpg"
     },
     {
       "sku": "BD-10MI-ONLI-015-EFE24D",
@@ -182960,17 +181880,11 @@
       "needsReview": false,
       "images": [
         {
-          "url": "/products/bd/canonical_10ms_ielts_packet.jpg",
-          "altText": "10 Minute School IELTS Preparation Course Certificate (IELTS Band 8.0+ Mastery Card)",
-          "isPrimary": true
-        },
-        {
-          "url": "/products/bd/canonical_10ms_ielts_open.jpg",
-          "altText": "10 Minute School IELTS Preparation Course Certificate (Full Mock Diagnostic Dashboard)",
-          "isPrimary": false
+          "url": "/products/bd/10-minute-school-ielts-preparation-course-certificate.jpg",
+          "altText": "10 Minute School IELTS Preparation Course Certificate"
         }
       ],
-      "imageUrl": "/products/bd/canonical_10ms_ielts_packet.jpg"
+      "imageUrl": "/products/bd/10-minute-school-ielts-preparation-course-certificate.jpg"
     },
     {
       "sku": "BD-NINE-SOFT-000-6E654E",

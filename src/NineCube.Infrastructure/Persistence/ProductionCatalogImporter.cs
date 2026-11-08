@@ -11,7 +11,7 @@ namespace NineCube.Infrastructure.Persistence;
 public static class ProductionCatalogImporter
 {
     private const string StockRepairKey = "ProductionCatalogue.StockInitialization.v1";
-    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v9";
+    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v10";
 
     public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default)
     {
