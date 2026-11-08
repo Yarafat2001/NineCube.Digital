@@ -48,6 +48,12 @@ const paths = {
   mail: 'M3 6h18v12H3zM3 7l9 6 9-6',
   camera: 'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
   zoom: 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7',
+  sun: 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z',
+  doc: 'M6 3h9l4 4v14H6zM9 12h7M9 16h7',
+  chart: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
+  arrow: 'M5 12h14M13 6l6 6-6 6',
+  leaf: 'M12 3c5 3 7 7 5 12-1 3-4 5-5 6-1-1-4-3-5-6-2-5 0-9 5-12z',
+  menu: 'M3 12h18M3 6h18M3 18h18',
 };
 export type IconName = keyof typeof paths;
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {

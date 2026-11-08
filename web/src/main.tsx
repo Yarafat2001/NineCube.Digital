@@ -15,6 +15,7 @@ import './styles/base.css';
 import './styles/app.css';
 import './components/Navbar.css';
 import './styles/modern.css';
+import './styles/glass-admin.css';
 import './styles/responsive.css';
 import './styles/language.css';
 
