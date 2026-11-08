@@ -92,6 +92,16 @@ existed in the static reference artwork under `web/src/helix/reference/`, never 
 the 3D-era home, which the static home replaced. CI does not run them. Rewriting them against the
 current home is a separate piece of work and was left alone rather than half-done here.
 
+## The live page after the deploy
+
+Checked on the deployed site at commit `31dba1d`: no stock board, no brand cards (8 brand chips),
+12 category tiles of which 3 wear a catalogue photo, 4 featured products with 3 NEW badges, the
+hero's second track carrying the live deal (BDT 3,769.00, the catalogue's own price), a 4-column
+footer with both support mailboxes, 2 deal tiles per row on a phone and no sideways scroll, and 0
+console errors. The live store has no active campaign today - `/api/coupons/campaigns` returns
+`[]` - so the band and the offer list both stand down; that is the honest behaviour, and the stubbed
+home in `scratch/round37-home-*.png` shows the band and the list with campaigns present.
+
 Evidence: `scratch/round37-home-laptop-light.png`, `scratch/round37-home-laptop-dark.png`,
 `scratch/round37-home-phone-light.png`, `scratch/round37-home-phone-dark.png`.
 
