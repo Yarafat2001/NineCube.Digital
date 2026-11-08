@@ -11,7 +11,7 @@ namespace NineCube.Infrastructure.Persistence;
 public static class ProductionCatalogImporter
 {
     private const string StockRepairKey = "ProductionCatalogue.StockInitialization.v1";
-    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v2";
+    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v3";
 
     public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default)
     {
@@ -107,7 +107,7 @@ public static class ProductionCatalogImporter
             if (string.IsNullOrWhiteSpace(product.PriceBasis)) product.PriceBasis = item.PriceBasis;
             if (product.Categories.Count == 0)
                 product.Categories.Add(new ProductCategory { CategoryId = categories[item.Category].Id, IsPrimary = true });
-            if (product.Images.Count == 0 || (refreshImages && item.Images.Count > 0 && !product.Images.Any(img => img.Url.Contains("canonical_"))))
+            if (product.Images.Count == 0 || (refreshImages && item.Images.Count > 0))
             {
                 // A merchant's existing image takes precedence over bundled media, but stale generated
                 // placeholders (for example "/products/48.webp" or "/products/nc-1001.jpg") are not

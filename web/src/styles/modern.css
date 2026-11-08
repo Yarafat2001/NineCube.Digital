@@ -708,3 +708,28 @@ main :is(a[href]:not(.btn):not(.filter-chip):not(.navbar__link), .link-button):h
   75% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   100% { opacity: 0; transform: translate(-50%, -65%) scale(0.9); }
 }
+
+/* Sequential dual image transition during Add-to-Cart ("one after another animated adding") */
+@keyframes addingImageFlipPrimary {
+  0% { opacity: 1; transform: scale(1); }
+  25% { opacity: 0; transform: scale(1.03); }
+  65% { opacity: 0; transform: scale(1.03); }
+  85% { opacity: 1; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes addingImageFlipSecondary {
+  0% { opacity: 0; transform: scale(0.97); }
+  25% { opacity: 1; transform: scale(1); pointer-events: auto; }
+  65% { opacity: 1; transform: scale(1); pointer-events: auto; }
+  85% { opacity: 0; transform: scale(0.97); pointer-events: none; }
+  100% { opacity: 0; transform: scale(0.97); pointer-events: none; }
+}
+
+.product-card--just-added .product-card__image--primary:not(.product-card__image--hidden) {
+  animation: addingImageFlipPrimary 1.35s cubic-bezier(0.2, 0, 0, 1) forwards !important;
+}
+
+.product-card--just-added .product-card__image--secondary {
+  animation: addingImageFlipSecondary 1.35s cubic-bezier(0.2, 0, 0, 1) forwards !important;
+}
