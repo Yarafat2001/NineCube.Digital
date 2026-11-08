@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useActiveCampaigns } from '../../api/hooks';
 import { t, useLanguage } from '../../i18n/language';
 import { formatDate, formatMoneyWhole } from '../../lib/helpers';
-import { offerAmount, offerLink, offerScope } from '../../lib/campaignFacts';
+import { offerAmount, offerLink, offerScope, pickFeaturedCampaign } from '../../lib/campaignFacts';
 import { countdown, useNow } from '../../lib/countdown';
 import { Icon } from '../Icon';
 import { LoadingBlock } from '../ui';
@@ -14,9 +14,13 @@ export function HomeLiveOffers() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const campaigns = (data ?? []).filter((coupon) => coupon.isActive);
-  const hasExpiry = campaigns.some((coupon) => coupon.expiresAt);
+  // The band above already shows this campaign in full, so the list starts after it: the same
+  // discount printed twice on one page reads as two different offers.
+  const featured = pickFeaturedCampaign(campaigns);
+  const listed = campaigns.filter((coupon) => coupon.id !== featured?.id);
+  const hasExpiry = listed.some((coupon) => coupon.expiresAt);
   const now = useNow(hasExpiry ? 1000 : 60000);
-  if (!isLoading && campaigns.length === 0) return null;
+  if (!isLoading && listed.length === 0) return null;
 
   const handleCopy = async (code: string) => {
     try {
@@ -46,7 +50,7 @@ export function HomeLiveOffers() {
         <LoadingBlock label={t('Loading offers')} variant="card" count={3} />
       ) : (
         <ul className="home-offers-grid">
-          {campaigns.map((coupon) => {
+          {listed.map((coupon) => {
             const copied = copiedCode === coupon.code;
             const left = coupon.expiresAt ? countdown(coupon.expiresAt, now) : null;
             return (

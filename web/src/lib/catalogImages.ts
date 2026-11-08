@@ -32,21 +32,39 @@ export function resolveDualProductImages(
   const name = (product.name || '').toLowerCase();
   const category = (product.categories?.[0]?.slug || '').toLowerCase();
 
-  // Safety: Prevent toys/appliances from falsely matching rice
-  const isApplianceOrToy =
+  // Safety: Prevent books, stationery, phones, electronics, bedding, furniture from ever falsely matching rice
+  const nonRiceCategory =
+    category === 'books' ||
+    category === 'stationery' ||
+    category === 'school-items' ||
+    category === 'office-supplies' ||
+    category === 'exam-prep' ||
+    category === 'smartphones' ||
+    category === 'feature-phones' ||
+    category === 'phones' ||
+    category === 'mobile-phones' ||
+    category === 'electronics' ||
+    category === 'home-appliances' ||
+    category === 'furniture' ||
+    category === 'home-furniture' ||
+    category === 'bedding-linen' ||
+    category === 'decor-lighting' ||
     category === 'kitchenware' ||
     category === 'toys-kids-baby' ||
     category === 'baby-gear' ||
+    category === 'fashion' ||
+    category === 'fashion-jewelry' ||
+    category === 'online-learning' ||
     slug.includes('cooker') ||
     slug.includes('fisher-price') ||
     name.includes('cooker');
 
   const isRice =
-    !isApplianceOrToy &&
+    !nonRiceCategory &&
     (category === 'rice' ||
       /\b(?:rice|chal|chinigura|miniket|najirshail|nazirshail|kalijeera|kalijira|atap|basmati)\b/i.test(`${slug} ${name}`));
 
-  if (!isRice) {
+  if (nonRiceCategory) {
     if (primaryUrl && (primaryUrl.includes('rice') || primaryUrl.includes('chinigura'))) {
       primaryUrl = null;
     }
@@ -324,10 +342,58 @@ export function resolveDualProductImages(
     primaryAlt = `${product.name} (Closed Lid)`;
     secondaryAlt = `${product.name} (Open Display & Keyboard)`;
   }
-  // 14. Smartphones & Electronics
-  else if (category.includes('smartphone') || category.includes('mobile-phone') || slug.includes('smartphone') || slug.includes('phone')) {
-    primaryUrl = '/products/bd/canonical_smartphone.jpg';
-    secondaryUrl = primaryUrl;
+  // 14. Smartphones & Feature Phones (Model-Distinct Authentic Imagery)
+  else if (category === 'smartphones' || category === 'feature-phones' || category === 'phones' || category === 'mobile-phones' || slug.includes('phone') || slug.includes('galaxy') || slug.includes('iphone') || slug.includes('redmi') || slug.includes('pixel') || slug.includes('nokia') || slug.includes('walton-olvio') || slug.includes('symphony-l')) {
+    primaryUrl = `/products/bd/${slug}.jpg`;
+    secondaryUrl = `/products/bd/${slug}-open.jpg`;
+    if (category === 'feature-phones' || slug.includes('nokia') || slug.includes('olvio') || slug.includes('it56')) {
+      primaryAlt = `${product.name} (Keypad & Display View)`;
+      secondaryAlt = `${product.name} (Rear Battery Cover View)`;
+    } else {
+      primaryAlt = `${product.name} (Front Display View)`;
+      secondaryAlt = `${product.name} (Rear Chassis & Camera View)`;
+    }
+  }
+  // 15. Authentic Bangladeshi Books & Literature (Zero Rice Fallbacks)
+  else if (category === 'books' || slug.includes('poetry') || slug.includes('novel') || slug.includes('paperback') || slug.includes('hardcover') || slug.includes('history-of-bangladesh')) {
+    primaryUrl = `/products/bd/${slug}.jpg`;
+    secondaryUrl = `/products/bd/${slug}-open.jpg`;
+    primaryAlt = `${product.name} (Published Book Cover)`;
+    secondaryAlt = `${product.name} (Open Printed Pages Spread)`;
+  }
+  // 16. Authentic Stationery, School & Office Supplies, Exam Prep
+  else if (category === 'stationery' || category === 'school-items' || category === 'office-supplies' || category === 'exam-prep' || slug.includes('highlighter') || slug.includes('ballpoint') || slug.includes('notebook') || slug.includes('gel-pen') || slug.includes('geometry-box') || slug.includes('binder-clip')) {
+    primaryUrl = `/products/bd/${slug}.jpg`;
+    secondaryUrl = `/products/bd/${slug}-open.jpg`;
+    if (category === 'exam-prep') {
+      primaryAlt = `${product.name} (Study Guide Cover)`;
+      secondaryAlt = `${product.name} (Model Tests & Solutions Spread)`;
+    } else {
+      primaryAlt = `${product.name} (Retail Packaging)`;
+      secondaryAlt = `${product.name} (Precision Nib & Writing View)`;
+    }
+  }
+  // 17. Home, Living, Bedding & Kitchenware (Correct Non-Electronics Grouping)
+  else if (category === 'bedding-linen' || slug.includes('bed-sheet') || slug.includes('comforter') || slug.includes('pillow-cover') || slug.includes('quilt-cover')) {
+    primaryUrl = `/products/bd/${slug}.jpg`;
+    secondaryUrl = `/products/bd/${slug}-open.jpg`;
+    primaryAlt = `${product.name} (Luxury Packaging Box)`;
+    secondaryAlt = `${product.name} (Open Cotton Bedding Spread)`;
+  } else if (category === 'decor-lighting' || slug.includes('smart-bulb') || slug.includes('strip-light') || slug.includes('wall-sconce')) {
+    primaryUrl = `/products/bd/${slug}.jpg`;
+    secondaryUrl = `/products/bd/${slug}-open.jpg`;
+    primaryAlt = `${product.name} (Retail Product Box)`;
+    secondaryAlt = `${product.name} (Illuminated Ambient Glow View)`;
+  } else if (category === 'kitchenware' || slug.includes('fry-pan') || slug.includes('chef-knife') || slug.includes('mixing-bowl')) {
+    primaryUrl = `/products/bd/${slug}.jpg`;
+    secondaryUrl = `/products/bd/${slug}-open.jpg`;
+    primaryAlt = `${product.name} (Retail Cookware Box)`;
+    secondaryAlt = `${product.name} (Cookware Non-Stick Induction Base View)`;
+  } else if (category === 'furniture' || category === 'home-furniture' || slug.includes('wardrobe') || slug.includes('tv-unit')) {
+    primaryUrl = `/products/bd/${slug}.jpg`;
+    secondaryUrl = `/products/bd/${slug}-open.jpg`;
+    primaryAlt = `${product.name} (Factory Packaging Crate)`;
+    secondaryAlt = `${product.name} (Showroom Assembled Teak Display)`;
   }
   // 15. Apparel (Panjabi, Sarees)
   else if (slug.includes('panjabi') || name.includes('panjabi')) {

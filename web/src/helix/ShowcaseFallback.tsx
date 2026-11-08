@@ -1,5 +1,5 @@
 import { t, useLanguage } from '../i18n/language';
-import { useEffect, useMemo, useState }  from 'react';
+import { useMemo, useState }  from 'react';
 import { Link, useNavigate }  from 'react-router-dom';
 import { HeroPromotions } from './HeroPromotions';
 import { ShowcaseFooterContent } from './ShowcaseFooterContent';
@@ -9,8 +9,6 @@ import { showcaseCopy } from './showcaseCopy';
 import { CARD_COUNT, cardCategories, describeCardArtwork } from './cardAssets';
 import type { ShowcaseFallbackReason } from './support';
 import type { Product } from '../api/types';
-import { useProducts } from '../api/hooks';
-import { formatMoney } from '../lib/helpers';
 import { RecentlyViewed } from '../components/RecentlyViewed';
 import { HomeTrustBar } from '../components/home/HomeTrustBar';
 import { HomeCategoryStrip } from '../components/home/HomeCategoryStrip';
@@ -50,156 +48,10 @@ const TRENDING_KEYWORDS = [
   'Acer'
 ];
 
-/** Counts a number up once, the way live storefront dashboards do. Static under reduced motion. */
-function CountUp({ value, format, duration = 900 }: { value: number; format?: (n: number) => string; duration?: number }) {
-  const [shown, setShown] = useState(0);
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setShown(value);
-      return;
-    }
-    let raf = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const progress = Math.min(1, (now - start) / duration);
-      setShown(value * (1 - Math.pow(1 - progress, 3)));
-      if (progress < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [value, duration]);
-
-  return <>{format ? format(shown) : Math.round(shown)}</>;
-}
-
-function HomeStorePulse() {
-  const { data } = useProducts({ q: '', page: 1, pageSize: 24, inStock: true });
-  const products = useMemo(
-    () => (data?.items ?? []).filter((product: Product) => product.isActive && product.stockQuantity > 0),
-    [data?.items]
-  );
-
-  const stats = useMemo(() => {
-    if (!products.length) {
-      return {
-        itemCount: 0,
-        lowStock: 0,
-        avgPrice: 0,
-        topCategory: 'Warehouse'
-      };
-    }
-
-    const categoryCounts = new Map<string, number>();
-    products.forEach((product) => {
-      const names = (product.categories ?? []).map((category) => category.name).filter(Boolean);
-      if (!names.length) {
-        categoryCounts.set('General', (categoryCounts.get('General') ?? 0) + 1);
-        return;
-      }
-      names.forEach((name) => categoryCounts.set(name, (categoryCounts.get(name) ?? 0) + 1));
-    });
-
-    const topCategory = [...categoryCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'Warehouse';
-    const avgPrice = products.reduce((sum, product) => sum + product.price, 0) / products.length;
-    const lowStock = products.filter((product) => product.stockQuantity <= 4).length;
-
-    return {
-      itemCount: products.length,
-      lowStock,
-      avgPrice,
-      topCategory
-    };
-  }, [products]);
-
-  const topMoves = useMemo(() => {
-    const sorted = [...products].sort((a, b) => {
-      const discountA = a.compareAtPrice && a.compareAtPrice > a.price ? ((a.compareAtPrice - a.price) / a.compareAtPrice) * 100 : 0;
-      const discountB = b.compareAtPrice && b.compareAtPrice > b.price ? ((b.compareAtPrice - b.price) / b.compareAtPrice) * 100 : 0;
-      return (discountB + b.stockQuantity) - (discountA + a.stockQuantity);
-    });
-    return sorted.slice(0, 3);
-  }, [products]);
-
-  const peakStock = Math.max(1, ...topMoves.map((product) => product.stockQuantity), 12);
-
-  return (
-    <section className="home-store-pulse" aria-label={t("Store pulse")}>
-      <div className="home-store-pulse__header">
-        <div>
-          <span className="home-section-kicker"><Icon name="box" width={13} height={13} /> {t("From the catalogue")}</span>
-          <h2 className="home-section-title">{t("Store pulse")}</h2>
-        </div>
-        <p className="home-section-desc">{t("Counted from the in-stock products the catalogue returns for this page.")}</p>
-      </div>
-
-      <div className="home-store-pulse__stats">
-        <div className="home-store-pulse__stat">
-          <span className="home-store-pulse__label">{t("Products ready")}</span>
-          <strong><CountUp value={stats.itemCount} /></strong>
-          <small>{t("in stock now")}</small>
-        </div>
-        <div className="home-store-pulse__stat">
-          <span className="home-store-pulse__label">{t("Low stock")}</span>
-          <strong><CountUp value={stats.lowStock} /></strong>
-          <small>{t("needs attention")}</small>
-        </div>
-        <div className="home-store-pulse__stat">
-          <span className="home-store-pulse__label">{t("Avg. item")}</span>
-          <strong><CountUp value={stats.avgPrice} format={formatMoney} /></strong>
-          <small>{t("current price")}</small>
-        </div>
-        <div className="home-store-pulse__stat home-store-pulse__stat--highlight">
-          <span className="home-store-pulse__label">{t("Top category")}</span>
-          <strong>{stats.topCategory}</strong>
-          <small>{t("most active mix")}</small>
-        </div>
-      </div>
-
-      <div className="home-store-pulse__insights">
-        <div className="home-store-pulse__panel">
-          <h3>{t("Smart picks")}</h3>
-          {topMoves.length === 0 ? (
-            <p className="home-store-pulse__empty">{t("Inventory is refreshing.")}</p>
-          ) : (
-            <ul className="home-store-pulse__list">
-              {topMoves.map((product) => {
-                const share = Math.max(18, (product.stockQuantity / peakStock) * 100);
-                return (
-                  <li key={product.id} className="home-store-pulse__item">
-                    <Link className="home-store-pulse__item-link" to={`/products/${product.id}`}>
-                      <div className="home-store-pulse__item-top">
-                        <span>{product.name}</span>
-                        <strong>{product.stockQuantity} {t("left")}</strong>
-                      </div>
-                      <div className="home-store-pulse__bar">
-                        <span style={{ width: `${share}%` }} />
-                      </div>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-        <div className="home-store-pulse__panel home-store-pulse__panel--accent">
-          <h3>{t("Modern commerce")}</h3>
-          <ul className="home-store-pulse__features" role="presentation">
-            <li role="presentation">{t("Dynamic category-led discovery")}</li>
-            <li role="presentation">{t("Live stock confidence signals")}</li>
-            <li role="presentation">{t("Fast path from hero to product detail")}</li>
-            <li role="presentation">{t("Compare, cart, and trust-first UX")}</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /**
  * The home page without WebGL: the same nine collection cards as a static grid, plus the storefront
- * sections - trust bar, category shortcuts, store pulse, brands, deals, live campaigns and recents.
- * Every figure in it is counted from what the catalogue API returns.
+ * sections - trust bar, category shortcuts, the product grid, the live campaign and its codes, the
+ * brands and the recents. Every figure in it is counted from what the catalogue API returns.
  */
 export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFallbackProps) {
   useLanguage();
@@ -289,14 +141,13 @@ export function ShowcaseFallback({ cardAssets, reason, onLaunch3D }: ShowcaseFal
       <Reveal><HomeSignInPrompt /></Reveal>
       <Reveal delay={60}><HomeTrustBar /></Reveal>
       <Reveal delay={120}><HomeCategoryStrip /></Reveal>
-      <Reveal delay={180}><HomeStorePulse /></Reveal>
-      <Reveal delay={240}><HomeBrandStrip /></Reveal>
-      <Reveal delay={300}><HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} /></Reveal>
-      <Reveal delay={330}><HomeCampaignBanner /></Reveal>
-      <Reveal delay={360}><HomeLiveOffers /></Reveal>
-      <Reveal delay={420}><div className="home-recent-section"><RecentlyViewed /></div></Reveal>
+      <Reveal delay={180}><HomeFeaturedDeals onToggleCompare={handleToggleCompare} compareItems={compareItems} /></Reveal>
+      <Reveal delay={240}><HomeCampaignBanner /></Reveal>
+      <Reveal delay={270}><HomeLiveOffers /></Reveal>
+      <Reveal delay={300}><HomeBrandStrip /></Reveal>
+      <Reveal delay={330}><div className="home-recent-section"><RecentlyViewed /></div></Reveal>
 
-      <Reveal delay={480}>
+      <Reveal delay={360}>
         <section className="showcase__grid-section" aria-labelledby="showcase-cards-heading">
           <div className="showcase__headings">
             <h2 id="showcase-cards-heading">{t(showcaseCopy.transitionTitle)}</h2>

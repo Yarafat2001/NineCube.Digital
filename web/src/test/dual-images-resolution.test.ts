@@ -263,4 +263,145 @@ describe('Catalog Dual Image Verification for SQA User Scenarios', () => {
     expect(res.primaryUrl).toBeNull();
     expect(res.secondaryUrl).toBeNull();
   });
+
+  it('resolves Apple iPhone 15 Pro Max with model-distinct dual imagery (Front Display & Rear Camera array)', () => {
+    const p: Product = {
+      id: 201,
+      sku: 'BD-APPL-IPHO-15-P-001',
+      slug: 'apple-iphone-15-pro-max-8gb-256gb',
+      name: 'Apple iPhone 15 Pro Max 8GB 256GB',
+      price: 185000,
+      currency: 'BDT',
+      stockQuantity: 15,
+      isActive: true,
+      rowVersion: 'AAAAAAA=',
+      categories: [{ id: 10, name: 'Smartphones', slug: 'smartphones', isPrimary: true }],
+      images: [
+        { id: 1, url: '/products/bd/apple-iphone-15-pro-max-8gb-256gb.jpg', isPrimary: true, altText: 'Apple iPhone 15 Pro Max (Front Display View)' },
+        { id: 2, url: '/products/bd/apple-iphone-15-pro-max-8gb-256gb-open.jpg', isPrimary: false, altText: 'Apple iPhone 15 Pro Max (Rear Chassis & Camera View)' }
+      ],
+      imageUrl: '/products/bd/apple-iphone-15-pro-max-8gb-256gb.jpg'
+    };
+    const res = resolveDualProductImages(p);
+    expect(res.primaryUrl).toBe('/products/bd/apple-iphone-15-pro-max-8gb-256gb.jpg');
+    expect(res.secondaryUrl).toBe('/products/bd/apple-iphone-15-pro-max-8gb-256gb-open.jpg');
+    expect(res.primaryUrl).not.toContain('canonical_smartphone');
+    expect(res.primaryAlt).toContain('Front Display');
+    expect(res.secondaryAlt).toContain('Rear Chassis & Camera View');
+  });
+
+  it('resolves Nokia 110 Dual SIM feature phone with tactile keypad & removable rear battery cover', () => {
+    const p: Product = {
+      id: 202,
+      sku: 'BD-NOKI-110-DUAL-002',
+      slug: 'nokia-110-dual-sim',
+      name: 'Nokia 110 Dual SIM',
+      price: 3200,
+      currency: 'BDT',
+      stockQuantity: 45,
+      isActive: true,
+      rowVersion: 'AAAAAAA=',
+      categories: [{ id: 11, name: 'Feature Phones', slug: 'feature-phones', isPrimary: true }],
+      images: [
+        { id: 3, url: '/products/bd/nokia-110-dual-sim.jpg', isPrimary: true, altText: 'Nokia 110 Dual SIM (Keypad & Display View)' },
+        { id: 4, url: '/products/bd/nokia-110-dual-sim-open.jpg', isPrimary: false, altText: 'Nokia 110 Dual SIM (Rear Battery Cover View)' }
+      ],
+      imageUrl: '/products/bd/nokia-110-dual-sim.jpg'
+    };
+    const res = resolveDualProductImages(p);
+    expect(res.primaryUrl).toBe('/products/bd/nokia-110-dual-sim.jpg');
+    expect(res.secondaryUrl).toBe('/products/bd/nokia-110-dual-sim-open.jpg');
+    expect(res.primaryAlt).toContain('Keypad');
+    expect(res.secondaryAlt).toContain('Rear Battery Cover');
+  });
+
+  it('resolves Prothoma Poetry Collection Paperback with authentic Bengali book cover & printed page spread (NEVER rice)', () => {
+    const p: Product = {
+      id: 203,
+      sku: 'BD-PROT-POET-003',
+      slug: 'prothoma-poetry-collection-paperback',
+      name: 'Prothoma Poetry Collection Paperback',
+      price: 450,
+      currency: 'BDT',
+      stockQuantity: 25,
+      isActive: true,
+      rowVersion: 'AAAAAAA=',
+      categories: [{ id: 12, name: 'Books', slug: 'books', isPrimary: true }],
+      images: [],
+      imageUrl: '/products/bd/prothoma-poetry-collection-paperback.jpg'
+    };
+    const res = resolveDualProductImages(p);
+    expect(res.primaryUrl).toBe('/products/bd/prothoma-poetry-collection-paperback.jpg');
+    expect(res.secondaryUrl).toBe('/products/bd/prothoma-poetry-collection-paperback-open.jpg');
+    expect(res.primaryUrl).not.toContain('rice');
+    expect(res.secondaryUrl).not.toContain('rice');
+    expect(res.primaryAlt).toContain('Published Book Cover');
+    expect(res.secondaryAlt).toContain('Open Printed Pages Spread');
+  });
+
+  it('resolves Matador Ballpoint Pen 20-Pack with blister pack & precision nib writing view (NEVER rice)', () => {
+    const p: Product = {
+      id: 204,
+      sku: 'BD-MATA-BALL-004',
+      slug: 'matador-ballpoint-pen-20-pack',
+      name: 'Matador Ballpoint Pen 20-Pack',
+      price: 250,
+      currency: 'BDT',
+      stockQuantity: 80,
+      isActive: true,
+      rowVersion: 'AAAAAAA=',
+      categories: [{ id: 13, name: 'Stationery', slug: 'stationery', isPrimary: true }],
+      images: [],
+      imageUrl: '/products/bd/matador-ballpoint-pen-20-pack.jpg'
+    };
+    const res = resolveDualProductImages(p);
+    expect(res.primaryUrl).toBe('/products/bd/matador-ballpoint-pen-20-pack.jpg');
+    expect(res.secondaryUrl).toBe('/products/bd/matador-ballpoint-pen-20-pack-open.jpg');
+    expect(res.primaryUrl).not.toContain('rice');
+    expect(res.secondaryUrl).not.toContain('rice');
+    expect(res.primaryAlt).toContain('Retail Packaging');
+    expect(res.secondaryAlt).toContain('Precision Nib');
+  });
+
+  it('resolves Aarong Bed Sheet Set Double with luxury box & unfolded bedding spread (Home category)', () => {
+    const p: Product = {
+      id: 205,
+      sku: 'BD-AARO-BEDS-005',
+      slug: 'aarong-bed-sheet-set-double',
+      name: 'Aarong Bed Sheet Set Double',
+      price: 3450,
+      currency: 'BDT',
+      stockQuantity: 12,
+      isActive: true,
+      rowVersion: 'AAAAAAA=',
+      categories: [{ id: 14, name: 'Bedding Linen', slug: 'bedding-linen', isPrimary: true }],
+      images: [],
+      imageUrl: '/products/bd/aarong-bed-sheet-set-double.jpg'
+    };
+    const res = resolveDualProductImages(p);
+    expect(res.primaryUrl).toBe('/products/bd/aarong-bed-sheet-set-double.jpg');
+    expect(res.secondaryUrl).toBe('/products/bd/aarong-bed-sheet-set-double-open.jpg');
+    expect(res.primaryAlt).toContain('Luxury Packaging Box');
+    expect(res.secondaryAlt).toContain('Open Cotton Bedding Spread');
+  });
+
+  it('resolves Kiam Rice Cooker as Cookware / Kitchenware (NEVER rice grains)', () => {
+    const p: Product = {
+      id: 206,
+      sku: 'BD-KIAM-KITC-006-4B3880',
+      slug: 'kiam-rice-cooker-1-8l',
+      name: 'Kiam Rice Cooker 1.8L',
+      price: 2850,
+      currency: 'BDT',
+      stockQuantity: 30,
+      isActive: true,
+      rowVersion: 'AAAAAAA=',
+      categories: [{ id: 15, name: 'Kitchenware', slug: 'kitchenware', isPrimary: true }],
+      images: [],
+      imageUrl: '/products/bd/kiam-rice-cooker-1-8l.jpg'
+    };
+    const res = resolveDualProductImages(p);
+    expect(res.primaryUrl).not.toMatch(/canonical_.*(?:rice|chinigura|miniket)/);
+    expect(res.secondaryUrl).not.toMatch(/canonical_.*(?:rice|chinigura|miniket)/);
+  });
 });

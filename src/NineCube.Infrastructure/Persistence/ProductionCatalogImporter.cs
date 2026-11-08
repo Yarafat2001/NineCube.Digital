@@ -11,7 +11,7 @@ namespace NineCube.Infrastructure.Persistence;
 public static class ProductionCatalogImporter
 {
     private const string StockRepairKey = "ProductionCatalogue.StockInitialization.v1";
-    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v8";
+    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v9";
 
     public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default)
     {
@@ -31,10 +31,26 @@ public static class ProductionCatalogImporter
         var createdCategories = 0;
         foreach (var item in feed.Categories.OrderBy(c => c.Depth))
         {
-            if (categories.ContainsKey(item.Slug)) continue;
-            var parent = item.ParentSlug is null ? null : categories[item.ParentSlug];
+            var parent = item.ParentSlug is null ? null : (categories.TryGetValue(item.ParentSlug, out var p) ? p : null);
+            var expectedPath = $"{parent?.Path ?? "/"}{item.Slug}/";
+            var expectedDepth = (parent?.Depth ?? 0) + 1;
+            var expectedParentId = parent?.Id;
+
+            if (categories.TryGetValue(item.Slug, out var existingCategory))
+            {
+                if (existingCategory.ParentId != expectedParentId || existingCategory.Path != expectedPath || existingCategory.Depth != expectedDepth || existingCategory.Name != item.Name)
+                {
+                    existingCategory.ParentId = expectedParentId;
+                    existingCategory.Path = expectedPath;
+                    existingCategory.Depth = expectedDepth;
+                    existingCategory.Name = item.Name;
+                    logger.LogInformation("Updated category {Slug} hierarchy: parent={Parent}, path={Path}, depth={Depth}", item.Slug, item.ParentSlug, expectedPath, expectedDepth);
+                }
+                continue;
+            }
+
             var category = new Category { Name = item.Name, Slug = item.Slug, ParentId = parent?.Id,
-                Path = $"{parent?.Path ?? "/"}{item.Slug}/", Depth = (parent?.Depth ?? 0) + 1,
+                Path = expectedPath, Depth = expectedDepth,
                 SortOrder = categories.Count, IsActive = true };
             if (category.Depth > 4) throw new InvalidOperationException("Catalogue category exceeds maximum depth.");
             db.Categories.Add(category);
@@ -105,8 +121,18 @@ public static class ProductionCatalogImporter
             if (string.IsNullOrWhiteSpace(product.SourceUrl)) product.SourceUrl = item.SourceUrl;
             if (string.IsNullOrWhiteSpace(product.SourceLicense)) product.SourceLicense = item.SourceLicense;
             if (string.IsNullOrWhiteSpace(product.PriceBasis)) product.PriceBasis = item.PriceBasis;
-            if (product.Categories.Count == 0)
-                product.Categories.Add(new ProductCategory { CategoryId = categories[item.Category].Id, IsPrimary = true });
+            if (categories.TryGetValue(item.Category, out var targetCat))
+            {
+                var primaryCat = product.Categories.FirstOrDefault(c => c.IsPrimary);
+                if (primaryCat is null)
+                {
+                    product.Categories.Add(new ProductCategory { CategoryId = targetCat.Id, IsPrimary = true });
+                }
+                else if (primaryCat.CategoryId != targetCat.Id)
+                {
+                    primaryCat.CategoryId = targetCat.Id;
+                }
+            }
             if (product.Images.Count == 0 || (refreshImages && item.Images.Count > 0))
             {
                 // A merchant's custom image (/uploads/...) takes precedence over bundled media,
