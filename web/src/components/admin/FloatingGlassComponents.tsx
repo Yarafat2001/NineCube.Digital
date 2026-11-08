@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { t } from '../../i18n/language';
 import { Icon, type IconName } from '../Icon';
 

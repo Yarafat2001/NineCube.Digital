@@ -217,12 +217,12 @@ export function FloatingGlassAdminShell({
     return t('Good evening');
   };
 
-  const userName = user?.name || user?.email?.split('@')[0] || 'Team';
-  const userInitials = (user?.name || user?.email || 'NC')
+  const userName = user?.fullName || user?.email?.split('@')[0] || 'Team';
+  const userInitials = (user?.fullName || user?.email || 'NC')
     .split(/[ _@.-]+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
+    .map((w: string) => w[0]?.toUpperCase())
     .join('');
 
   const formattedDate = new Date().toLocaleDateString('en-US', {
