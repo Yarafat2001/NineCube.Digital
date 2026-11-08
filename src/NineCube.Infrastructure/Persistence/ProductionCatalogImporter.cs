@@ -121,18 +121,8 @@ public static class ProductionCatalogImporter
             if (string.IsNullOrWhiteSpace(product.SourceUrl)) product.SourceUrl = item.SourceUrl;
             if (string.IsNullOrWhiteSpace(product.SourceLicense)) product.SourceLicense = item.SourceLicense;
             if (string.IsNullOrWhiteSpace(product.PriceBasis)) product.PriceBasis = item.PriceBasis;
-            if (categories.TryGetValue(item.Category, out var targetCat))
-            {
-                var primaryCat = product.Categories.FirstOrDefault(c => c.IsPrimary);
-                if (primaryCat is null)
-                {
-                    product.Categories.Add(new ProductCategory { CategoryId = targetCat.Id, IsPrimary = true });
-                }
-                else if (primaryCat.CategoryId != targetCat.Id)
-                {
-                    primaryCat.CategoryId = targetCat.Id;
-                }
-            }
+            if (product.Categories.Count == 0 && categories.TryGetValue(item.Category, out var targetCat))
+                product.Categories.Add(new ProductCategory { CategoryId = targetCat.Id, IsPrimary = true });
             if (product.Images.Count == 0 || (refreshImages && item.Images.Count > 0))
             {
                 // A merchant's custom image (/uploads/...) takes precedence over bundled media,

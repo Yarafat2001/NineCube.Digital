@@ -199,7 +199,7 @@ export function resolveDualProductImages(
     } else {
       primaryUrl = '/products/bd/canonical_teer_soybean_packet.jpg';
     }
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
     primaryAlt = `${product.name} (Bottle View)`;
     secondaryAlt = `${product.name} (Cooking Oil View)`;
   }
@@ -263,19 +263,19 @@ export function resolveDualProductImages(
     secondaryAlt = `${product.name} (Fresh Turmeric Roots & Pure Ground Powder)`;
   } else if (slug.includes('chilli') || name.includes('chilli')) {
     primaryUrl = '/products/bd/canonical_radhuni_chilli_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('coriander') || name.includes('coriander')) {
     primaryUrl = '/products/bd/canonical_radhuni_coriander_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('cumin') || name.includes('cumin')) {
     primaryUrl = '/products/bd/canonical_radhuni_cumin_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('biryani') || name.includes('biryani')) {
     primaryUrl = '/products/bd/canonical_radhuni_biryani_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('garam-masala') || name.includes('garam masala')) {
     primaryUrl = '/products/bd/canonical_radhuni_garam_masala_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   }
   // 9. Dairy & Yogurt
   else if (slug.includes('sweet-yogurt') || name.includes('sweet yogurt')) {
@@ -288,52 +288,52 @@ export function resolveDualProductImages(
     secondaryUrl = '/products/bd/canonical_aarong_ghee_packet.jpg';
   } else if (slug.includes('liquid-milk') || name.includes('liquid milk') || slug.includes('uht-milk')) {
     primaryUrl = '/products/bd/canonical_aarong_liquid_milk_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('roshogolla') || name.includes('roshogolla')) {
     primaryUrl = '/products/bd/canonical_aarong_roshogolla_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('powder-milk') || slug.includes('milk-powder')) {
     primaryUrl = slug.includes('marks')
       ? '/products/bd/canonical_marks_milk_powder_packet.jpg'
       : '/products/bd/canonical_dano_powder_milk_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   }
   // 10. Snacks & Sweets
   else if (slug.includes('chanachur') || name.includes('chanachur')) {
     primaryUrl = '/products/bd/canonical_bombay_chanachur_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('biscuit') || slug.includes('energy') || name.includes('biscuit')) {
     primaryUrl = '/products/bd/canonical_olympic_energy_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('noodles') || name.includes('noodles')) {
     primaryUrl = '/products/bd/canonical_maggi_noodles_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   }
   // 11. Beverages
   else if (slug.includes('tea') || name.includes('tea')) {
     primaryUrl = slug.includes('taaza')
       ? '/products/bd/canonical_taaza_tea_packet.jpg'
       : '/products/bd/canonical_ispahani_tea_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('mojo') || slug.includes('cola')) {
     primaryUrl = '/products/bd/canonical_mojo_cola_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('mango') || slug.includes('litchi')) {
     primaryUrl = slug.includes('mango')
       ? '/products/bd/canonical_pran_mango_packet.jpg'
       : '/products/bd/canonical_pran_litchi_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   }
   // 12. Staples (Atta, Maida, Dal)
   else if (slug.includes('atta') || name.includes('atta')) {
     primaryUrl = '/products/bd/canonical_atta_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('maida') || name.includes('maida')) {
     primaryUrl = '/products/bd/canonical_maida_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('dal') || name.includes('dal') || slug.includes('lentil')) {
     primaryUrl = '/products/bd/canonical_dal_packet.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   }
   // 13. Laptops & Computers
   else if (category.includes('laptop') || slug.includes('laptop') || name.includes('laptop')) {
@@ -398,10 +398,10 @@ export function resolveDualProductImages(
   // 15. Apparel (Panjabi, Sarees)
   else if (slug.includes('panjabi') || name.includes('panjabi')) {
     primaryUrl = '/products/bd/canonical_panjabi_embroidered.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   } else if (slug.includes('saree') || name.includes('saree') || slug.includes('kurti') || slug.includes('three-piece')) {
     primaryUrl = '/products/bd/canonical_saree_jamdani.jpg';
-    secondaryUrl = primaryUrl;
+    secondaryUrl = null;
   }
   // 16. Fallback if primaryUrl is not set: use slug image
   if (!primaryUrl) {
@@ -429,7 +429,7 @@ export function resolveDualProductImages(
     } else if (primaryUrl.endsWith('.jpg') && !primaryUrl.includes('-open.jpg') && !primaryUrl.includes('_open.jpg')) {
       secondaryUrl = primaryUrl.replace(/\.jpg$/, '-open.jpg');
     } else {
-      secondaryUrl = primaryUrl;
+      secondaryUrl = null;
     }
   }
 

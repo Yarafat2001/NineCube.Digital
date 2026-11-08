@@ -64,22 +64,22 @@ export function HomeCategoryStrip() {
               to={`/products?category=${encodeURIComponent(cat.slug)}`}
               className={`home-category-card${photo ? ' home-category-card--photo' : ''}`}
             >
-              {photo ? (
-                <img
-                  className="home-category-photo"
-                  src={resolveAssetUrl(photo.imageUrl)!}
-                  alt=""
-                  loading="lazy"
-                  width={400}
-                  height={300}
-                />
-              ) : (
-                <span className="home-category-media">
+              <span className="home-category-media">
+                {photo ? (
+                  <img
+                    className="home-category-photo"
+                    src={resolveAssetUrl(photo.imageUrl)!}
+                    alt=""
+                    loading="lazy"
+                    width={400}
+                    height={300}
+                  />
+                ) : (
                   <span className="home-category-icon">
                     <Icon name={categoryIcon(cat.slug)} width={24} height={24} />
                   </span>
-                </span>
-              )}
+                )}
+              </span>
               <span className="home-category-info">
                 <strong className="home-category-name">{t(cat.name)}</strong>
                 <span className="home-category-count">{t(cat.productCount)} {t("items")}</span>

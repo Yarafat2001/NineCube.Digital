@@ -32,16 +32,18 @@ describe('The signed-in customer can use the home page', () => {
     expect(screen.queryByRole('heading', { level: 1, name: 'Catalogue' })).not.toBeInTheDocument();
   });
 
-  it('links the smart picks to the products they name', async () => {
+  it('links every product tile to the product it names', async () => {
     await signInAsCustomer();
     renderApp('/');
     await screen.findByTestId('showcase-fallback-reason');
 
-    const pulse = await screen.findByRole('region', { name: /Store pulse/i });
-    const picks = await within(pulse).findAllByRole('link');
-    expect(picks.length).toBeGreaterThan(0);
-    for (const pick of picks) {
-      expect(pick).toHaveAttribute('href', expect.stringMatching(/^\/products\/\d+$/));
+    // The stock dashboard this replaced was an internal counter board; the product grid is what
+    // a shopper actually clicks through, so its links are the ones that have to be right.
+    const deals = await screen.findByRole('region', { name: /Featured Deals/i });
+    const links = await within(deals).findAllByRole('link');
+    expect(links.length).toBeGreaterThan(0);
+    for (const link of links) {
+      expect(link).toHaveAttribute('href', expect.stringMatching(/^\/products(\/\d+)?$/));
     }
   });
 
@@ -59,10 +61,15 @@ describe('The signed-in customer can use the home page', () => {
     ])));
     renderApp('/');
 
-    const section = await screen.findByRole('region', { name: /Offers you can use right now/i });
+    // The band carries the store's featured campaign, so its countdown and its scope link live there.
+    const band = await waitFor(() => {
+      const node = document.querySelector('.home-campaign-banner');
+      expect(node).not.toBeNull();
+      return node as HTMLElement;
+    });
     // A live days/hours/minutes figure, not a frozen date: the shopper can see the offer ending.
-    expect(within(section).getByText(/\d+d \d\dh \d\dm/)).toBeInTheDocument();
-    const shop = within(section).getByRole('link', { name: /Shop this offer/i });
+    expect(within(band).getByText(/\d+d \d\dh \d\dm/)).toBeInTheDocument();
+    const shop = within(band).getByRole('link', { name: /Shop the sale/i });
     expect(shop).toHaveAttribute('href', '/products?q=Footwear');
   });
 

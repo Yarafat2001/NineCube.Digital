@@ -88,14 +88,17 @@ describe('Navigation glass is its own material, page cards are another', () => {
     // --border measured 1.51:1 against the light page: a card outline nobody could follow.
     expect(home).not.toMatch(/border: 1px solid var\(--border\);/);
     expect(block(home, '.home-category-card')).toContain('--nav-glass-edge');
-    expect(block(home, '.home-store-pulse__stat')).toContain('--nav-glass-edge');
+    expect(block(home, '.home-brand-chip')).toContain('--opt-edge');
     expect(block(home, '.home-search__trending-chip')).toContain('--opt-edge');
     expect(block(home, '.home-deal-compare-btn')).toContain('--opt-edge');
-    expect(block(home, '.home-store-pulse__bar')).toContain('--edge-well');
+    expect(block(home, '.home-brand-monogram')).toContain('--selected-bg');
   });
 
   it('gives the hero a second column and a hairline the dark theme cannot erase', () => {
-    expect(home).toContain('grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);');
+    // The section itself holds one column, so the shop window inside it fills the right half
+    // instead of leaving a third of the hero empty.
+    expect(home).toContain('.showcase--static .showcase__hero-layout');
+    expect(home).toContain('grid-template-columns: minmax(0, 1fr) minmax(320px, 0.58fr);');
     expect(home).toContain('.showcase--static .showcase__hero-intro');
     // The stacked child margins added 28-32px on top of the hero gap between the same two lines.
     expect(home).toContain('.showcase--static :is(.showcase__hero-actions, .home-search, .showcase__hero-cta) { margin-top: 0; }');
@@ -123,13 +126,13 @@ describe('The home page only says what the server can back up', () => {
     expect(HOME_COMPONENTS[1]).toContain('<Icon name="tag"');
   });
 
-  it('counts the store pulse from the catalogue without claiming a feed', () => {
+  it('counts the home page from the catalogue without claiming a feed', () => {
     // The numbers are counted client-side from the page the catalogue returns; "live" and "real-time"
     // described a push feed that does not exist, and "live offers" labelled a product count.
     expect(fallback).not.toMatch(/●|Real-time|live warehouse/);
-    expect(fallback).toContain('t("From the catalogue")');
-    expect(fallback).toContain('t("in stock now")');
-    expect(fallback).toContain('aria-label={t("Store pulse")}');
+    // The stock dashboard is gone: a shopper came for products, not for our own counters.
+    expect(fallback).not.toMatch(/Store pulse|home-store-pulse|Smart picks|Modern commerce/);
+    expect(home).not.toMatch(/\.home-store-pulse/);
     // The gallery is the only list a visitor came for, so the tests name it rather than count.
     expect(fallback).toContain('data-testid="showcase-grid"');
   });
@@ -138,15 +141,23 @@ describe('The home page only says what the server can back up', () => {
     renderApp('/');
 
     const section = await screen.findByRole('region', { name: /Offers you can use right now/i });
-    // The terms under each code are a list too, so the cards are counted by their own class.
-    expect(section.querySelectorAll('.home-offer-card')).toHaveLength(5);
+    // The band above already carries the featured campaign, so the list starts after it.
+    expect(section.querySelectorAll('.home-offer-card')).toHaveLength(4);
     expect(within(section).getByText('SAVE10')).toBeInTheDocument();
     expect(within(section).getAllByText('15% OFF')).toHaveLength(2);
-    expect(within(section).getByText('25% OFF')).toBeInTheDocument();
+    // The band's campaign is not printed twice on one page.
+    expect(within(section).queryByText('25% OFF')).toBeNull();
+    expect(within(section).queryByText('DURAMO25')).toBeNull();
     expect(within(section).getByText(/On orders over BDT 1,000/)).toBeInTheDocument();
     expect(within(section).getByText(/Applied automatically at checkout/)).toBeInTheDocument();
     expect(within(section).queryByText('AUTO2000')).toBeNull();
-    expect(within(section).getAllByRole('button', { name: /Copy voucher code/ })).toHaveLength(4);
+    expect(within(section).getAllByRole('button', { name: /Copy voucher code/ })).toHaveLength(3);
+
+    // The campaign the band spotlights keeps its code on the band, where it can still be copied.
+    const band = document.querySelector('.home-campaign-banner');
+    expect(band).not.toBeNull();
+    expect(band!.textContent).toContain('DURAMO25');
+    expect(within(band as HTMLElement).getByRole('button', { name: 'Copy voucher code DURAMO25' })).toBeInTheDocument();
   });
 
   it('copies the code a shopper can actually paste at checkout', async () => {

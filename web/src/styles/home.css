@@ -239,6 +239,7 @@
   width: 100%;
   aspect-ratio: 3 / 2;
   background: var(--placeholder-gradient);
+  overflow: hidden;
 }
 
 .home-category-icon {
@@ -288,7 +289,7 @@
 .home-category-photo {
   display: block;
   width: 100%;
-  aspect-ratio: 3 / 2;
+  height: 100%;
   object-fit: cover;
   background: var(--placeholder-gradient);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter var(--transition-fast);
@@ -639,9 +640,11 @@
 }
 
 @media (max-width: 400px) {
-  .home-deals-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  /* The narrowest phone still reads as a shop window: two tiles per row. */
+  .home-deals-grid { gap: 8px; }
+  .home-deal-card { padding: 6px; }
+  .home-deal-price { font-size: var(--text-sm); }
+  .home-deal-add-btn { padding: 6px 8px; font-size: var(--text-xs); }
 }
 
 /* Theme-aware storefront surfaces; the animated art direction keeps its own palette. */
@@ -1153,19 +1156,6 @@
   }
   .home-offer-copy {
     min-height: 44px;
-  }
-}
-
-@media (max-width: 900px) {
-  .home-brand-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .home-brand-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
   }
 }
 

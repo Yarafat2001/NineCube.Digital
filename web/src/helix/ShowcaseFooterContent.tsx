@@ -38,6 +38,12 @@ export function ShowcaseFooterContent() {
         <p>{t("Available payment methods are shown at checkout.")}</p>
         <p>{t("Online payments are verified by the payment provider before an order is counted as paid.")}</p>
       </div>
+      <div className="showcase-footer__col">
+        <strong>{t("Support")}</strong>
+        <a href="mailto:support@ninecube.digital">{t("support@ninecube.digital")}</a>
+        <p>{t("Escalations")}</p>
+        <a href="mailto:care@ninecube.digital">{t("care@ninecube.digital")}</a>
+      </div>
     </div>
 
     <div className="showcase-footer__base">

@@ -51,9 +51,11 @@ export function ProductImage({
 
   const isMerchantUpload = stored && stored.startsWith('/uploads/');
   const effectivePrimary = isMerchantUpload ? stored : (dual.primaryUrl ?? stored);
-  const effectiveSecondary = isMerchantUpload
+  const rawSecondary = isMerchantUpload
     ? (secondary ? secondary.url : null)
     : (dual.secondaryUrl ?? (secondary ? secondary.url : null));
+  const effectiveSecondary = rawSecondary && rawSecondary !== effectivePrimary ? rawSecondary : null;
+  const hasDistinctSecondary = Boolean(effectiveSecondary);
 
   const imageDescription = isMerchantUpload ? (primary?.altText ?? product.name) : (dual.primaryAlt ?? primary?.altText ?? product.name);
   const secondaryDescription = isMerchantUpload
@@ -81,14 +83,14 @@ export function ProductImage({
       ) : (
         <>
           <img
-            className={`product-card__image${isPhoto ? ' product-card__image--photo' : ''}${secondarySrc && frame === 'card' ? ' product-card__image--primary' : ''}${activeView === 'open' ? ' product-card__image--hidden' : ''}`}
+            className={`product-card__image${isPhoto ? ' product-card__image--photo' : ''}${hasDistinctSecondary && !secondaryBroken && frame === 'card' ? ' product-card__image--primary' : ''}${activeView === 'open' && hasDistinctSecondary ? ' product-card__image--hidden' : ''}`}
             src={src}
             alt={t(alt ?? imageDescription)}
             loading="lazy"
             decoding="async"
             onError={() => setBroken(true)}
           />
-          {secondarySrc && frame === 'card' && !secondaryBroken ? (
+          {hasDistinctSecondary && frame === 'card' && !secondaryBroken ? (
             <img
               className={`product-card__image product-card__image--secondary${activeView === 'open' ? ' product-card__image--visible' : ''}`}
               src={secondarySrc}
@@ -99,7 +101,7 @@ export function ProductImage({
               aria-hidden={activeView !== 'open'}
             />
           ) : null}
-          {secondarySrc && frame === 'card' && !secondaryBroken && interactiveToggle ? (
+          {hasDistinctSecondary && frame === 'card' && !secondaryBroken && interactiveToggle ? (
             <button
               type="button"
               className="product-card__view-toggle"
