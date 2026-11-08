@@ -50,6 +50,7 @@ import { EmptyState, ErrorState, LiveRegion, LoadingBlock, Modal, useToast } fro
 import { Icon, type IconName } from '../components/Icon';
 import { formatDateTime, formatMoney, formatMoneyWhole, roleLabels, useDebouncedValue } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
+import { FloatingGlassAdminShell } from '../components/admin/FloatingGlassAdminShell';
 
 const ROLES: UserRole[] = ['Customer', 'Staff', 'InventoryManager', 'Administrator'];
 
@@ -776,6 +777,7 @@ export function AdminPage() {
   };
 
   return (
+    <FloatingGlassAdminShell activeSection={tab === 'users' ? 'Customers' : tab === 'coupons' ? 'Discounts' : tab === 'settings' ? 'Settings' : 'Administration'}>
     <div className="page container">
       <header className="page-header">
         <div>
@@ -3280,5 +3282,6 @@ export function AdminPage() {
       )}
       <LiveRegion message={t("")} />
     </div>
+    </FloatingGlassAdminShell>
   );
 }

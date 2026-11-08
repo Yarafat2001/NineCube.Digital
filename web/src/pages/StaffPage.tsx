@@ -20,6 +20,9 @@ import {
 import { defaultReportRange, formatDateTime, formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
 import { OrderTimeline, canCustomerCancel } from './OrdersPages';
+import { FloatingGlassAdminShell } from '../components/admin/FloatingGlassAdminShell';
+import { SlideOverDrawer } from '../components/admin/SlideOverDrawer';
+import { KpiCard } from '../components/admin/FloatingGlassComponents';
 
 type OrderAction = 'confirm' | 'reject' | 'ship' | 'cancel';
 const ORDER_ACTION_LABELS: Record<OrderAction, string> = { confirm: 'Confirm order', reject: 'Reject order', ship: 'Mark as shipped', cancel: 'Cancel order' };
@@ -48,6 +51,7 @@ export function StaffPage() {
   const [bulkResults, setBulkResults] = useState<{ id: number; ok: boolean; message: string }[]>([]);
   const bulkLock = useRef(false);
   const selectAllRef = useRef<HTMLInputElement>(null);
+  const [inspectedOrder, setInspectedOrder] = useState<Order | null>(null);
   const visibleOrders = (ordersQuery.data?.items ?? []).filter(o => queue === 'invoices' || o.status === (queue === 'confirm' ? 'Pending' : 'Confirmed'));
   const selectable = !canManageOrders || queue === 'invoices' ? [] : visibleOrders;
   const selectedOrders = selectable.filter(o => selectedIds.includes(o.id));
@@ -94,6 +98,7 @@ export function StaffPage() {
   };
 
   return (
+    <FloatingGlassAdminShell activeSection="Orders">
     <div className="page container">
       <header className="page-header">
         <div>
@@ -135,6 +140,32 @@ export function StaffPage() {
       />
 
       {!canManageOrders && <p className="card-glass order-role-notice" role="note">{t("Administrator order access is read-only. Use a Staff account to confirm, reject, ship or cancel orders. Invoice viewing, sales reports and category management remain available.")}</p>}
+
+      <div className="kp" style={{ marginBottom: '18px' }}>
+        <KpiCard
+          label={t("Total orders")}
+          value={ordersQuery.data?.totalCount ?? '—'}
+          icon="box"
+        />
+        <KpiCard
+          label={t("To confirm")}
+          value={(ordersQuery.data?.items ?? []).filter(o => o.status === 'Pending').length}
+          delta={{ value: t("Pending review"), direction: 'up' }}
+          icon="clock"
+        />
+        <KpiCard
+          label={t("Ready to ship")}
+          value={(ordersQuery.data?.items ?? []).filter(o => o.status === 'Confirmed').length}
+          delta={{ value: t("Confirmed"), direction: 'up' }}
+          icon="truck"
+        />
+        <KpiCard
+          label={t("Active queue")}
+          value={queue === 'confirm' ? t("To confirm") : queue === 'ship' ? t("To ship") : t("Invoices")}
+          icon="grid"
+        />
+      </div>
+
       <nav className="order-queues" aria-label={t("Order queues")}>
         <button className="btn" type="button" aria-pressed={queue === 'confirm'} onClick={() => changeQueue('confirm')}>{t("To confirm")}</button>
         <button className="btn" type="button" aria-pressed={queue === 'ship'} onClick={() => changeQueue('ship')}>{t("To ship")}</button>
@@ -245,6 +276,7 @@ export function StaffPage() {
                         ) : null}
 
                         {order.status === 'Shipped' ? <span className="order-closed-note"><Icon name="check" />{t("Shipping complete")}</span> : order.status === 'Cancelled' || order.status === 'Rejected' ? <span className="order-closed-note">{t("Order closed")}</span> : null}
+                        <button type="button" className="btn btn--sm btn--ghost" onClick={() => setInspectedOrder(order)}>{t("Inspect")}</button>
                       </div>
                     </td>
                     <td><Link className="btn btn--sm" to={`/orders/${order.id}/invoice`} aria-label={t(`View invoice for order #${order.id}`)}>{t("View invoice")}</Link></td>
@@ -265,7 +297,67 @@ export function StaffPage() {
       ) : null}
       </div>
       {section === 'categories' ? <CategoryManager /> : null}
+
+      <SlideOverDrawer
+        isOpen={inspectedOrder !== null}
+        onClose={() => setInspectedOrder(null)}
+        title={inspectedOrder ? `${t('Order')} #${inspectedOrder.id}` : ''}
+        subtitle={inspectedOrder ? `${t('Placed')} ${formatDateTime(inspectedOrder.createdAt)}` : ''}
+        badge={inspectedOrder ? {
+          text: inspectedOrder.status,
+          variant: inspectedOrder.status === 'Pending' ? 'pending' : inspectedOrder.status === 'Confirmed' ? 'active' : inspectedOrder.status === 'Shipped' ? 'success' : 'danger'
+        } : undefined}
+        currentStepIndex={
+          inspectedOrder?.status === 'Pending' ? 0
+          : inspectedOrder?.status === 'Confirmed' ? 2
+          : inspectedOrder?.status === 'Shipped' ? 3
+          : inspectedOrder?.status === 'Delivered' ? 4
+          : 1
+        }
+        customer={inspectedOrder ? {
+          name: inspectedOrder.customerName || t('Customer'),
+          email: 'customer@ninecube.digital'
+        } : undefined}
+        totals={inspectedOrder ? {
+          subtotal: inspectedOrder.totalAmount,
+          total: inspectedOrder.totalAmount
+        } : undefined}
+        actions={
+          inspectedOrder && canManageOrders ? (
+            <>
+              {inspectedOrder.status === 'Pending' && (
+                <button
+                  type="button"
+                  className="btn btn--sm btn--primary"
+                  onClick={() => {
+                    run(inspectedOrder.id, 'confirm');
+                    setInspectedOrder(null);
+                  }}
+                >
+                  {t("Confirm order")}
+                </button>
+              )}
+              {inspectedOrder.status === 'Confirmed' && (
+                <button
+                  type="button"
+                  className="btn btn--sm btn--primary"
+                  onClick={() => {
+                    run(inspectedOrder.id, 'ship');
+                    setInspectedOrder(null);
+                  }}
+                >
+                  {t("Mark as shipped")}
+                </button>
+              )}
+              <Link className="btn btn--sm" to={`/orders/${inspectedOrder.id}/invoice`}>
+                {t("View invoice")}
+              </Link>
+            </>
+          ) : undefined
+        }
+      />
     </div>
+    </FloatingGlassAdminShell>
   );
 }
 
@@ -284,6 +376,7 @@ export function SalesSummaryPage() {
   );
 
   return (
+    <FloatingGlassAdminShell activeSection="Finances">
     <div className="page container sales-page">
       <header className="page-header">
         <div>
@@ -390,6 +483,7 @@ export function SalesSummaryPage() {
         </>
       ) : null}
     </div>
+    </FloatingGlassAdminShell>
   );
 }
 

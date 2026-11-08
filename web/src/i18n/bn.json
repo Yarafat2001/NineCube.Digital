@@ -2557,5 +2557,10 @@
   "ORDER ITEMS": "অর্ডারের পণ্যসমূহ",
   "Shipping": "শিপিং",
   "Tax": "ট্যাক্স",
+  "Ready to ship": "পাঠানোর জন্য প্রস্তুত",
+  "Active queue": "সক্রিয় কিউ",
+  "Inspect": "পরিদর্শন করুন",
+  "Pending review": "পর্যালোচনাধীন",
+  "Invoices": "চালানসমূহ",
   "Discount code": "ডিসকাউন্ট কোড"
 }

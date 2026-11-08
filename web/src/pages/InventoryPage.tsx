@@ -33,6 +33,7 @@ import {
   useToast
 } from '../components/ui';
 import { flattenCategories, isBrandTag } from '../components/CategoryFilters';
+import { FloatingGlassAdminShell } from '../components/admin/FloatingGlassAdminShell';
 import { formatDateTime, formatMoney, useDebouncedValue } from '../lib/helpers';
 
 interface ProductFormState {
@@ -489,6 +490,7 @@ export function InventoryPage() {
         : null;
 
   return (
+    <FloatingGlassAdminShell activeSection="Products">
     <div className="page container">
       <header className="page-header">
         <div>
@@ -839,5 +841,6 @@ export function InventoryPage() {
         </div>
       </Modal>
     </div>
+    </FloatingGlassAdminShell>
   );
 }

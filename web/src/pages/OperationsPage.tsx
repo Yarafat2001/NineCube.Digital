@@ -7,6 +7,7 @@ import { ErrorState, useToast } from '../components/ui';
 import { formatMoney } from '../lib/helpers';
 import { countryName, addressCountries } from '../lib/addresses';
 import { t, useLanguage } from '../i18n/language';
+import { FloatingGlassAdminShell } from '../components/admin/FloatingGlassAdminShell';
 
 interface Supplier { id: number; name: string; email?: string; phone?: string }
 interface Purchase { id: number; supplierId: number; reference: string; currency: string; status: string; lines: { id: number; productId: number; quantity: number; receivedQuantity: number; unitCost: number }[] }
@@ -15,11 +16,16 @@ interface Rate { countryCode: string; division: string | null; district: string 
 
 export function OperationsPage() {
   useLanguage(); const { hasRole } = useAuth();
-  return <div className="page container stack"><h1>{t('Store operations')}</h1>
-    {hasRole('InventoryManager', 'Administrator') && <Purchasing />}
-    {hasRole('Staff', 'Administrator') && <ReviewQueue />}
-    {hasRole('Administrator') && <DeliveryRatesEditor />}
-  </div>;
+  return (
+    <FloatingGlassAdminShell activeSection="Operations">
+      <div className="page container stack">
+        <h1>{t('Store operations')}</h1>
+        {hasRole('InventoryManager', 'Administrator') && <Purchasing />}
+        {hasRole('Staff', 'Administrator') && <ReviewQueue />}
+        {hasRole('Administrator') && <DeliveryRatesEditor />}
+      </div>
+    </FloatingGlassAdminShell>
+  );
 }
 
 function Purchasing() {
