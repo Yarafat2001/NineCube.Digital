@@ -4,6 +4,7 @@ import { t, useLanguage } from '../../i18n/language';
 import { useAuth } from '../../state/AuthContext';
 import { useUnreadCount } from '../../api/hooks';
 import { Icon, type IconName } from '../Icon';
+import { CommandPalette } from './CommandPalette';
 
 export interface FloatingGlassAdminShellProps {
   children: ReactNode;
@@ -106,8 +107,18 @@ export function FloatingGlassAdminShell({
   const [showCreateMenu, setShowCreateMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [storeName, setStoreName] = useState('Main Store');
+
+  const handleOpenSearch = onOpenSearch || (() => setShowCommandPalette(true));
+
+  // Global listener for open command palette event
+  useEffect(() => {
+    const handler = () => setShowCommandPalette(true);
+    window.addEventListener('ninecube:open-command-palette', handler);
+    return () => window.removeEventListener('ninecube:open-command-palette', handler);
+  }, []);
 
   // Tooltip state for mini mode
   const [tooltip, setTooltip] = useState<{ text: string; top: number; left: number; visible: boolean }>({
@@ -268,7 +279,7 @@ export function FloatingGlassAdminShell({
         <button
           type="button"
           className="sch"
-          onClick={onOpenSearch}
+          onClick={handleOpenSearch}
           onMouseEnter={(e) => handleMouseEnter(t('Search (Ctrl K)'), e)}
           onMouseLeave={handleMouseLeave}
           aria-label={t('Search (Ctrl K)')}
@@ -522,7 +533,7 @@ export function FloatingGlassAdminShell({
               type="button"
               className="rb glass"
               aria-label={t('Search (Ctrl K)')}
-              onClick={onOpenSearch}
+              onClick={handleOpenSearch}
               title={t('Search (Ctrl K)')}
             >
               <Icon name="search" width={18} height={18} />
@@ -611,6 +622,13 @@ export function FloatingGlassAdminShell({
         {/* View Content */}
         {children}
       </main>
+
+      {/* Global Command Palette */}
+      <CommandPalette
+        isOpen={showCommandPalette}
+        onClose={() => setShowCommandPalette(false)}
+        onToggleTheme={toggleTheme}
+      />
     </div>
   );
 }
