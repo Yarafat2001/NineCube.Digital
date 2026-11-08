@@ -1,5 +1,102 @@
 # FIX_REPORT
 
+# Round 36 and 37 - the home page merchandises the live catalogue once, and stops repeating itself
+
+Date: 2026-11-08. From the master task, in your words: "See the home pages design it has many
+lackings here unnecessary card and others part remove give it modern style e-commerce looks so
+that looks very nice."
+
+## What the probe measured before the change
+
+A look-see run in Playwright with the API stubbed, full-page captures at 1440 and 390 in both
+themes (`web/scripts/round37-looksee.mjs`).
+
+| surface | before | after |
+| --- | --- | --- |
+| phone page height | 9 811 px, 13 blocks | 7 328 px, 11 blocks |
+| laptop page height | 6 211 px | 5 112 px |
+| the hero at 1440 | the section was a two-column grid with one child, so the whole right half of the top of the page was empty background | the section holds one column and the layout inside it takes two tracks, so the live deal panel sits in the second half |
+| the featured grid at 390 | one tile per row: 2 049 px of scroll for four products | two tiles per row: about 1 070 px for the same four products |
+| the live campaign | printed twice - the band, then the same campaign again as the first offer card | printed once, on the band, which now carries the code and a copy button |
+| the brands | a shelf of eight cards | one rail of chips |
+| the stock counters | a "Store pulse" board with counters and a smart-picks strip, beside the product grid that already showed the same products | removed, with its stylesheet and one catalogue request |
+
+## What was removed, and what it cost
+
+- **The Store pulse board.** It repeated the product grid in a dashboard shape and asked the API
+  for a second page of 24 products. The component, its styles and the request are gone.
+- **The duplicated campaign.** The band above already shows the strongest campaign in full -
+  countdown, scope, code, CTA - so the offer list starts after it (`HomeLiveOffers.tsx:19-20`).
+  Nothing was lost: the band gained a copy button so the code a shopper pastes is still one click
+  away.
+- **The brand card shelf.** Eight cards that each held a monogram, a name and a count. It is one
+  rail of chips now, each chip a link to that brand's products.
+- **Two dead rules.** The `.home-brand-grid` breakpoints stayed behind after the shelf went.
+
+## What the home page gained (Round 36, your go-ahead)
+
+- **The hero carries the live best deal** - the real saving (`SAVE 40%`), the real price and the
+  crossed-out price, all read from the catalogue rather than written into the page.
+- **The two collection cards are anchored to a price the catalogue returns** (`From BDT 1,499.00`),
+  so the number on the card is one the shopper will meet at the product.
+- **The category tiles wear one media band.** The category with a catalogue photo wears it; the
+  one without fills the same band with its icon, so the row keeps one height.
+- **The featured cards carry a NEW badge** for the newest products. There is no best-seller badge
+  anywhere: the home API carries no sales, so that claim cannot be backed.
+- **The campaign band is full width** and carries the code with a copy button.
+- **The footer gained a Support column** with the two addresses that really work,
+  `support@ninecube.digital` and `care@ninecube.digital`. No phone number and no street address
+  was invented.
+
+## Layout changes
+
+- `.showcase--static .showcase__hero` holds one column so the layout inside it can use the whole
+  width; from 1000 px up the shop window takes the second track
+  (`minmax(0, 1fr) minmax(320px, 0.58fr)`).
+- The featured grid keeps two tiles per row down to 390 px, the way a shop window reads on a
+  phone.
+
+## Tests that keep it honest
+
+- `web/src/test/round36-home-merch.test.tsx` (7 new): the hero panel shows the real saving and
+  both prices, both collection cards carry the catalogue price, every category tile wears the
+  media band, the newest products are marked NEW and never "best seller", the band carries the
+  campaign code and its copy button, the footer carries both mailboxes, and the new surfaces use
+  house tokens only.
+- `web/src/test/round37-home-pruning.test.tsx` (6 new): the stock board is gone from the page and
+  from the stylesheet, the campaign is printed once, the brands are a rail and not a shelf, the
+  page reads categories - products - campaign - offers - brands, the hero keeps the second track,
+  and the phone grid keeps two tiles per row.
+- `web/src/test/round28-surfaces.test.tsx` and `web/src/test/home-storefront.test.tsx` were
+  updated where the featured campaign now lives on the band rather than in the offer list.
+- `web/e2e/home-showcase-layout.spec.ts` (updated): the browser contract for the home now reads the
+  shape the shopper actually gets - the deal panel in the hero's second track on a laptop, the four
+  offer cards on one row, the campaign on the band and not in the list, the brands as chips, and no
+  stock board. It failed before this change and passes now.
+
+Gates after the last edit: `npx tsc --noEmit` clean; `npm run i18n:check` - 2 495 Bengali entries,
+every literal label covered; `npx vitest run` - 60 files, 489 tests, 478 passed and 11 skipped, 0
+failed; `npm run build` clean; and the two Playwright specs CI runs (`delivery-addresses`,
+`gift-cards-layout`) pass against the preview build.
+
+## Behaviour to know
+
+With exactly one live campaign the "Offers you can use right now" section hides itself, because
+the band above already shows that campaign in full. The band keeps the countdown, the scope, the
+code and the shop link.
+
+Two older home browser specs (`public-home.spec.ts`, `home-footer.spec.ts`) still fail, and they
+were failing before this round: both wait for a `#scene` element, and `id="scene"` has only ever
+existed in the static reference artwork under `web/src/helix/reference/`, never in the React app
+(`git log -S 'id="scene"' -- web/src/` returns the first commit and nothing since). They describe
+the 3D-era home, which the static home replaced. CI does not run them. Rewriting them against the
+current home is a separate piece of work and was left alone rather than half-done here.
+
+Evidence: `scratch/round37-home-laptop-light.png`, `scratch/round37-home-laptop-dark.png`,
+`scratch/round37-home-phone-light.png`, `scratch/round37-home-phone-dark.png`.
+
+---
+
 # Phase 1, item 1.1 - payment returns land on the real order page with a 303, the IPN gets its 200 back, and the outcome is announced in both languages
 
 Date: 2026-11-06. From the master task, in your words: "Payment callback: browser callbacks

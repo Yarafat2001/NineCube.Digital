@@ -54,13 +54,16 @@ test('the home page lays out its hero, offers and edges at laptop and phone widt
       if (await page.locator('html').getAttribute('data-theme') !== theme)
         await page.getByRole('button', { name: `Switch to ${theme} theme`, exact: true }).click();
 
-      // The hero's right half carries the collection cards on a laptop and stacks under the copy on a phone.
+      // The hero's copy keeps the first track, the live deal panel takes the second one on a
+      // laptop, and the collection cards sit under the copy. On a phone everything stacks.
       const intro = await home.locator('.showcase__hero-intro').boundingBox();
       const promo = await home.locator('.hero-promotions').boundingBox();
-      if (width >= 900) {
-        expect(promo!.x).toBeGreaterThan(intro!.x + intro!.width - 8);
+      const deal = await home.locator('.hero-deal').boundingBox();
+      expect(promo!.y).toBeGreaterThan(intro!.y + intro!.height - 8);
+      if (width >= 1000) {
+        expect(deal!.x).toBeGreaterThan(intro!.x + intro!.width - 8);
       } else {
-        expect(promo!.y).toBeGreaterThan(intro!.y + intro!.height - 8);
+        expect(deal!.y).toBeGreaterThan(promo!.y + promo!.height - 8);
       }
       // The actions row, the search and the CTA share the hero's own gap; stacked margins doubled it.
       // Measured from the row, because a browser that can run the scene adds the 3D launch button to it.
@@ -68,9 +71,12 @@ test('the home page lays out its hero, offers and edges at laptop and phone widt
       const search = await home.locator('.home-search').boundingBox();
       expect(search!.y - (actions!.y + actions!.height)).toBeLessThanOrEqual(24);
 
-      // Five live campaigns, three across on a laptop, one on a phone, and the automatic one says so.
+      // Four live campaigns reach the list; the fifth one is printed once, on the band above,
+      // so the same discount never reads as two different offers.
       const offers = home.locator('.home-offers-section');
-      await expect(offers.locator('.home-offer-card')).toHaveCount(5);
+      await expect(offers.locator('.home-offer-card')).toHaveCount(4);
+      await expect(home.locator('.home-campaign-banner').getByText('DURAMO25')).toBeVisible();
+      await expect(offers.getByText('DURAMO25')).toHaveCount(0);
 
       // A browser that can run the scene gets the launch button; its ghost edge must survive both themes.
       const ghost = home.locator('.showcase__3d-btn');
@@ -83,8 +89,17 @@ test('the home page lays out its hero, offers and edges at laptop and phone widt
         expect(g.bg).not.toBe('rgba(0, 0, 0, 0)');
         expect(g.ink).not.toBe('rgba(0, 0, 0, 0)');
       }
+      // The offers grid is auto-fit: one card per row on a phone, all four on one row on a laptop.
       const columns = await offers.locator('.home-offers-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
-      expect(columns).toBe(width >= 900 ? 3 : 1);
+      const rows = await offers.locator('.home-offer-card').evaluateAll(cards =>
+        new Set(cards.map(card => Math.round(card.getBoundingClientRect().top))).size);
+      if (width >= 1000) {
+        expect(columns).toBe(4);
+        expect(rows).toBe(1);
+      } else {
+        expect(columns).toBe(1);
+        expect(rows).toBe(4);
+      }
       const copy = await offers.locator('.home-offer-copy').first().boundingBox();
       expect(copy!.height).toBeGreaterThanOrEqual(width >= 900 ? 40 : 44);
       await expect(offers.getByText('Applied automatically at checkout')).toBeVisible();
@@ -99,11 +114,15 @@ test('the home page lays out its hero, offers and edges at laptop and phone widt
       expect(alignment.dx).toBeLessThan(2);
       expect(alignment.dy).toBeLessThan(2);
 
-      // Only brands the catalogue says have products.
-      await expect(home.locator('.home-brand-card')).toHaveCount(3);
+      // Only brands the catalogue says have products, and they are chips on a rail, not cards.
+      await expect(home.locator('.home-brand-chip')).toHaveCount(3);
+      await expect(home.locator('.home-brand-card')).toHaveCount(0);
+
+      // The stock board is gone; it repeated the product grid in a dashboard shape.
+      await expect(home.locator('.home-store-pulse')).toHaveCount(0);
 
       // Every surface keeps its edge: a transparent border is the old invisible card.
-      for (const selector of ['.home-offer-card', '.home-category-card', '.home-store-pulse__stat']) {
+      for (const selector of ['.home-offer-card', '.home-category-card']) {
         const border = await home.locator(selector).first().evaluate(el => getComputedStyle(el).borderTopColor);
         expect(border).not.toBe('rgba(0, 0, 0, 0)');
       }
