@@ -32,19 +32,19 @@ export function resolveDualProductImages(
   const name = (product.name || '').toLowerCase();
   const category = (product.categories?.[0]?.slug || '').toLowerCase();
 
-  // Safety: If gallery image was corrupted with rice images on a non-rice product, discard it!
+  // Safety: Prevent toys/appliances from falsely matching rice
+  const isApplianceOrToy =
+    category === 'kitchenware' ||
+    category === 'toys-kids-baby' ||
+    category === 'baby-gear' ||
+    slug.includes('cooker') ||
+    slug.includes('fisher-price') ||
+    name.includes('cooker');
+
   const isRice =
-    category === 'rice' ||
-    slug.includes('rice') ||
-    name.includes('rice') ||
-    slug.includes('chinigura') ||
-    name.includes('chinigura') ||
-    slug.includes('chal') ||
-    name.includes('chal') ||
-    slug.includes('atap') ||
-    slug.includes('najirshail') ||
-    slug.includes('miniket') ||
-    slug.includes('kalijeera');
+    !isApplianceOrToy &&
+    (category === 'rice' ||
+      /\b(?:rice|chal|chinigura|miniket|najirshail|nazirshail|kalijeera|kalijira|atap|basmati)\b/i.test(`${slug} ${name}`));
 
   if (!isRice) {
     if (primaryUrl && (primaryUrl.includes('rice') || primaryUrl.includes('chinigura'))) {
@@ -55,69 +55,143 @@ export function resolveDualProductImages(
     }
   }
 
-  // 1. Chinigura & Rice Staples
+  // 1. Authentic Bangladeshi Rice Varieties (Distinct Variety & Weight Imagery)
   if (isRice) {
+    const isMiniket = /\bminiket\b/i.test(`${slug} ${name}`);
+    const isNajirshail = /\b(?:najirshail|nazirshail)\b/i.test(`${slug} ${name}`);
+    const isKalijeera = /\b(?:kalijeera|kalijira)\b/i.test(`${slug} ${name}`);
+    const isAtap = /\b(?:atap|atop)\b/i.test(`${slug} ${name}`);
+    const isBasmati = /\bbasmati\b/i.test(`${slug} ${name}`);
+
+    const is10kg = slug.includes('10kg') || name.includes('10kg');
+    const is5kg = slug.includes('5kg') || name.includes('5kg');
+    const is2kg = slug.includes('2kg') || name.includes('2kg');
+    const is1kg = slug.includes('1kg') || name.includes('1kg');
+    const isExport = slug.includes('export') || name.includes('export');
+    const isValue = slug.includes('value') || name.includes('value');
+    const isCombo = slug.includes('combo') || name.includes('combo') || slug.includes('twin');
+
+    const sz = is10kg ? '10kg' : is5kg ? '5kg' : is2kg ? '2kg' : is1kg ? '1kg' : '10kg';
+
     if (slug.includes('bashundhara') || name.includes('bashundhara')) {
-      if (slug.includes('10kg') || name.includes('10kg')) {
-        primaryUrl = '/products/bd/canonical_bashundhara_rice_packet_10kg.jpg';
-      } else if (slug.includes('5kg') || name.includes('5kg')) {
-        primaryUrl = '/products/bd/canonical_bashundhara_rice_packet_5kg.jpg';
-      } else if (slug.includes('2kg') || name.includes('2kg')) {
-        primaryUrl = '/products/bd/canonical_bashundhara_rice_packet_2kg.jpg';
+      if (isMiniket) {
+        primaryUrl = `/products/bd/canonical_bashundhara_miniket_packet_${isExport ? 'export' : isValue ? 'value' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_miniket_rice_open.jpg';
+        secondaryAlt = `${product.name} (Slender Polished Miniket Grains)`;
+      } else if (isNajirshail) {
+        primaryUrl = `/products/bd/canonical_bashundhara_najirshail_packet_${isExport ? 'export' : isValue ? 'value' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_najirshail_rice_open.jpg';
+        secondaryAlt = `${product.name} (Pointed Translucent Najirshail Grains)`;
+      } else if (isKalijeera) {
+        primaryUrl = `/products/bd/canonical_bashundhara_kalijeera_packet_${isExport ? 'export' : isValue ? 'value' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_kalijeera_rice_open.jpg';
+        secondaryAlt = `${product.name} (Tiny Aromatic Kalijeera Polao Grains)`;
+      } else if (isAtap) {
+        primaryUrl = `/products/bd/canonical_bashundhara_atap_packet_${isValue ? 'value' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_atap_rice_open.jpg';
+        secondaryAlt = `${product.name} (Sun-Dried Pure White Atap Grains)`;
       } else {
-        primaryUrl = '/products/bd/canonical_bashundhara_rice_packet_1kg.jpg';
+        // Chinigura Aromatic
+        primaryUrl = `/products/bd/canonical_bashundhara_chinigura_packet_${isExport ? 'export' : isValue ? 'value' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_chinigura_rice_open.jpg';
+        secondaryAlt = `${product.name} (Aromatic Chinigura Grains)`;
       }
     } else if (slug.includes('pran') || name.includes('pran')) {
-      primaryUrl = '/products/bd/canonical_pran_rice_packet.jpg';
+      if (isAtap) {
+        // Must NEVER show Chinigura for PRAN Atap Rice!
+        primaryUrl = `/products/bd/canonical_pran_atap_packet_${isCombo ? 'combo' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_atap_rice_open.jpg';
+        secondaryAlt = `${product.name} (Pure White Sun-Dried Atap Grains)`;
+      } else if (isMiniket) {
+        primaryUrl = `/products/bd/canonical_pran_miniket_packet_${isCombo ? 'combo' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_miniket_rice_open.jpg';
+        secondaryAlt = `${product.name} (Long Slender Polished Miniket Grains)`;
+      } else if (isNajirshail) {
+        primaryUrl = `/products/bd/canonical_pran_najirshail_packet_${isCombo ? 'combo' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_najirshail_rice_open.jpg';
+        secondaryAlt = `${product.name} (Firm Pointed Najirshail Grains)`;
+      } else if (isKalijeera) {
+        primaryUrl = `/products/bd/canonical_pran_kalijeera_packet_${isCombo ? 'combo' : sz}.jpg`;
+        secondaryUrl = '/products/bd/canonical_kalijeera_rice_open.jpg';
+        secondaryAlt = `${product.name} (Tiny Aromatic Polao Rice Grains)`;
+      } else {
+        // PRAN Chinigura
+        primaryUrl = is2kg ? '/products/bd/canonical_pran_chinigura_packet_2kg.jpg' : '/products/bd/canonical_pran_rice_packet.jpg';
+        secondaryUrl = '/products/bd/canonical_chinigura_rice_open.jpg';
+        secondaryAlt = `${product.name} (Aromatic Chinigura Grains View)`;
+      }
+    } else if (slug.includes('aci') || name.includes('aci')) {
+      primaryUrl = isMiniket
+        ? '/products/bd/canonical_aci_miniket_packet.jpg'
+        : '/products/bd/canonical_aci_nazirshail_packet.jpg';
+      secondaryUrl = isMiniket
+        ? '/products/bd/canonical_miniket_rice_open.jpg'
+        : '/products/bd/canonical_najirshail_rice_open.jpg';
+      secondaryAlt = `${product.name} (Grain Quality View)`;
     } else if (slug.includes('chashi') || name.includes('chashi')) {
       primaryUrl = '/products/bd/canonical_chashi_rice_packet.jpg';
+      secondaryUrl = '/products/bd/canonical_chinigura_rice_open.jpg';
+      secondaryAlt = `${product.name} (Aromatic Grains View)`;
     } else if (slug.includes('fresh') || name.includes('fresh')) {
       primaryUrl = '/products/bd/canonical_fresh_rice_packet.jpg';
-    } else if (slug.includes('miniket') || name.includes('miniket')) {
-      primaryUrl = '/products/bd/canonical_aci_miniket_packet.jpg';
-    } else if (slug.includes('nazirshail') || name.includes('nazirshail')) {
-      primaryUrl = '/products/bd/canonical_aci_nazirshail_packet.jpg';
+      secondaryUrl = isAtap ? '/products/bd/canonical_atap_rice_open.jpg' : '/products/bd/canonical_chinigura_rice_open.jpg';
+      secondaryAlt = `${product.name} (Aromatic Grains View)`;
+    } else if (isBasmati) {
+      primaryUrl = '/products/bd/canonical_basmati_rice_packet.jpg';
+      secondaryUrl = '/products/bd/canonical_miniket_rice_open.jpg';
+      secondaryAlt = `${product.name} (Long Slender Basmati Grains)`;
     } else {
       primaryUrl = '/products/bd/canonical_rupchanda_rice_packet.jpg';
+      secondaryUrl = '/products/bd/canonical_chinigura_rice_open.jpg';
+      secondaryAlt = `${product.name} (Aromatic Grains View)`;
     }
-    secondaryUrl = '/products/bd/canonical_chinigura_rice_open.jpg';
     primaryAlt = `${product.name} (Packet View)`;
-    secondaryAlt = `${product.name} (Aromatic Grains View)`;
   }
-  // 2. Mustard Oil
+  // 2. Mustard Oil (Zero Idlis)
   else if (slug.includes('mustard-oil') || name.includes('mustard oil')) {
     if (slug.includes('fresh') || name.includes('fresh')) {
       primaryUrl = '/products/bd/canonical_fresh_mustard_packet.jpg';
+    } else if (slug.includes('pran') || name.includes('pran')) {
+      primaryUrl = '/products/bd/canonical_pran_mustard_packet.jpg';
     } else {
       primaryUrl = '/products/bd/canonical_radhuni_mustard_packet.jpg';
     }
     secondaryUrl = '/products/bd/canonical_mustard_oil_open.jpg';
     primaryAlt = `${product.name} (Bottle View)`;
-    secondaryAlt = `${product.name} (Pure Golden Mustard Oil with Seeds)`;
+    secondaryAlt = `${product.name} (Pure Golden Mustard Seeds)`;
   }
-  // 3. Olive Oil
+  // 3. Extra Virgin Olive Oil (Zero Avocados)
   else if (slug.includes('olive-oil') || name.includes('olive oil')) {
-    primaryUrl = '/products/bd/canonical_olive_oil_packet.jpg';
+    primaryUrl = slug.includes('5l')
+      ? '/products/bd/canonical_olive_oil_5l_packet.jpg'
+      : '/products/bd/canonical_olive_oil_packet.jpg';
     secondaryUrl = '/products/bd/canonical_olive_oil_open.jpg';
     primaryAlt = `${product.name} (Bottle View)`;
     secondaryAlt = `${product.name} (Pure Extra Virgin Olive Oil & Whole Olives)`;
   }
-  // 4. Soybean / Cooking Oil
-  else if (slug.includes('soybean') || name.includes('soybean') || slug.includes('palm-oil') || category === 'cooking-oil') {
-    primaryUrl = slug.includes('rupchanda')
-      ? '/products/bd/canonical_rupchanda_soybean_packet.jpg'
-      : '/products/bd/canonical_teer_soybean_packet.jpg';
+  // 4. Soybean / Cooking Oil (Guard against automotive engine oil or hair oil)
+  else if (
+    (slug.includes('soybean') || name.includes('soybean') || slug.includes('palm-oil') || category === 'cooking-oil') &&
+    !slug.includes('engine') && !slug.includes('gear') && !slug.includes('hair-oil') && !slug.includes('beard') && !slug.includes('fish-oil')
+  ) {
+    if (slug.includes('fresh') || name.includes('fresh')) {
+      primaryUrl = '/products/bd/canonical_fresh_soybean_packet.jpg';
+    } else if (slug.includes('rupchanda') || name.includes('rupchanda')) {
+      primaryUrl = '/products/bd/canonical_rupchanda_soybean_packet.jpg';
+    } else {
+      primaryUrl = '/products/bd/canonical_teer_soybean_packet.jpg';
+    }
     secondaryUrl = primaryUrl;
     primaryAlt = `${product.name} (Bottle View)`;
     secondaryAlt = `${product.name} (Cooking Oil View)`;
   }
-  // 5. Anklet / Payel Jewelry
+  // 5. Anklet / Payel Jewelry (Zero Necklaces)
   else if (slug.includes('anklet') || name.includes('anklet') || name.includes('payel') || name.includes('nupur')) {
-    if (slug.includes('silver') || name.includes('silver')) {
+    if (slug.includes('silver') || name.includes('silver') || slug.includes('oxidized') || name.includes('oxidized')) {
       primaryUrl = '/products/bd/canonical_anklet_silver_packet.jpg';
       secondaryUrl = '/products/bd/canonical_anklet_silver_open.jpg';
       primaryAlt = `${product.name} (Jewelry Gift Box)`;
-      secondaryAlt = `${product.name} (Handcrafted Silver Anklet with Bells on Ankle)`;
+      secondaryAlt = `${product.name} (Handcrafted Traditional Oxidized Silver Payel with Bells)`;
     } else {
       primaryUrl = '/products/bd/canonical_anklet_gold_packet.jpg';
       secondaryUrl = '/products/bd/canonical_anklet_gold_open.jpg';
@@ -125,30 +199,43 @@ export function resolveDualProductImages(
       secondaryAlt = `${product.name} (Traditional Gold Plated Payel on Ankle with Ghungroo)`;
     }
   }
-  // 6. Baby Winter Sets
+  // 6. Baby Winter Sets (Zero Girls in Floral Shirts)
   else if (slug.includes('baby-winter') || name.includes('baby winter') || (slug.includes('winter-set') && slug.includes('baby'))) {
     primaryUrl = '/products/bd/canonical_baby_winter_packet.jpg';
-    secondaryUrl = '/products/bd/canonical_baby_winter_open.jpg';
+    secondaryUrl = (slug.includes('new-edition') || name.includes('new edition'))
+      ? '/products/bd/canonical_baby_winter_new_open.jpg'
+      : '/products/bd/canonical_baby_winter_open.jpg';
     primaryAlt = `${product.name} (Packaging Box)`;
-    secondaryAlt = `${product.name} (Complete Knit Sweater, Pants, Booties & Beanie Set)`;
+    secondaryAlt = `${product.name} (Hand-Knitted Woolen Baby Winter Sweater & Set)`;
   }
-  // 7. 10 Minute School Courses
+  // 7. 10 Minute School Courses (Distinct Course Cards & Dashboards)
   else if (slug.includes('10-minute-school') || name.includes('10 minute school') || category === 'online-learning') {
-    if (slug.includes('freelancing') || name.includes('freelancing')) {
+    if (slug.includes('freelancing-masterclass-certificate-plus') || (slug.includes('freelancing') && slug.includes('plus'))) {
+      primaryUrl = '/products/bd/canonical_10ms_freelancing_plus_packet.jpg';
+      secondaryUrl = '/products/bd/canonical_10ms_freelancing_plus_open.jpg';
+      primaryAlt = `${product.name} (VIP Cohort Certification Card)`;
+      secondaryAlt = `${product.name} (VIP Agency Incubator Portal)`;
+    } else if (slug.includes('freelancing') || name.includes('freelancing')) {
       primaryUrl = '/products/bd/canonical_10ms_freelancing_packet.jpg';
       secondaryUrl = '/products/bd/canonical_10ms_freelancing_open.jpg';
+      primaryAlt = `${product.name} (Course Certification Card)`;
+      secondaryAlt = `${product.name} (Student Learning & Proposal Dashboard)`;
     } else if (slug.includes('ielts') || name.includes('ielts')) {
       primaryUrl = '/products/bd/canonical_10ms_ielts_packet.jpg';
       secondaryUrl = '/products/bd/canonical_10ms_ielts_open.jpg';
+      primaryAlt = `${product.name} (IELTS Band 8.0+ Mastery Card)`;
+      secondaryAlt = `${product.name} (Full Mock Diagnostic Dashboard)`;
     } else if (slug.includes('python') || name.includes('python')) {
       primaryUrl = '/products/bd/canonical_10ms_python_packet.jpg';
       secondaryUrl = '/products/bd/canonical_10ms_python_open.jpg';
+      primaryAlt = `${product.name} (Python Live Batch Card)`;
+      secondaryAlt = `${product.name} (Interactive Cloud IDE & Terminal)`;
     } else {
       primaryUrl = '/products/bd/canonical_10ms_general_packet.jpg';
       secondaryUrl = '/products/bd/canonical_10ms_general_open.jpg';
+      primaryAlt = `${product.name} (Official Course Card)`;
+      secondaryAlt = `${product.name} (Interactive Learning Dashboard)`;
     }
-    primaryAlt = `${product.name} (Course Certification Card)`;
-    secondaryAlt = `${product.name} (Interactive Student Learning Dashboard)`;
   }
   // 8. Spices
   else if (slug.includes('turmeric') || name.includes('turmeric')) {

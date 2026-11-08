@@ -208,18 +208,10 @@ export function resolveAssetUrl(url: string | null | undefined): string | undefi
         return `/${repo}${normalized}`;
       }
     }
-
-    const baseDir = cleanPath.replace(/\/[^/]+\.[^/]+$/, '').replace(/\/+$/, '');
-    if (baseDir && baseDir !== '/') {
-      if (normalized === baseDir || normalized.startsWith(`${baseDir}/`)) {
-        return normalized;
-      }
-      return `${baseDir}${normalized}`;
-    }
   }
 
   const base = import.meta.env.BASE_URL;
-  if (base && base !== './' && base !== '.') {
+  if (base && base !== './' && base !== '.' && base !== '/') {
     const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
     return `${cleanBase}${normalized}`;
   }
