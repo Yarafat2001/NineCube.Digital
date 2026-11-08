@@ -1,5 +1,6 @@
 import { t, useLanguage } from '../i18n/language';
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { apiRequest, ApiError, describeError } from '../api/client';
 import { AuthCard, NeuButton, NeuInput, SocialButtons, type SocialProvider } from '../components/auth/AuthCard';
@@ -52,6 +53,14 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
 
   const forgotPasswordMutation = useForgotPassword();
   const resetPasswordMutation = useResetPassword();
+
+  // The recovery sheet is a modal overlay: hide the mobile bottom bar while it is up,
+  // the same rule every other sheet in the app follows.
+  useEffect(() => {
+    if (showRecovery) document.documentElement.setAttribute('data-overlay-open', 'true');
+    else document.documentElement.removeAttribute('data-overlay-open');
+    return () => document.documentElement.removeAttribute('data-overlay-open');
+  }, [showRecovery]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -252,7 +261,7 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
       <p className={styles.notice} role="status" aria-live="polite" aria-atomic="true">{t(notice || (busy ? 'Please wait…' : ''))}</p>
 
       {/* Self-service password recovery modal */}
-      {showRecovery && (
+      {showRecovery && createPortal(
         <div className="sheet-backdrop" onClick={() => setShowRecovery(false)} role="presentation" style={{ zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="card-glass stack" onClick={e => e.stopPropagation()} style={{ width: '90%', maxWidth: '440px', padding: 'var(--space-5)', borderRadius: 'var(--radius-lg, 16px)', background: 'var(--surface-overlay, #18181b)' }} role="dialog" aria-modal="true" aria-labelledby="recovery-title">
             <div className="row-between">
@@ -319,7 +328,8 @@ export function AuthPage({ onForgotPassword, onSocialAuth }: AuthPageProps) {
               </form>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </AuthCard>
   );

@@ -9,6 +9,7 @@ import { MobileNav } from './components/MobileNav';
 import { ChatWidget } from './components/ChatWidget';
 import { AssistantDock } from './components/home/AssistantDock';
 import { RequireAuth, RequireRole } from './components/guards';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { LoadingBlock } from './components/ui';
 import { AuthPage } from './pages/AuthPages';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -74,8 +75,24 @@ export function App() {
         <Navbar />
 
       <main id="main">
-        <Suspense fallback={<RouteFallback />}>
-          <Routes>
+        {/* One route throwing used to take the whole shell down with it: #root emptied and the
+            visitor got a white screen with no navbar, no bar and no way out. The boundary sits
+            on the route tree, is keyed by pathname so a navigation clears a failed state, and
+            keeps the shell (navbar, bar, footer) mounted around the fallback. */}
+        <ErrorBoundary
+          key={pathname}
+          fallback={
+            <div className="state state--error" role="alert" data-testid="route-error">
+              <p className="state__title">{t('Something went wrong')}</p>
+              <p>{t('This page could not be displayed.')}</p>
+              <button type="button" className="btn" onClick={() => window.location.reload()}>
+                {t('Reload the page')}
+              </button>
+            </div>
+          }
+        >
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
             <Route path="/login" element={<AuthPage />} />
             <Route path="/register" element={<AuthPage />} />
 
@@ -204,6 +221,7 @@ export function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
       </main>
 
       {isShowcase || isAuth ? null : <Footer />}

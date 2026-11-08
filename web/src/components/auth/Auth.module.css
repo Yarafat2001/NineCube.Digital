@@ -9,9 +9,10 @@
   position: relative;
   isolation: isolate;
   display: grid;
-  place-items: center;
+  place-items: safe center;
   flex: 1;
-  overflow: clip;
+  overflow-x: clip;
+  overflow-y: auto;
   padding: var(--space-4);
   background: var(--bg-page-glow), var(--bg-page);
   color: var(--text);

@@ -32,6 +32,7 @@ body {
   background: var(--bg-page-glow), var(--bg-page);
   background-attachment: fixed;
   background-repeat: no-repeat;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

@@ -81,6 +81,16 @@ export function ProductDetailPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [product?.id]);
 
+  // The sticky dock rises into the band the Copilot pill is docked in, so the page tells the
+  // shell it is up: without this the pill lands on the dock's own Add to cart button - two
+  // tap targets stacked, the lower one unreachable.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (showStickyBar) root.dataset.pdpSticky = 'true';
+    else delete root.dataset.pdpSticky;
+    return () => { delete root.dataset.pdpSticky; };
+  }, [showStickyBar]);
+
   useEffect(() => {
     if (!product) return;
     recordRecentView({

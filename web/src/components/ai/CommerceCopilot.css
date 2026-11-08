@@ -104,10 +104,26 @@
     bottom: calc(104px + env(safe-area-inset-bottom, 0px));
     padding: 6px 12px 6px 8px;
     font-size: 12px;
+    /* A phone docks the launcher above the bottom bar; a dragged desktop position never applies. */
+    left: auto !important;
+    top: auto !important;
+    right: 14px !important;
+    bottom: calc(104px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  .commerce-copilot-launcher--stacked {
-    bottom: calc(104px + 52px + 10px + env(safe-area-inset-bottom, 0px));
+  /* The support chat launcher is hidden on mobile, so there is nothing to stack above:
+     an extra lift would only park the pill on top of the page's own controls. */
+
+  /* The PDP's quick-purchase dock is the exception: it rises into this exact band, so while
+     it is up the pill lifts clear of it - dock height (64px) plus breathing room - and the
+     dock's Add to cart button stays tappable. */
+  :root[data-pdp-sticky='true'] .commerce-copilot-launcher {
+    bottom: calc(var(--mobile-nav-h, 60px) + 64px + 8px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Auth is a focused task on a phone: the shopping assistant stands down there. */
+  .commerce-copilot-launcher--auth {
+    display: none;
   }
 
   .commerce-copilot-launcher__hotkey {

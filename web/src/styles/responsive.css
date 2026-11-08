@@ -268,45 +268,55 @@ main .link-button:is(:hover, :focus-visible, :active),
     align-self: center !important;
     padding: 2px !important;
     gap: 2px !important;
-    height: 32px !important;
-    min-height: 32px !important;
+    height: 40px !important;
+    min-height: 40px !important;
     width: max-content !important;
     border-radius: 9999px !important;
     margin: 0 !important;
     flex-shrink: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
+    position: relative !important;
   }
+  /* 28px circles were under every touch guideline there is, and two adjacent targets that
+     small are exactly where a thumb lands on the wrong one. 36px of glass, with a
+     pseudo-element stretching the hit area to 44px without moving a single pixel of art. */
   :root .navbar .theme-control {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    min-height: 28px !important;
-    flex: 0 0 28px !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    flex: 0 0 36px !important;
     padding: 0 !important;
     border-radius: 50% !important;
     display: grid !important;
     place-items: center !important;
+    position: relative !important;
+  }
+  :root .navbar .theme-control::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: -4px -1px !important;
   }
   :root .navbar .theme-control svg {
-    width: 14px !important;
-    height: 14px !important;
+    width: 16px !important;
+    height: 16px !important;
     flex-shrink: 0 !important;
   }
   .navbar .navbar__actions {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 4px !important;
+    gap: 6px !important;
     margin: 0 !important;
     padding: 0 !important;
     flex-shrink: 0 !important;
   }
   .navbar .navbar__actions .nav-pop__trigger,
   .navbar .navbar__actions .nav-control {
-    min-width: 32px !important;
-    width: 32px !important;
-    min-height: 32px !important;
-    height: 32px !important;
+    min-width: 40px !important;
+    width: 40px !important;
+    min-height: 40px !important;
+    height: 40px !important;
     padding: 0 !important;
     justify-content: center !important;
     align-items: center !important;
@@ -314,6 +324,13 @@ main .link-button:is(:hover, :focus-visible, :active),
     gap: 0 !important;
     position: relative !important;
     border-radius: 50% !important;
+  }
+  /* 40px of glass with a 44px hit area: the badge keeps its own corner. */
+  .navbar .navbar__actions .nav-pop__trigger::after,
+  .navbar .navbar__actions .nav-control::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: -2px !important;
   }
   .navbar .nav-pop__badge {
     position: absolute !important;
@@ -446,13 +463,14 @@ main .link-button:is(:hover, :focus-visible, :active),
   .mobile-nav.orb-nav .orb-notch__glass {
     position: absolute !important;
     inset: 0 !important;
-    background: rgba(255, 255, 255, 0.6) !important;
-    backdrop-filter: blur(20px) saturate(150%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-  }
-
-  :root[data-theme='dark'] .mobile-nav.orb-nav .orb-notch__glass {
-    background: rgba(28, 36, 42, 0.65) !important;
+    /* The same material app.css composes - token base plus the veil that lets the page show
+       through the blur. The flat .6 white this replaced won on !important over the token rule
+       in every theme, so the dark bar was a grey slab that hid everything behind it. */
+    background-color: var(--nav-glass-base) !important;
+    background-image: var(--nav-bar-veil) !important;
+    backdrop-filter: blur(28px) saturate(170%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 12px 32px rgba(0, 0, 0, 0.55) !important;
   }
 
   .mobile-nav.orb-nav .orb-notch__edge {
@@ -471,7 +489,7 @@ main .link-button:is(:hover, :focus-visible, :active),
   }
 
   :root[data-theme='dark'] .mobile-nav.orb-nav .orb-notch__edge path {
-    stroke: rgba(255, 255, 255, 0.22) !important;
+    stroke: rgba(255, 255, 255, 0.26) !important;
   }
 
   .mobile-nav.orb-nav {
@@ -494,9 +512,9 @@ main .link-button:is(:hover, :focus-visible, :active),
   }
 
   :root[data-theme='dark'] .mobile-nav.orb-nav .orb-notch__orb {
-    background: var(--accent-gradient, linear-gradient(135deg, #f59e0b, #d97706)) !important;
-    color: var(--on-accent, #1a1100) !important;
-    box-shadow: 0 6px 20px var(--glass-glow, rgba(245, 158, 11, 0.5)), inset 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+    background: var(--accent-gradient, linear-gradient(135deg, #3d9bff, #0a84ff)) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 22px rgba(10, 132, 255, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
   }
 
   .mobile-nav.orb-nav .mobile-nav__item {
@@ -1924,7 +1942,9 @@ main .link-button:is(:hover, :focus-visible, :active),
   .catalogue-mobile-toolbar__sort {
     flex: 1 1 auto !important;
     max-width: 180px !important;
-    min-width: 120px !important;
+    /* The row is a single pill down to 320px: the sort yields before the row can push
+       the count chip past the viewport edge (it did, by 3px, at 320). */
+    min-width: 0 !important;
   }
 
   .catalogue-mobile-toolbar__select {

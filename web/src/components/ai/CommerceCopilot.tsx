@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useCommerceAgent } from '../../ai/CommerceAgentContext';
 import { useAuth } from '../../state/AuthContext';
 import { AgentProductCard } from './AgentProductCard';
@@ -63,6 +64,8 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
 
   const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (e.button !== undefined && e.button !== 0) return;
+    // On a phone the launcher stays docked above the bottom bar; dragging is a desktop affordance.
+    if (window.matchMedia('(max-width: 768px)').matches) return;
     const btn = e.currentTarget;
     const rect = btn.getBoundingClientRect();
     const startX = typeof e.clientX === 'number' ? e.clientX : 0;
@@ -107,7 +110,11 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
 
   const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
     const drag = dragRef.current;
-    if (!drag) return;
+    if (!drag) {
+      // No drag session (mobile tap): a plain tap opens the panel.
+      toggleOpen();
+      return;
+    }
     if (typeof e.currentTarget?.releasePointerCapture === 'function') {
       try {
         e.currentTarget.releasePointerCapture(e.pointerId);
@@ -237,8 +244,9 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
 
   // The unified CommerceCopilot is always available across the showcase home and all store pages
   const shouldRenderLauncher = true;
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const isAuthRoute = pathname === '/login' || pathname === '/register';
+  // HashRouter keeps the route in the hash, so the pathname never changes: ask the router.
+  const location = useLocation();
+  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register';
   const hasChat = !isAuthRoute;
 
   return (
@@ -247,7 +255,7 @@ export function CommerceCopilot({ standalone: _standalone = false }: { standalon
       {shouldRenderLauncher && (
         <button
           type="button"
-          className={`commerce-copilot-launcher ${hasChat ? 'commerce-copilot-launcher--stacked' : ''} ${isOpen ? 'commerce-copilot-launcher--active' : ''}`}
+          className={`commerce-copilot-launcher ${hasChat ? 'commerce-copilot-launcher--stacked' : ''} ${isAuthRoute ? 'commerce-copilot-launcher--auth' : ''} ${isOpen ? 'commerce-copilot-launcher--active' : ''}`}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}

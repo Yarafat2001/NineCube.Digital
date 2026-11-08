@@ -839,3 +839,20 @@ body.showcase-active {
   .showcase__card:hover { transform: none; }
   .showcase__card:hover img { transform: none; }
 }
+
+/* ============================================ short-phone hero clearance ====
+   On phones up to 400px wide with viewports up to 800px tall, the stacked
+   search row (flex-direction column below 400px) lands inside the floating
+   copilot-pill / bottom-nav band at first paint, leaving the Search button
+   hidden behind the orb bar. Compress the hero so the whole search form -
+   the page's first task - clears the floating controls when the page opens.
+   ========================================================================== */
+@media (max-width: 400px) and (max-height: 800px) {
+  .showcase__hero { padding-block: 5vw; }
+  .showcase__hero h1 { font-size: 40px; margin: 10px 0; }
+  .showcase__hero-copy { font-size: 15px; line-height: 1.5; }
+  .showcase__hero-actions { gap: 8px; }
+  .home-search { gap: 4px; }
+  .home-search label { font-size: 14px; }
+  .home-search__row { flex-direction: row; }
+}

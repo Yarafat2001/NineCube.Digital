@@ -187,35 +187,36 @@
    that read --bg-page / --surface-glass / --ok-bg etc. keep working. */
 :root[data-theme="dark"] {
     color-scheme: dark;
-    --brand: #ffab4d;
-    --brand-strong: #f59726;
-    --accent: #ffab4d;
-    --accent-text: #ffc36b;
-    --on-accent: #1A1100;
+    --brand: #0a84ff;
+    --brand-strong: #007aff;
+    --accent: #0a84ff;
+    --accent-text: #6cb4ff;
+    --on-accent: #ffffff;
 
-    --ok: #57d3a0;
-    --ok-tint: rgba(87, 211, 160, 0.16);
-    --warn: #ffc36b;
-    --warn-tint: rgba(255, 195, 107, 0.16);
-    --danger: #ff8d84;
-    --danger-tint: rgba(255, 141, 132, 0.16);
-    --info: #8ab8ff;
-    --info-tint: rgba(138, 184, 255, 0.16);
-    --neutral: #c9c4c6;
-    --neutral-tint: rgba(255, 255, 255, 0.1);
+    --ok: #30d158;
+    --ok-tint: rgba(48, 209, 88, 0.16);
+    --warn: #ffb340;
+    --warn-tint: rgba(255, 179, 64, 0.16);
+    --danger: #ff6f66;
+    --danger-tint: rgba(255, 111, 102, 0.16);
+    --info: #64d2ff;
+    --info-tint: rgba(100, 210, 255, 0.16);
+    --neutral: #9ea8b9;
+    --neutral-tint: rgba(255, 255, 255, 0.08);
 
-    --text: #f5f2f3;
-    --logo-face: #f5f2f3;
-    --brand-wordmark: #ffab4d;
-    --text-muted: #b9b3b5;
-    --muted: #b9b3b5;
-    --border: rgba(255, 255, 255, 0.16);
-    --border-strong: rgba(255, 255, 255, 0.3);
+    --text: #f2f5fa;
+    --logo-face: #f2f5fa;
+    --brand-wordmark: #ffb340;
+    --accent-amber: #ffb340;
+    --text-muted: #9ea8b9;
+    --muted: #9ea8b9;
+    --border: rgba(255, 255, 255, 0.12);
+    --border-strong: #384358;
 
-    --surface: #171416;
-    --surface-raised: #221f22;
-    --surface-sunken: #120f12;
-    --surface-overlay: rgba(23, 20, 22, 0.96);
+    --surface: #0a0e17;
+    --surface-raised: #121824;
+    --surface-sunken: #06080e;
+    --surface-overlay: rgba(10, 14, 23, 0.96);
 
     /* Dark already separates its shells with these values; the aliases keep its
        rendering byte-for-byte while the light theme gets real edges. */
@@ -233,32 +234,34 @@
        tray and chips sat on a 1.64:1 edge. The raised surface plus the strong
        border give 4.3:1 edges without touching the amber selected fill. */
     --opt-fill: var(--surface-raised);
-    --opt-fill-hover: #2c282a;
+    --opt-fill-hover: #1c2436;
     --opt-edge: var(--border-strong);
     --opt-ink: var(--text);
 
-    /* ---- spec aliases for dark ---------------------------------------- */
-    --bg-page: #141113;
+    /* ---- spec aliases for dark (Cirrel Luxury Commerce Obsidian System) -- */
+    --bg-page: #04070d;
     --bg-page-glow:
-      radial-gradient(1100px 620px at 8% -6%, rgba(245, 151, 38, 0.28), transparent 62%),
-      radial-gradient(900px 600px at 96% 4%, rgba(120, 86, 255, 0.3), transparent 60%);
-    --surface-glass: rgba(29, 25, 28, 0.82);
+      radial-gradient(65vmax 65vmax at 0% -10%, rgba(10, 132, 255, 0.38), transparent 65%),
+      radial-gradient(55vmax 55vmax at 100% 0%, rgba(100, 210, 255, 0.22), transparent 60%),
+      radial-gradient(60vmax 60vmax at 10% 100%, rgba(48, 209, 160, 0.18), transparent 65%),
+      radial-gradient(50vmax 50vmax at 95% 90%, rgba(255, 159, 10, 0.16), transparent 60%);
+    --surface-glass: rgba(20, 26, 38, 0.58);
     /* Smoked glass: the same cone at a lower alpha, because the panel behind it is already dark. */
-    --glass-glow: rgba(255, 171, 77, .22);
-    --selected-bg: rgba(245, 151, 38, 0.16);
-    --selected-wash: rgba(245, 151, 38, 0.07);
-    --selected-bar: #f59726;
-    --ok-bg: rgba(87, 211, 160, 0.16); --ok-text: #57d3a0; --ok-border: rgba(87, 211, 160, 0.45);
-    --warn-bg: rgba(255, 195, 107, 0.16); --warn-text: #ffc36b; --warn-border: rgba(255, 195, 107, 0.45);
-    --bad-bg: rgba(255, 141, 132, 0.16); --bad-text: #ff8d84; --bad-border: rgba(255, 141, 132, 0.45);
+    --glass-glow: rgba(10, 132, 255, 0.35);
+    --selected-bg: rgba(10, 132, 255, 0.18);
+    --selected-wash: rgba(10, 132, 255, 0.08);
+    --selected-bar: #0a84ff;
+    --ok-bg: rgba(48, 209, 88, 0.16); --ok-text: #4fdc78; --ok-border: rgba(48, 209, 88, 0.45);
+    --warn-bg: rgba(255, 179, 64, 0.16); --warn-text: #ffb340; --warn-border: rgba(255, 179, 64, 0.45);
+    --bad-bg: rgba(255, 111, 102, 0.16); --bad-text: #ff6f66; --bad-border: rgba(255, 111, 102, 0.45);
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
     --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.45);
     --shadow-raised: var(--shadow-md);
     --shadow-raised-sm: var(--shadow-sm);
 
-    --neu-light: rgba(255, 255, 255, 0.09);
-    --neu-dark: rgba(0, 0, 0, 0.6);
+    --neu-light: rgba(255, 255, 255, 0.12);
+    --neu-dark: rgba(0, 0, 0, 0.7);
     --shadow-flat: 0 1px 2px rgba(0, 0, 0, 0.5);
 
     --page-gradient: var(--bg-page-glow), var(--bg-page);
@@ -286,18 +289,18 @@
   --focus-ring: 2px solid var(--accent-text);
 }
 :root[data-theme="dark"] {
-  --border-strong: #807B84;
-  --surface-highlight: rgba(255, 255, 255, .12);
-  --surface-navbar: rgba(28, 25, 27, .96);
-  --surface-menu: rgba(35, 32, 34, .99);
-  --accent-gradient: linear-gradient(150deg, #FFC36B, #FFAB4D);
-  --card-shadow: 0 1px 2px rgba(0, 0, 0, .30), 0 8px 24px rgba(0, 0, 0, .22), 0 24px 48px rgba(0, 0, 0, .15);
-  --card-shadow-hover: 0 12px 24px rgba(0, 0, 0, .35), 0 24px 48px rgba(0, 0, 0, .30);
-  --floor-shadow: rgba(0, 0, 0, .50);
-  --product-spotlight: radial-gradient(ellipse at 50% 15%, #FFFFFF, #EDF1F6 85%);
-  --product-stage-ink: #243044;
-  --product-floor-shadow: rgba(15,23,42,.18);
-  --placeholder-gradient: linear-gradient(145deg, #3D3022, #232022);
+  --border-strong: #384358;
+  --surface-highlight: rgba(255, 255, 255, .18);
+  --surface-navbar: rgba(14, 18, 28, .88);
+  --surface-menu: rgba(18, 24, 36, .94);
+  --accent-gradient: linear-gradient(150deg, #3d9bff, #0a84ff);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.10), 0 20px 44px -22px rgba(0, 0, 0, 0.75);
+  --card-shadow-hover: 0 2px 8px rgba(0, 0, 0, .50), inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 0 0 1px rgba(10, 132, 255, 0.40), 0 24px 50px -18px rgba(10, 132, 255, 0.25);
+  --floor-shadow: rgba(0, 0, 0, .65);
+  --product-spotlight: radial-gradient(ellipse at 50% 15%, #1e2638, #0d121c 85%);
+  --product-stage-ink: #f2f5fa;
+  --product-floor-shadow: rgba(0, 0, 0, .45);
+  --placeholder-gradient: linear-gradient(145deg, #182236, #0e1422);
   --focus-ring: 2px solid var(--accent-text);
 }
 
@@ -335,11 +338,11 @@
   --nav-bar-veil: linear-gradient(135deg, rgba(206,220,240,.10) 0%, rgba(150,167,198,.07) 46%, rgba(120,135,166,.09) 100%);
   --nav-glass-base: rgba(14,13,17,.68);
   --nav-glass-base-scroll: rgba(14,13,17,.84);
-  --nav-glass-edge: rgba(226,237,251,.72);
-  --nav-glass-shadow: inset 0 1px 1px rgba(255,255,255,.45), inset 0 -1px 1px rgba(9,14,24,.55), 0 7px 18px rgba(0,0,0,.48), 0 2px 4px rgba(0,0,0,.3);
-  --nav-hover: rgba(224,233,249,.16);
-  --orb-shadow: 0 10px 22px rgba(0, 0, 0, .45);
-  --card-glass: linear-gradient(135deg, rgba(179,194,219,.42), rgba(101,117,145,.27) 55%, rgba(66,78,101,.38));
+  --nav-glass-edge: rgba(255, 255, 255, .20);
+  --nav-glass-shadow: inset 0 1px 1px rgba(255, 255, 255, .35), inset 0 0 0 1px rgba(255, 255, 255, .12), 0 12px 30px rgba(0, 0, 0, .65);
+  --nav-hover: rgba(10, 132, 255, .15);
+  --orb-shadow: 0 10px 24px rgba(10, 132, 255, .35);
+  --card-glass: linear-gradient(135deg, rgba(28, 36, 52, .55), rgba(18, 24, 36, .45) 55%, rgba(12, 16, 26, .52));
 }
 
 /* Readable initials and translucent customer surfaces. */
