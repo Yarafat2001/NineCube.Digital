@@ -53,7 +53,7 @@ export function ProductImage({
   const effectivePrimary = isMerchantUpload ? stored : (dual.primaryUrl ?? stored);
   const effectiveSecondary = isMerchantUpload
     ? (secondary ? secondary.url : null)
-    : (secondary ? secondary.url : dual.secondaryUrl);
+    : (dual.secondaryUrl ?? (secondary ? secondary.url : null));
 
   const imageDescription = isMerchantUpload ? (primary?.altText ?? product.name) : (dual.primaryAlt ?? primary?.altText ?? product.name);
   const secondaryDescription = isMerchantUpload

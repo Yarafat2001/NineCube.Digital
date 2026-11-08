@@ -11,7 +11,7 @@ namespace NineCube.Infrastructure.Persistence;
 public static class ProductionCatalogImporter
 {
     private const string StockRepairKey = "ProductionCatalogue.StockInitialization.v1";
-    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v3";
+    private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v4";
 
     public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default)
     {
@@ -109,21 +109,16 @@ public static class ProductionCatalogImporter
                 product.Categories.Add(new ProductCategory { CategoryId = categories[item.Category].Id, IsPrimary = true });
             if (product.Images.Count == 0 || (refreshImages && item.Images.Count > 0))
             {
-                // A merchant's existing image takes precedence over bundled media, but stale generated
-                // placeholders (for example "/products/48.webp" or "/products/nc-1001.jpg") are not
-                // reliable catalogue assets once the reviewed feed has real source images.
+                // A merchant's custom image (/uploads/...) takes precedence over bundled media,
+                // but catalogue seed images (/products/...) must be refreshed with the reviewed authentic dual image feed.
                 var preserveCustomImage = !string.IsNullOrWhiteSpace(product.ImageUrl)
-                    && !LooksLikeGeneratedPlaceholder(product.ImageUrl)
-                    && !item.Images.Any(i => i.Url == product.ImageUrl);
-                var photos = string.IsNullOrWhiteSpace(product.ImageUrl) || item.Images.Any(i => i.Url == product.ImageUrl)
-                    ? item.Images
-                    : preserveCustomImage ? [new Photo(product.ImageUrl, product.Name)] : item.Images;
+                    && product.ImageUrl.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase);
+                var photos = preserveCustomImage ? [new Photo(product.ImageUrl!, product.Name)] : item.Images;
                 if (product.Images.Count > 0) product.Images.Clear();
                 foreach (var photo in photos.Select((image, index) => (image, index)))
                     product.Images.Add(new ProductImage { Url = photo.image.Url, AltText = photo.image.AltText,
                         IsPrimary = photo.index == 0, SortOrder = photo.index, CreatedAt = now });
-                // Prefer the reviewed source media when the existing value is a stale generated file name.
-                if (string.IsNullOrWhiteSpace(product.ImageUrl) || (!preserveCustomImage && item.Images.Count > 0))
+                if (!preserveCustomImage && item.Images.Count > 0)
                     product.ImageUrl = photos.FirstOrDefault()?.Url ?? product.ImageUrl;
             }
             if (isNew || product.Tags.Count == 0)
