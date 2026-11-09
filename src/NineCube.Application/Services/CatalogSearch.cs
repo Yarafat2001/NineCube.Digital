@@ -14,7 +14,21 @@ public static class CatalogSearch
         ["ব্যাগ"] = ["bag", "backpack"], ["হেডফোন"] = ["headphone", "earbud"],
         ["নাইকি"] = ["nike"], ["অ্যাডিডাস"] = ["adidas"], ["স্যামসাং"] = ["samsung"],
         ["আপেল"] = ["apple"], ["অ্যাপল"] = ["apple"], ["আসুস"] = ["asus"],
-        ["কফি"] = ["coffee"], ["টি-শার্ট"] = ["t-shirt", "tee"]
+        ["কফি"] = ["coffee"], ["টি-শার্ট"] = ["t-shirt", "tee"],
+        ["sneakers"] = ["sneaker", "shoe", "footwear"],
+        ["sneaker"] = ["sneakers", "shoe", "footwear"],
+        ["shoes"] = ["shoe", "footwear", "sneaker"],
+        ["headphones"] = ["headphone", "earphone", "wireless", "audio"],
+        ["headphone"] = ["headphones", "earphone", "wireless", "audio"],
+        ["laptops"] = ["laptop", "notebook"],
+        ["phones"] = ["phone", "smartphone", "mobile"],
+        ["smartphones"] = ["smartphone", "phone", "mobile"],
+        ["books"] = ["book"],
+        ["watches"] = ["watch"],
+        ["technology"] = ["electronics", "tech"],
+        ["tech"] = ["electronics", "technology"],
+        ["living"] = ["furniture", "home"],
+        ["plants"] = ["plant", "garden"]
     };
 
     public static IEnumerable<string[]> Terms(string search)

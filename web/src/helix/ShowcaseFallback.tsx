@@ -40,12 +40,12 @@ const reasonText: Record<ShowcaseFallbackReason, string> = {
 };
 
 const TRENDING_KEYWORDS = [
-  'Laptops',
-  'Sneakers',
+  'Laptop',
+  'Sneaker',
   'Wireless',
   'Kitchen',
   'Apex',
-  'Acer'
+  'Phone'
 ];
 
 /**

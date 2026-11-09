@@ -37,10 +37,14 @@ public static class DatabaseSeeder
         }
 
         await SeedSettingsAsync(db, configuration, ct);
-        await SeedProductsAsync(db, ct);
+        if (isDevelopment && !await db.Products.AnyAsync(ct))
+        {
+            await SeedProductsAsync(db, ct);
+        }
         await SeedCouponsAsync(db, ct);
         await SeedGiftCardsAsync(db, ct);
-        await ProductionCatalogImporter.ImportAsync(db, logger, ct);
+        var forceCleanSeed = !isDevelopment || configuration.GetValue("Seed:CleanSeed", false);
+        await ProductionCatalogImporter.ImportAsync(db, logger, ct, forceCleanSeed);
 
         // The brand/series facet is derived from rows that already exist (see BrandCatalogImporter), so it
         // runs everywhere and is idempotent; reruns only fill in products added since the last start-up.
@@ -63,7 +67,6 @@ public static class DatabaseSeeder
         if (isDevelopment)
         {
             await SeedCoffeeProductImagesAsync(db, ct);
-            await SampleCatalogImporter.ImportAsync(db, logger, ct);
             await SeedDemoUsersAsync(db, hasher, logger, ct);
         }
         else

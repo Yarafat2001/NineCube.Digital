@@ -18,7 +18,7 @@ const photoDescriptions = [
   'A ceramic bowl of fresh seasonal fruit'
 ];
 
-export const cardCategories = ['Coffee', 'Technology', 'Footwear', 'Beauty', 'Accessories', 'Plants', 'Living', 'Stationery', 'Fresh food'];
+export const cardCategories = ['Coffee', 'Electronics', 'Footwear', 'Beauty', 'Accessories', 'Plants', 'Furniture', 'Stationery', 'Grocery'];
 
 export function describeCardArtwork(src: string, index: number): string {
   const photo = /\/photo-(\d+)\.jpg$/.exec(src);

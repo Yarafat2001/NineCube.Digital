@@ -13,22 +13,22 @@ function usePromoAnchor(query: string) {
 /** Editorial promotions; offer previews do not alter catalogue prices. */
 export function HeroPromotions() {
   useLanguage();
-  const headphones = usePromoAnchor('headphones');
-  const sneakers = usePromoAnchor('sneakers');
+  const tech = usePromoAnchor('Wireless');
+  const sneakers = usePromoAnchor('Sneaker');
 
   return <aside className="hero-promotions" aria-label={t("Featured collections")}>
-    <Link to="/products?q=headphones" className="hero-promo hero-promo--offer">
+    <Link to="/products?q=Wireless" className="hero-promo hero-promo--offer">
       <img src={`${CARD_DIRECTORY}/photo-02.jpg`} alt={t("Wireless headphones on a yellow background")} width={96} height={120} />
       <div className="hero-promo__copy">
         <span className="hero-promo__badge">{t("Technology")}</span>
         <strong>{t("Everyday tech")}</strong>
-        {headphones ? (
-          <span className="hero-promo__from">{t("From")} {t(formatMoney(headphones.price, headphones.currency))}</span>
+        {tech ? (
+          <span className="hero-promo__from">{t("From")} {t(formatMoney(tech.price, tech.currency))}</span>
         ) : null}
         <span>{t("Everyday tech ")}<span aria-hidden="true">{t("↗")}</span></span>
       </div>
     </Link>
-    <Link to="/products?q=sneakers" className="hero-promo hero-promo--new">
+    <Link to="/products?q=Sneaker" className="hero-promo hero-promo--new">
       <img src={`${CARD_DIRECTORY}/photo-03.jpg`} alt={t("White sneakers with peach detailing")} width={96} height={120} />
       <div className="hero-promo__copy">
         <span className="hero-promo__badge">{t("New edit")}</span>

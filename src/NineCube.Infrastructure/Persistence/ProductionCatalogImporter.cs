@@ -10,10 +10,11 @@ namespace NineCube.Infrastructure.Persistence;
 /// <summary>Offline, additive catalogue import with a one-time repair of uninitialized seed stock.</summary>
 public static class ProductionCatalogImporter
 {
+    private const string CleanSeedKey = "ProductionCatalogue.CleanSeed.v2026_11_09";
     private const string StockRepairKey = "ProductionCatalogue.StockInitialization.v1";
     private const string ImageRefreshKey = "ProductionCatalogue.CanonicalDualImages.v10";
 
-    public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default)
+    public static async Task ImportAsync(AppDbContext db, ILogger logger, CancellationToken ct = default, bool forceCleanSeed = false)
     {
         using var stream = typeof(ProductionCatalogImporter).Assembly.GetManifestResourceStream(
             "NineCube.Infrastructure.Persistence.production-catalogue.json")
@@ -23,8 +24,43 @@ public static class ProductionCatalogImporter
         if (feed.Products.Any(p => p.StockQuantity < 0))
             throw new InvalidOperationException("Bundled production catalogue contains negative stock.");
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
-        // Serialize rolling-deployment importers against the same PostgreSQL database.
-        await db.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(846239105)", ct);
+        
+        var isNpgsql = db.Database.IsNpgsql();
+        if (isNpgsql)
+        {
+            // Serialize rolling-deployment importers against the same PostgreSQL database.
+            await db.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock(846239105)", ct);
+        }
+
+        var isCleanSeedNeeded = forceCleanSeed && !await db.Settings.AnyAsync(s => s.Key == CleanSeedKey, ct);
+        if (isCleanSeedNeeded)
+        {
+            logger.LogInformation("Executing clean catalog seed v2026_11_09 on production database...");
+            if (isNpgsql)
+            {
+                await db.Database.ExecuteSqlRawAsync("CREATE EXTENSION IF NOT EXISTS pg_trgm;", ct);
+                await db.Database.ExecuteSqlRawAsync(@"
+                    TRUNCATE TABLE 
+                        ""OrderItems"",
+                        ""CartItems"",
+                        ""WishlistItems"",
+                        ""InventoryMovements"",
+                        ""AuditLogs"",
+                        ""ProductImages"",
+                        ""ProductTags"",
+                        ""ProductCategories"",
+                        ""ProductLines"",
+                        ""Products"",
+                        ""Categories"",
+                        ""Brands""
+                    CASCADE;", ct);
+                await db.Database.ExecuteSqlRawAsync(@"
+                    CREATE INDEX IF NOT EXISTS ""IX_Products_Name_Trgm"" ON ""Products"" USING gin (""Name"" gin_trgm_ops);
+                    CREATE INDEX IF NOT EXISTS ""IX_Products_Sku_Trgm"" ON ""Products"" USING gin (""Sku"" gin_trgm_ops);
+                    CREATE INDEX IF NOT EXISTS ""IX_Products_Description_Trgm"" ON ""Products"" USING gin (""Description"" gin_trgm_ops);
+                ", ct);
+            }
+        }
         var repairStock = !await db.Settings.AnyAsync(s => s.Key == StockRepairKey, ct);
         var refreshImages = !await db.Settings.AnyAsync(s => s.Key == ImageRefreshKey, ct);
         var categories = (await db.Categories.ToListAsync(ct)).ToDictionary(c => c.Slug);
@@ -149,6 +185,8 @@ public static class ProductionCatalogImporter
                     product.Tags.Add(new ProductTag { Tag = tag });
                 }
         }
+        if (isCleanSeedNeeded)
+            db.Settings.Add(new Setting { Key = CleanSeedKey, Value = DateTime.UtcNow.ToString("O") });
         if (repairStock)
             db.Settings.Add(new Setting { Key = StockRepairKey, Value = DateTime.UtcNow.ToString("O") });
         if (refreshImages)

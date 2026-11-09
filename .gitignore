@@ -61,3 +61,12 @@ docs/walkthrough/*.webm
 docs/walkthrough/*.wav
 docs/walkthrough/narration/
 docs/walkthrough/video/
+
+scratch/
+web/public/NineCube_Full_Setup_Run_Only/
+web/scripts/*probe*.mjs
+web/scripts/extract_cirrel_css.mjs
+web/scripts/inspect_*.mjs
+web/scripts/capture_*.mjs
+web/scripts/verify_*.mjs
+web/scripts/round38-*.mjs

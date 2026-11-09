@@ -65,8 +65,8 @@ public sealed class ProductMediaTests(ApiFactory factory) : ApiTestBase(factory)
             .AsNoTracking()
             .Include(p => p.Images)
             .SingleAsync(p => p.Sku == product.Sku);
-        reloaded.ImageUrl.Should().Be("/products/sourced/122-c0e48b5b1971.jpg");
-        reloaded.Images.Should().Contain(i => i.Url == "/products/sourced/122-c0e48b5b1971.jpg");
+        reloaded.ImageUrl.Should().Be("/products/BD-HATI-CEZA-112-71B9B8.jpg");
+        reloaded.Images.Should().Contain(i => i.Url == "/products/BD-HATI-CEZA-112-71B9B8.jpg");
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public sealed class ProductMediaTests(ApiFactory factory) : ApiTestBase(factory)
         loaded.Description.Should().Be("Updated description");
         loaded.StockQuantity.Should().Be(0);
         var list = await ReadAsync<PagedResult<ProductDto>>(await GetAsync("api/products?q=Bamboo", token));
-        list.Items.Single().ImageUrl.Should().Be(loaded.ImageUrl);
+        list.Items.Single(p => p.Id == created.Id).ImageUrl.Should().Be(loaded.ImageUrl);
     }
 
     [Theory]
