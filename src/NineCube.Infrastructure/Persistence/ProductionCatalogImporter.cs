@@ -40,20 +40,8 @@ public static class ProductionCatalogImporter
             {
                 await db.Database.ExecuteSqlRawAsync("CREATE EXTENSION IF NOT EXISTS pg_trgm;", ct);
                 await db.Database.ExecuteSqlRawAsync(@"
-                    TRUNCATE TABLE 
-                        ""OrderItems"",
-                        ""CartItems"",
-                        ""WishlistItems"",
-                        ""InventoryMovements"",
-                        ""AuditLogs"",
-                        ""ProductImages"",
-                        ""ProductTags"",
-                        ""ProductCategories"",
-                        ""ProductLines"",
-                        ""Products"",
-                        ""Categories"",
-                        ""Brands""
-                    CASCADE;", ct);
+                    TRUNCATE TABLE ""Products"", ""Categories"", ""Brands"" CASCADE;
+                ", ct);
                 await db.Database.ExecuteSqlRawAsync(@"
                     CREATE INDEX IF NOT EXISTS ""IX_Products_Name_Trgm"" ON ""Products"" USING gin (""Name"" gin_trgm_ops);
                     CREATE INDEX IF NOT EXISTS ""IX_Products_Sku_Trgm"" ON ""Products"" USING gin (""Sku"" gin_trgm_ops);
