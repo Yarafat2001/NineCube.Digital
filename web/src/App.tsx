@@ -70,6 +70,25 @@ export function App() {
 
   return (
     <CommerceAgentProvider>
+      {/* Shell furniture (navbar, bell, bar, copilot) sits outside the route boundary. If one of
+          those throws - a malformed notification payload did exactly that - React used to empty
+          #root and leave a white page. This outer boundary keeps a visible, reloadable error. */}
+      <ErrorBoundary
+        key={`shell:${pathname}`}
+        fallback={
+          <div className="app-shell">
+            <main id="main" className="page container">
+              <div className="state state--error" role="alert" data-testid="shell-error">
+                <p className="state__title">{t('Something went wrong')}</p>
+                <p>{t('This page could not be displayed.')}</p>
+                <button type="button" className="btn" onClick={() => window.location.reload()}>
+                  {t('Reload the page')}
+                </button>
+              </div>
+            </main>
+          </div>
+        }
+      >
       <div className="app-shell">
         {/* Floating Glass Admin: Ambient Background Orbs */}
         <div className="ambient-orbs" aria-hidden="true">
@@ -237,6 +256,7 @@ export function App() {
       {isShowcase ? <AssistantDock /> : null}
       <CommerceCopilot />
     </div>
+      </ErrorBoundary>
   </CommerceAgentProvider>
 );
 }

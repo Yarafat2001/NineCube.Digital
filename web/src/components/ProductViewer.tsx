@@ -1,6 +1,7 @@
 import { t, useLanguage } from '../i18n/language';
 import { useEffect, useRef, useState } from 'react';
 import type { Product } from '../api/types';
+import { isGeneratedPlaceholderImage } from '../lib/catalogImages';
 import { ProductImage, ProductThumbnail } from './ProductImage';
 
 const backdrops = [
@@ -13,7 +14,10 @@ const backdrops = [
 /** A photo viewer, not a fabricated 3D model: original image colours are preserved. */
 export function ProductViewer({ product }: { product: Product }) {
   useLanguage();
-  const gallery = product.images ?? [];
+  // Only genuine photography becomes an "angle". The generated vector stand-ins under
+  // /products/bd/ used to appear as the second image, so a product with one real photo read
+  // "2 / 2 angles" and the second angle was a drawing.
+  const gallery = (product.images ?? []).filter(image => !isGeneratedPlaceholderImage(image.url));
   const [index, setIndex] = useState(() => Math.max(0, gallery.findIndex(image => image.isPrimary)));
   const [depth, setDepth] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -21,7 +25,8 @@ export function ProductViewer({ product }: { product: Product }) {
   const [backdrop, setBackdrop] = useState(backdrops[0]);
   const pointer = useRef<{ x: number; y: number } | null>(null);
   useEffect(() => {
-    setIndex(Math.max(0, (product.images ?? []).findIndex(image => image.isPrimary)));
+    const real = (product.images ?? []).filter(image => !isGeneratedPlaceholderImage(image.url));
+    setIndex(Math.max(0, real.findIndex(image => image.isPrimary)));
     setTilt({ x: 0, y: 0 }); setZoom(1);
   }, [product.id]);
   const selected = gallery[index];

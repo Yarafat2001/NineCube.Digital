@@ -39,12 +39,12 @@ describe('Product secondary image slideshow and clean presentation', () => {
     expect(screen.queryByText(/Inside/i)).toBeNull();
   });
 
-  it('does NOT treat dummy or placeholder secondary URLs as real secondary images', () => {
+  it('does NOT treat generated vector art as a real secondary image', () => {
     const productWithDummySecond: Product = {
       ...baseProduct,
       images: [
         { id: 1, url: '/products/real-photo-1.jpg', isPrimary: true, altText: 'Front' },
-        { id: 2, url: '/products/demo-placeholder.jpg', isPrimary: false, altText: 'Dummy second' }
+        { id: 2, url: '/products/bd/canonical_bashundhara_chinigura_packet_10kg.jpg', isPrimary: false, altText: 'Generated second angle' }
       ]
     };
 
@@ -55,6 +55,25 @@ describe('Product secondary image slideshow and clean presentation', () => {
     expect(images).toHaveLength(1);
     expect(images[0]).toHaveAttribute('src', '/products/real-photo-1.jpg');
     expect(container.querySelector('.product-card__image--secondary')).toBeNull();
+  });
+
+  it('skips a generated middle image and still uses the real photo after it as the second angle', () => {
+    const product: Product = {
+      ...baseProduct,
+      images: [
+        { id: 1, url: '/products/real-front.jpg', isPrimary: true, altText: 'Front' },
+        { id: 2, url: '/products/bd/real-front-open.jpg', isPrimary: false, altText: 'Drawing' },
+        { id: 3, url: '/products/real-detail.jpg', isPrimary: false, altText: 'Detail' }
+      ]
+    };
+
+    const { container } = render(<ProductImage product={product} frame="card" />);
+    const secondary = container.querySelector('.product-card__image--secondary') as HTMLImageElement | null;
+
+    expect(container.querySelectorAll('img')).toHaveLength(2);
+    expect(secondary).not.toBeNull();
+    expect(secondary?.src).toContain('/products/real-detail.jpg');
+    expect(secondary?.src).not.toContain('/products/bd/');
   });
 
   it('cycles between real primary and real secondary images over time without any packet/inside buttons', () => {

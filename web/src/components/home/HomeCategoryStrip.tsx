@@ -5,6 +5,7 @@ import { ErrorState, LoadingBlock } from '../ui';
 import { Link } from 'react-router-dom';
 import { Icon, type IconName } from '../Icon';
 import { resolveAssetUrl } from '../../api/client';
+import { resolveDualProductImages } from '../../lib/catalogImages';
 import type { Category, Product } from '../../api/types';
 
 export function HomeCategoryStrip() {
@@ -58,17 +59,20 @@ export function HomeCategoryStrip() {
       <div className="home-category-strip">
         {categories.map((cat) => {
           const photo = findCategoryPhoto(cat);
+          // A category tile is a real photograph or nothing: generated vector art never stands
+          // in for a category scene.
+          const photoUrl = photo ? resolveDualProductImages(photo).primaryUrl : null;
           return (
             <Link
               key={cat.slug}
               to={`/products?category=${encodeURIComponent(cat.slug)}`}
-              className={`home-category-card${photo ? ' home-category-card--photo' : ''}`}
+              className={`home-category-card${photoUrl ? ' home-category-card--photo' : ''}`}
             >
               <span className="home-category-media">
-                {photo ? (
+                {photoUrl ? (
                   <img
                     className="home-category-photo"
-                    src={resolveAssetUrl(photo.imageUrl)!}
+                    src={resolveAssetUrl(photoUrl)!}
                     alt=""
                     loading="lazy"
                     width={400}

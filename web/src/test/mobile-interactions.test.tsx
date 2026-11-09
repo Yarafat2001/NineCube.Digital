@@ -21,6 +21,23 @@ it('mobile notification View all survives pointerdown and navigates to the inbox
   expect(screen.queryByRole('dialog', { name: 'Notifications' })).not.toBeInTheDocument();
 });
 
+it('a notifications payload without an items array cannot blank the app shell', async () => {
+  const account = seedSession('Customer');
+  server.use(
+    http.get(`${API}/api/auth/me`, () => HttpResponse.json(account)),
+    http.get(`${API}/api/notifications`, () => HttpResponse.json([])),
+    http.get(`${API}/api/notifications/unread-count`, () => HttpResponse.json({ count: 0 }))
+  );
+
+  renderAppWithHistory('/notifications');
+
+  // The bell and the inbox share the same query key. When the inbox cached a bare array, the
+  // bell read `.items.length` during render and took #root down with it.
+  expect(await screen.findByRole('button', { name: /Notifications, 0 unread/ })).toBeInTheDocument();
+  expect(document.querySelector('.mobile-nav')).not.toBeNull();
+  expect(screen.queryByTestId('shell-error')).toBeNull();
+});
+
 it('gallery selects actual angles, zooms, and changes only the backdrop', async () => {
   const user = userEvent.setup();
   const product = { ...products[0], images: [
@@ -47,4 +64,16 @@ it('single-photo products do not invent additional angles or product variants', 
   expect(screen.queryByRole('button', { name: 'Next product angle' })).not.toBeInTheDocument();
   expect(screen.getByText('Original photo')).toBeInTheDocument();
   expect(screen.getByRole('group', { name: 'Photo backdrop colour' })).toBeInTheDocument();
+});
+
+it('does not count generated vector art as a second angle', () => {
+  render(<ProductViewer product={{ ...products[0], images: [
+    { id: 1, url: '/products/front.jpg', isPrimary: true, altText: 'Original front view' },
+    { id: 2, url: '/products/bd/front-open.jpg', isPrimary: false, altText: 'Drawn open view' }
+  ] }} />);
+
+  expect(screen.getByText('Original photo')).toBeInTheDocument();
+  expect(screen.queryByText(/2 \/ 2 angles/)).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Next product angle' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('img', { name: 'Drawn open view' })).not.toBeInTheDocument();
 });

@@ -1,5 +1,88 @@
 # FIX_REPORT
 
+# Round 40 - the phone chrome stops colliding, and the drawn product art leaves the catalogue
+
+Date: 2026-11-10. From the master task, in your words: "mobile navbar button not structured properly
+design faults. See clollied with the another tap button. And amny scren are not properly handle as
+modern chrome mobile web handled." Then, on three phone screenshots: "see this type dummy ai
+generated image show as the second type image please fix these all".
+
+These were two different faults, so they got two different fixes. The navbar/bottom-tab problem was
+geometry. The fake "second angle" problem was data: the seed builder had drawn a flat-vector packet
+and an "open" illustration for every product, saved them under `/products/bd/`, and attached the
+open drawing as the second gallery image.
+
+## Mobile chrome, measured before and after
+
+Every number below is from `web/scripts/round38-route-sweep.mjs` and
+`web/scripts/screen-health-probe.mjs` with the API stubbed, at 390 x 844 and 320 x 700.
+
+| surface | before | after |
+| --- | --- | --- |
+| catalogue toolbar at 320 | 323 px wide inside a 320 px viewport (3 px overflow) | 320 px, 0 px page overflow |
+| theme controls | 28 px circles | 36 px glass, 44 px hit area via `::after` |
+| bell / cart / account | 32 px targets | 40 px glass, 44 px hit area via `::after` |
+| PDP dock vs Copilot pill at 320 | dock bottom 87 px, pill bottom 104 px: rectangles overlapped | pill lifts to `nav + dock + 8 px`; dock y622-686, pill y493-541, both tappable |
+| mobile bottom bar glass | literal `rgba(255,255,255,.6)` + `!important` (grey slab in dark mode) | `--nav-glass-base` + `--nav-bar-veil`, same material as the desktop navbar |
+| notched-phone safe area | `viewport-fit=cover` missing, so insets were 0 | present in `web/index.html`; bar and footer already consume the inset |
+| a malformed notifications payload | bell read `.items.length`, threw, and emptied `#root` (white page) | optional chaining, plus a shell-level `ErrorBoundary` that shows the reloadable error |
+
+What changed, file by file:
+
+- `web/src/styles/responsive.css` - the sort control gets `min-width: 0` so the single-row toolbar
+  can yield before it pushes the count chip past the viewport edge; the 28/32 px navbar targets
+  become 36/40 px with 44 px pseudo-element hit areas; the bottom bar composes the shared glass
+  tokens; the footer gets enough tail for its last interactive row to clear the lifted pill at
+  320 px (it overlapped the policy links by 2 px at maximum scroll before).
+- `web/index.html` - `viewport-fit=cover`.
+- `web/src/pages/ProductDetailPage.tsx` - publishes `data-pdp-sticky` while the quick-purchase dock
+  is up, so the Copilot pill can move out of its band.
+- `web/src/components/ai/CommerceCopilot.css` - the pill's dock-aware lift rule.
+- `web/src/App.tsx` - the route tree keeps its pathname-keyed boundary; the whole shell now sits in
+  a second pathname-keyed boundary, because a crash in the navbar or the floating controls used to
+  leave no navbar, no bar and no way back.
+- `web/src/components/AccountMenu.tsx` - `inbox.data?.items?.length`, so a bare-array payload can
+  no longer take the shell down.
+
+## The "second image" was a drawing, not a photograph
+
+- `/products/bd/` holds 6,874 flat-vector files. Before this round, 480 of the 5,483 products used
+  one as their primary photo and 1,806 gallery rows pointed at one; 1,790 distinct gallery URLs
+  were drawings. The seed builder attached an `-open.jpg` to every product, which is why a product
+  with one real photo read "2 / 2 angles" and the second angle was the dummy illustration.
+- After the cleanup: 0 generated primaries, 0 generated gallery rows. 4,974 products keep their
+  real `/products/BD-<SKU>.jpg` photo, 29 use `/products/sourced/`, `/products/laptops/` or an
+  upload, and 87 have two or more genuine photographs. 480 products have no real photo at all and
+  now show the app's clean "No image" placeholder instead of a drawing.
+- `scratch/strip_generated_catalogue_images.py` is the rerunnable cleanup: it clears a generated
+  `imageUrl`, drops generated gallery rows, promotes the first remaining real photo to primary and
+  keeps the gallery ordered. The seed JSON is now free of `/products/bd/` and `canonical_`
+  references (0 each).
+- `.placeholder.*` files are **not** AI art. The download run saved real category-level stock
+  photography under that name (a bedroom scene, a mug, shoes). They are kept and captioned
+  "Representative image", so nobody mistakes the scene for the exact variant.
+- The front end no longer depends on a clean database. `web/src/lib/catalogImages.ts` classifies
+  `/products/bd/` and `canonical_*` as generated, returns only URLs that exist in the product's own
+  media, dedupes primary against secondary, and picks the real second angle even when a generated
+  row sits between two real photos. `ProductImage` / `ProductThumbnail`, `ProductViewer`, the home
+  hero, the category strip, the recently-viewed strip and the PDP's OpenGraph/JSON-LD image all use
+  that resolver. The running database was seeded before the JSON cleanup, so this is what fixes the
+  live screens immediately; the JSON fix covers the next re-seed.
+
+## Verification
+
+- Mobile sweep, 8 guest routes x 390 and 320, rest and maximum scroll: **0 px horizontal overflow,
+  0 console errors, 0 controls left under the pill or bar once the page is scrolled**, and the
+  Copilot pill opens on a plain tap at both widths (`panel-opened overlay=true`).
+- Screen health, 14 routes x guest/signed-in at 390: **0 blank screens, 0 interactive controls under
+  the bottom bar, 0 footer links under the pill**. The signed-in notifications screen was the one
+  that used to go white; it now renders the inbox and the bar with a bare-array payload.
+- `npx tsc --noEmit -p tsconfig.json` clean; `npm run i18n:check` reports 2,564 Bengali catalogue
+  entries, all literal `t()` labels covered; the full Vitest suite and `npm run build` ran green.
+- New regression tests: generated art is never a primary or a second angle, a generated middle
+  gallery row is skipped in favour of a real photo after it, and a notifications payload without
+  an `items` array cannot blank the app shell.
+
 # Round 39 - compact product cards, and the truth about the "duplicates"
 
 Date: 2026-11-09. From the master task, in your words: "see no changes and the produce card not

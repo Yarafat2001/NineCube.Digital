@@ -126,7 +126,7 @@ export function NotificationBell() {
     <>
       {inbox.isLoading ? <p role="status">{t("Loading notifications…")}</p> : null}
       {inbox.isError ? <p role="status">{t("Notifications could not be loaded.")}</p> : null}
-      {inbox.data?.items.length === 0 ? <p className="muted">{t("You are all caught up.")}</p> : null}
+      {inbox.data?.items?.length === 0 ? <p className="muted">{t("You are all caught up.")}</p> : null}
       {groups.map((group) => (
         <section key={group.key} aria-label={t(group.title)}>
           <h3 className="notif-section__title">{t(group.title)}</h3>

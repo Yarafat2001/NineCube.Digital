@@ -12,6 +12,7 @@ import { recordRecentView } from '../lib/recentViews';
 import { ProductViewer } from '../components/ProductViewer';
 import { SavingsNote, productSavings } from '../components/SavingsNote';
 import { primaryImage, ProductImage, ProductThumbnail } from '../components/ProductImage';
+import { resolveDualProductImages } from '../lib/catalogImages';
 import { cardPresentation } from '../lib/catalog';
 import { formatMoney } from '../lib/helpers';
 import { useAuth } from '../state/AuthContext';
@@ -93,9 +94,12 @@ export function ProductDetailPage() {
 
   useEffect(() => {
     if (!product) return;
+    // SEO and the recently-viewed strip use the same real photo the page shows; generated art is
+    // not a product photograph and must not be shared as the OpenGraph image.
+    const resolvedPhoto = resolveDualProductImages(product).primaryUrl;
     recordRecentView({
       ...product,
-      imageUrl: product.imageUrl || primaryImage(product) || undefined
+      imageUrl: resolvedPhoto ?? undefined
     });
 
     // Dynamic Title & OpenGraph SEO Metadata
@@ -117,7 +121,7 @@ export function ProductDetailPage() {
 
     setMeta('og:title', product.name);
     setMeta('og:description', product.description || `${product.name} available at NineCube Digital`);
-    if (product.imageUrl) setMeta('og:image', product.imageUrl);
+    if (resolvedPhoto) setMeta('og:image', resolvedPhoto);
     setMeta('og:price:amount', product.price.toString());
     setMeta('og:price:currency', product.currency ?? 'BDT');
     setMeta('og:type', 'product');
@@ -129,7 +133,7 @@ export function ProductDetailPage() {
       '@context': 'https://schema.org/',
       '@type': 'Product',
       name: product.name,
-      image: product.imageUrl ? [product.imageUrl] : [],
+      image: resolvedPhoto ? [resolvedPhoto] : [],
       description: product.description || product.name,
       sku: product.sku,
       offers: {

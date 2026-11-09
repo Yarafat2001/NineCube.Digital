@@ -5,6 +5,7 @@ import { useHomeMerch } from './useHomeMerch';
 import { formatMoney } from '../../lib/helpers';
 import { Icon } from '../Icon';
 import { resolveAssetUrl } from '../../api/client';
+import { resolveDualProductImages } from '../../lib/catalogImages';
 
 /**
  * The promotional hero showcase slider: rotates through the top live deals and arrivals
@@ -28,6 +29,9 @@ export function HeroDealPanel() {
   if (items.length === 0) return null;
 
   const current = items[activeIndex] ?? items[0]!;
+  // The hero is a photograph of the deal. A product whose stored image is generated art has no
+  // hero photo: the panel shows its icon stage instead of a drawing pretending to be the product.
+  const currentPhoto = resolveDualProductImages(current).primaryUrl;
   const currentDiscount = current.compareAtPrice && current.compareAtPrice > current.price
     ? Math.round(((current.compareAtPrice - current.price) / current.compareAtPrice) * 100)
     : (activeIndex === 0 ? dealPercent : 0);
@@ -45,11 +49,11 @@ export function HeroDealPanel() {
           {isDeal ? <>{t("SAVE")} {currentDiscount}%</> : t("NEW ARRIVAL")}
         </span>
 
-        {current.imageUrl ? (
+        {currentPhoto ? (
           <img
             key={current.id}
             className="hero-deal__photo"
-            src={resolveAssetUrl(current.imageUrl)}
+            src={resolveAssetUrl(currentPhoto)}
             alt=""
             width={640}
             height={480}

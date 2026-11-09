@@ -204,7 +204,10 @@ main .link-button:is(:hover, :focus-visible, :active),
   .bottombar .btn { padding: 8px 12px; font-size: 13px; white-space: nowrap; }
   .bottombar__cart { display: grid; justify-items: center; align-content: center; gap: 2px; min-height: 44px; padding: 4px; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 12px; cursor: pointer; }
   .bottombar__cart strong { font-size: 13px; overflow-wrap: anywhere; line-height: 1.2; }
-  .site-footer { padding-bottom: 16px; }
+  /* The Copilot pill docks above the nav. Leave enough tail under the footer that the last
+     interactive row can still scroll clear of the pill on a 320px phone (it overlapped the
+     policy links by 2px at maximum scroll before this). */
+  .site-footer { padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
   .recent-list li > .row { flex-wrap: wrap; }
   .viewer-controls .btn, .viewer-modes .btn { min-height: 44px; }
 }

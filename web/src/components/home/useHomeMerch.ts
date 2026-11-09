@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useProducts } from '../../api/hooks';
+import { resolveDualProductImages } from '../../lib/catalogImages';
 import type { Product } from '../../api/types';
 
 export interface HomeMerch {
@@ -36,8 +37,9 @@ export function useHomeMerch(): HomeMerch {
     const newest = [...products].sort((a, b) => b.id - a.id).slice(0, 3);
 
     for (const product of products) {
+      const hasRealPhoto = Boolean(resolveDualProductImages(product).primaryUrl);
       for (const category of product.categories ?? []) {
-        if (category.slug && product.imageUrl && !photoByCategory.has(category.slug)) {
+        if (category.slug && hasRealPhoto && !photoByCategory.has(category.slug)) {
           photoByCategory.set(category.slug, product);
         }
       }

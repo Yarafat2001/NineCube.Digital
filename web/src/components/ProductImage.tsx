@@ -2,26 +2,15 @@ import { t, useLanguage } from '../i18n/language';
 import { useEffect, useState } from 'react';
 import { resolveAssetUrl } from '../api/client';
 import type { Product, ProductImage as ProductImageType } from '../api/types';
-import { resolveDualProductImages } from '../lib/catalogImages';
+import { isGeneratedPlaceholderImage, isRepresentativeImage, resolveDualProductImages } from '../lib/catalogImages';
 import { Icon } from './Icon';
 
-/** Helper to detect placeholder, dummy, or synthetic fallback image URLs. */
+/**
+ * Helper to detect placeholder, dummy, or synthetic fallback image URLs. The generated vector
+ * art under /products/bd/ is included: it is a stand-in drawing, not a photo of the product.
+ */
 export function isPlaceholderOrAiImage(url?: string | null): boolean {
-  if (!url || typeof url !== 'string') return true;
-  const trimmed = url.trim().toLowerCase();
-  if (!trimmed) return true;
-  return (
-    trimmed.includes('.placeholder.') ||
-    trimmed.includes('/placeholder') ||
-    trimmed.includes('placeholder.png') ||
-    trimmed.includes('placeholder.jpg') ||
-    trimmed.includes('dummy') ||
-    trimmed.includes('ai-generated') ||
-    trimmed.includes('missing-image') ||
-    trimmed.includes('no-image') ||
-    trimmed.includes('demo-product') ||
-    trimmed.includes('demo.')
-  );
+  return isGeneratedPlaceholderImage(url);
 }
 
 /** The primary image first, then the rest - the same order the API returns. */
@@ -68,24 +57,27 @@ export function ProductImage({
   const dual = resolveDualProductImages(product, images);
 
   const isMerchantUpload = stored && stored.startsWith('/uploads/');
-  const hasSpecificStored = stored && !isPlaceholderOrAiImage(stored) && !stored.includes('canonical_');
-  const effectivePrimary = isMerchantUpload ? stored : (hasSpecificStored ? stored : (dual.primaryUrl ?? stored));
+  const hasSpecificStored = stored && !isPlaceholderOrAiImage(stored);
+  // A generated stand-in is never promoted to "the product photo": when the stored URL is art and
+  // the resolver has no real photo either, effectivePrimary stays null and the placeholder shows.
+  const effectivePrimary = isMerchantUpload ? stored : (hasSpecificStored ? stored : dual.primaryUrl);
 
-  // ONLY allow secondary image if an authentic, distinct, non-dummy second image exists in the product's gallery
-  const rawSecondary = secondary?.url ? secondary.url : null;
+  // ONLY allow secondary image if an authentic, distinct, non-dummy second image exists in the
+  // product's gallery. The resolver already skipped generated art, so a gallery of
+  // [real, drawing, real detail] still offers the real detail as the second angle.
+  const rawSecondary = dual.secondaryUrl;
   const isRealSecondary = Boolean(
     rawSecondary &&
     !isPlaceholderOrAiImage(rawSecondary) &&
-    !rawSecondary.includes('canonical_') &&
     rawSecondary !== effectivePrimary
   );
   const effectiveSecondary = isRealSecondary ? rawSecondary : null;
   const hasDistinctSecondary = Boolean(effectiveSecondary);
 
   const imageDescription = isMerchantUpload ? (primary?.altText ?? product.name) : (dual.primaryAlt ?? primary?.altText ?? product.name);
-  const secondaryDescription = secondary?.altText ?? `${product.name} (Detail)`;
+  const secondaryDescription = dual.secondaryAlt ?? secondary?.altText ?? `${product.name} (Detail)`;
 
-  const representative = imageDescription.startsWith('Representative image:');
+  const representative = isRepresentativeImage(effectivePrimary) || imageDescription.startsWith('Representative image:');
   const isPrimaryPlaceholder = isPlaceholderOrAiImage(effectivePrimary);
   const src = resolveAssetUrl(effectivePrimary);
   const secondarySrc = resolveAssetUrl(effectiveSecondary);
@@ -176,7 +168,10 @@ export function ProductThumbnail({
   const productUrl = product ? primaryImage(product as Product) : null;
   const dual = product ? resolveDualProductImages(product as Product) : null;
   const isMerchant = (explicitUrl && explicitUrl.startsWith('/uploads/')) || (productUrl && productUrl.startsWith('/uploads/'));
-  const rawUrl = isMerchant ? (explicitUrl ?? productUrl) : (dual?.primaryUrl ?? explicitUrl ?? productUrl);
+  const candidates = isMerchant
+    ? [explicitUrl, productUrl]
+    : [dual?.primaryUrl, explicitUrl, productUrl];
+  const rawUrl = candidates.find(candidate => candidate && !isGeneratedPlaceholderImage(candidate)) ?? null;
   const src = resolveAssetUrl(rawUrl);
   const [broken, setBroken] = useState(false);
 
