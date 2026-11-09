@@ -5,6 +5,25 @@ import type { Product, ProductImage as ProductImageType } from '../api/types';
 import { resolveDualProductImages } from '../lib/catalogImages';
 import { Icon } from './Icon';
 
+/** Helper to detect placeholder, dummy, or synthetic fallback image URLs. */
+export function isPlaceholderOrAiImage(url?: string | null): boolean {
+  if (!url || typeof url !== 'string') return true;
+  const trimmed = url.trim().toLowerCase();
+  if (!trimmed) return true;
+  return (
+    trimmed.includes('.placeholder.') ||
+    trimmed.includes('/placeholder') ||
+    trimmed.includes('placeholder.png') ||
+    trimmed.includes('placeholder.jpg') ||
+    trimmed.includes('dummy') ||
+    trimmed.includes('ai-generated') ||
+    trimmed.includes('missing-image') ||
+    trimmed.includes('no-image') ||
+    trimmed.includes('demo-product') ||
+    trimmed.includes('demo.')
+  );
+}
+
 /** The primary image first, then the rest - the same order the API returns. */
 export function primaryImage(product: Product, images?: ProductImageType[] | null): string | null {
   const gallery = images ?? product.images ?? [];
@@ -32,8 +51,7 @@ export function ProductImage({
   product,
   images,
   frame = 'card',
-  alt,
-  interactiveToggle = true
+  alt
 }: {
   product: Product;
   images?: ProductImageType[] | null;
@@ -50,41 +68,70 @@ export function ProductImage({
   const dual = resolveDualProductImages(product, images);
 
   const isMerchantUpload = stored && stored.startsWith('/uploads/');
-  const hasSpecificStored = stored && !stored.includes('canonical_') && !stored.includes('placeholder') && !stored.includes('demo');
+  const hasSpecificStored = stored && !isPlaceholderOrAiImage(stored) && !stored.includes('canonical_');
   const effectivePrimary = isMerchantUpload ? stored : (hasSpecificStored ? stored : (dual.primaryUrl ?? stored));
-  const rawSecondary = isMerchantUpload
-    ? (secondary ? secondary.url : null)
-    : (dual.secondaryUrl ?? (secondary ? secondary.url : null));
-  const effectiveSecondary = rawSecondary && rawSecondary !== effectivePrimary ? rawSecondary : null;
+
+  // ONLY allow secondary image if an authentic, distinct, non-dummy second image exists in the product's gallery
+  const rawSecondary = secondary?.url ? secondary.url : null;
+  const isRealSecondary = Boolean(
+    rawSecondary &&
+    !isPlaceholderOrAiImage(rawSecondary) &&
+    !rawSecondary.includes('canonical_') &&
+    rawSecondary !== effectivePrimary
+  );
+  const effectiveSecondary = isRealSecondary ? rawSecondary : null;
   const hasDistinctSecondary = Boolean(effectiveSecondary);
 
   const imageDescription = isMerchantUpload ? (primary?.altText ?? product.name) : (dual.primaryAlt ?? primary?.altText ?? product.name);
-  const secondaryDescription = isMerchantUpload
-    ? (secondary?.altText ?? `${product.name} (${t("Inside")})`)
-    : (dual.secondaryAlt ?? secondary?.altText ?? `${product.name} (${t("Inside")})`);
+  const secondaryDescription = secondary?.altText ?? `${product.name} (Detail)`;
 
   const representative = imageDescription.startsWith('Representative image:');
+  const isPrimaryPlaceholder = isPlaceholderOrAiImage(effectivePrimary);
   const src = resolveAssetUrl(effectivePrimary);
   const secondarySrc = resolveAssetUrl(effectiveSecondary);
 
   const [broken, setBroken] = useState(false);
   const [secondaryBroken, setSecondaryBroken] = useState(false);
-  const [activeView, setActiveView] = useState<'packet' | 'open'>('packet');
+  const [activeView, setActiveView] = useState<'primary' | 'secondary'>('primary');
 
   useEffect(() => { setBroken(false); }, [src]);
   useEffect(() => { setSecondaryBroken(false); }, [secondarySrc]);
+
+  // Slideshow: cycle between primary and secondary image one after another at a timed interval ONLY if real secondary image exists
+  useEffect(() => {
+    if (!hasDistinctSecondary || secondaryBroken || frame !== 'card') {
+      setActiveView('primary');
+      return;
+    }
+
+    // Stagger slightly across cards by product ID so cards don't flip simultaneously
+    const stagger = ((product.id || 0) % 5) * 600;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    const timeoutId = setTimeout(() => {
+      setActiveView('secondary');
+      intervalId = setInterval(() => {
+        if (typeof document !== 'undefined' && document.hidden) return;
+        setActiveView(v => (v === 'primary' ? 'secondary' : 'primary'));
+      }, 3500);
+    }, 2800 + stagger);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [hasDistinctSecondary, secondaryBroken, frame, product.id]);
 
   // The seeded coffee shots are full scenes; they read better cropped than letterboxed.
   const isPhoto = /^\/products\/nc-10\d{2}\.jpg$/.test(stored ?? '');
 
   return (
     <span className={frame === 'detail' ? 'product-detail__media' : 'product-card__media'}>
-      {!src || broken ? (
+      {!src || broken || isPrimaryPlaceholder ? (
         <Placeholder name={product.name} tall={frame === 'detail'} category={product.categories?.find(c => c.isPrimary)?.slug ?? ''} />
       ) : (
         <>
           <img
-            className={`product-card__image${isPhoto ? ' product-card__image--photo' : ''}${hasDistinctSecondary && !secondaryBroken && frame === 'card' ? ' product-card__image--primary' : ''}${activeView === 'open' && hasDistinctSecondary ? ' product-card__image--hidden' : ''}`}
+            className={`product-card__image${isPhoto ? ' product-card__image--photo' : ''}${hasDistinctSecondary && !secondaryBroken && frame === 'card' ? ' product-card__image--primary' : ''}${activeView === 'secondary' && hasDistinctSecondary ? ' product-card__image--hidden' : ''}`}
             src={src}
             alt={t(alt ?? imageDescription)}
             loading="lazy"
@@ -93,35 +140,18 @@ export function ProductImage({
           />
           {hasDistinctSecondary && frame === 'card' && !secondaryBroken ? (
             <img
-              className={`product-card__image product-card__image--secondary${activeView === 'open' ? ' product-card__image--visible' : ''}`}
+              className={`product-card__image product-card__image--secondary${activeView === 'secondary' ? ' product-card__image--visible' : ''}`}
               src={secondarySrc}
               alt={t(secondaryDescription)}
               loading="lazy"
               decoding="async"
               onError={() => setSecondaryBroken(true)}
-              aria-hidden={activeView !== 'open'}
+              aria-hidden={activeView !== 'secondary'}
             />
-          ) : null}
-          {hasDistinctSecondary && frame === 'card' && !secondaryBroken && interactiveToggle ? (
-            <button
-              type="button"
-              className="product-card__view-toggle"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setActiveView(v => (v === 'packet' ? 'open' : 'packet'));
-              }}
-              title={activeView === 'packet' ? t("Switch to Inside view") : t("Switch to Packet view")}
-              aria-label={activeView === 'packet' ? t("Switch to Inside view") : t("Switch to Packet view")}
-            >
-              <span className="view-toggle__pill">
-                {activeView === 'packet' ? `📦 ${t("Packet")}` : `✨ ${t("Inside")}`}
-              </span>
-            </button>
           ) : null}
         </>
       )}
-      {src && !broken && representative ? <span className="product-image-caption">{t("Representative image")}</span> : null}
+      {src && !broken && !isPrimaryPlaceholder && representative ? <span className="product-image-caption">{t("Representative image")}</span> : null}
     </span>
   );
 }
