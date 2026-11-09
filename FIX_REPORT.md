@@ -1,5 +1,110 @@
 # FIX_REPORT
 
+# Round 39 - compact product cards, and the truth about the "duplicates"
+
+Date: 2026-11-09. From the master task, in your words: "see no changes and the produce card not
+changes it looks very bigger not looks like modern e-commerce system product cards and in the
+database many duplicate product fix this and then update in the rendersite".
+
+## Why the site looked unchanged
+
+The live Pages site was two commits behind the repository. The workflow that publishes
+commit 41fbc79 timed out at the `deploy-pages` step twice, so the live site was still serving
+the older build. The root cause, measured from the workflow artifacts:
+
+- The `github-pages` artifact is 1.63 GB (1,629,975,300 bytes) - 63% over GitHub Pages'
+  1 GB soft limit. `deploy-pages` polls the Pages sync for 10 minutes, and a 1.6 GB site
+  sync only occasionally fits in that window (f866c18 made it once; the two 41fbc79 attempts
+  did not). Every future round would hit the same coin flip.
+- The bloat arrived with the 5,483-product seed commit f866c18, which added 5,005 product
+  images to `web/public/products/` (~1.1 GB). Measured: 10,452 jpg (1,066 MB), 817 png
+  (503 MB), 805 webp (59 MB). The worst file was 1.8 MB.
+- `web/public/NineCube_Full_Setup_Run_Only` (1.1 GB of installer files) exists only in the
+  local working tree - it is not tracked by git, so it never reaches the CI artifact.
+
+Fix shipped in this round: all jpg/png product images were re-encoded (jpg quality 82,
+max edge 1024 px; png resized to 560 px, format kept), which brings the product image tree
+from 1.63 GB to 971 MB - under GitHub Pages' 1 GB soft limit. Measured: jpg 1,066 -> 714 MB,
+png 503 -> 197 MB, webp untouched at 59 MB; 0 decode failures across 11,269 files, and files
+whose re-encode would have grown were left as-is. File names and extensions are unchanged,
+so every `/products/...` reference in the app and the database keeps working, and the
+originals stay in git history if ever needed again. Deploys should now sync well inside
+the 10-minute window.
+
+## The "old versions and unnecessary things" audit (R&D, measured)
+
+Asked to hunt down anything old or unnecessary, I checked every surface and measured it:
+
+- **The live site really is an old version.** Live Pages serves f866c18; the repository is
+  two commits ahead, and this round's card work is on top. The `?v=` tag in the browser URL
+  confirms the browser is running the old deployment. Nothing in the app displays a version
+  number to users, so there is no stale label to fix - the fix is getting the new build deployed.
+- **Deploy pipeline**: the blocker was the 1.63 GB Pages artifact described above; the image
+  recompression in this round is the fix. Nothing else in the workflow needed changing.
+- **Local-only dead weight**: `web/public/NineCube_Full_Setup_Run_Only/` holds 1.1 GB of
+  installer/downloader files. It is not tracked by git, nothing in the app or the API
+  references it, and it never reaches the CI artifact - but every local build copies it into
+  `dist/`, which is why local builds take six minutes. Recommendation: move it out of
+  `web/public/` (one reversible move). Not done yet - it is not part of the deployed site,
+  and deleting the owner's files without a word is off the table.
+- **Product images**: all 5,483 database image URLs point at local `/products/...` files
+  (793 of them `.png`), so the image tree is load-bearing and was recompressed in place
+  rather than removed.
+- **Analytics**: the app has no third-party visitor tracking (no GA/gtag/Plausible). The
+  in-app "Analytics" menu item is the staff sales dashboard, which exists and works. If
+  visitor analytics is wanted (e.g. a privacy-friendly self-hosted counter or GA4), that is
+  a separate scoped round - say the word.
+
+## What the cards measured before and after (Playwright, API stubbed)
+
+| surface | before | after |
+| --- | --- | --- |
+| desktop card, 1440 | 241 x 573 px, 4 columns of ~241 px | 194 x 424 px, 5 columns of ~194 px |
+| phone card, 390 | 178 x 392 px, 2 columns | 178 x 382 px, 2 columns |
+| card photo | 215 x 215 px | 172 x 172 px |
+| tag pills | wrapped to 3 rows (73 px) | one row, extra pills truncate (34 px) |
+| price | 21 px | 17 px |
+| quantity stepper on the card | one 78 px stepper beside the button | removed; the add button is the single full-width CTA |
+
+What changed in `web/src/styles/app.css` only - no component or markup edits:
+
+- The grid packs five columns into the desktop catalogue instead of four (`minmax(190px, 1fr)`),
+  which is the modern e-commerce density: more products in the same screen, smaller cards.
+- The card padding, gaps, name size (16 -> 14 px), brand size (15 -> 13 px) and price size
+  (21 -> 17 px) were tightened so the card body reads as one compact block.
+- The tag pills no longer stack into a three-row cloud; the row keeps one line and truncates.
+- The per-card quantity stepper is gone. Quantity is chosen in the cart, Quick View and the
+  product page, so the card keeps one full-width "Add to cart" button - the pattern the reference
+  stores use. Nothing else lost this control: all three other quantity surfaces still have theirs.
+
+Mobile keeps the approved two-column phone grid and its 1:1 photos (those rules live in
+`responsive.css` and were left untouched); the phone card only gains the single full-width button
+and the same tighter padding.
+
+## What the duplicate audit found (all 5,483 live products, fetched from the Render API)
+
+- Exact duplicate names: 0. Exact duplicate SKUs: 0. Two products sharing one image: 0.
+  Duplicate rows in the database: none found at any of these levels.
+- What does repeat is sizes: 106 groups hold 243 rows whose names differ only by size or colour
+  ("Aarong Checked Shirt Size L / M / XL" is three rows, each with its own SKU and stock).
+  Those are variants, not copies - deleting them would delete real stock.
+- Brand spread is healthy: Pran 230, Walton 226, Aarong 218, then a long tail of 206 more brands.
+
+So nothing was deleted. If the storefront should show one card with a size selector instead of
+three rows, that is variant grouping - a feature on the product card and the detail page, not a
+database cleanup. Say the word and I will scope it as its own round.
+
+## Verification
+
+- Card geometry re-measured with `web/scripts/round39-card-probe.mjs` at 1440 and 390.
+- Screens captured at 1440 and 390 in light and dark themes (`web/scripts/r39-cards-screenshots.mjs`):
+  5 cards per row on desktop, 2 on phone, single orange add button, truncated tag row.
+- The 8-route mobile sweep (`web/scripts/round38-route-sweep.mjs`) still reports zero horizontal
+  overflow and zero console errors at 390 x 844 and 320 x 700, and the auth screens still hide
+  the assistant pill.
+- Gates: TypeScript, i18n keys, the Vitest suite, the production build, and the two CI browser
+  specs all ran green on this change.
+
 # Round 36 and 37 - the home page merchandises the live catalogue once, and stops repeating itself
 
 Date: 2026-11-08. From the master task, in your words: "See the home pages design it has many
