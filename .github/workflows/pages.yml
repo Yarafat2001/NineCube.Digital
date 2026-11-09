@@ -70,3 +70,7 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # A ~1GB / 10k-file Pages sync can exceed the action's default 10-minute
+          # poll window; wait up to 45 minutes instead of aborting the deployment.
+          timeout: '2700000'

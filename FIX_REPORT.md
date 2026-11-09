@@ -28,8 +28,10 @@ from 1.63 GB to 971 MB - under GitHub Pages' 1 GB soft limit. Measured: jpg 1,06
 png 503 -> 197 MB, webp untouched at 59 MB; 0 decode failures across 11,269 files, and files
 whose re-encode would have grown were left as-is. File names and extensions are unchanged,
 so every `/products/...` reference in the app and the database keeps working, and the
-originals stay in git history if ever needed again. Deploys should now sync well inside
-the 10-minute window.
+originals stay in git history if ever needed again. Even at 971 MB the Pages sync proved
+slower than the deploy step's fixed 10-minute poll (three attempts timed out on
+`syncing_files`), so the deploy workflow now waits up to 45 minutes before giving up -
+that is the change that makes publishing reliable again.
 
 ## The "old versions and unnecessary things" audit (R&D, measured)
 
