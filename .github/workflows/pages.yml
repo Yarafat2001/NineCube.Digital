@@ -28,8 +28,8 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: npm
@@ -51,12 +51,12 @@ jobs:
             sleep 1
           done
           E2E_BASE_URL=http://127.0.0.1:4173 E2E_DEPLOYMENT_SHA="$GITHUB_SHA" npx playwright test delivery-addresses.spec.ts gift-cards-layout.spec.ts
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: address-browser-failure
           path: web/test-results/
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: web/dist
 
@@ -69,7 +69,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         with:
           # A ~1GB / 10k-file Pages sync can exceed the action's default 10-minute
           # poll window; wait up to 45 minutes instead of aborting the deployment.
