@@ -1,0 +1,15 @@
+{
+  "name": "ninecube-digital",
+  "private": true,
+  "workspaces": [
+    "web"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace web -- --host 0.0.0.0 --port 8080",
+    "build": "npm run build --workspace web",
+    "start": "npm run preview --workspace web -- --host 0.0.0.0 --port 8080"
+  }
+}

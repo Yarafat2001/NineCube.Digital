@@ -470,7 +470,7 @@ export Jwt__SigningKey='<at least 32 random characters>'
 export NINECUBE_SEED_PASSWORD='<the password for the four demo accounts>'
 
 dotnet run --project src/NineCube.Api         # http://localhost:5080  (Swagger at /swagger)
-cd web && npm install && npm run dev          # http://localhost:5173
+npm ci && npm run dev                         # http://localhost:8080
 ```
 
 The API applies EF Core migrations and seeds demo data on start-up, so no separate migration step is
