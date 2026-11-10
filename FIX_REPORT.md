@@ -1,5 +1,41 @@
 # FIX_REPORT
 
+# Round 41 - the repository loses its retired art and duplicate archives
+
+Date: 2026-11-10. From the master task, in your words: "please check the file it github repo it
+becomes huge file becomecs legacy type unnecessary code file and others remove i mean old version
+type".
+
+The weight was not source code. It was generated product art that Round 40 had already stopped
+using, a zipped copy of media that `.gitignore` already keeps out of the tree, and one unused
+catalogue export.
+
+| item | before | after |
+| --- | --- | --- |
+| tracked files | 13,120 | 6,243 |
+| tracked bytes | about 1.16 GB | 593.9 MB |
+| `web/public/products/bd/` | 6,874 flat-vector files, 478.7 MB | deleted; path ignored |
+| `docs/walkthrough.zip` | 94.5 MB archive of the ignored `.webm`/`.wav` take | deleted; path ignored |
+| `NineCube_Products_Catalog.csv` | 1.2 MB export, no remaining references | deleted |
+| `data/bd-catalog/bd-catalog.json` | 7.56 MB, 15,525 `/products/bd/` URLs | 4.84 MB, 0 image URLs |
+| `seed/bd_master_seed/generate_bd_images.py` | rendered the retired art | deleted |
+
+The BD master seed now emits `imageUrl: null` and `images: []`, matching the cleaned
+`production-catalogue.json`: a product without a real photograph uses the storefront's own "No
+image" placeholder. The two seed READMEs were updated to describe the retired art instead of the
+removed generator. Nothing that serves a real photo was touched: `web/public/products/` still holds
+the 5,035 photographed items and the `sourced/` and `laptops/` sets.
+
+Local disk also recovered 9.38 GB that was never in the GitHub artifact: 3.83 GB of Git garbage
+objects, 3.53 GB of `src/**/bin|obj`, and 2.02 GB of `web/dist`. The ignored
+`web/public/NineCube_Full_Setup_Run_Only/` installer (1.07 GB) was left in place.
+
+Validation: the three image/mobile regression suites still pass (`dual-images-resolution` 10,
+`product-secondary-images` 4, `mobile-interactions` 5), and the cleaned dataset parses with 5,300
+products and zero image references. Removing the files from the current tree does not shrink
+existing clones: the old blobs remain reachable in history until a history rewrite
+(`git filter-repo`) and force-push are explicitly approved.
+
 # Round 40 - the phone chrome stops colliding, and the drawn product art leaves the catalogue
 
 Date: 2026-11-10. From the master task, in your words: "mobile navbar button not structured properly
