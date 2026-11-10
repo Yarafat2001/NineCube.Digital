@@ -579,9 +579,9 @@
 
 :root[data-theme='dark'] .recently-viewed__add-btn,
 :root[data-theme='dark'] .recently-viewed__add-btn.btn--primary {
-  background: linear-gradient(135deg, #ffc36b, #f59e0b);
-  border-color: #f59e0b;
-  color: #1a1100 !important;
+  background: var(--accent-gradient);
+  border-color: var(--accent);
+  color: var(--on-accent) !important;
 }
 
 :root[data-theme='dark'] .recently-viewed__name,
@@ -720,6 +720,24 @@
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
+}
+
+/* 769-1440px is too narrow for a 3+ link tray on the same row as the search and the user chip:
+   the pill shrinks while its links keep full width, so the links overflow the pill and get
+   clipped by the hidden scrollbar (measured: 463px of links vs a 437px pill at 1280px).
+   Give the tray its own centered row, mirroring the <=600px pattern. `!important` beats
+   responsive.css's `flex-wrap: nowrap` for this band. */
+@media (min-width: 769px) and (max-width: 1440px) {
+  :root .app-shell .navbar:has(.navbar__tray .navbar__link:nth-child(3)) {
+    flex-wrap: wrap !important;
+    row-gap: 6px;
+  }
+  :root .app-shell .navbar:has(.navbar__tray .navbar__link:nth-child(3)) .navbar__tray {
+    order: 5;
+    flex: 1 1 100%;
+    justify-content: center;
+    margin-right: 0;
+  }
 }
 
 .navbar__actions {
@@ -869,16 +887,16 @@
 }
 
 :root[data-theme='dark'] .btn--primary {
-  background: linear-gradient(135deg, #ffc36b, #f59e0b);
-  border-color: #f59e0b;
-  color: #1a1100;
-  box-shadow: 0 10px 22px rgba(245, 158, 11, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  background: var(--accent-gradient);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-md);
 }
 
 :root[data-theme='dark'] .btn--primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ffd18a, #f59726);
-  border-color: #ffc36b;
-  color: #1a1100;
+  background: #3d9bff;
+  border-color: #0a84ff;
+  color: var(--on-accent);
 }
 
 .btn--primary:hover:not(:disabled) {

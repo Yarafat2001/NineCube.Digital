@@ -119,6 +119,63 @@ What changed, file by file:
   gallery row is skipped in favour of a real photo after it, and a notifications payload without
   an `items` array cannot blank the app shell.
 
+# Round 40c - the dark theme stops dressing in amber, and the admin tabs get their own row
+
+Date: 2026-11-10. From the master task, in your words: "in the user part it becomes more ui theme
+effect not matching the system. here button and background make yellowish style. and search bar and
+admin part are collusion . As senior full stack developer you fix these alll findout real issues and
+artifact . in the dark mode logo also changed make it yellow. as like ligt mode style".
+
+Four defects, all dark-theme only, each measured in the browser before the change:
+
+| defect | measured before | after |
+| --- | --- | --- |
+| dark logo wordmark | `#ffb340` amber, hard-coded as `--brand-wordmark` | `var(--accent-text)` = `#6cb4ff` - light mode resolves the wordmark the same way, so the dark logo now follows its accent exactly as the light one does |
+| Sign-in / primary buttons, dark | `linear-gradient(135deg, #ffc36b, #f59e0b)` amber with dark-amber text; hover `#ffd18a` | `var(--accent-gradient)` blue `#3d9bff → #0a84ff` with white text; hover `#3d9bff` |
+| recently-viewed add buttons, dark | same amber gradient, hard-coded | same blue accent gradient and white text |
+| dark page glow | fourth radial cone `rgba(255, 159, 10, 0.16)` orange, bottom-right | `rgba(10, 132, 255, 0.16)` blue |
+
+The light theme is untouched on purpose: amber **is** the light accent, so its buttons stay amber.
+
+## The search bar and the admin part were not overlapping
+
+The collision was checked first: at twenty widths from 769 to 1440 px there were no overlapping
+pixels between the search/actions and the admin tray. The real defect was the tray pill itself.
+Between 769 and 1024 px the pill shrank (302 px at 1024, down to 90 px at 769) while its five links
+kept their full 463 px width, and the tray's hidden scrollbar clipped them - "Inventory" cut
+mid-word, "Operations" invisible. At 1280 px the pill was 437 px against 463 px of links, clipping
+the last tab by 26 px. Sitting next to the theme toggle, the user chip and the search, the clipped
+pill is what read as a collision.
+
+One rule block in `web/src/styles/app.css` fixes it: from 769 to 1440 px, when the tray holds three
+or more links, the navbar wraps and the tray takes its own centered row under the main bar - the
+same pattern the phone view already uses. After the change, every width from 769 to 1440 px shows
+0 overlaps, 0 clipped links, 0 px document overflow, all five tabs inside the pill. At 1600 px the
+bar stays a single row as before (the row has ~2 px of slack for the five tabs, which is the
+pre-existing desktop state, not a new tightness).
+
+## What changed, file by file
+
+- `web/src/styles/tokens.css` - the dark wordmark token, the deleted unused `--accent-amber` line,
+  and the fourth glow cone.
+- `web/src/styles/app.css` - the dark `.btn--primary` plus hover, the dark recently-viewed add
+  button, and the new 769-1440 wrap rule (scoped `:root .app-shell` with `:has()` so it wins over
+  `responsive.css`'s `flex-wrap: nowrap !important` in that band).
+
+## Verification
+
+- `web/scripts/probe-round40c-dev.mjs`, dev server with a held admin session and a stubbed API,
+  dark mode, widths 1600, 1440, 1400, 1350, 1300, 1280, 1024, 1000, 950, 900, 850, 800, 769, 768,
+  700 and 390: the numbers above, at every width. Screenshots: `web/shots-nav/r40c-*.png`.
+- Computed styles, dark: the login button and both recently-viewed buttons are the blue accent
+  gradient with white text, the wordmark is `#6cb4ff`, the body glow has no orange cone. The same
+  probe in light mode returns the same values it returned before the change.
+- Gates: `npx tsc --noEmit` clean, `npm run i18n:check` 2,564 Bengali catalogue entries all
+  covered, `npm run build` green. The full Vitest run reported 494 passed, 2 failed, 11 skipped;
+  the two failures (search-surfaces, discount-moderation) are timing-sensitive and both pass when
+  their files run on their own - they cannot see stylesheets (Vitest runs with CSS off), so they
+  are unrelated to this change.
+
 # Round 39 - compact product cards, and the truth about the "duplicates"
 
 Date: 2026-11-09. From the master task, in your words: "see no changes and the produce card not

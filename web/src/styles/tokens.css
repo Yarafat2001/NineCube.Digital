@@ -222,8 +222,10 @@
 
     --text: #f2f5fa;
     --logo-face: #f2f5fa;
-    --brand-wordmark: #ffb340;
-    --accent-amber: #ffb340;
+    /* The wordmark follows the theme accent, exactly as it does in light mode
+       (--brand-wordmark: var(--accent-text) there resolves to the amber #9A3F00):
+       the hard-coded yellow #ffb340 made the dark logo a different brand. */
+    --brand-wordmark: var(--accent-text);
     --text-muted: #9ea8b9;
     --muted: #9ea8b9;
     --border: rgba(255, 255, 255, 0.12);
@@ -276,7 +278,7 @@
       radial-gradient(65vmax 65vmax at 0% -10%, rgba(10, 132, 255, 0.38), transparent 65%),
       radial-gradient(55vmax 55vmax at 100% 0%, rgba(100, 210, 255, 0.22), transparent 60%),
       radial-gradient(60vmax 60vmax at 10% 100%, rgba(48, 209, 160, 0.18), transparent 65%),
-      radial-gradient(50vmax 50vmax at 95% 90%, rgba(255, 159, 10, 0.16), transparent 60%);
+      radial-gradient(50vmax 50vmax at 95% 90%, rgba(10, 132, 255, 0.16), transparent 60%);
     --surface-glass: rgba(20, 26, 38, 0.58);
     /* Smoked glass: the same cone at a lower alpha, because the panel behind it is already dark. */
     --glass-glow: rgba(10, 132, 255, 0.35);
