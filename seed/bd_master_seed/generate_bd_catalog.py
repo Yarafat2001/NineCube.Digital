@@ -782,8 +782,10 @@ def main() -> int:
                 "sourceLicense": "Generated dataset - internal demo use",
                 "priceBasis": f"Seeded BDT market band for {display_name(leaf).lower()} ({lo}-{hi})",
                 "brand": brand,
-                "imageUrl": f"/products/bd/{slug}.jpg",
-                "images": [{"url": f"/products/bd/{slug}.jpg", "altText": name}],
+                # No generated art: the storefront shows its own "No image"
+                # placeholder until a real photograph is sourced.
+                "imageUrl": None,
+                "images": [],
             })
 
     buyers = [{"name": b, "slug": brand_slug(b), "isActive": True}

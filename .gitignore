@@ -61,6 +61,10 @@ docs/walkthrough/*.webm
 docs/walkthrough/*.wav
 docs/walkthrough/narration/
 docs/walkthrough/video/
+docs/walkthrough.zip
+
+# retired generated product art (flat vector stand-ins, never a product photo)
+web/public/products/bd/
 
 scratch/
 web/public/NineCube_Full_Setup_Run_Only/

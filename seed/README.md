@@ -4,15 +4,16 @@
 
 `seed/bd_master_seed/` holds the generated Bangladesh master dataset
 (see [data/bd-catalog/README.md](../data/bd-catalog/README.md)):
-5,300 products, 107 categories from `required_categories.csv`, BDT pricing,
-and one license-free generated image per product at
-`web/public/products/bd/`. The loader is database-agnostic (PostgreSQL or
-SQL Server) and follows the same add-only, idempotent write guarantees as
-`load.py`. It is independent of the older fetch/parse pipeline below.
+5,300 products, 107 categories from `required_categories.csv` and BDT pricing.
+The generated flat-vector product art was retired in November 2026: products
+without a sourced photograph fall back to the storefront's own "No image"
+placeholder, and `data/bd-catalog/bd-catalog.json` carries no image URLs. The
+loader is database-agnostic (PostgreSQL or SQL Server) and follows the same
+add-only, idempotent write guarantees as `load.py`. It is independent of the
+older fetch/parse pipeline below.
 
 ```powershell
 python seed/bd_master_seed/generate_bd_catalog.py
-python seed/bd_master_seed/generate_bd_images.py
 python seed/bd_master_seed/load_bd_catalog.py --check
 python seed/bd_master_seed/load_bd_catalog.py --dry-run
 python seed/bd_master_seed/load_bd_catalog.py

@@ -42,7 +42,6 @@ Bangladesh market demo:
 
 ```powershell
 python seed/bd_master_seed/generate_bd_catalog.py   # dataset (deterministic)
-python seed/bd_master_seed/generate_bd_images.py    # images (--force to redo)
 python seed/bd_master_seed/load_bd_catalog.py --check   # validate locally
 python seed/bd_master_seed/load_bd_catalog.py --dry-run # DB counts, no writes
 python seed/bd_master_seed/load_bd_catalog.py           # apply (add-only, idempotent)
@@ -66,14 +65,11 @@ product, order, or category row is ever modified.
 
 ## Image assets
 
-- Rendered by `seed/bd_master_seed/generate_bd_images.py` (Pillow, Arial
-  system font): category-colored card with brand, product name, BDT price and
-  stock badge at 800×800.
-- Stored under `web/public/products/bd/`; `NineCube.Api.csproj` copies the
-  folder to `wwwroot/products/bd/` at build (`RecursiveDir` preserved), so
-  URLs `/products/bd/<slug>.jpg` are served directly by the API.
-- **License: fully generated in-house; no third-party photography, no
-  attribution required.** Regenerate any card at any time with `--force`.
+Generated product art was retired in November 2026. The dataset no longer emits
+`/products/bd/` URLs, the generator script was removed, and the 6,874 flat-vector
+files were deleted from the repository. Products without a sourced photograph
+render the storefront's own "No image" placeholder; real photography lives under
+`web/public/products/` and is attached by the image backfill pipeline.
 
 ## Verification (live PostgreSQL, 2026-11-07)
 
